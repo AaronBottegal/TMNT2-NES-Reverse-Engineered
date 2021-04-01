@@ -47,7 +47,11 @@ NES_CTRL2:                                    .equ $4017
 
 
           .rsset 0x0000
-TMP_00:                                       .rs 4
+TMP_00:                                       .rs 1
+TMP_01:                                       .rs 1
+
+
+          .rsset 0x0004
 CTRL_RAM:                                     .rs 2
 R_**:$0006:                                   .rs 1
 
@@ -68,13 +72,14 @@ COUNTER_UNK:                                  .rs 1
 
 
           .rsset 0x0028
-SOUND_FLAG_UNK:                               .rs 1
+28_BANK_CFG_INDEX_UNK:                        .rs 1
 LOWER_BANK_SAVE_PAIRED?:                      .rs 1
+IRQ_BANK_VALUES:                              .rs 2
 
 
           .rsset 0x002D
-BANK_DATA_IRQ_A:                              .rs 1
-BANK_DATA_IRQ_B:                              .rs 1
+IRQ_GFX_DATA_BANK_R0:                         .rs 1
+IRQ_GFX_DATA_BANK_R1:                         .rs 1
 ZP_R2-R5_BANK_VALUES:                         .rs 4
 R_**:$0033:                                   .rs 1
 R_**:$0034:                                   .rs 1
@@ -91,27 +96,31 @@ PPU_INDEX_UNK_42:                             .rs 1
 
           .rsset 0x0047
 R_**:$0047:                                   .rs 1
+PPU_ADDR_IRQ:                                 .rs 2
 
 
           .rsset 0x0050
-IRQ_HANDLER:                                  .rs 3
+IRQ_HANDLER_JMP:                              .rs 3
 
 
           .rsset 0x0056
-IRQ_UNK_56:                                   .rs 1
-IRQ_UNK_57:                                   .rs 1
+IRQ_56_OR'D:                                  .rs 1
+IRQ_LATCH_VALUE:                              .rs 1
+58_IRQ_UNK:                                   .rs 1
+
+
+          .rsset 0x005A
+IRQ_LATCH_VALUE:                              .rs 1
 
 
           .rsset 0x005C
-IRQ_UNK_5C:                                   .rs 1
-
-
-          .rsset 0x005E
+IRQ_EXTENDED/HANDLER:                         .rs 1
+5D_IRQ_BANK?:                                 .rs 1
 IRQ_UNK_5E:                                   .rs 1
 
 
           .rsset 0x00A6
-R_**:$00A6:                                   .rs 1
+IRQ_FLAG_R2-R5_EQ_7E:                         .rs 1
 
 
           .rsset 0x00AD
@@ -138,7 +147,7 @@ COPY_BANK_CFG:                                .rs 1
 MMC3_MIRRORING_COPY:                          .rs 1
 CTRL_NEWLY_PRESSED_B:                         .rs 2
 CTRL_PREV_B:                                  .rs 2
-PPU_SCROLL_Y_COPY:                            .rs 1
+PPU_SCROLL_Y_COPY_IRQ:                        .rs 1
 PPU_SCROLL_X_COPY:                            .rs 1
 PPU_MASK_RAM_COPY?:                           .rs 1
 PPU_CTRL_RAM_COPY:                            .rs 1
@@ -157,8 +166,20 @@ LOW_BANK_DATA:                                .rs 1
 UPPER_BANK_DATA:                              .rs 1
 
 
+          .rsset 0x0601
+601_IRQ_INC_Y_FLAG:                           .rs 1
+
+
+          .rsset 0x0606
+SWITCH_STATE_606_UNK:                         .rs 1
+
+
           .rsset 0x060D
 R2_TO_R5_BANK_DATA:                           .rs 4
+
+
+          .rsset 0x0612
+612_UNK:                                      .rs 1
 
 
           .rsset 0x0616
@@ -194,11 +215,11 @@ R_**:$0656:                                   .rs 1
 
 
           .rsset 0x0659
-R_**:$0659:                                   .rs 1
+PPU_SCROLL_X_COPY_IRQ:                        .rs 1
 
 
           .rsset 0x065C
-R_**:$065C:                                   .rs 1
+NAMETABLE_VAR_UNK:                            .rs 1
 
 
           .rsset 0x065F

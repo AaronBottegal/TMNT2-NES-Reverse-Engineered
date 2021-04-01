@@ -473,15 +473,12 @@
     .db 86
     .db 1E
     .db 60
-    .db A4
-    .db 42
-    .db B9
-    .db E3
-    .db E1
-    .db 4C
-    .db 11
-    .db DB
-    .db 26
+BANK_SWITCH_STATE_42: ; 1F:01DB, 0x03E1DB
+    LDY PPU_INDEX_UNK_42 ; Load index.
+    LDA BANK_USE_DATA,Y ; Load bank.
+    JMP BANK_PAIR_USE_A ; Goto bank.
+BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
+    .db 26 ; Unk size.
     .db 26
     .db 26
     .db 26
@@ -6380,7 +6377,7 @@
     .db F8
     .db D1
     .db F8
-DISABLE_MAPPER_IRQ+SOUND+WEIRDNESS: ; 1F:18EE, 0x03F8EE
+DISABLE_MAPPER_IRQ+SOUND+A12BS: ; 1F:18EE, 0x03F8EE
     LDA #$00
     STA MMC3_BANK_CFG ; MMC3 config.
     STA MMC3_IRQ_DISABLE ; Disable IRQ.
@@ -6389,19 +6386,19 @@ DISABLE_MAPPER_IRQ+SOUND+WEIRDNESS: ; 1F:18EE, 0x03F8EE
     LDA #$40
     STA APU_FSEQUENCE ; 4 step, no IRQ's.
     LDA PPU_STATUS ; Reset PPU latch.
-    LDA #$10 ; Start ppu_addr weirdness.
-    TAX
-LOOP_PPUADDR_WEIRDNESS: ; 1F:1906, 0x03F906
-    STA PPU_ADDR
-    STA PPU_ADDR
-    EOR #$10
-    DEX
-    BNE LOOP_PPUADDR_WEIRDNESS
+    LDA #$10 ; PPU_A12_HIGH
+    TAX ; To times.
+LOOP_PPU_BOGUS_MANUAL_CLOCK: ; 1F:1906, 0x03F906
+    STA PPU_ADDR ; Set PPU_ADDR to (try) to clock A12.
+    STA PPU_ADDR ; Which doesn't work btw.
+    EOR #$10 ; Invert A12, lol.
+    DEX ; X--
+    BNE LOOP_PPU_BOGUS_MANUAL_CLOCK ; !=0, loop.
     RTS ; Leave.
     LDA #$00
-    STA R_**:$00A6
+    STA IRQ_FLAG_R2-R5_EQ_7E
     STA IRQ_UNK_5E
-    STA IRQ_UNK_56
+    STA IRQ_56_OR'D
 MAPPER_IRQ_DISABLE+RTS: ; 1F:191A, 0x03F91A
     STA MMC3_IRQ_DISABLE
     RTS
@@ -6419,32 +6416,32 @@ MAPPER_IRQ_DISABLE+RTS: ; 1F:191A, 0x03F91A
     .db 85
     .db F7
     .db 60
-SET_IRQ_HANDLER: ; 1F:192C, 0x03F92C
-    TAY ; A to Y.
-    ORA IRQ_UNK_5E ; Or A with.
-    STA IRQ_UNK_56 ; To.
-    LDA IRQ_DATA_BA,Y ; Load data.
-    STA IRQ_UNK_57 ; Store to.
-    TYA ; Index back to A.
-    ASL A ; Shift
-    TAY ; Back to Y.
+SET_IRQ_HANDLER_ADDR: ; 1F:192C, 0x03F92C
+    TAY ; IRQ selection index to Y.
+    ORA IRQ_UNK_5E ; Or passed with value.
+    STA IRQ_56_OR'D ; To addr.
+    LDA IRQ_LATCH_VALUES,Y ; Load data.
+    STA IRQ_LATCH_VALUE ; Store to.
+    TYA ; IRQ selection index back to A.
+    ASL A ; Shift to make word index.
+    TAY ; Back to Y again.
     LDA IRQ_RTNS_LOWER,Y ; Store IRQ addr.
-    STA IRQ_HANDLER+1
+    STA IRQ_HANDLER_JMP+1
     LDA IRQ_RTNS_UPPER,Y
-    STA IRQ_HANDLER+2
+    STA IRQ_HANDLER_JMP+2
     LDA #$4C ; JMP opcode.
-    STA IRQ_HANDLER[3] ; Store.
+    STA IRQ_HANDLER_JMP[3] ; Store.
     RTS
-IRQ_DATA_BA: ; 1F:1948, 0x03F948
+IRQ_LATCH_VALUES: ; 1F:1948, 0x03F948
     .db 00
     .db 30
     .db 08
     .db 08
     .db 8C
     .db 02
-    .db B0
-    .db B8
-    .db 0A
+    .db B0 ; 6
+    .db B8 ; Y
+    .db 0A ; Y
     .db 1D
     .db 90
     .db 3D
@@ -6459,55 +6456,54 @@ IRQ_DATA_BA: ; 1F:1948, 0x03F948
     .db 2E
     .db 30
 IRQ_RTNS_LOWER: ; 1F:195E, 0x03F95E
-    .db 8A
+    LOW(IRQ_RTN_DISABLE_IRQ) ; Basic disable IRQ and leave.
 IRQ_RTNS_UPPER: ; 1F:195F, 0x03F95F
-    .db F9
-    .db 74
-    .db FA
-    .db AF
-    .db FB
-    .db 0F
-    .db FC
-    .db F3
-    .db FC
-    .db 56
-    .db FD
-    .db 56
-    .db FD
-    .db 5B
-    .db FC
-    .db 32
-    .db FD
-    .db BA
-    .db FC
-    .db 56
-    .db FD
-    .db BA
-    .db FC
-    .db 56
-    .db FD
-    .db 6E
-    .db FD
-    .db 56
-    .db FD
-    .db 56
-    .db FD
-    .db 6E
-    .db FD
-    .db 56
-    .db FD
-    .db BA
-    .db FC
-    .db 56
-    .db FD
-    .db 63
-    .db FB
-    .db ED
-    .db FA
-    .db 8D
-    .db 00
-    .db E0
-    .db 40
+    HIGH(IRQ_RTN_DISABLE_IRQ)
+    LOW(IRQ_RTN_B) ; Normal, gfx and whatnot.
+    HIGH(IRQ_RTN_B)
+    LOW(IRQ_RTN_C) ; Just a bit diff...
+    HIGH(IRQ_RTN_C)
+    LOW(IRQ_RTN_D) ; Pretty normal, gfx.
+    HIGH(IRQ_RTN_D)
+    LOW(IRQ_RTN_E) ; Animation is in this one I believe.
+    HIGH(IRQ_RTN_E)
+    LOW(IRQ_RTN_F)
+    HIGH(IRQ_RTN_F) ; Chr change to 7E, misc.
+    LOW(IRQ_RTN_F)
+    HIGH(IRQ_RTN_F)
+    LOW(IRQ_RTN_G)
+    HIGH(IRQ_RTN_G)
+    LOW(IRQ_RTN_H)
+    HIGH(IRQ_RTN_H)
+    LOW(IRQ_RTN_I)
+    HIGH(IRQ_RTN_I)
+    LOW(IRQ_RTN_F)
+    HIGH(IRQ_RTN_F)
+    LOW(IRQ_RTN_I)
+    HIGH(IRQ_RTN_I)
+    LOW(IRQ_RTN_F)
+    HIGH(IRQ_RTN_F)
+    LOW(IRQ_RTN_J)
+    HIGH(IRQ_RTN_J)
+    LOW(IRQ_RTN_F)
+    HIGH(IRQ_RTN_F)
+    LOW(IRQ_RTN_F)
+    HIGH(IRQ_RTN_F)
+    LOW(IRQ_RTN_J)
+    HIGH(IRQ_RTN_J)
+    LOW(IRQ_RTN_F)
+    HIGH(IRQ_RTN_F)
+    LOW(IRQ_RTN_I)
+    HIGH(IRQ_RTN_I)
+    LOW(IRQ_RTN_F)
+    HIGH(IRQ_RTN_F)
+    LOW(IRQ_RTN_K)
+    HIGH(IRQ_RTN_K)
+    LOW(IRQ_RTN_L)
+    HIGH(IRQ_RTN_L)
+IRQ_RTN_DISABLE_IRQ: ; 1F:198A, 0x03F98A
+    STA MMC3_IRQ_DISABLE ; These two looking kinda sus.
+    RTI
 MUCH_IRQ_RTN/BANKING/ETC/MORE: ; 1F:198E, 0x03F98E
     LDA IRQ_UNK_5E
     BEQ MAPPER_IRQ_DISABLE+RTS ; Disable and leave.
@@ -6521,7 +6517,7 @@ MUCH_IRQ_RTN/BANKING/ETC/MORE: ; 1F:198E, 0x03F98E
     LDA #$FF
     STA MMC3_IRQ_LATCH ; Write latch value.
     STA MMC3_IRQ_RELOAD ; Reload.
-    LDA #$00 ; Address trickery. NESDev wiki basically says this is bogus stuff lol.
+    LDA #$00 ; Address trickery. MMC3 IRQ manual clocking, probably.
     STA PPU_ADDR
     STA PPU_ADDR
     LDA #$10
@@ -6582,21 +6578,21 @@ FLAG_65F_NOT_SET: ; 1F:1A1E, 0x03FA1E
     CMP #$07 ; A _ 0x07
     BNE D9_NOT_7 ; !=, goto.
     LDA #$15 ; Load
-    JSR SET_IRQ_HANDLER ; Do.
+    JSR SET_IRQ_HANDLER_ADDR ; Do.
     LDA #$12 ; Load.
     BNE 1F:1A47 ; Always taken.
 D9_WAS_4: ; 1F:1A31, 0x03FA31
     LDA #$15 ; Load.
-    JSR SET_IRQ_HANDLER ; Do.
+    JSR SET_IRQ_HANDLER_ADDR ; Do.
     LDA #$0B ; Load.
     BNE 1F:1A47 ; Always taken.
 D9_NOT_7: ; 1F:1A3A, 0x03FA3A
     LDX PPU_INDEX_UNK_42 ; Index from.
     LDA IRQ_DATA_A,X ; Load data.
-    JSR SET_IRQ_HANDLER ; Do.
+    JSR SET_IRQ_HANDLER_ADDR ; Do.
     LDX PPU_INDEX_UNK_42 ; Re-load.
     LDA IRQ_DATA_B,X ; Data from.
-    STA IRQ_UNK_5C ; Store to.
+    STA IRQ_EXTENDED/HANDLER ; Store to.
     LDA #$00 ; Load.
     JSR SETUP_R0/R1_IRQ_DATA ; Set up.
     JSR BANKSWITCH_R0/R1 ; Swap to.
@@ -6640,115 +6636,63 @@ IRQ_DATA_B: ; 1F:1A64, 0x03FA64
     .db 10
     .db 0E
     .db 11
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db 8D
-    .db 01
-    .db E0
-    .db A5
-    .db 5C
-    .db D0
-    .db 06
-    .db 8D
-    .db 00
-    .db E0
-    .db 4C
-    .db 91
-    .db FA
-    .db 20
-    .db 2C
-    .db F9
-    .db A5
-    .db 57
-    .db 8D
-    .db 00
-    .db C0
-    .db A0
-    .db 0C
-    .db 88
-    .db D0
-    .db FD
-    .db AD
-    .db 02
-    .db 20
-    .db A6
-    .db 49
-    .db A4
-    .db 48
-    .db 8E
-    .db 06
-    .db 20
-    .db 8C
-    .db 06
-    .db 20
-    .db AD
-    .db 02
-    .db 20
-    .db AE
-    .db 59
-    .db 06
-    .db A4
-    .db FC
-    .db AD
-    .db 5C
-    .db 06
-    .db 29
-    .db 01
-    .db 05
-    .db FF
-    .db 8E
-    .db 05
-    .db 20
-    .db 8C
-    .db 05
-    .db 20
-    .db 8D
-    .db 00
-    .db 20
-    .db A5
-    .db 2A
-    .db 85
-    .db 2D
-    .db A5
-    .db 2B
-    .db 85
-    .db 2E
-    .db 20
-    .db 82
-    .db DD
-    .db A9
-    .db 00
-    .db 85
-    .db A6
-    .db 20
-    .db F7
-    .db DC
-    .db A6
-    .db 42
-    .db BD
-    .db E1
-    .db FA
-    .db 85
-    .db 5C
-    .db A6
-    .db 28
-    .db B5
-    .db F5
-    .db 8D
-    .db 00
-    .db 80
-    .db 68
-    .db A8
-    .db 68
-    .db AA
-    .db 68
-    .db 40
+IRQ_RTN_B: ; 1F:1A74, 0x03FA74
+    PHA ; Save A
+    TXA
+    PHA ; Save X
+    TYA
+    PHA ; Save Y
+    STA MMC3_IRQ_DISABLE ; Disable+enable for no IRQ's.
+    STA MMC3_IRQ_ENABLE
+    LDA IRQ_EXTENDED/HANDLER
+    BNE EXTENDED_RTN
+    STA MMC3_IRQ_DISABLE ; Disable otherwise.
+    JMP IRQ_WAIT/PPU/UNK/GFX/CFG_GENERAL
+EXTENDED_RTN: ; 1F:1A89, 0x03FA89
+    JSR SET_IRQ_HANDLER_ADDR
+    LDA IRQ_LATCH_VALUE
+    STA MMC3_IRQ_LATCH
+IRQ_WAIT/PPU/UNK/GFX/CFG_GENERAL: ; 1F:1A91, 0x03FA91
+    LDY #$0C ; Delay amount.
+DELAY_LOOP: ; 1F:1A93, 0x03FA93
+    DEY ; Y--
+    BNE DELAY_LOOP ; != 0, loop.
+    LDA PPU_STATUS ; Reset latch.
+    LDX PPU_ADDR_IRQ+1
+    LDY PPU_ADDR_IRQ[2]
+    STX PPU_ADDR ; Store addr.
+    STY PPU_ADDR
+    LDA PPU_STATUS ; Reset latch more.
+    LDX PPU_SCROLL_X_COPY_IRQ
+    LDY PPU_SCROLL_Y_COPY_IRQ
+    LDA NAMETABLE_VAR_UNK
+    AND #$01 ; Isolate.
+    ORA PPU_CTRL_RAM_COPY ; Set to proper nametable.
+    STX PPU_SCROLL ; Set X and Y scroll. Bonus points for proper registers.
+    STY PPU_SCROLL
+    STA PPU_CTRL ; Set CTRL.
+    LDA IRQ_BANK_VALUES[2]
+    STA IRQ_GFX_DATA_BANK_R0
+    LDA IRQ_BANK_VALUES+1
+    STA IRQ_GFX_DATA_BANK_R1
+    JSR BANKSWITCH_R0/R1 ; Switch graphics.
+    LDA #$00
+    STA IRQ_FLAG_R2-R5_EQ_7E ; Use RAM ones.
+    JSR BANK_R2-R5 ; Switch graphics.
+    LDX PPU_INDEX_UNK_42 ; X from
+    LDA RTN_EXTRA_DATA,X
+    STA IRQ_EXTENDED/HANDLER
+SET_BANK_CONFIG+RESTORE_RTI: ; 1F:1AD4, 0x03FAD4
+    LDX 28_BANK_CFG_INDEX_UNK ; X from.
+    LDA COPY_BANK_CFG_F5,X ; Bank config.
+    STA MMC3_BANK_CFG ; Set config.
+    PLA
+    TAY
+    PLA
+    TAX
+    PLA
+    RTI
+RTN_EXTRA_DATA: ; 1F:1AE1, 0x03FAE1
     .db 08
     .db 08
     .db 00
@@ -6761,698 +6705,361 @@ IRQ_DATA_B: ; 1F:1A64, 0x03FA64
     .db 00
     .db 00
     .db 00
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db 8D
-    .db 01
-    .db E0
-    .db A5
-    .db 5C
-    .db 20
-    .db 2C
-    .db F9
-    .db A5
-    .db 57
-    .db 8D
-    .db 00
-    .db C0
-    .db A0
-    .db 11
-    .db 88
-    .db D0
-    .db FD
-    .db AD
-    .db 02
-    .db 20
-    .db A6
-    .db 49
-    .db A4
-    .db 48
-    .db 8E
-    .db 06
-    .db 20
-    .db 8C
-    .db 06
-    .db 20
-    .db AD
-    .db 02
-    .db 20
-    .db AE
-    .db 5A
-    .db 06
-    .db A4
-    .db FC
-    .db AD
-    .db 5D
-    .db 06
-    .db 29
-    .db 01
-    .db 05
-    .db FF
-    .db 8E
-    .db 05
-    .db 20
-    .db 8C
-    .db 05
-    .db 20
-    .db 8D
-    .db 00
-    .db 20
-    .db A9
-    .db 00
-    .db 85
-    .db A6
-    .db 20
-    .db F7
-    .db DC
-    .db A5
-    .db 2A
-    .db 85
-    .db 2D
-    .db A5
-    .db 2B
-    .db 85
-    .db 2E
-    .db 20
-    .db 82
-    .db DD
-    .db A5
-    .db 7D
-    .db 10
-    .db 08
-    .db A6
-    .db A7
-    .db BD
-    .db 70
-    .db FA
-    .db 4C
-    .db 5E
-    .db FB
-    .db A5
-    .db D9
-    .db C9
-    .db 07
-    .db F0
-    .db 08
-    .db C9
-    .db 04
-    .db D0
-    .db 08
-    .db A9
-    .db 0C
-    .db D0
-    .db 06
-    .db A9
-    .db 13
-    .db D0
-    .db 02
-    .db A9
-    .db 0A
-    .db 85
-    .db 5C
-    .db 4C
-    .db D4
-    .db FA
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db 8D
-    .db 01
-    .db E0
-    .db A0
-    .db 07
-    .db AD
-    .db 01
-    .db 06
-    .db 10
-    .db 0C
-    .db A5
-    .db 81
-    .db 29
-    .db 07
-    .db 85
-    .db 5A
-    .db A9
-    .db 09
-    .db 38
-    .db E5
-    .db 5A
-    .db A8
-    .db 8C
-    .db 00
-    .db C0
-    .db 84
-    .db 5A
-    .db AD
-    .db 01
-    .db 06
-    .db 30
-    .db 07
-    .db A0
-    .db 0B
-    .db 88
-    .db D0
-    .db FD
-    .db F0
-    .db 05
-    .db A0
-    .db 08
-    .db 88
-    .db D0
-    .db FD
-    .db A9
-    .db 00
-    .db 85
-    .db A6
-    .db 20
-    .db F7
-    .db DC
-    .db A9
-    .db 7E
-    .db 85
-    .db 2D
-    .db 85
-    .db 2E
-    .db 20
-    .db 82
-    .db DD
-    .db A9
-    .db 02
-    .db 20
-    .db 2C
-    .db F9
-    .db 4C
-    .db D4
-    .db FA
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db 8D
-    .db 01
-    .db E0
-    .db A9
-    .db 0A
-    .db 38
-    .db E5
-    .db 5A
-    .db A8
-    .db 8C
-    .db 00
-    .db C0
-    .db AD
-    .db 02
-    .db 20
-    .db A6
-    .db 49
-    .db A4
-    .db 48
-    .db 8E
-    .db 06
-    .db 20
-    .db 8C
-    .db 06
-    .db 20
-    .db A0
-    .db 06
-    .db AD
-    .db 01
-    .db 06
-    .db 10
-    .db 01
-    .db C8
-    .db 84
-    .db 5C
-    .db 98
-    .db 20
-    .db 2C
-    .db F9
-    .db A5
-    .db 5C
-    .db C9
-    .db 06
-    .db F0
-    .db 1F
-    .db A5
-    .db 5A
-    .db C9
-    .db 01
-    .db D0
-    .db 08
-    .db A5
-    .db 58
-    .db C9
-    .db B8
-    .db F0
-    .db 02
-    .db E6
-    .db 57
-    .db A5
-    .db 57
-    .db 38
-    .db E5
-    .db 58
-    .db F0
-    .db 06
-    .db 90
-    .db 04
-    .db C9
-    .db AE
-    .db 90
-    .db 06
-    .db A9
-    .db AE
-    .db D0
-    .db 02
-    .db A5
-    .db 57
-    .db 85
-    .db 5D
-    .db A9
-    .db 03
-    .db 20
-    .db 2C
-    .db F9
-    .db 4C
-    .db D4
-    .db FA
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db 8D
-    .db 01
-    .db E0
-    .db A5
-    .db 5D
-    .db 8D
-    .db 00
-    .db C0
-    .db A5
-    .db 5C
-    .db 20
-    .db 2C
-    .db F9
-    .db AD
-    .db 02
-    .db 20
-    .db AE
-    .db 59
-    .db 06
-    .db A4
-    .db FC
-    .db AD
-    .db 5C
-    .db 06
-    .db 29
-    .db 01
-    .db 05
-    .db FF
-    .db 8E
-    .db 05
-    .db 20
-    .db 8C
-    .db 05
-    .db 20
-    .db 8D
-    .db 00
-    .db 20
-    .db AD
-    .db 01
-    .db 06
-    .db 30
-    .db 07
-    .db A0
-    .db 0C
-    .db 88
-    .db D0
-    .db FD
-    .db F0
-    .db 05
-    .db A0
-    .db 09
-    .db 88
-    .db D0
-    .db FD
-    .db A5
-    .db 2A
-    .db 85
-    .db 2D
-    .db A5
-    .db 2B
-    .db 85
-    .db 2E
-    .db 20
-    .db 82
-    .db DD
-    .db 4C
-    .db D4
-    .db FA
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db A0
-    .db 2E
-    .db 88
-    .db D0
-    .db FD
-    .db A2
-    .db 00
-    .db 8E
-    .db 00
-    .db 80
-    .db A0
-    .db 7E
-    .db 8C
-    .db 01
-    .db 80
-    .db E8
-    .db 8E
-    .db 00
-    .db 80
-    .db 8C
-    .db 01
-    .db 80
-    .db AD
-    .db 5C
-    .db 06
-    .db 29
-    .db 01
-    .db 05
-    .db FF
-    .db AA
-    .db A0
-    .db C0
-    .db AD
-    .db 02
-    .db 20
-    .db A9
-    .db 20
-    .db 8D
-    .db 06
-    .db 20
-    .db 8C
-    .db 06
-    .db 20
-    .db 8E
-    .db 00
-    .db 20
-    .db AD
-    .db 59
-    .db 06
-    .db 8D
-    .db 05
-    .db 20
-    .db 8D
-    .db 05
-    .db 20
-    .db A2
-    .db 00
-    .db 8E
-    .db 00
-    .db 80
-    .db A5
-    .db 2A
-    .db 8D
-    .db 01
-    .db 80
-    .db E8
-    .db 8E
-    .db 00
-    .db 80
-    .db A5
-    .db 2B
-    .db 8D
-    .db 01
-    .db 80
-    .db A6
-    .db 28
-    .db B5
-    .db F5
-    .db 8D
-    .db 00
-    .db 80
-    .db 68
-    .db A8
-    .db 68
-    .db AA
-    .db 68
-    .db 40
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db 8D
-    .db 01
-    .db E0
-    .db A5
-    .db 5C
-    .db 20
-    .db 2C
-    .db F9
-    .db A5
-    .db 57
-    .db 8D
-    .db 00
-    .db C0
-    .db AD
-    .db 02
-    .db 20
-    .db A6
-    .db B1
-    .db A4
-    .db FC
-    .db A5
-    .db B4
-    .db 29
-    .db 01
-    .db 05
-    .db FF
-    .db 8E
-    .db 05
-    .db 20
-    .db 8C
-    .db 05
-    .db 20
-    .db 8D
-    .db 00
-    .db 20
-    .db A5
-    .db 7D
-    .db 10
-    .db 07
-    .db A6
-    .db A7
-    .db BD
-    .db 72
-    .db FA
-    .db 85
-    .db 5C
-    .db 4C
-    .db D4
-    .db FA
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db 8D
-    .db 01
-    .db E0
-    .db A5
-    .db 5C
-    .db 20
-    .db 2C
-    .db F9
-    .db A5
-    .db 57
-    .db 8D
-    .db 00
-    .db C0
-    .db AE
-    .db 12
-    .db 06
-    .db A5
-    .db 1B
-    .db 29
-    .db 07
-    .db D0
-    .db 0A
-    .db E8
-    .db E0
-    .db 03
-    .db D0
-    .db 02
-    .db A2
-    .db 00
-    .db 8E
-    .db 12
-    .db 06
-    .db A0
-    .db 10
-    .db 88
-    .db D0
-    .db FD
-    .db BD
-    .db 2F
-    .db FD
-    .db 85
-    .db 2E
-    .db 20
-    .db 82
-    .db DD
-    .db A9
-    .db 05
-    .db 85
-    .db 5C
-    .db 4C
-    .db D4
-    .db FA
+IRQ_RTN_L: ; 1F:1AED, 0x03FAED
+    PHA
+    TXA
+    PHA
+    TYA
+    PHA
+    STA MMC3_IRQ_DISABLE
+    STA MMC3_IRQ_ENABLE
+    LDA IRQ_EXTENDED/HANDLER
+    JSR SET_IRQ_HANDLER_ADDR
+    LDA IRQ_LATCH_VALUE
+    STA MMC3_IRQ_LATCH
+    LDY #$11
+    DEY
+    BNE 1F:1B04
+    LDA PPU_STATUS
+    LDX PPU_ADDR_IRQ+1
+    LDY PPU_ADDR_IRQ[2]
+    STX PPU_ADDR
+    STY PPU_ADDR
+    LDA PPU_STATUS
+    LDX **:$065A
+    LDY PPU_SCROLL_Y_COPY_IRQ
+    LDA **:$065D
+    AND #$01
+    ORA PPU_CTRL_RAM_COPY
+    STX PPU_SCROLL
+    STY PPU_SCROLL
+    STA PPU_CTRL
+    LDA #$00
+    STA IRQ_FLAG_R2-R5_EQ_7E
+    JSR BANK_R2-R5
+    LDA IRQ_BANK_VALUES[2]
+    STA IRQ_GFX_DATA_BANK_R0
+    LDA IRQ_BANK_VALUES+1
+    STA IRQ_GFX_DATA_BANK_R1
+    JSR BANKSWITCH_R0/R1
+    LDA **:$007D
+    BPL 1F:1B4A
+    LDX **:$00A7
+    LDA 1F:1A70,X
+    JMP 1F:1B5E
+    LDA IRQ_D9_UNK
+    CMP #$07
+    BEQ 1F:1B58
+    CMP #$04
+    BNE 1F:1B5C
+    LDA #$0C
+    BNE 1F:1B5E
+    LDA #$13
+    BNE 1F:1B5E
+    LDA #$0A
+    STA IRQ_EXTENDED/HANDLER
+    JMP SET_BANK_CONFIG+RESTORE_RTI
+IRQ_RTN_K: ; 1F:1B63, 0x03FB63
+    PHA
+    TXA
+    PHA
+    TYA
+    PHA
+    STA MMC3_IRQ_DISABLE
+    STA MMC3_IRQ_ENABLE
+    LDY #$07
+    LDA 601_IRQ_INC_Y_FLAG
+    BPL 1F:1B81
+    LDA **:$0081
+    AND #$07
+    STA IRQ_LATCH_VALUE
+    LDA #$09
+    SEC
+    SBC IRQ_LATCH_VALUE
+    TAY
+    STY MMC3_IRQ_LATCH
+    STY IRQ_LATCH_VALUE
+    LDA 601_IRQ_INC_Y_FLAG
+    BMI 1F:1B92
+    LDY #$0B
+    DEY
+    BNE 1F:1B8D
+    BEQ 1F:1B97
+    LDY #$08
+    DEY
+    BNE 1F:1B94
+    LDA #$00
+    STA IRQ_FLAG_R2-R5_EQ_7E
+    JSR BANK_R2-R5
+    LDA #$7E
+    STA IRQ_GFX_DATA_BANK_R0
+    STA IRQ_GFX_DATA_BANK_R1
+    JSR BANKSWITCH_R0/R1
+    LDA #$02
+    JSR SET_IRQ_HANDLER_ADDR
+    JMP SET_BANK_CONFIG+RESTORE_RTI
+IRQ_RTN_C: ; 1F:1BAF, 0x03FBAF
+    PHA ; Save A.
+    TXA
+    PHA ; Save X.
+    TYA
+    PHA ; Save Y.
+    STA MMC3_IRQ_DISABLE
+    STA MMC3_IRQ_ENABLE
+    LDA #$0A ; Load...
+    SEC
+    SBC IRQ_LATCH_VALUE ; -=Addr
+    TAY ; To Y...y?
+    STY MMC3_IRQ_LATCH ; Store latch.
+    LDA PPU_STATUS ; Reset latch.
+    LDX PPU_ADDR_IRQ+1
+    LDY PPU_ADDR_IRQ[2]
+    STX PPU_ADDR ; Store IRQ Addr.
+    STY PPU_ADDR
+    LDY #$06 ; Y=
+    LDA 601_IRQ_INC_Y_FLAG ; Load. BIT would have been better.
+    BPL POSITIVE
+    INY ; Y=7
+POSITIVE: ; 1F:1BD8, 0x03FBD8
+    STY IRQ_EXTENDED/HANDLER ; Store to.
+    TYA ; To A
+    JSR SET_IRQ_HANDLER_ADDR ; Set handler somehow.
+    LDA IRQ_EXTENDED/HANDLER ; Load
+    CMP #$06 ; If _ 6
+    BEQ HANDLER_3_BANK_MOVED? ; ==, goto.
+    LDA IRQ_LATCH_VALUE ; Load val.
+    CMP #$01 ; If _ 1
+    BNE LATCH_NOT_1 ; !=, goto.
+    LDA 58_IRQ_UNK ; Load
+    CMP #$B8 ; If _ B8
+    BEQ LATCH_NOT_1 ; ==, goto. Don't inc var.
+    INC IRQ_LATCH_VALUE ; Inc var
+LATCH_NOT_1: ; 1F:1BF2, 0x03FBF2
+    LDA IRQ_LATCH_VALUE ; Load
+    SEC ; Prep sub.
+    SBC 58_IRQ_UNK ; Sub value.
+    BEQ A_VAL_AE ; Result == 0, goto.
+    BCC A_VAL_AE ; A < SUB, goto.
+    CMP #$AE ; If result _ AE
+    BCC USE_A_AS_5D ; <, goto.
+A_VAL_AE: ; 1F:1BFF, 0x03FBFF
+    LDA #$AE ; Cap.
+    BNE USE_A_AS_5D ; Goto, always taken.
+HANDLER_3_BANK_MOVED?: ; 1F:1C03, 0x03FC03
+    LDA IRQ_LATCH_VALUE ; Load IRQ bank.
+USE_A_AS_5D: ; 1F:1C05, 0x03FC05
+    STA 5D_IRQ_BANK? ; Store to.
+    LDA #$03 ; Load
+    JSR SET_IRQ_HANDLER_ADDR ; Set handler somehow.
+    JMP SET_BANK_CONFIG+RESTORE_RTI ; Finish.
+IRQ_RTN_D: ; 1F:1C0F, 0x03FC0F
+    PHA ; Save A.
+    TXA
+    PHA ; Save X.
+    TYA
+    PHA ; Save Y.
+    STA MMC3_IRQ_DISABLE ; Stop IRQ.
+    STA MMC3_IRQ_ENABLE
+    LDA 5D_IRQ_BANK? ; Load val.
+    STA MMC3_IRQ_LATCH ; Store to latch.
+    LDA IRQ_EXTENDED/HANDLER ; Load
+    JSR SET_IRQ_HANDLER_ADDR
+    LDA PPU_STATUS ; Reset
+    LDX PPU_SCROLL_X_COPY_IRQ ; Set scroll.
+    LDY PPU_SCROLL_Y_COPY_IRQ
+    LDA NAMETABLE_VAR_UNK
+    AND #$01
+    ORA PPU_CTRL_RAM_COPY
+    STX PPU_SCROLL
+    STY PPU_SCROLL
+    STA PPU_CTRL
+    LDA 601_IRQ_INC_Y_FLAG ; Load val.
+    BMI DELAY_SMALLER ; If set, goto.
+    LDY #$0C
+DELAY_LARGE_LOOP: ; 1F:1C43, 0x03FC43
+    DEY
+    BNE DELAY_LARGE_LOOP
+    BEQ DELAY_OVER
+DELAY_SMALLER: ; 1F:1C48, 0x03FC48
+    LDY #$09
+DELAY_SMALL_LOOP: ; 1F:1C4A, 0x03FC4A
+    DEY
+    BNE DELAY_SMALL_LOOP
+DELAY_OVER: ; 1F:1C4D, 0x03FC4D
+    LDA IRQ_BANK_VALUES[2] ; Move bank vals.
+    STA IRQ_GFX_DATA_BANK_R0
+    LDA IRQ_BANK_VALUES+1
+    STA IRQ_GFX_DATA_BANK_R1
+    JSR BANKSWITCH_R0/R1 ; Swap GFX.
+    JMP SET_BANK_CONFIG+RESTORE_RTI ; Leave.
+IRQ_RTN_G: ; 1F:1C5B, 0x03FC5B
+    PHA
+    TXA
+    PHA
+    TYA
+    PHA
+    STA MMC3_IRQ_DISABLE
+    LDY #$2E
+    DEY
+    BNE 1F:1C65
+    LDX #$00
+    STX MMC3_BANK_CFG
+    LDY #$7E
+    STY MMC3_BANK_DATA
+    INX
+    STX MMC3_BANK_CFG
+    STY MMC3_BANK_DATA
+    LDA NAMETABLE_VAR_UNK
+    AND #$01
+    ORA PPU_CTRL_RAM_COPY
+    TAX
+    LDY #$C0
+    LDA PPU_STATUS
+    LDA #$20
+    STA PPU_ADDR
+    STY PPU_ADDR
+    STX PPU_CTRL
+    LDA PPU_SCROLL_X_COPY_IRQ
+    STA PPU_SCROLL
+    STA PPU_SCROLL
+    LDX #$00
+    STX MMC3_BANK_CFG
+    LDA IRQ_BANK_VALUES[2]
+    STA MMC3_BANK_DATA
+    INX
+    STX MMC3_BANK_CFG
+    LDA IRQ_BANK_VALUES+1
+    STA MMC3_BANK_DATA
+    LDX 28_BANK_CFG_INDEX_UNK
+    LDA COPY_BANK_CFG_F5,X
+    STA MMC3_BANK_CFG
+    PLA
+    TAY
+    PLA
+    TAX
+    PLA
+    RTI
+IRQ_RTN_I: ; 1F:1CBA, 0x03FCBA
+    PHA
+    TXA
+    PHA
+    TYA
+    PHA
+    STA MMC3_IRQ_DISABLE
+    STA MMC3_IRQ_ENABLE
+    LDA IRQ_EXTENDED/HANDLER
+    JSR SET_IRQ_HANDLER_ADDR
+    LDA IRQ_LATCH_VALUE
+    STA MMC3_IRQ_LATCH
+    LDA PPU_STATUS
+    LDX R_**:$00B1
+    LDY PPU_SCROLL_Y_COPY_IRQ
+    LDA R_**:$00B4
+    AND #$01
+    ORA PPU_CTRL_RAM_COPY
+    STX PPU_SCROLL
+    STY PPU_SCROLL
+    STA PPU_CTRL
+    LDA **:$007D
+    BPL 1F:1CF0
+    LDX **:$00A7
+    LDA 1F:1A72,X
+    STA IRQ_EXTENDED/HANDLER
+    JMP SET_BANK_CONFIG+RESTORE_RTI
+IRQ_RTN_E: ; 1F:1CF3, 0x03FCF3
+    PHA ; Save A.
+    TXA
+    PHA ; Save X.
+    TYA
+    PHA ; Save Y.
+    STA MMC3_IRQ_DISABLE ; Disable IRQ's.
+    STA MMC3_IRQ_ENABLE
+    LDA IRQ_EXTENDED/HANDLER ; Load val
+    JSR SET_IRQ_HANDLER_ADDR ; Handler from.
+    LDA IRQ_LATCH_VALUE ; Load val.
+    STA MMC3_IRQ_LATCH ; To latch.
+    LDX 612_UNK ; X=
+    LDA IRQ_COUNT? ; A=
+    AND #$07 ; Get bottom bits.
+    BNE SKIP_X_MOD ; If any set.
+    INX ; X++
+    CPX #$03 ; If X _ 3
+    BNE STORE_X_ASIS ; !=, goto.
+    LDX #$00 ; Clear X.
+STORE_X_ASIS: ; 1F:1D18, 0x03FD18
+    STX 612_UNK ; X back to.
+SKIP_X_MOD: ; 1F:1D1B, 0x03FD1B
+    LDY #$10 ; Y=
+DELAY_LOOP: ; 1F:1D1D, 0x03FD1D
+    DEY ; Y--
+    BNE DELAY_LOOP ; !=0, loop.
+    LDA ANIM_DATA_BANKS_R1,X ; A from, X indexed.
+    STA IRQ_GFX_DATA_BANK_R1 ; Change to bank.
+    JSR BANKSWITCH_R0/R1 ; Swap gfx.
+    LDA #$05 ; A=
+    STA IRQ_EXTENDED/HANDLER ; Change handler.
+    JMP SET_BANK_CONFIG+RESTORE_RTI ; Goto.
+ANIM_DATA_BANKS_R1: ; 1F:1D2F, 0x03FD2F
     .db 02
     .db 04
     .db 06
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db 8D
-    .db 01
-    .db E0
-    .db A5
-    .db 5C
-    .db 20
-    .db 2C
-    .db F9
-    .db A5
-    .db 57
-    .db 8D
-    .db 00
-    .db C0
-    .db A2
-    .db 08
-    .db CA
-    .db D0
-    .db FD
-    .db A9
-    .db 01
-    .db 85
-    .db A6
-    .db 20
-    .db F7
-    .db DC
-    .db 4C
-    .db D4
-    .db FA
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db 8D
-    .db 01
-    .db E0
-    .db 8D
-    .db 00
-    .db E0
-    .db A9
-    .db 01
-    .db 85
-    .db A6
-    .db 20
-    .db F7
-    .db DC
-    .db 4C
-    .db D4
-    .db FA
-    .db 48
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db 8D
-    .db 00
-    .db E0
-    .db 8D
-    .db 01
-    .db E0
-    .db A5
-    .db 5C
-    .db 20
-    .db 2C
-    .db F9
-    .db A5
-    .db 57
-    .db 8D
-    .db 00
-    .db C0
-    .db A0
-    .db 02
-    .db 88
-    .db D0
-    .db FD
-    .db AD
-    .db 02
-    .db 20
-    .db A5
-    .db B3
-    .db 8D
-    .db 05
-    .db 20
-    .db A5
-    .db FC
-    .db 8D
-    .db 05
-    .db 20
-    .db A5
-    .db B6
-    .db 29
-    .db 01
-    .db 05
-    .db FF
-    .db 8D
-    .db 00
-    .db 20
-    .db 4C
-    .db D4
-    .db FA
+IRQ_RTN_H: ; 1F:1D32, 0x03FD32
+    PHA
+    TXA
+    PHA
+    TYA
+    PHA
+    STA MMC3_IRQ_DISABLE
+    STA MMC3_IRQ_ENABLE
+    LDA IRQ_EXTENDED/HANDLER
+    JSR SET_IRQ_HANDLER_ADDR
+    LDA IRQ_LATCH_VALUE
+    STA MMC3_IRQ_LATCH
+    LDX #$08
+    DEX
+    BNE 1F:1D49
+    LDA #$01
+    STA IRQ_FLAG_R2-R5_EQ_7E
+    JSR BANK_R2-R5
+    JMP SET_BANK_CONFIG+RESTORE_RTI
+IRQ_RTN_F: ; 1F:1D56, 0x03FD56
+    PHA ; Save A.
+    TXA
+    PHA ; Save X.
+    TYA
+    PHA ; Save Y.
+    STA MMC3_IRQ_DISABLE ; Stop IRQ's.
+    STA MMC3_IRQ_ENABLE
+    STA MMC3_IRQ_DISABLE ; Disable again.
+    LDA #$01
+    STA IRQ_FLAG_R2-R5_EQ_7E ; True, set to 7E.
+    JSR BANK_R2-R5 ; Switch GFX.
+    JMP SET_BANK_CONFIG+RESTORE_RTI
+IRQ_RTN_J: ; 1F:1D6E, 0x03FD6E
+    PHA
+    TXA
+    PHA
+    TYA
+    PHA
+    STA MMC3_IRQ_DISABLE
+    STA MMC3_IRQ_ENABLE
+    LDA IRQ_EXTENDED/HANDLER
+    JSR SET_IRQ_HANDLER_ADDR
+    LDA IRQ_LATCH_VALUE
+    STA MMC3_IRQ_LATCH
+    LDY #$02
+    DEY
+    BNE 1F:1D85
+    LDA PPU_STATUS
+    LDA **:$00B3
+    STA PPU_SCROLL
+    LDA PPU_SCROLL_Y_COPY_IRQ
+    STA PPU_SCROLL
+    LDA **:$00B6
+    AND #$01
+    ORA PPU_CTRL_RAM_COPY
+    STA PPU_CTRL
+    JMP SET_BANK_CONFIG+RESTORE_RTI
 RESET_HANDLER: ; 1F:1DA1, 0x03FDA1
     SEI ; Disable interrupts.
     CLD ; Clear decimal.
@@ -7471,20 +7078,20 @@ PPU_WAIT_B: ; 1F:1DB7, 0x03FDB7
     BMI PPU_WAIT_B ; If minus, loop again?
     DEX ; X--
     BNE PPU_WAIT_A ; Wait more.
-    JSR DISABLE_MAPPER_IRQ+SOUND+WEIRDNESS
-    JSR MAPPER_IRQ_DISABLE+RTS
+    JSR DISABLE_MAPPER_IRQ+SOUND+A12BS
+    JSR MAPPER_IRQ_DISABLE+RTS ; Did this need to be a subroutine? lol.
     JSR SET_APU_STATUS+SEQUENCE_F_C0
     LDA #$00
-    STA TMP_00[4]
-    STA TMP_00+1
+    STA TMP_00 ; Setup ram clear PTR.
+    STA TMP_01
     LDY #$00 ; Index
     LDX #$08 ; Loop count.
 RAM_CLEAR_LOOP: ; 1F:1DD2, 0x03FDD2
-    STA [TMP_00[4]],Y ; Clear.
+    STA [TMP_00],Y ; Clear.
     INY ; Stream++
     BNE RAM_CLEAR_LOOP ; Loop 256
-    INC TMP_00+1 ; Inc high addr.
-    CPX TMP_00+1 ; Compare to X.
+    INC TMP_01 ; Inc high addr.
+    CPX TMP_01 ; Compare to X.
     BNE RAM_CLEAR_LOOP ; Not done, loop more.
     JSR SOUND_INIT_RTN ; Sound.
     JSR INIT_STREAM+MISC_UNK
@@ -7501,9 +7108,9 @@ FLAG_TRUE: ; 1F:1DF3, 0x03FDF3
     JSR SET_PPU_ADDR/SCROLL/CTRL.
     JSR MUCH_IRQ_RTN/BANKING/ETC/MORE
     JSR BANKSWITCH_R0/R1
-    JSR WRITE_R2-R5_RAM
+    JSR WRITE_R2-R5_FROM_RAM
     JSR SOUND_UNK
-    LDX SOUND_FLAG_UNK
+    LDX 28_BANK_CFG_INDEX_UNK
     LDA COPY_BANK_CFG_F5,X
     STA MMC3_BANK_CFG
     JMP LEAVE_NMI_RESTORE
@@ -7541,9 +7148,9 @@ LOOP_MOVE_3DATA: ; 1F:1E49, 0x03FE49
     LDA R_**:$00AE,X ; Move unk...
     STA R_**:$0656,X
     LDA R_**:$00B1,X
-    STA R_**:$0659,X
+    STA PPU_SCROLL_X_COPY_IRQ,X
     LDA R_**:$00B4,X
-    STA R_**:$065C,X
+    STA NAMETABLE_VAR_UNK,X
     INX ; X++
     CPX #$02
     BNE LOOP_MOVE_3DATA ; Move all.
@@ -7577,7 +7184,7 @@ SET_PPU_ADDR/SCROLL/CTRL.: ; 1F:1E87, 0x03FE87
     LDA PPU_STATUS ; Reset latch again.
     LDA PPU_SCROLL_X_COPY ; Set scroll.
     STA PPU_SCROLL
-    LDA PPU_SCROLL_Y_COPY
+    LDA PPU_SCROLL_Y_COPY_IRQ
     STA PPU_SCROLL
     LDA PPU_CTRL_RAM_COPY ; Set CTRL.
     STA PPU_CTRL
@@ -7613,20 +7220,20 @@ CTRL_READ_SAFE: ; 1F:1ED9, 0x03FED9
     JSR LATCH_READ_CTRL
     LDX #$02 ; Index to store other ctrl bits.
     JSR LATCH_READ_CTRL
-    LDA TMP_00[4] ; Load first bits.
-    CMP TMP_00+2 ; Compare to 2nd read.
+    LDA TMP_00 ; Load first bits.
+    CMP **:$0002 ; Compare to 2nd read.
     BNE CTRL_FAIL_NO_NEW_PRESSES ; !=, goto.
-    LDA TMP_00+1
-    CMP TMP_00+3
+    LDA TMP_01
+    CMP **:$0003
     BNE CTRL_FAIL_NO_NEW_PRESSES ; Same idea.
     LDX #$00 ; P1 index.
     JSR CTRL_X_PROCESS ; Process
     INX ; P2 index.
 CTRL_X_PROCESS: ; 1F:1EF5, 0x03FEF5
-    LDA TMP_00[4],X ; Load CTRL buttons.
+    LDA TMP_00,X ; Load CTRL buttons.
     TAY ; To Y
     EOR CTRL_PREV_B[2],X ; Get newly pressed only.
-    AND TMP_00[4],X ; Newly pressed only.
+    AND TMP_00,X ; Newly pressed only.
     STA CTRL_NEWLY_PRESSED_A[2],X
     STA CTRL_NEWLY_PRESSED_B[2],X
     STY CTRL_PREV_A[2],X
@@ -7651,13 +7258,13 @@ LOOP_READ_CTRL: ; 1F:1F1B, 0x03FF1B
     LSR A ; Shift.
     ORA CTRL_RAM[2] ; Or other bits...
     LSR A ; Shift again.
-    ROL TMP_00[4],X ; P1 bits.
+    ROL TMP_00,X ; P1 bits.
     LDA NES_CTRL2 ; Load ctrl.
     STA CTRL_RAM+1 ; Store to RAM.
     LSR A ; Shift
     ORA CTRL_RAM+1 ; Gather bits.
     LSR A ; Shift
-    ROL TMP_00+1,X ; P2 bits/
+    ROL TMP_01,X ; P2 bits/
     DEY ; Loop--
     BNE LOOP_READ_CTRL
     RTS
@@ -7865,5 +7472,5 @@ VECTOR_RESET: ; 1F:1FFC, 0x03FFFC
     LOW(RESET_HANDLER)
     HIGH(RESET_HANDLER)
 VECTOR_IRQ/BRK: ; 1F:1FFE, 0x03FFFE
-    LOW(IRQ_HANDLER)
-    HIGH(IRQ_HANDLER)
+    LOW(IRQ_HANDLER_JMP)
+    HIGH(IRQ_HANDLER_JMP)

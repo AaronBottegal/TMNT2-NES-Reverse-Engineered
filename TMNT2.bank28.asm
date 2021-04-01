@@ -3,30 +3,30 @@ UNK_STREAM_SETUP_0x300_BUF: ; 1C:0001, 0x038001
     ASL A ; Shift A, make index.
     TAY ; To index reg.
     LDA DT_UNK_LOW,Y ; Load low.
-    STA TMP_00[4]
+    STA TMP_00
     LDA DTABLE_UNK_HIGH,Y ; Load high.
-    STA TMP_00+1
+    STA TMP_01
     LDA #$FF
     ADC #$00 ; Carry test. Set means 0.
-    STA TMP_00+2 ; Store.
+    STA **:$0002 ; Store.
     LDY #$00 ; Load Y
 LOOP_STREAM_OUTER: ; 1C:0015, 0x038015
     LDA #$01 ; Load A
     JSR A_TO_300_LOAD_INDEX ; Do...
-    LDA [TMP_00[4]],Y ; Load.
+    LDA [TMP_00],Y ; Load.
     JSR A_to_300_INDEXED ; Do...
     INY ; Stream++
-    LDA [TMP_00[4]],Y ; Load from stream.
+    LDA [TMP_00],Y ; Load from stream.
     JSR A_to_300_INDEXED ; To 300.
     INY ; Steam++
 LOOP_STREAM_INNER: ; 1C:0026, 0x038026
-    LDA [TMP_00[4]],Y ; Load from stream.
+    LDA [TMP_00],Y ; Load from stream.
     INY ; Stream++
     CMP #$FF ; If A _ 0xFF. EOF Marker.
     BEQ A=FF_TO_300_INDEXED ; ==, goto.
     CMP #$FE ; If A_ 0xFE.
     BEQ FLAG_FE ; ==, goto.
-    AND TMP_00+2 ; All others, mask?
+    AND **:$0002 ; All others, mask?
     JSR A_to_300_INDEXED ; Store.
     JMP LOOP_STREAM_INNER ; Goto.
 FLAG_FE: ; 1C:0039, 0x038039

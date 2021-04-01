@@ -3222,20 +3222,20 @@ SWITCH_STATE_18: ; 1E:0A83, 0x03CA83
     .db 60
 SWITCH_CODE_PTRS_PAST_JSR: ; 1E:0C98, 0x03CC98
     ASL A ; A to index.
-    STY TMP_00+3 ; Y to TMP.
+    STY **:$0003 ; Y to TMP.
     TAY ; Index to Y.
     INY ; Adjust for return offset.
     PLA ; Pull RTS address.
-    STA TMP_00[4]
+    STA TMP_00
     PLA
-    STA TMP_00+1
-    LDA [TMP_00[4]],Y ; Load data from past JSR.
-    STA TMP_00+2 ; To TMP[2]
+    STA TMP_01
+    LDA [TMP_00],Y ; Load data from past JSR.
+    STA **:$0002 ; To TMP[2]
     INY ; Stream++
-    LDA [TMP_00[4]],Y ; Load data from past JSR.
-    LDY TMP_00+3 ; Y from TMP[3]
-    STA TMP_00+3 ; Data to TMP[3]
-    JMP [TMP_00+2] ; Goto code ptr.
+    LDA [TMP_00],Y ; Load data from past JSR.
+    LDY **:$0003 ; Y from TMP[3]
+    STA **:$0003 ; Data to TMP[3]
+    JMP [**:$0002] ; Goto code ptr.
     .db 18
     .db 75
     .db 00
@@ -3338,14 +3338,14 @@ FLAG_SET: ; 1E:0D3A, 0x03CD3A
     LDA PPU_DATA
     AND #$0F ; Get lower bits.
     ORA PPU_ADDR_UNK_B[2] ; Or with.
-    STA TMP_00[4] ; Store to.
+    STA TMP_00 ; Store to.
     LDA PPU_STATUS ; Load status...
     PLA ; Pull addr.
     TAX
     PLA ; Pull addr.
     STA PPU_ADDR ; Store.
     STX PPU_ADDR
-    LDA TMP_00[4] ; Load.
+    LDA TMP_00 ; Load.
     STA PPU_DATA ; Store back.
     LDA PPU_STATUS ; Reset latch.
     LDA **:$0645 ; Load.
@@ -3358,14 +3358,14 @@ FLAG_SET: ; 1E:0D3A, 0x03CD3A
     LDA PPU_DATA
     AND #$F0 ; Get top bits.
     ORA **:$0646 ; OR with...
-    STA TMP_00[4] ; Store to TMP.
+    STA TMP_00 ; Store to TMP.
     LDA PPU_STATUS ; Reset latch.
     PLA ; Pull addr.
     TAX
     PLA
     STA PPU_ADDR ; Store.
     STX PPU_ADDR
-    LDA TMP_00[4] ; Load from TMP.
+    LDA TMP_00 ; Load from TMP.
     STA PPU_DATA ; To PPU.
     LDA FLAG_UPDATE_P2_HEALTH? ; Load
     BEQ FLAG_647_UNSET
@@ -3380,14 +3380,14 @@ FLAG_SET: ; 1E:0D3A, 0x03CD3A
     LDA PPU_DATA
     AND #$0F
     ORA **:$064A
-    STA TMP_00[4]
+    STA TMP_00
     LDA PPU_STATUS
     PLA
     TAX
     PLA
     STA PPU_ADDR
     STX PPU_ADDR
-    LDA TMP_00[4]
+    LDA TMP_00
     STA PPU_DATA
     LDA PPU_STATUS
     LDA **:$064C
@@ -3400,14 +3400,14 @@ FLAG_SET: ; 1E:0D3A, 0x03CD3A
     LDA PPU_DATA
     AND #$F0
     ORA **:$064D
-    STA TMP_00[4]
+    STA TMP_00
     LDA PPU_STATUS
     PLA
     TAX
     PLA
     STA PPU_ADDR
     STX PPU_ADDR
-    LDA TMP_00[4]
+    LDA TMP_00
     STA PPU_DATA
 FLAG_647_UNSET: ; 1E:0DFB, 0x03CDFB
     LDA #$00 ; Load
@@ -3472,9 +3472,9 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     LDA **:$0400,X
     BEQ 1E:0E8E
     LDY **:$046C,X
-    STY TMP_00+1
+    STY TMP_01
     LDY **:$047E,X
-    STY TMP_00+2
+    STY **:$0002
     JSR 1E:0ED6
     LDA **:$000F
     BNE 1E:0EA2
@@ -3491,14 +3491,14 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     BNE 1E:0E99
     RTS
     LDA #$20
-    JSR BANK_USE_A
+    JSR BANK_PAIR_USE_A
     LDY **:$0010
     LDA $B4EF,Y
     STA **:$0008
     LDA $B4F0,Y
     JMP 1E:0F5F
     LDA #$22
-    JSR BANK_USE_A
+    JSR BANK_PAIR_USE_A
     LDY **:$0010
     LDA **:$000D
     BNE 1E:0ECB
@@ -3525,7 +3525,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     CMP #$30
     BCS 1E:0F20
     LDA #$28
-    JSR BANK_USE_A
+    JSR BANK_PAIR_USE_A
     LDY **:$0010
     LDA **:$000D
     BNE 1E:0F15
@@ -3545,7 +3545,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     LDA $8100,Y
     JMP 1E:0F5F
     LDA #$28
-    JSR BANK_USE_A
+    JSR BANK_PAIR_USE_A
     LDY **:$0010
     LDA **:$000D
     BNE 1E:0F36
@@ -3558,7 +3558,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     LDA $9641,Y
     JMP 1E:0F5F
     LDA #$20
-    JSR BANK_USE_A
+    JSR BANK_PAIR_USE_A
     LDY **:$0010
     LDA **:$000D
     BNE 1E:0F57
@@ -3574,14 +3574,14 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     LDA [**:$0008],Y
     BNE 1E:0F68
     RTS
-    STA TMP_00+3
+    STA **:$0003
     LDX CTRL_RAM[2]
     INY
     LDA **:$0007
     BMI 1E:0F08
     LDA [**:$0008],Y
     CLC
-    ADC TMP_00+1
+    ADC TMP_01
     STA **:$0200,X
     INY
     LDA [**:$0008],Y
@@ -3615,7 +3615,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     INY
     LDA [**:$0008],Y
     EOR **:$0007
-    STA TMP_00[4]
+    STA TMP_00
     LDA **:$000C
     BEQ 1E:0FD6
     LDA **:$0012
@@ -3625,11 +3625,11 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     AND #$03
     CMP #$02
     BEQ 1E:0FD6
-    LDA TMP_00[4]
+    LDA TMP_00
     AND #$FC
     ORA **:$000C
-    STA TMP_00[4]
-    LDA TMP_00[4]
+    STA TMP_00
+    LDA TMP_00
     STA **:$0202,X
     INY
     LDA [**:$0008],Y
@@ -3639,7 +3639,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     SEC
     SBC #$07
     CLC
-    ADC TMP_00+2
+    ADC **:$0002
     STA **:$0203,X
     LDA R_**:$0006
     BEQ 1E:1024
@@ -3659,7 +3659,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     INX
     INX
     BEQ 1E:1018
-    DEC TMP_00+3
+    DEC **:$0003
     BEQ 1E:1015
     JMP 1E:0F6C
     STX CTRL_RAM[2]
@@ -3670,7 +3670,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     CMP #$C0
     BCC 1E:1032
     BCS 1E:1008
-    LDA TMP_00+2
+    LDA **:$0002
     BMI 1E:1001
     LDA **:$0203,X
     CLC
@@ -3706,7 +3706,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     CMP #$04
     BEQ 1E:1044
     LDA **:$04A2,X
-    STA TMP_00[4],Y
+    STA TMP_00,Y
     STX **:$00C6,Y
     INY
     DEX
@@ -3718,13 +3718,13 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     BEQ 1E:10A8
     BMI 1E:10A8
     LDX #$00
-    LDA TMP_00[4],X
-    CMP TMP_00+1,X
+    LDA TMP_00,X
+    CMP TMP_01,X
     BCS 1E:109F
-    LDY TMP_00+1,X
-    LDA TMP_00[4],X
-    STA TMP_00+1,X
-    STY TMP_00[4],X
+    LDY TMP_01,X
+    LDA TMP_00,X
+    STA TMP_01,X
+    STY TMP_00,X
     LDY **:$00C7,X
     LDA **:$00C6,X
     STA **:$00C7,X
@@ -3751,7 +3751,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     LDA #$FF
     LDX #$00
     STA **:$072E,X
-    STA TMP_00[4],X
+    STA TMP_00,X
     INX
     CPX #$12
     BCC 1E:10C7
@@ -3764,7 +3764,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     BPL 1E:10EB
     STY **:$0015
     LDY **:$0017
-    STX TMP_00[4],Y
+    STX TMP_00,Y
     INC **:$0017
     JMP 1E:10F5
     STY **:$0015
@@ -3785,7 +3785,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     LSR A
     BCS 1E:1129
     LDY **:$0017
-    LDA TMP_00[4],Y
+    LDA TMP_00,Y
     BMI 1E:1119
     STA **:$00C6,X
     INY
@@ -3812,7 +3812,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     BCC 1E:112B
     RTS
     LDY **:$0017
-    LDA TMP_00[4],Y
+    LDA TMP_00,Y
     BMI 1E:1148
     STA **:$00C6,X
     INY
@@ -3821,7 +3821,7 @@ L_1E:0E07: ; 1E:0E07, 0x03CE07
     BCC 1E:113B
     RTS
     LDA #$34
-    JSR BANK_USE_A
+    JSR BANK_PAIR_USE_A
     JSR $8041
     LDA **:$003F
     BEQ 1E:115F
@@ -4501,16 +4501,16 @@ L_1E:1413: ; 1E:1413, 0x03D413
     ASL A ; << 1
     TAX ; To X index.
     LDA L_1E:1526,X
-    STA TMP_00[4] ; Set up stream ptr.
+    STA TMP_00 ; Set up stream ptr.
     LDA L_1E:1527,X
-    STA TMP_00+1
+    STA TMP_01
     LDY #$00 ; Reset stream.
-    LDA [TMP_00[4]],Y ; Load data.
+    LDA [TMP_00],Y ; Load data.
     BMI L_1E:1433 ; If negative, goto.
     ASL A ; Otherwise, shift.
     TAX ; To X index.
     LDA DATA_INDEX_TARGET,X ; Load from index.
-    STA TMP_00+2 ; To TMP.
+    STA **:$0002 ; To TMP.
     LDA DATA_INDEX_X_INITIAL,X ; Load again.
     TAX ; To X index.
     JMP MOVE_DATA_INDEX_TO_X_TARGET ; Abuse RTS.
@@ -4518,16 +4518,16 @@ L_1E:1433: ; 1E:1433, 0x03D433
     AND #$7F
     TAX
     INY
-    LDA [TMP_00[4]],Y
+    LDA [TMP_00],Y
     CLC
     ADC #$01
-    STA TMP_00+2
+    STA **:$0002
 MOVE_DATA_INDEX_TO_X_TARGET: ; 1E:143E, 0x03D43E
     INY ; Y++
-    LDA [TMP_00[4]],Y ; Load from stream ptr.
+    LDA [TMP_00],Y ; Load from stream ptr.
     STA BUF_UNK[8],X ; Store to.
     INX ; X++
-    CPX TMP_00+2 ; End X value.
+    CPX **:$0002 ; End X value.
     BNE MOVE_DATA_INDEX_TO_X_TARGET
 SET_FLAG_61B+RTS: ; 1E:1449, 0x03D449
     LDA #$01
@@ -4597,16 +4597,16 @@ L_1E:14AC: ; 1E:14AC, 0x03D4AC
     ASL A
     TAY
     LDA L_1E:14DA,Y
-    STA TMP_00[4]
+    STA TMP_00
     LDA L_1E:14DB,Y
-    STA TMP_00+1
+    STA TMP_01
     LDY #$00
-    LDA [TMP_00[4]],Y
+    LDA [TMP_00],Y
     STA R_**:$0638
 L_1E:14C4: ; 1E:14C4, 0x03D4C4
     INC R_**:$0637
     LDY R_**:$0637
-    LDA [TMP_00[4]],Y
+    LDA [TMP_00],Y
     CMP #$FF
     BEQ L_1E:14D3
     JMP L_1E:1413
@@ -6205,10 +6205,10 @@ L_1E:1842: ; 1E:1842, 0x03D842
 BANK_PAIRED: ; 1E:1B07, 0x03DB07
     LDY $8000 ; Load lower.
     STY LOWER_BANK_SAVE_PAIRED? ; Save.
-    JMP BANK_USE_A ; Use as-is.
+    JMP BANK_PAIR_USE_A ; Use as-is.
 RESTORE_BANK_PAIRED: ; 1E:1B0F, 0x03DB0F
     LDA LOWER_BANK_SAVE_PAIRED?
-BANK_USE_A: ; 1E:1B11, 0x03DB11
+BANK_PAIR_USE_A: ; 1E:1B11, 0x03DB11
     LDY #$06 ; R6
     STY COPY_BANK_CFG_F5 ; Save cfg.
     STY MMC3_BANK_CFG ; Commit.
@@ -6226,53 +6226,53 @@ SOUND_INIT_RTN: ; 1E:1B28, 0x03DB28
     TXA
     PHA ; Save X
     LDY #$01
-    STY SOUND_FLAG_UNK ; Unsure why
-    JSR SAVE_UP/LOW_AND_SWITCH_BANKS_38+39
+    STY 28_BANK_CFG_INDEX_UNK ; Unsure why
+    JSR SAVE_UP/LOW_AND_SWITCH_BANKS_18/19
     JSR SOUND_INIT
     JSR RESTORE_UPPER/LOWER
     LDY #$00
-    STY SOUND_FLAG_UNK
+    STY 28_BANK_CFG_INDEX_UNK
     PLA
     TAX ; Restore X
     PLA
     TAY ; Restore Y.
     RTS
 SOUND_UNK: ; 1E:1B42, 0x03DB42
-    LDY SOUND_FLAG_UNK ; Get flag.
+    LDY 28_BANK_CFG_INDEX_UNK ; Get flag.
     BNE RTS ; != 0, goto.
     LDY #$01
-    STY SOUND_FLAG_UNK ; Set
+    STY 28_BANK_CFG_INDEX_UNK ; Set
     JSR SOUND_SCRIPT_UNK
     LDY #$00
-    STY SOUND_FLAG_UNK
+    STY 28_BANK_CFG_INDEX_UNK
 RTS: ; 1E:1B51, 0x03DB51
     RTS
     STA **:$03E5
-    LDA SOUND_FLAG_UNK
+    LDA 28_BANK_CFG_INDEX_UNK
     BNE RTS
     TYA
     PHA
     TXA
     PHA
     LDY #$01
-    STY SOUND_FLAG_UNK
+    STY 28_BANK_CFG_INDEX_UNK
     LDA **:$03E5
     CMP #$6D
     BCS 1E:1B6E
-    JSR SAVE_UP/LOW_AND_SWITCH_BANKS_38+39
+    JSR SAVE_UP/LOW_AND_SWITCH_BANKS_18/19
     JMP 1E:1B71
-    JSR 1E:1BA7
+    JSR SAVE_UP/LOW_AND_SWITCH_BANKS_1A/1B
     LDA **:$03E5
     JSR $803B
     JSR RESTORE_UPPER/LOWER
     LDY #$00
-    STY SOUND_FLAG_UNK
+    STY 28_BANK_CFG_INDEX_UNK
     PLA
     TAX
     PLA
     TAY
     RTS
-SAVE_UP/LOW_AND_SWITCH_BANKS_38+39: ; 1E:1B83, 0x03DB83
+SAVE_UP/LOW_AND_SWITCH_BANKS_18/19: ; 1E:1B83, 0x03DB83
     LDA $8000 ; Load lower bank data.
     STA LOW_BANK_DATA
     LDA $BFFF ; Load upper bank data.
@@ -6288,6 +6288,7 @@ SAVE_UP/LOW_AND_SWITCH_BANKS_38+39: ; 1E:1B83, 0x03DB83
     STY MMC3_BANK_CFG ; Commit.
     STA MMC3_BANK_DATA ; Commit.
     RTS
+SAVE_UP/LOW_AND_SWITCH_BANKS_1A/1B: ; 1E:1BA7, 0x03DBA7
     LDA $8000
     STA LOW_BANK_DATA
     LDA $BFFF
@@ -6320,19 +6321,19 @@ RESTORE_UPPER/LOWER: ; 1E:1BCB, 0x03DBCB
     LDA $8000
     STA LOWER_BANK_SAVE_PAIRED?
     LDA #$34
-    JSR BANK_USE_A
+    JSR BANK_PAIR_USE_A
     JSR $8491
     LDA LOWER_BANK_SAVE_PAIRED?
-    JMP BANK_USE_A
+    JMP BANK_PAIR_USE_A
     PHA
     LDA $8000
     STA LOWER_BANK_SAVE_PAIRED?
     LDA #$34
-    JSR BANK_USE_A
+    JSR BANK_PAIR_USE_A
     PLA
     JSR $8499
     LDA LOWER_BANK_SAVE_PAIRED?
-    JMP BANK_USE_A
+    JMP BANK_PAIR_USE_A
     LDA #$24
     JSR BANK_PAIRED
     JSR $8278
@@ -6438,9 +6439,9 @@ LOOP_MOVE: ; 1E:1CEE, 0x03DCEE
     BPL LOOP_MOVE ; Do 4x.
     RTS ; RTS
 BANK_R2-R5: ; 1E:1CF7, 0x03DCF7
-    LDA R_**:$00A6 ; Load.
+    LDA IRQ_FLAG_R2-R5_EQ_7E ; Load.
     BNE WRITE_R2-R5_0x7E ; If set, do B.
-WRITE_R2-R5_RAM: ; 1E:1CFB, 0x03DCFB
+WRITE_R2-R5_FROM_RAM: ; 1E:1CFB, 0x03DCFB
     LDA #$02 ; R2
     STA MMC3_BANK_CFG
     LDA R2_TO_R5_BANK_DATA[4]
@@ -6477,9 +6478,9 @@ SETUP_R0/R1_IRQ_DATA: ; 1E:1D4B, 0x03DD4B
     ASL A ; A to index.
     TAY ; Y to A.
     LDA IRQ_DATA_UNK_BA,Y
-    STA BANK_DATA_IRQ_A
+    STA IRQ_GFX_DATA_BANK_R0
     LDA IRQ_DATA_UNK_BB,Y
-    STA BANK_DATA_IRQ_B
+    STA IRQ_GFX_DATA_BANK_R1
     RTS ; Leave.
     .db 01
     .db 02
@@ -6528,28 +6529,33 @@ IRQ_DATA_UNK_BB: ; 1E:1D65, 0x03DD65
 BANKSWITCH_R0/R1: ; 1E:1D82, 0x03DD82
     LDA #$00 ; Load.
     STA MMC3_BANK_CFG ; Set CFG, R0.
-    LDA BANK_DATA_IRQ_A
+    LDA IRQ_GFX_DATA_BANK_R0
     STA MMC3_BANK_DATA ; Store data.
     LDA #$01
     STA MMC3_BANK_CFG ; Bank 1.
-    LDA BANK_DATA_IRQ_B ; Load.
+    LDA IRQ_GFX_DATA_BANK_R1 ; Load.
     STA MMC3_BANK_DATA ; Switch.
     RTS
-    JSR 1F:01DB
-    LDA **:$0606
-    JSR SWITCH_CODE_PTRS_PAST_JSR
-    LDX **:$00DD
-    AND APU_TEST_7,Y
-    DEC **:$00A9,X
+    JSR BANK_SWITCH_STATE_42 ; Switch bank...
+    LDA SWITCH_STATE_606_UNK ; Load other state.
+    JSR SWITCH_CODE_PTRS_PAST_JSR ; Do one of below.
+    LOW(SWITCH_A_UNK)
+    HIGH(SWITCH_A_UNK)
+    LOW(SWITCH_B_UNK)
+    HIGH(SWITCH_B_UNK)
+    LOW(SWITCH_C_UNK)
+    HIGH(SWITCH_C_UNK)
+SWITCH_A_UNK: ; 1E:1DA6, 0x03DDA6
+    LDA #$00
     STA **:$0607
     STA **:$009C
     STA **:$009D
     STA **:$0098
-    STA **:$0058
+    STA 58_IRQ_UNK
     LDX #$20
     LDA #$C0
-    STX **:$0049
-    STA **:$0048
+    STX PPU_ADDR_IRQ+1
+    STA PPU_ADDR_IRQ[2]
     LDA PPU_INDEX_UNK_42
     ASL A
     TAX
@@ -6562,11 +6568,11 @@ BANKSWITCH_R0/R1: ; 1E:1D82, 0x03DD82
     ASL A
     TAY
     LDA IRQ_DATA_UNK_BA,Y
-    STA **:$002A
-    STA BANK_DATA_IRQ_A
+    STA IRQ_BANK_VALUES[2]
+    STA IRQ_GFX_DATA_BANK_R0
     LDA IRQ_DATA_UNK_BB,Y
-    STA **:$002B
-    STA BANK_DATA_IRQ_B
+    STA IRQ_BANK_VALUES+1
+    STA IRQ_GFX_DATA_BANK_R1
     JSR BANKSWITCH_R0/R1
     LDY PPU_INDEX_UNK_42
     LDA 1F:0EB0,Y
@@ -6609,7 +6615,8 @@ BANKSWITCH_R0/R1: ; 1E:1D82, 0x03DD82
     BNE 1E:1E36
     LDX #$03
     STX R_**:$0636
-    INC **:$0606
+    INC SWITCH_STATE_606_UNK
+SWITCH_B_UNK: ; 1E:1E39, 0x03DE39
     LDA R_**:$00B4
     CLC
     ADC **:$0607
@@ -6623,7 +6630,8 @@ BANKSWITCH_R0/R1: ; 1E:1D82, 0x03DD82
     STA **:$0074
     LDA 1F:0DD7,X
     STA **:$0075
-    INC **:$0606
+    INC SWITCH_STATE_606_UNK
+SWITCH_C_UNK: ; 1E:1E54, 0x03DE54
     LDA **:$0607
     STA **:$0097
     LDA #$02
@@ -6648,7 +6656,7 @@ BANKSWITCH_R0/R1: ; 1E:1D82, 0x03DD82
     CMP #$02
     BNE 1E:1E87
     DEX
-    STX **:$0606
+    STX SWITCH_STATE_606_UNK
     RTS
     .db 00
     .db 00
