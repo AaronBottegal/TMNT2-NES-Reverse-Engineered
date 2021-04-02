@@ -6859,7 +6859,9 @@
     .db F6
     .db 18
     .db 60
+DATA_UNK_A: ; 00:1ACD, 0x001ACD
     .db 38
+DATA_UNK_B: ; 00:1ACE, 0x001ACE
     .db 60
     .db 90
     .db 9F
@@ -7115,7 +7117,9 @@
     .db AD
     .db 20
     .db AE
+DATA_UNK_C: ; 00:1BCD, 0x001BCD
     .db 41
+DATA_UNK_D: ; 00:1BCE, 0x001BCE
     .db AE
     .db 66
     .db AE

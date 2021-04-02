@@ -6377,7 +6377,7 @@ BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
     .db F8
     .db D1
     .db F8
-DISABLE_MAPPER_IRQ+SOUND+A12BS: ; 1F:18EE, 0x03F8EE
+DISABLE_MAPPER_IRQ+SOUND: ; 1F:18EE, 0x03F8EE
     LDA #$00
     STA MMC3_BANK_CFG ; MMC3 config.
     STA MMC3_IRQ_DISABLE ; Disable IRQ.
@@ -6395,6 +6395,7 @@ LOOP_PPU_BOGUS_MANUAL_CLOCK: ; 1F:1906, 0x03F906
     DEX ; X--
     BNE LOOP_PPU_BOGUS_MANUAL_CLOCK ; !=0, loop.
     RTS ; Leave.
+INIT_IRQ_FLAGS_UNK: ; 1F:1912, 0x03F912
     LDA #$00
     STA IRQ_FLAG_R2-R5_EQ_7E
     STA IRQ_UNK_5E
@@ -6517,7 +6518,7 @@ MUCH_IRQ_RTN/BANKING/ETC/MORE: ; 1F:198E, 0x03F98E
     LDA #$FF
     STA MMC3_IRQ_LATCH ; Write latch value.
     STA MMC3_IRQ_RELOAD ; Reload.
-    LDA #$00 ; Address trickery. MMC3 IRQ manual clocking, probably.
+    LDA #$00 ; Address trickery. MMC3 IRQ manual clocking, probably. DOES NOT WORK PER NESDEV WIKI.
     STA PPU_ADDR
     STA PPU_ADDR
     LDA #$10
@@ -6678,7 +6679,7 @@ DELAY_LOOP: ; 1F:1A93, 0x03FA93
     JSR BANKSWITCH_R0/R1 ; Switch graphics.
     LDA #$00
     STA IRQ_FLAG_R2-R5_EQ_7E ; Use RAM ones.
-    JSR BANK_R2-R5 ; Switch graphics.
+    JSR BANK_R2-R5_FROM_60D ; Switch graphics.
     LDX PPU_INDEX_UNK_42 ; X from
     LDA RTN_EXTRA_DATA,X
     STA IRQ_EXTENDED/HANDLER
@@ -6736,7 +6737,7 @@ IRQ_RTN_L: ; 1F:1AED, 0x03FAED
     STA PPU_CTRL
     LDA #$00
     STA IRQ_FLAG_R2-R5_EQ_7E
-    JSR BANK_R2-R5
+    JSR BANK_R2-R5_FROM_60D
     LDA IRQ_BANK_VALUES[2]
     STA IRQ_GFX_DATA_BANK_R0
     LDA IRQ_BANK_VALUES+1
@@ -6790,7 +6791,7 @@ IRQ_RTN_K: ; 1F:1B63, 0x03FB63
     BNE 1F:1B94
     LDA #$00
     STA IRQ_FLAG_R2-R5_EQ_7E
-    JSR BANK_R2-R5
+    JSR BANK_R2-R5_FROM_60D
     LDA #$7E
     STA IRQ_GFX_DATA_BANK_R0
     STA IRQ_GFX_DATA_BANK_R1
@@ -7020,7 +7021,7 @@ IRQ_RTN_H: ; 1F:1D32, 0x03FD32
     BNE 1F:1D49
     LDA #$01
     STA IRQ_FLAG_R2-R5_EQ_7E
-    JSR BANK_R2-R5
+    JSR BANK_R2-R5_FROM_60D
     JMP SET_BANK_CONFIG+RESTORE_RTI
 IRQ_RTN_F: ; 1F:1D56, 0x03FD56
     PHA ; Save A.
@@ -7033,7 +7034,7 @@ IRQ_RTN_F: ; 1F:1D56, 0x03FD56
     STA MMC3_IRQ_DISABLE ; Disable again.
     LDA #$01
     STA IRQ_FLAG_R2-R5_EQ_7E ; True, set to 7E.
-    JSR BANK_R2-R5 ; Switch GFX.
+    JSR BANK_R2-R5_FROM_60D ; Switch GFX.
     JMP SET_BANK_CONFIG+RESTORE_RTI
 IRQ_RTN_J: ; 1F:1D6E, 0x03FD6E
     PHA
@@ -7078,7 +7079,7 @@ PPU_WAIT_B: ; 1F:1DB7, 0x03FDB7
     BMI PPU_WAIT_B ; If minus, loop again?
     DEX ; X--
     BNE PPU_WAIT_A ; Wait more.
-    JSR DISABLE_MAPPER_IRQ+SOUND+A12BS
+    JSR DISABLE_MAPPER_IRQ+SOUND
     JSR MAPPER_IRQ_DISABLE+RTS ; Did this need to be a subroutine? lol.
     JSR SET_APU_STATUS+SEQUENCE_F_C0
     LDA #$00
@@ -7098,22 +7099,22 @@ RAM_CLEAR_LOOP: ; 1F:1DD2, 0x03FDD2
     JSR ENABLE_NMI+INIT_UNK
     CLI ; Enable interrupts.
 INFINITE_LOOP: ; 1F:1DE7, 0x03FDE7
-    INC COUNTER_UNK ; Inc
+    INC INF_LOOP_COUNTER_UNK ; Inc
     CLC
-    LDA COUNTER_UNK ; Load
+    LDA INF_LOOP_COUNTER_UNK ; Load
     ADC IRQ_COUNT? ; Add with...
-    STA COUNTER_UNK ; Store back.
+    STA INF_LOOP_COUNTER_UNK ; Store back.
     JMP INFINITE_LOOP ; Loop forever.
-FLAG_TRUE: ; 1F:1DF3, 0x03FDF3
-    JSR SET_PPU_ADDR/SCROLL/CTRL.
+ALT_NMI_CODE: ; 1F:1DF3, 0x03FDF3
+    JSR SET_PPU_ADDR/SCROLL/CTRL ; Set scroll.
     JSR MUCH_IRQ_RTN/BANKING/ETC/MORE
     JSR BANKSWITCH_R0/R1
     JSR WRITE_R2-R5_FROM_RAM
     JSR SOUND_UNK
-    LDX 28_BANK_CFG_INDEX_UNK
-    LDA COPY_BANK_CFG_F5,X
-    STA MMC3_BANK_CFG
-    JMP LEAVE_NMI_RESTORE
+    LDX 28_BANK_CFG_INDEX_UNK ; Load
+    LDA COPY_BANK_CFG_F5,X ; A from.
+    STA MMC3_BANK_CFG ; Restore config.
+    JMP LEAVE_NMI_RESTORE ; Leave NMI.
 NMI_HANDLER: ; 1F:1E0C, 0x03FE0C
     PHA ; Save A.
     TXA
@@ -7121,9 +7122,9 @@ NMI_HANDLER: ; 1F:1E0C, 0x03FE0C
     TYA
     PHA ; Save Y.
     LDA PPU_STATUS ; Reset latch.
-    LDY FLAG_1C_UNK ; Y from.
-    BNE FLAG_TRUE
-    INC FLAG_1C_UNK ; Set to true.
+    LDY FLAG_NMI_ALT_UNK ; Y from.
+    BNE ALT_NMI_CODE
+    INC FLAG_NMI_ALT_UNK ; Set to true.
     LDA #$00
     STA PPU_OAM_ADDR ; Set addr.
     LDY #$02
@@ -7131,7 +7132,7 @@ NMI_HANDLER: ; 1F:1E0C, 0x03FE0C
     JSR DISABLE_PPU_RENDERING
     JSR UPDATE_BUF_0x300_TO_PPU
     JSR PPU_READING_SHENANIGANS_RTN ; I think this is to mod health values?
-    LDA PPU_MASK_RAM_COPY?
+    LDA PPU_MASK_RAM_COPY? ; Load mask
     LDX DISABLE_RENDERING_X_FRAMES ; X from
     BEQ A_TO_PPU_MASK ; == 0, skip.
     DEC DISABLE_RENDERING_X_FRAMES ; --
@@ -7139,10 +7140,10 @@ NMI_HANDLER: ; 1F:1E0C, 0x03FE0C
     AND #$E7 ; Disable sprites and BG.
 A_TO_PPU_MASK: ; 1F:1E39, 0x03FE39
     STA PPU_MASK ; Store mask.
-    JSR SET_PPU_ADDR/SCROLL/CTRL. ; Set PPU stuff.
+    JSR SET_PPU_ADDR/SCROLL/CTRL ; Set PPU stuff.
     JSR MUCH_IRQ_RTN/BANKING/ETC/MORE
-    LDA MMC3_MIRRORING_COPY ; Load
-    STA MMC3_MIRRORING ; Store.
+    LDA MMC3_MIRRORING_COPY ; Load copy.
+    STA MMC3_MIRRORING ; Store to mapper.
     LDX #$00 ; Index 0.
 LOOP_MOVE_3DATA: ; 1F:1E49, 0x03FE49
     LDA R_**:$00AE,X ; Move unk...
@@ -7154,20 +7155,20 @@ LOOP_MOVE_3DATA: ; 1F:1E49, 0x03FE49
     INX ; X++
     CPX #$02
     BNE LOOP_MOVE_3DATA ; Move all.
-    JSR MOVE_ZP_BANK_DATA_60D
-    JSR BANK_R2-R5
+    JSR MOVE_R2-R5_VALUES_ZP_TO_60D
+    JSR BANK_R2-R5_FROM_60D
     JSR BANKSWITCH_R0/R1
     JSR SOUND_UNK
-    JSR CTRL_READ_SAFE
+    JSR CTRL_READ_SAFE ; Read controllers.
     JSR BUF_MGMT_UNK
     JSR SWITCH_STATE_18
-    JSR L_1E:0E07
+    JSR SPRITES_UPDATE?
     LDX INDEX_300_UPDATE_BUF ; Load index.
     LDA #$00 ; Load
-    STA PPU_UPDATE_BUF[8],X ; Store EOF in buf.
+    STA PPU_UPDATE_BUF[1],X ; Store EOF in buf.
     INX ; X++
     STX INDEX_300_UPDATE_BUF ; Store index back.
-    STA FLAG_1C_UNK
+    STA FLAG_NMI_ALT_UNK
 LEAVE_NMI_RESTORE: ; 1F:1E81, 0x03FE81
     PLA
     TAY ; Restore Y
@@ -7175,17 +7176,18 @@ LEAVE_NMI_RESTORE: ; 1F:1E81, 0x03FE81
     TAX ; Restore X.
     PLA ; Restore A.
     RTI ; Leave NMI.
-SET_PPU_ADDR/SCROLL/CTRL.: ; 1F:1E87, 0x03FE87
+SET_PPU_ADDR/SCROLL/CTRL: ; 1F:1E87, 0x03FE87
     LDA PPU_STATUS ; Reset latch.
     LDA #$20 ; Set addr.
     STA PPU_ADDR
     LDA #$00
     STA PPU_ADDR
     LDA PPU_STATUS ; Reset latch again.
-    LDA PPU_SCROLL_X_COPY ; Set scroll.
+    LDA PPU_SCROLL_X_COPY_IRQ ; Set scroll.
     STA PPU_SCROLL
     LDA PPU_SCROLL_Y_COPY_IRQ
     STA PPU_SCROLL
+WRITE_PPU_CTRL_COPY: ; 1F:1EA1, 0x03FEA1
     LDA PPU_CTRL_RAM_COPY ; Set CTRL.
     STA PPU_CTRL
     RTS
@@ -7200,9 +7202,9 @@ ENABLE_NMI+INIT_UNK: ; 1F:1EB2, 0x03FEB2
     STA PPU_CTRL_RAM_COPY ; Store
     STA PPU_CTRL ; Store.
     LDA #$1E
-    STA PPU_MASK_RAM_COPY? ; Store unk.
+    STA PPU_MASK_RAM_COPY? ; Mask RAM copy?
     LDA #$05
-    STA DISABLE_RENDERING_X_FRAMES ; Store unk.
+    STA DISABLE_RENDERING_X_FRAMES ; 5 frames until we do stuff?
     RTS
 DISABLE_PPU_RENDERING: ; 1F:1EC2, 0x03FEC2
     LDA PPU_CTRL_RAM_COPY ; Load copy.
@@ -7221,10 +7223,10 @@ CTRL_READ_SAFE: ; 1F:1ED9, 0x03FED9
     LDX #$02 ; Index to store other ctrl bits.
     JSR LATCH_READ_CTRL
     LDA TMP_00 ; Load first bits.
-    CMP **:$0002 ; Compare to 2nd read.
+    CMP TMP_02 ; Compare to 2nd read.
     BNE CTRL_FAIL_NO_NEW_PRESSES ; !=, goto.
     LDA TMP_01
-    CMP **:$0003
+    CMP TMP_03
     BNE CTRL_FAIL_NO_NEW_PRESSES ; Same idea.
     LDX #$00 ; P1 index.
     JSR CTRL_X_PROCESS ; Process
@@ -7254,15 +7256,15 @@ LATCH_READ_CTRL: ; 1F:1F10, 0x03FF10
     LDY #$08 ; Loop count.
 LOOP_READ_CTRL: ; 1F:1F1B, 0x03FF1B
     LDA NES_CTRL1 ; Load ctrl.
-    STA CTRL_RAM[2] ; Store to RAM.
+    STA TMP_04 ; Store to RAM.
     LSR A ; Shift.
-    ORA CTRL_RAM[2] ; Or other bits...
+    ORA TMP_04 ; Or other bits...
     LSR A ; Shift again.
     ROL TMP_00,X ; P1 bits.
     LDA NES_CTRL2 ; Load ctrl.
-    STA CTRL_RAM+1 ; Store to RAM.
+    STA TMP_05 ; Store to RAM.
     LSR A ; Shift
-    ORA CTRL_RAM+1 ; Gather bits.
+    ORA TMP_05 ; Gather bits.
     LSR A ; Shift
     ROL TMP_01,X ; P2 bits/
     DEY ; Loop--
@@ -7455,7 +7457,7 @@ LOOP_READ_CTRL: ; 1F:1F1B, 0x03FF1B
     .db FF
     .db FF
     .db FF
-    .db 4D
+    .db 4D ; 'MAST900801', online says this is the version/date info.
     .db 41
     .db 53
     .db 54

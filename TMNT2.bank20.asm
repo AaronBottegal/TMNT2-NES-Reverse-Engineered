@@ -1175,120 +1175,72 @@
     .db 4C
     .db A1
     .db FE
-    .db BD
-    .db 0A
-    .db 85
-    .db 85
-    .db 00
-    .db BD
-    .db 0B
-    .db 85
-    .db 85
-    .db 01
-    .db 20
-    .db C2
-    .db FE
-    .db A9
-    .db 00
-    .db 85
-    .db FD
-    .db 85
-    .db FC
-    .db AD
-    .db 02
-    .db 20
-    .db A0
-    .db 01
-    .db B1
-    .db 00
-    .db 8D
-    .db 06
-    .db 20
-    .db 88
-    .db B1
-    .db 00
-    .db 8D
-    .db 06
-    .db 20
-    .db A2
-    .db 00
-    .db A9
-    .db 02
-    .db 20
-    .db B1
-    .db CC
-    .db A0
-    .db 00
-    .db B1
-    .db 00
-    .db C9
-    .db FF
-    .db F0
-    .db 3E
-    .db C9
-    .db 7F
-    .db F0
-    .db 32
-    .db A8
-    .db 10
-    .db 1D
-    .db 29
-    .db 7F
-    .db 85
-    .db 02
-    .db A0
-    .db 01
-    .db B1
-    .db 00
-    .db 8D
-    .db 07
-    .db 20
-    .db C4
-    .db 02
-    .db F0
-    .db 03
-    .db C8
-    .db D0
-    .db F4
-    .db A9
-    .db 01
-    .db 18
-    .db 65
-    .db 02
-    .db 20
-    .db B1
-    .db CC
-    .db 4C
-    .db C3
-    .db 84
-    .db A0
-    .db 01
-    .db 85
-    .db 02
-    .db B1
-    .db 00
-    .db A4
-    .db 02
-    .db 8D
-    .db 07
-    .db 20
-    .db 88
-    .db D0
-    .db FA
-    .db A9
-    .db 02
-    .db D0
-    .db E8
-    .db A9
-    .db 01
-    .db 20
-    .db B1
-    .db CC
-    .db 4C
-    .db AC
-    .db 84
-    .db 60
+RTN_DECOMPRESS_TO_PPU: ; 14:0499, 0x028499
+    LDA DATA_PTRS_L,X ; Setup indirect.
+    STA TMP_00
+    LDA DATA_PTRS_H,X
+    STA TMP_01
+    JSR DISABLE_PPU_RENDERING ; Stop rendering.
+    LDA #$00 ; Set scroll X and Y.
+    STA PPU_SCROLL_X_COPY_IRQ
+    STA PPU_SCROLL_Y_COPY_IRQ
+LOOP_NEW_PPU_ADDR: ; 14:04AC, 0x0284AC
+    LDA PPU_STATUS ; Reset latch?
+    LDY #$01 ; Index
+    LDA [TMP_00],Y ; Load high addr.
+    STA PPU_ADDR ; Set PPU.
+    DEY ; Stream--
+    LDA [TMP_00],Y ; Load low addr.
+    STA PPU_ADDR ; Set PPU.
+    LDX #$00 ; X=
+    LDA #$02 ; Seed add with val.
+    JSR ADD_A_TO_TMP_00_ADDR ; Add 2 to.
+STREAM_PACKET_FETCH_NEW: ; 14:04C3, 0x0284C3
+    LDY #$00 ; Reset stream.
+    LDA [TMP_00],Y ; Load data from.
+    CMP #$FF ; CMP EOF
+    BEQ RTS ; Yes, goto.
+    CMP #$7F ; CMP ??
+    BEQ VAL_7F ; ==, goto.
+    TAY ; Val copy to Y, too.
+    BPL RTN_RLEISH
+    AND #$7F ; Get bottom bits. Number of unique tiles.
+    STA TMP_02 ; A to.
+    LDY #$01 ; Stream index set.
+LOOP_MOVE_UNIQUE: ; 14:04D8, 0x0284D8
+    LDA [TMP_00],Y ; Load data from stream.
+    STA PPU_DATA ; Store to PPU.
+    CPY TMP_02 ; Compare to target.
+    BEQ UNIQUE_COMPLETED ; ==, goto.
+    INY ; Stream++
+    BNE LOOP_MOVE_UNIQUE ; Loop. Always taken.
+UNIQUE_COMPLETED: ; 14:04E4, 0x0284E4
+    LDA #$01 ; Default.
+    CLC ; Prep add.
+    ADC TMP_02 ; Add num of tiles done.
+CONSUME_PACKET_A_SIZE: ; 14:04E9, 0x0284E9
+    JSR ADD_A_TO_TMP_00_ADDR ; Add A to stream.
+    JMP STREAM_PACKET_FETCH_NEW ; Do new tile.
+RTN_RLEISH: ; 14:04EF, 0x0284EF
+    LDY #$01 ; Stream index.
+    STA TMP_02 ; Times to write.
+    LDA [TMP_00],Y ; Load from stream.
+    LDY TMP_02 ; Now loop count.
+LOOP_TILE_Y: ; 14:04F7, 0x0284F7
+    STA PPU_DATA ; Data tile to PPU.
+    DEY ; Y--
+    BNE LOOP_TILE_Y
+    LDA #$02 ; A=
+    BNE CONSUME_PACKET_A_SIZE ; Always taken.
+VAL_7F: ; 14:0501, 0x028501
+    LDA #$01
+    JSR ADD_A_TO_TMP_00_ADDR
+    JMP LOOP_NEW_PPU_ADDR
+RTS: ; 14:0509, 0x028509
+    RTS
+DATA_PTRS_L: ; 14:050A, 0x02850A
     .db 2C
+DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 85
     .db EA
     .db 97

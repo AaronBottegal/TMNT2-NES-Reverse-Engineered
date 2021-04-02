@@ -8,7 +8,7 @@ UNK_STREAM_SETUP_0x300_BUF: ; 1C:0001, 0x038001
     STA TMP_01
     LDA #$FF
     ADC #$00 ; Carry test. Set means 0.
-    STA **:$0002 ; Store.
+    STA TMP_02 ; Store.
     LDY #$00 ; Load Y
 LOOP_STREAM_OUTER: ; 1C:0015, 0x038015
     LDA #$01 ; Load A
@@ -26,7 +26,7 @@ LOOP_STREAM_INNER: ; 1C:0026, 0x038026
     BEQ A=FF_TO_300_INDEXED ; ==, goto.
     CMP #$FE ; If A_ 0xFE.
     BEQ FLAG_FE ; ==, goto.
-    AND **:$0002 ; All others, mask?
+    AND TMP_02 ; All others, mask?
     JSR A_to_300_INDEXED ; Store.
     JMP LOOP_STREAM_INNER ; Goto.
 FLAG_FE: ; 1C:0039, 0x038039
@@ -37,7 +37,7 @@ A=FF_TO_300_INDEXED: ; 1C:003F, 0x03803F
 A_TO_300_LOAD_INDEX: ; 1C:0041, 0x038041
     LDX INDEX_300_UPDATE_BUF ; X from. NOTE: X is still index on ret.
 A_to_300_INDEXED: ; 1C:0043, 0x038043
-    STA PPU_UPDATE_BUF[8],X ; Store to.
+    STA PPU_UPDATE_BUF[1],X ; Store to.
     INX ; Next.
     STX INDEX_300_UPDATE_BUF ; Store back.
     RTS

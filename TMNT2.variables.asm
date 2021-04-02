@@ -49,26 +49,44 @@ NES_CTRL2:                                    .equ $4017
           .rsset 0x0000
 TMP_00:                                       .rs 1
 TMP_01:                                       .rs 1
+TMP_02:                                       .rs 1
+TMP_03:                                       .rs 1
+TMP_04:                                       .rs 1
+TMP_05:                                       .rs 1
+TMP_06?:                                      .rs 1
+ZP_07_UNK:                                    .rs 1
+TMP_08_INDIRECT:                              .rs 2
 
 
-          .rsset 0x0004
-CTRL_RAM:                                     .rs 2
-R_**:$0006:                                   .rs 1
+          .rsset 0x000B
+R_**:$000B:                                   .rs 1
+ZP_0C_UNK:                                    .rs 1
+ZP_0D_UNK:                                    .rs 1
+ZP_0E_UNK:                                    .rs 1
+TMP_0F?:                                      .rs 1
 
 
-          .rsset 0x0018
+          .rsset 0x0011
+ZP_11_UNK:                                    .rs 1
+ZP_12_UNK:                                    .rs 1
+ZP_13_UNK:                                    .rs 1
+R_**:$0014:                                   .rs 1
+R_**:$0015:                                   .rs 1
+R_**:$0016:                                   .rs 1
+R_**:$0017:                                   .rs 1
 STATE_SWITCH_18:                              .rs 1
+19_SUBSTATE_18?:                              .rs 1
 
 
           .rsset 0x001B
 IRQ_COUNT?:                                   .rs 1
-FLAG_1C_UNK:                                  .rs 1
+FLAG_NMI_ALT_UNK:                             .rs 1
 DISABLE_RENDERING_X_FRAMES:                   .rs 1
 INDEX_300_UPDATE_BUF:                         .rs 1
 
 
           .rsset 0x0022
-COUNTER_UNK:                                  .rs 1
+INF_LOOP_COUNTER_UNK:                         .rs 1
 
 
           .rsset 0x0028
@@ -88,9 +106,11 @@ R_**:$0034:                                   .rs 1
           .rsset 0x0038
 CTRL_NEWLY_PRESSED_A:                         .rs 2
 CTRL_PREV_A:                                  .rs 2
+3C_SWITCH_UNK:                                .rs 1
 
 
-          .rsset 0x0042
+          .rsset 0x0040
+40_TIMER?:                                    .rs 2
 PPU_INDEX_UNK_42:                             .rs 1
 
 
@@ -136,9 +156,18 @@ R_**:$00B1:                                   .rs 1
 R_**:$00B4:                                   .rs 1
 
 
+          .rsset 0x00C6
+ARR_C6_UNK:                                   .rs 1
+R_**:$00C7:                                   .rs 1
+
+
           .rsset 0x00D8
 IRQ_D8_UNK:                                   .rs 1
 IRQ_D9_UNK:                                   .rs 1
+
+
+          .rsset 0x00E2
+ZL_E2_SOUND_UNK:                              .rs 1
 
 
           .rsset 0x00F5
@@ -148,7 +177,7 @@ MMC3_MIRRORING_COPY:                          .rs 1
 CTRL_NEWLY_PRESSED_B:                         .rs 2
 CTRL_PREV_B:                                  .rs 2
 PPU_SCROLL_Y_COPY_IRQ:                        .rs 1
-PPU_SCROLL_X_COPY:                            .rs 1
+PPU_SCROLL_X_COPY_IRQ:                        .rs 1
 PPU_MASK_RAM_COPY?:                           .rs 1
 PPU_CTRL_RAM_COPY:                            .rs 1
 
@@ -157,8 +186,25 @@ PPU_CTRL_RAM_COPY:                            .rs 1
 10A_ARR_UNK:                                  .rs 1
 
 
-          .rsset 0x0300
-PPU_UPDATE_BUF:                               .rs 8
+          .rsset 0x015B
+15B_SND?_UNK:                                 .rs 1
+
+
+          .rsset 0x0161
+161_SND?_UNK:                                 .rs 1
+
+
+          .rsset 0x0166
+166_SND?_UNK:                                 .rs 1
+
+
+          .rsset 0x01B4
+1B4_SOUND_TRI_ZERO_FLAG:                      .rs 1
+
+
+          .rsset 0x0200
+SPRITE_PAGE:                                  .rs 256
+PPU_UPDATE_BUF:                               .rs 1
 
 
           .rsset 0x03E3
@@ -166,12 +212,40 @@ LOW_BANK_DATA:                                .rs 1
 UPPER_BANK_DATA:                              .rs 1
 
 
+          .rsset 0x0400
+ARR_400_ANIM_UPDATE?:                         .rs 1
+
+
+          .rsset 0x0424
+ARR_424_UNK:                                  .rs 1
+
+
+          .rsset 0x0436
+436_ARR_UNK:                                  .rs 1
+
+
+          .rsset 0x046C
+ARR_46C_UNK:                                  .rs 1
+
+
+          .rsset 0x047E
+ARR_47E_UNK:                                  .rs 1
+
+
+          .rsset 0x04A2
+R_**:$04A2:                                   .rs 1
+
+
+          .rsset 0x0556
+ARR_556_UNK:                                  .rs 1
+
+
           .rsset 0x0601
 601_IRQ_INC_Y_FLAG:                           .rs 1
 
 
           .rsset 0x0606
-SWITCH_STATE_606_UNK:                         .rs 1
+606_NMI_SWITCH_STATE_UNK:                     .rs 1
 
 
           .rsset 0x060D
@@ -187,7 +261,7 @@ PPU_FLAG_UNK:                                 .rs 1
 
 
           .rsset 0x061B
-FLAG_UNK_61B:                                 .rs 1
+61B_FLAG_UNK:                                 .rs 1
 
 
           .rsset 0x0636
@@ -228,7 +302,7 @@ FLAG_IRQ_660:                                 .rs 1
 
 
           .rsset 0x06D7
-ARR_67D_UNK:                                  .rs 29
+ARR_6D7_UNK:                                  .rs 40
 
 
           .rsset 0x06D9
@@ -238,3 +312,11 @@ BUF_UNK:                                      .rs 8
           .rsset 0x06DA
 R_**:$06DA:                                   .rs 1
 R_**:$06DB:                                   .rs 1
+
+
+          .rsset 0x071C
+R_**:$071C:                                   .rs 1
+
+
+          .rsset 0x072E
+R_**:$072E:                                   .rs 1

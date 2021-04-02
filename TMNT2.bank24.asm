@@ -1,18 +1,18 @@
     .db 38
 SOUND_INIT: ; 18:0001, 0x030001
     LDA #$00
-    STX **:$00E2 ; Clear...
+    STX ZL_E2_SOUND_UNK ; Clear...
     TAX
 LOOP_CLEAR_ARRAY: ; 18:0006, 0x030006
     STA 10A_ARR_UNK,X ; Clear...
     INX
     CPX #$06
     BCC LOOP_CLEAR_ARRAY
-    STA **:$0161 ; Clear all these.
-    STA **:$0166
-    STA **:$015B
-    LDX **:$00E2 ; Load X from.
-    LDA **:$01B4 ; Load A from.
+    STA 161_SND?_UNK ; Clear all these.
+    STA 166_SND?_UNK
+    STA 15B_SND?_UNK
+    LDX ZL_E2_SOUND_UNK ; Load X from.
+    LDA 1B4_SOUND_TRI_ZERO_FLAG ; Load A from.
     BEQ VAL_WAS_ZERO ; If A zero, goto.
     JSR TRI_CTRL_ZERO ; Not zero, do.
     JMP TRI_DISABLED ; Goto.
@@ -35,7 +35,7 @@ TRI_DISABLED: ; 18:0027, 0x030027
     CMP #$7D
     BNE 18:006A
     LDA #$1E
-    STA **:$01B4
+    STA 1B4_SOUND_TRI_ZERO_FLAG
     LDA #$00
     STA **:$010E
     STA **:$010F
@@ -123,7 +123,7 @@ TRI_DISABLED: ; 18:0027, 0x030027
     STA **:$019E,X
     LDA #$80
     STA **:$01AC,X
-    STY **:$00E2
+    STY ZL_E2_SOUND_UNK
     LDY #$00
     LDA [**:$00E6],Y
     INY
@@ -134,7 +134,7 @@ TRI_DISABLED: ; 18:0027, 0x030027
     DEY
     TYA
     STA **:$0116,X
-    LDY **:$00E2
+    LDY ZL_E2_SOUND_UNK
     LDA **:$00F0
     STA 10A_ARR_UNK,X
     DEC **:$00EA
@@ -187,28 +187,28 @@ TRI_DISABLED: ; 18:0027, 0x030027
     JMP $8001
     CMP #$02
     BNE 18:01A9
-    LDA **:$0161
+    LDA 161_SND?_UNK
     CMP #$07
     BNE 18:01A9
     LDA #$00
     STA **:$010D
-    INC **:$0161
+    INC 161_SND?_UNK
     LDA #$0F
-    CMP **:$0161
+    CMP 161_SND?_UNK
     BNE 18:01BE
     LDA #$00
-    STA **:$0161
-    INC **:$015B
-    DEC **:$0166
+    STA 161_SND?_UNK
+    INC 15B_SND?_UNK
+    DEC 166_SND?_UNK
     RTS
-    LDA **:$01B4
+    LDA 1B4_SOUND_TRI_ZERO_FLAG
     BEQ 18:01C7
-    DEC **:$01B4
+    DEC 1B4_SOUND_TRI_ZERO_FLAG
     LDA **:$003D
     CMP **:$015A
     BEQ 18:01D1
     JSR $8133
-    LDA **:$0166
+    LDA 166_SND?_UNK
     BEQ 18:01D9
     JMP $8192
     RTS
@@ -236,16 +236,16 @@ TRI_DISABLED: ; 18:0027, 0x030027
     LDA **:$01AC,X
     BMI 18:0233
     LDA **:$0110,X
-    STA **:$00E2
+    STA ZL_E2_SOUND_UNK
     LDA **:$01AC,X
     AND #$10
     BEQ 18:0220
-    LDA **:$00E2
+    LDA ZL_E2_SOUND_UNK
     ASL A
-    STA **:$00E2
+    STA ZL_E2_SOUND_UNK
     LDA **:$0104,X
     SEC
-    SBC **:$00E2
+    SBC ZL_E2_SOUND_UNK
     BEQ 18:0266
     BCS 18:0223
     LDA **:$0116,X
@@ -268,10 +268,10 @@ TRI_DISABLED: ; 18:0027, 0x030027
     AND #$06
     TAY
     LDA $8DE5,Y
-    STA **:$00E2
+    STA ZL_E2_SOUND_UNK
     LDA $8DE6,Y
     STA **:$00E3
-    JMP [**:$00E2]
+    JMP [ZL_E2_SOUND_UNK]
     LDA **:$0182,X
     STA **:$00EC
     LDA **:$0185,X
@@ -299,12 +299,12 @@ TRI_DISABLED: ; 18:0027, 0x030027
     ASL A
     TAY
     LDA $8E49,Y
-    STA **:$00E2
+    STA ZL_E2_SOUND_UNK
     LDA $8E4A,Y
     STA **:$00E3
     LDA **:$018C,X
     TAY
-    LDA [**:$00E2],Y
+    LDA [ZL_E2_SOUND_UNK],Y
     CMP #$FB
     BCS 18:0314
     CMP #$10
@@ -315,7 +315,7 @@ TRI_DISABLED: ; 18:0027, 0x030027
     LSR A
     STA **:$018A,X
     INC **:$018C,X
-    LDA [**:$00E2],Y
+    LDA [ZL_E2_SOUND_UNK],Y
     AND #$0F
     BEQ 18:02D5
     SEC
@@ -332,14 +332,14 @@ TRI_DISABLED: ; 18:0027, 0x030027
     BCC 18:0306
     BEQ 18:0306
     SEC
-    SBC **:$015B
+    SBC 15B_SND?_UNK
     BCC 18:0306
     BEQ 18:0306
-    STA **:$00E2
+    STA ZL_E2_SOUND_UNK
     LDA **:$0163,X
     AND #$20
     BNE 18:030A
-    LDA **:$00E2
+    LDA ZL_E2_SOUND_UNK
     ORA **:$0158,X
     JSR $89D9
     BCS 18:0303
@@ -350,7 +350,7 @@ TRI_DISABLED: ; 18:0027, 0x030027
     BNE 18:02ED
     LDA **:$01AA,X
     AND #$F0
-    ORA **:$00E2
+    ORA ZL_E2_SOUND_UNK
     JMP $82FB
     CMP #$FE
     BEQ 18:0329
@@ -362,7 +362,7 @@ TRI_DISABLED: ; 18:0027, 0x030027
     JMP $82AB
     INY
     INC **:$018E,X
-    LDA [**:$00E2],Y
+    LDA [ZL_E2_SOUND_UNK],Y
     CMP **:$018E,X
     BNE 18:0345
     LDA #$00
@@ -415,13 +415,13 @@ TRI_DISABLED: ; 18:0027, 0x030027
     RTS
     LSR A
     LSR A
-    STA **:$00E2
+    STA ZL_E2_SOUND_UNK
     JSR $8389
-    LDA **:$00E2
+    LDA ZL_E2_SOUND_UNK
     JMP $82D5
     LDA **:$01AC,X
     BMI 18:03E7
-    STY **:$00E2
+    STY ZL_E2_SOUND_UNK
     LDA **:$01AC,X
     AND #$0F
     STA **:$00E4
@@ -480,12 +480,12 @@ TRI_DISABLED: ; 18:0027, 0x030027
     ASL A
     TAY
     LDA $8E79,Y
-    STA **:$00E2
+    STA ZL_E2_SOUND_UNK
     LDA $8E7A,Y
     STA **:$00E3
     LDA **:$01A4,X
     TAY
-    LDA [**:$00E2],Y
+    LDA [ZL_E2_SOUND_UNK],Y
     CMP #$FB
     BCS 18:04C9
     CMP #$10
@@ -496,9 +496,9 @@ TRI_DISABLED: ; 18:0027, 0x030027
     LSR A
     STA **:$019E,X
     INC **:$01A4,X
-    LDA [**:$00E2],Y
+    LDA [ZL_E2_SOUND_UNK],Y
     AND #$0F
-    STA **:$00E2
+    STA ZL_E2_SOUND_UNK
     CMP #$08
     BCS 18:0477
     JSR $8485
@@ -506,21 +506,21 @@ TRI_DISABLED: ; 18:0027, 0x030027
     RTS
     LDA #$10
     SEC
-    SBC **:$00E2
-    STA **:$00E2
+    SBC ZL_E2_SOUND_UNK
+    STA ZL_E2_SOUND_UNK
     JSR $8485
     JSR $84AF
     RTS
     LDA **:$01A0,X
     TAX
-    LDA **:$00E2
+    LDA ZL_E2_SOUND_UNK
     DEX
     BEQ 18:0494
     CLC
-    ADC **:$00E2
+    ADC ZL_E2_SOUND_UNK
     JMP $848B
     LDX **:$00EE
-    STA **:$00E2
+    STA ZL_E2_SOUND_UNK
     RTS
     CLC
     ADC **:$0182,X
@@ -535,7 +535,7 @@ TRI_DISABLED: ; 18:0027, 0x030027
     RTS
     LDA **:$0182,X
     SEC
-    SBC **:$00E2
+    SBC ZL_E2_SOUND_UNK
     BCS 18:04C1
     STA **:$00EC
     LDA **:$0185,X
@@ -555,7 +555,7 @@ TRI_DISABLED: ; 18:0027, 0x030027
     JMP $843F
     INY
     INC **:$01A8,X
-    LDA [**:$00E2],Y
+    LDA [ZL_E2_SOUND_UNK],Y
     CMP **:$01A8,X
     BNE 18:04F7
     LDA #$00
@@ -591,13 +591,13 @@ TRI_DISABLED: ; 18:0027, 0x030027
     LSR A
     TAX
     LDA $8DF9,X
-    STA **:$00E2
+    STA ZL_E2_SOUND_UNK
     LDA $8DFA,X
     STA **:$00E3
     LDX **:$00EE
     LDA [**:$00E0],Y
     AND #$0F
-    JMP [**:$00E2]
+    JMP [ZL_E2_SOUND_UNK]
     LDA [**:$00E0],Y
     AND #$F0
     CMP #$F0
@@ -627,10 +627,10 @@ TRI_DISABLED: ; 18:0027, 0x030027
     CMP #$78
     BCS 18:0579
     JMP $803B
-    STA **:$00E2
-    LDA **:$01B4
+    STA ZL_E2_SOUND_UNK
+    LDA 1B4_SOUND_TRI_ZERO_FLAG
     BNE 18:05AF
-    LDA **:$00E2
+    LDA ZL_E2_SOUND_UNK
     SEC
     SBC #$78
     ASL A

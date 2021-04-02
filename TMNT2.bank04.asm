@@ -630,117 +630,59 @@
     .db 68
     .db AA
     .db 60
-    .db A5
-    .db 42
-    .db C9
-    .db 07
-    .db F0
-    .db 68
-    .db A5
-    .db 1B
-    .db 29
-    .db 01
-    .db D0
-    .db 62
-    .db A0
-    .db 00
-    .db 84
-    .db 09
-    .db B9
-    .db 84
-    .db 06
-    .db 10
-    .db 4C
-    .db B9
-    .db 70
-    .db 06
-    .db F0
-    .db 47
-    .db 0A
-    .db A8
-    .db B9
-    .db E7
-    .db 82
-    .db 85
-    .db 0A
-    .db B9
-    .db E8
-    .db 82
-    .db 85
-    .db 0B
-    .db A4
-    .db 09
-    .db BD
-    .db C6
-    .db 04
-    .db C9
-    .db 08
-    .db 90
-    .db 08
-    .db B9
-    .db 8C
-    .db 06
-    .db DD
-    .db C6
-    .db 04
-    .db B0
-    .db 2A
-    .db B9
-    .db 78
-    .db 06
-    .db DD
-    .db 7E
-    .db 04
-    .db B0
-    .db 22
-    .db B9
-    .db 78
-    .db 06
-    .db 18
-    .db 65
-    .db 0A
-    .db B0
-    .db 05
-    .db DD
-    .db 7E
-    .db 04
-    .db 90
-    .db 15
-    .db B9
-    .db 80
-    .db 06
-    .db DD
-    .db A2
-    .db 04
-    .db B0
-    .db 0D
-    .db B9
-    .db 80
-    .db 06
-    .db 18
-    .db 65
-    .db 0B
-    .db B0
-    .db 33
-    .db DD
-    .db A2
-    .db 04
-    .db B0
-    .db 2E
-    .db A4
-    .db 09
-    .db C8
-    .db C0
-    .db 04
-    .db 84
-    .db 09
-    .db D0
-    .db A6
-    .db A9
-    .db 00
-    .db 85
-    .db 00
-    .db 60
+RTN_UNK: ; 04:0278, 0x008278
+    LDA PPU_INDEX_UNK_42 ; Load val.
+    CMP #$07 ; If _ #$07
+    BEQ RTS ; ==, goto.
+    LDA IRQ_COUNT? ; Load count.
+    AND #$01 ; Test if odd?
+    BNE RTS ; If set, leave.
+    LDY #$00 ; Clear val?
+    STY TMP_08_INDIRECT+1
+    LDA **:$0684,Y
+    BPL 04:02D9
+    LDA **:$0670,Y
+    BEQ 04:02D9
+    ASL A
+    TAY
+    LDA 04:02E7,Y
+    STA **:$000A
+    LDA 04:02E8,Y
+    STA R_**:$000B
+    LDY TMP_08_INDIRECT+1
+    LDA **:$04C6,X
+    CMP #$08
+    BCC 04:02AF
+    LDA **:$068C,Y
+    CMP **:$04C6,X
+    BCS 04:02D9
+    LDA **:$0678,Y
+    CMP ARR_47E_UNK,X
+    BCS 04:02D9
+    LDA **:$0678,Y
+    CLC
+    ADC **:$000A
+    BCS 04:02C4
+    CMP ARR_47E_UNK,X
+    BCC 04:02D9
+    LDA **:$0680,Y
+    CMP R_**:$04A2,X
+    BCS 04:02D9
+    LDA **:$0680,Y
+    CLC
+    ADC R_**:$000B
+    BCS 04:0307
+    CMP R_**:$04A2,X
+    BCS 04:0307
+    LDY TMP_08_INDIRECT+1
+    INY
+    CPY #$04
+    STY TMP_08_INDIRECT+1
+    BNE 04:0288
+    LDA #$00
+    STA TMP_00
+RTS: ; 04:02E6, 0x0082E6
+    RTS
     .db 00
     .db 00
     .db 1A
