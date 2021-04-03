@@ -646,9 +646,9 @@ RTN_UNK: ; 04:0278, 0x008278
     ASL A
     TAY
     LDA 04:02E7,Y
-    STA **:$000A
+    STA TSEL_0A
     LDA 04:02E8,Y
-    STA R_**:$000B
+    STA TSEL_0B
     LDY TMP_08_INDIRECT+1
     LDA **:$04C6,X
     CMP #$08
@@ -657,20 +657,20 @@ RTN_UNK: ; 04:0278, 0x008278
     CMP **:$04C6,X
     BCS 04:02D9
     LDA **:$0678,Y
-    CMP ARR_47E_UNK,X
+    CMP ARR_47E_UNK[1],X
     BCS 04:02D9
     LDA **:$0678,Y
     CLC
-    ADC **:$000A
+    ADC TSEL_0A
     BCS 04:02C4
-    CMP ARR_47E_UNK,X
+    CMP ARR_47E_UNK[1],X
     BCC 04:02D9
     LDA **:$0680,Y
     CMP R_**:$04A2,X
     BCS 04:02D9
     LDA **:$0680,Y
     CLC
-    ADC R_**:$000B
+    ADC TSEL_0B
     BCS 04:0307
     CMP R_**:$04A2,X
     BCS 04:0307

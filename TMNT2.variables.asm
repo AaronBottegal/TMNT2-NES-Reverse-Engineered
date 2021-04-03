@@ -56,10 +56,8 @@ TMP_05:                                       .rs 1
 TMP_06?:                                      .rs 1
 ZP_07_UNK:                                    .rs 1
 TMP_08_INDIRECT:                              .rs 2
-
-
-          .rsset 0x000B
-R_**:$000B:                                   .rs 1
+TSEL_0A:                                      .rs 1
+TSEL_0B:                                      .rs 1
 ZP_0C_UNK:                                    .rs 1
 ZP_0D_UNK:                                    .rs 1
 ZP_0E_UNK:                                    .rs 1
@@ -75,7 +73,7 @@ R_**:$0015:                                   .rs 1
 R_**:$0016:                                   .rs 1
 R_**:$0017:                                   .rs 1
 STATE_SWITCH_18:                              .rs 1
-19_SUBSTATE_18?:                              .rs 1
+SUBSTATE_18:                                  .rs 1
 
 
           .rsset 0x001B
@@ -83,14 +81,18 @@ IRQ_COUNT?:                                   .rs 1
 FLAG_NMI_ALT_UNK:                             .rs 1
 DISABLE_RENDERING_X_FRAMES:                   .rs 1
 INDEX_300_UPDATE_BUF:                         .rs 1
-
-
-          .rsset 0x0022
+1F_TITLE_UNK:                                 .rs 1
+TWO_PLAYERS_FLAG:                             .rs 1
+TITLE_PLAYERS_COUNT_CURSOR:                   .rs 1
 INF_LOOP_COUNTER_UNK:                         .rs 1
 
 
+          .rsset 0x0025
+KONAMI_CODE_TRIGGERED:                        .rs 1
+
+
           .rsset 0x0028
-28_BANK_CFG_INDEX_UNK:                        .rs 1
+28_BANK_CFG_INDEX?:                           .rs 1
 LOWER_BANK_SAVE_PAIRED?:                      .rs 1
 IRQ_BANK_VALUES:                              .rs 2
 
@@ -99,8 +101,8 @@ IRQ_BANK_VALUES:                              .rs 2
 IRQ_GFX_DATA_BANK_R0:                         .rs 1
 IRQ_GFX_DATA_BANK_R1:                         .rs 1
 ZP_R2-R5_BANK_VALUES:                         .rs 4
-R_**:$0033:                                   .rs 1
-R_**:$0034:                                   .rs 1
+33_TURTLE_SELECT_UNK:                         .rs 1
+34_TSELECT_FF/01?:                            .rs 1
 
 
           .rsset 0x0038
@@ -115,7 +117,7 @@ PPU_INDEX_UNK_42:                             .rs 1
 
 
           .rsset 0x0047
-R_**:$0047:                                   .rs 1
+47_UNK_PCOUNT?:                               .rs 1
 PPU_ADDR_IRQ:                                 .rs 2
 
 
@@ -207,9 +209,18 @@ SPRITE_PAGE:                                  .rs 256
 PPU_UPDATE_BUF:                               .rs 1
 
 
+          .rsset 0x03D3
+3D3_UNK:                                      .rs 1
+
+
           .rsset 0x03E3
 LOW_BANK_DATA:                                .rs 1
 UPPER_BANK_DATA:                              .rs 1
+TMP_CHOOSE_BANKS_RTN_UNK:                     .rs 1
+
+
+          .rsset 0x03EC
+KONAMI_CODE_TRACKERS?:                        .rs 3
 
 
           .rsset 0x0400
@@ -217,7 +228,7 @@ ARR_400_ANIM_UPDATE?:                         .rs 1
 
 
           .rsset 0x0424
-ARR_424_UNK:                                  .rs 1
+ARR_424_UNK:                                  .rs 2
 
 
           .rsset 0x0436
@@ -256,7 +267,8 @@ R2_TO_R5_BANK_DATA:                           .rs 4
 612_UNK:                                      .rs 1
 
 
-          .rsset 0x0616
+          .rsset 0x0615
+STATE_TURTLE_SELECT:                          .rs 1
 PPU_FLAG_UNK:                                 .rs 1
 
 
@@ -306,12 +318,17 @@ ARR_6D7_UNK:                                  .rs 40
 
 
           .rsset 0x06D9
-BUF_UNK:                                      .rs 8
+PPU_UPDATE_BUF_UNK:                           .rs 8
 
 
           .rsset 0x06DA
 R_**:$06DA:                                   .rs 1
 R_**:$06DB:                                   .rs 1
+
+
+          .rsset 0x0701
+701_TSELECT_UNK:                              .rs 1
+ARR_702_UNK:                                  .rs 2
 
 
           .rsset 0x071C

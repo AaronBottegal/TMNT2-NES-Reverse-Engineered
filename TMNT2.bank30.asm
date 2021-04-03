@@ -2690,24 +2690,24 @@ SOUND_SCRIPT_UNK: ; 1E:095C, 0x03C95C
     .db 90
     .db 9C
     .db 90
-SWITCH_STATE_18: ; 1E:0A83, 0x03CA83
+SWITCH_STATE_18_PRIMARY: ; 1E:0A83, 0x03CA83
     INC IRQ_COUNT? ; ++
     LDA STATE_SWITCH_18 ; Load switch state.
     JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch it up.
-    LOW(SWITCH_18_RTN_FIRST_SCREEN?)
-    HIGH(SWITCH_18_RTN_FIRST_SCREEN?)
-    LOW(SWITCH_18_RTN_B)
-    HIGH(SWITCH_18_RTN_B)
-    LOW(SWITCH_18_RTN_C)
+    LOW(SWITCH_18_RTN_FIRST_SCREEN)
+    HIGH(SWITCH_18_RTN_FIRST_SCREEN)
+    LOW(SWITCH_18_TITLE_SCREEN)
+    HIGH(SWITCH_18_TITLE_SCREEN)
+    LOW(SWITCH_18_RTN_C) ; Attract
     HIGH(SWITCH_18_RTN_C)
-    LOW(SWITCH_18_RTN_D)
-    HIGH(SWITCH_18_RTN_D)
-    LOW(SWITCH_18_RTN_E)
-    HIGH(SWITCH_18_RTN_E)
+    LOW(SWITCH_18_TITLE_DATA_MOVE) ; Select setup?
+    HIGH(SWITCH_18_TITLE_DATA_MOVE)
+    LOW(SWITCH_18_SELECT_TURTLE) ; Select turtle screen.
+    HIGH(SWITCH_18_SELECT_TURTLE)
     LOW(SWITCH_18_RTN_F)
     HIGH(SWITCH_18_RTN_F)
-SWITCH_18_RTN_FIRST_SCREEN?: ; 1E:0A96, 0x03CA96
-    LDA 19_SUBSTATE_18?
+SWITCH_18_RTN_FIRST_SCREEN: ; 1E:0A96, 0x03CA96
+    LDA SUBSTATE_18
     BNE 19_NOT_ZERO
     JSR INIT_IRQ_FLAGS_UNK ; Init
     JSR SOUND_INIT_RTN
@@ -2716,50 +2716,53 @@ SWITCH_18_RTN_FIRST_SCREEN?: ; 1E:0A96, 0x03CA96
     LDA #$0D ; A=
     JSR SETUP_R0/R1_IRQ_DATA ; Set GFX from A.
     LDX #$1E ; Title screen file.
-    JSR BANK_SAVE_PAIRED_RTN_14:0499
-    JSR SET_TIMER_256
-    INC 19_SUBSTATE_18?
-    JMP WRITE_PPU_CTRL_COPY
+    JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15
+    JSR SET_TIMER_40_0x256
+    INC SUBSTATE_18 ; Next state.
+    JMP WRITE_PPU_CTRL_COPY ; Enable rendering.
 19_NOT_ZERO: ; 1E:0AB8, 0x03CAB8
     JSR SUB_40/41_TIMER_RET_FLAG ; Do timer.
     BNE RTS ; If timer is ongoing, goto.
     LDA #$00
-    STA 19_SUBSTATE_18? ; Init var.
+    STA SUBSTATE_18 ; Init substate.
     INC STATE_SWITCH_18 ; State++
 RTS: ; 1E:0AC3, 0x03CAC3
     RTS
-SWITCH_18_RTN_B: ; 1E:0AC4, 0x03CAC4
-    LDA 19_SUBSTATE_18?
-    JSR SWITCH_CODE_PTRS_PAST_JSR
-    LOW(SWITCH_19_RTN_A)
-    HIGH(SWITCH_19_RTN_A)
-    LOW(SWITCH_19_RTN_B)
-    HIGH(SWITCH_19_RTN_B)
-    LOW(SWITCH_19_RTN_C)
-    HIGH(SWITCH_19_RTN_C)
-SWITCH_19_RTN_A: ; 1E:0ACF, 0x03CACF
+SWITCH_18_TITLE_SCREEN: ; 1E:0AC4, 0x03CAC4
+    LDA SUBSTATE_18 ; Get substate.
+    JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch on it.
+    LOW(18:1_SUBSTATE_TITLE_SETUP)
+    HIGH(18:1_SUBSTATE_TITLE_SETUP)
+    LOW(18:1_SUBSTATE_TITLE_SELECT)
+    HIGH(18:1_SUBSTATE_TITLE_SELECT)
+    LOW(18:1_SUBSTATE_TITLE_SELECTED)
+    HIGH(18:1_SUBSTATE_TITLE_SELECTED)
+18:1_SUBSTATE_TITLE_SETUP: ; 1E:0ACF, 0x03CACF
     LDA #$00
-    STA **:$001F
-    INC 19_SUBSTATE_18?
-    JSR INIT_IRQ_FLAGS_UNK
-    JSR INIT+CLEAR_MANY_POOLS
-    LDA #$0D
+    STA 1F_TITLE_UNK
+    INC SUBSTATE_18 ; Substate 1 now.
+    JSR INIT_IRQ_FLAGS_UNK ; IRQ stuff.
+    JSR INIT+CLEAR_MANY_POOLS ; Pools...
+    LDA #$0D ; BG GFX?
     JSR SETUP_R0/R1_IRQ_DATA
     JSR INIT_STREAM+MISC_UNK
-    LDA #$34 ; Bank 14
+    LDA #$34 ; Bank 14/15
     JSR BANK_PAIR_USE_A
-    JSR 14:047A
-    JSR SET_TIMER_256
+    JSR 14:047A_TITLE_SCRN_SETUP?
+    JSR SET_TIMER_40_0x256
     LDA #$00
-    STA **:$0025
-    STA **:$03EC
-    STA **:$03ED
-    STA **:$03EE
+    STA KONAMI_CODE_TRIGGERED
+    STA KONAMI_CODE_TRACKERS?[3]
+    STA KONAMI_CODE_TRACKERS?+1
+    STA KONAMI_CODE_TRACKERS?+2
     RTS
+KONAMI_CODE_WHICH_DATA?: ; 1E:0AFC, 0x03CAFC
     .db 01
     .db 80
     .db 81
+TITLE_PLAYER_SELECT_DATA_L: ; 1E:0AFF, 0x03CAFF
     .db 05
+TITLE_PLAYER_SELECT_DATA_H: ; 1E:0B00, 0x03CB00
     .db CB
     .db 12
     .db CB
@@ -2806,247 +2809,137 @@ SWITCH_19_RTN_A: ; 1E:0ACF, 0x03CACF
     .db 40
     .db 80
     .db FF
-SWITCH_19_RTN_B: ; 1E:0B2E, 0x03CB2E
-    .db 20
-    .db 1A
-    .db CC
-    .db D0
-    .db 03
-    .db 4C
-    .db 0E
-    .db CC
-    .db A2
-    .db 00
-    .db 8A
-    .db 0A
-    .db A8
-    .db B9
-    .db FF
-    .db CA
-    .db 85
-    .db 00
-    .db B9
-    .db 00
-    .db CB
-    .db 85
-    .db 01
-    .db A5
-    .db 38
-    .db F0
-    .db 1C
-    .db BC
-    .db EC
-    .db 03
-    .db D1
-    .db 00
-    .db D0
-    .db 10
-    .db C8
-    .db 98
-    .db 9D
-    .db EC
-    .db 03
-    .db B1
-    .db 00
-    .db C9
-    .db FF
-    .db D0
-    .db 0A
-    .db BD
-    .db FC
-    .db CA
-    .db 85
-    .db 25
-    .db A9
-    .db 00
-    .db 9D
-    .db EC
-    .db 03
-    .db E8
-    .db E0
-    .db 03
-    .db 90
-    .db CE
-    .db A9
-    .db 50
-    .db 8D
-    .db 7E
-    .db 04
-    .db A9
-    .db 74
-    .db 8D
-    .db 00
-    .db 04
-    .db A9
-    .db C4
-    .db 85
-    .db 2F
-    .db A6
-    .db 21
-    .db BD
-    .db A6
-    .db CB
-    .db 8D
-    .db 6C
-    .db 04
-    .db A5
-    .db F8
-    .db 29
-    .db 20
-    .db F0
-    .db 0E
-    .db A9
-    .db 56
-    .db 20
-    .db 52
-    .db DB
-    .db A5
-    .db 21
-    .db 49
-    .db 01
-    .db 85
-    .db 21
-    .db 4C
-    .db 2B
-    .db CC
-    .db A5
-    .db F8
-    .db 29
-    .db 10
-    .db F0
-    .db 0B
-    .db A9
-    .db 57
-    .db 20
-    .db 52
-    .db DB
-    .db A9
-    .db 80
-    .db 85
-    .db 40
-    .db E6
-    .db 19
-    .db 60
+18:1_SUBSTATE_TITLE_SELECT: ; 1E:0B2E, 0x03CB2E
+    JSR SUB_40/41_TIMER_RET_FLAG ; Timer down.
+    BNE TITLE_TIMER_NOT_EXPIRED
+    JMP INC_STATE_18
+TITLE_TIMER_NOT_EXPIRED: ; 1E:0B36, 0x03CB36
+    LDX #$00 ; X=
+X_INDEX_LOOP: ; 1E:0B38, 0x03CB38
+    TXA ; A=
+    ASL A ; To index.
+    TAY ; To Y
+    LDA TITLE_PLAYER_SELECT_DATA_L,Y ; Set up ptr for...?
+    STA TMP_00
+    LDA TITLE_PLAYER_SELECT_DATA_H,Y
+    STA TMP_01
+    LDA CTRL_NEWLY_PRESSED_A[2] ; Load controller pressed.
+    BEQ NO_CONTROLLER_NEWLY_PRESSED ; None newly pressed.
+    LDY KONAMI_CODE_TRACKERS?[3],X ; Get next index from this index.
+    CMP [TMP_00],Y ; If A _ Val
+    BNE KONAMI_CODE_RESET ; !=, goto.
+    INY ; Next index.
+    TYA ; To A.
+    STA KONAMI_CODE_TRACKERS?[3],X ; Store back.
+    LDA [TMP_00],Y ; Load next datum.
+    CMP #$FF ; If _ #$FF
+    BNE NO_CONTROLLER_NEWLY_PRESSED ; !=, goto.
+    LDA KONAMI_CODE_WHICH_DATA?,X ; Load val from index.
+    STA KONAMI_CODE_TRIGGERED
+KONAMI_CODE_RESET: ; 1E:0B60, 0x03CB60
+    LDA #$00
+    STA KONAMI_CODE_TRACKERS?[3],X ; Clear tracker, mismatch.
+NO_CONTROLLER_NEWLY_PRESSED: ; 1E:0B65, 0x03CB65
+    INX ; X++
+    CPX #$03 ; If X _ #$03
+    BCC X_INDEX_LOOP ; <, goto.
+    LDA #$50 ; A=
+    STA ARR_47E_UNK[1] ; To
+    LDA #$74 ; A=
+    STA ARR_400_ANIM_UPDATE?[1] ; To
+    LDA #$C4 ; A=
+    STA ZP_R2-R5_BANK_VALUES[4] ; To.
+    LDX TITLE_PLAYERS_COUNT_CURSOR ; X=
+    LDA TITLE_DATA_Y_POS,X
+    STA ARR_46C_UNK ; To here
+    LDA CTRL_NEWLY_PRESSED_B[2] ; Load pressed.
+    AND #$20 ; Test select?
+    BEQ SELECT_NOT_PRESSED
+    LDA #$56 ; A=
+    JSR SND_BANKED_DISPATCH ; Sound.
+    LDA TITLE_PLAYERS_COUNT_CURSOR ; Invert cursor.
+    EOR #$01
+    STA TITLE_PLAYERS_COUNT_CURSOR
+    JMP SET_TIMER_40_0x256 ; Timer reset.
+SELECT_NOT_PRESSED: ; 1E:0B94, 0x03CB94
+    LDA CTRL_NEWLY_PRESSED_B[2] ; Load other newly pressed.
+    AND #$10 ; Test start.
+    BEQ RTS
+    LDA #$57 ; Sound effect.
+    JSR SND_BANKED_DISPATCH ; Dispatch.
+    LDA #$80 ; Set timer.
+    STA 40_TIMER?[2]
+    INC SUBSTATE_18 ; Next state.
+RTS: ; 1E:0BA5, 0x03CBA5
+    RTS
+TITLE_DATA_Y_POS: ; 1E:0BA6, 0x03CBA6
     .db B4
     .db C4
-SWITCH_19_RTN_C: ; 1E:0BA8, 0x03CBA8
-    .db A5
-    .db 38
-    .db 30
-    .db 11
-    .db A5
-    .db 40
-    .db 29
-    .db 08
-    .db 0A
-    .db 0A
-    .db 0A
-    .db 0A
-    .db 65
-    .db 21
-    .db 20
-    .db 1C
-    .db DC
-    .db C6
-    .db 40
-    .db D0
-    .db E8
-    .db A9
-    .db 03
-    .db 85
-    .db 1D
-    .db A9
-    .db 03
-    .db 4C
-    .db 15
-    .db CC
+18:1_SUBSTATE_TITLE_SELECTED: ; 1E:0BA8, 0x03CBA8
+    LDA CTRL_NEWLY_PRESSED_A[2] ; Load pressed.
+    BMI SKIP_RTN ; If A newly pressed.
+    LDA 40_TIMER?[2] ; Load timer
+    AND #$08 ; Get bit.
+    ASL A
+    ASL A
+    ASL A
+    ASL A ; Shift to bit 7.
+    ADC TITLE_PLAYERS_COUNT_CURSOR ; Add 0/1, 0x80/0x81
+    JSR UNK_STREAM_0x300_SETUP_BANK_1C/1D ; Setup screen update buf.
+    DEC 40_TIMER?[2] ; Timer--
+    BNE RTS ; Not done, just leave.
+SKIP_RTN: ; 1E:0BBD, 0x03CBBD
+    LDA #$03
+    STA DISABLE_RENDERING_X_FRAMES ; Skip frames.
+    LDA #$03 ; Goto state.
+    JMP SWITCH_18_SET_STATE_SUBSTATE_0
 SWITCH_18_RTN_C: ; 1E:0BC6, 0x03CBC6
-    .db A6
-    .db 19
-    .db D0
-    .db 0A
-    .db 20
-    .db 50
-    .db CC
-    .db A9
-    .db 01
-    .db 85
-    .db 1F
-    .db E6
-    .db 19
-    .db 60
-    .db A5
-    .db 38
-    .db 29
-    .db 30
-    .db D0
-    .db 04
-    .db 20
-    .db 49
-    .db D1
-    .db 60
-    .db A9
-    .db 01
-    .db 4C
-    .db 15
-    .db CC
-SWITCH_18_RTN_D: ; 1E:0BE3, 0x03CBE3
-    .db 20
-    .db 50
-    .db CC
-    .db A9
-    .db 00
-    .db 85
-    .db 1F
-    .db A9
-    .db 05
-    .db 85
-    .db 1D
-    .db A5
-    .db 21
-    .db 85
-    .db 20
-    .db A9
-    .db 03
-    .db 8D
-    .db D3
-    .db 03
-    .db 4C
-    .db 0E
-    .db CC
-SWITCH_18_RTN_E: ; 1E:0BFA, 0x03CBFA
-    .db A9
-    .db 00
-    .db 85
-    .db 3C
-    .db A9
-    .db 3C
-    .db 20
-    .db 11
-    .db DB
-    .db 20
-    .db 95
-    .db 92
-    .db AD
-    .db 15
-    .db 06
-    .db D0
-    .db 09
-    .db 4C
-    .db 0E
-    .db CC
-    .db E6
-    .db 18
-    .db A9
-    .db 00
-    .db 85
-    .db 19
-    .db 60
-    .db 85
-    .db 18
-    .db 4C
-    .db 10
-    .db CC
+    LDX SUBSTATE_18 ; Get substate.
+    BNE SUBSTATE_NONZERO ; != 0, goto.
+    JSR INIT+CLEAR_MANY_POOLS ; Clear pools.
+    LDA #$01
+    STA 1F_TITLE_UNK ; Set true.
+    INC SUBSTATE_18 ; Substate setup.
+    RTS
+SUBSTATE_NONZERO: ; 1E:0BD4, 0x03CBD4
+    LDA CTRL_NEWLY_PRESSED_A[2] ; Get pressed.
+    AND #$30 ; Test Select+start
+    BNE START/SELECT_NOT_PRESSED
+    JSR 1E:1149 ; Do rtn.
+    RTS
+START/SELECT_NOT_PRESSED: ; 1E:0BDE, 0x03CBDE
+    LDA #$01 ; Continue in substate 0.
+    JMP SWITCH_18_SET_STATE_SUBSTATE_0
+SWITCH_18_TITLE_DATA_MOVE: ; 1E:0BE3, 0x03CBE3
+    JSR INIT+CLEAR_MANY_POOLS ; Clear pools.
+    LDA #$00
+    STA 1F_TITLE_UNK ; Set idk.
+    LDA #$05
+    STA DISABLE_RENDERING_X_FRAMES ; Wait time for next state.
+    LDA TITLE_PLAYERS_COUNT_CURSOR
+    STA TWO_PLAYERS_FLAG ; Store here.
+    LDA #$03
+    STA 3D3_UNK ; Store 3 to.
+    JMP INC_STATE_18 ; Next state, abuse RTS.
+SWITCH_18_SELECT_TURTLE: ; 1E:0BFA, 0x03CBFA
+    LDA #$00
+    STA 3C_SWITCH_UNK ; Init unk switch.
+    LDA #$3C ; Bank 1C/1D
+    JSR BANK_PAIR_USE_A ; Goto bank.
+    JSR TURTLE_SELECT_RTN
+    LDA STATE_TURTLE_SELECT ; Get state of rtn.
+    BNE RTS ; If nonzero, goto.
+    JMP INC_STATE_18 ; Next state.
+INC_STATE_18: ; 1E:0C0E, 0x03CC0E
+    INC STATE_SWITCH_18
+CLEAR_18_SUBSTATE: ; 1E:0C10, 0x03CC10
+    LDA #$00
+    STA SUBSTATE_18
+RTS: ; 1E:0C14, 0x03CC14
+    RTS
+SWITCH_18_SET_STATE_SUBSTATE_0: ; 1E:0C15, 0x03CC15
+    STA STATE_SWITCH_18
+    JMP CLEAR_18_SUBSTATE
 SUB_40/41_TIMER_RET_FLAG: ; 1E:0C1A, 0x03CC1A
     LDA 40_TIMER?[2] ; Load val
     ORA 40_TIMER?+1 ; OR with.
@@ -3059,7 +2952,7 @@ SUB_40/41_TIMER_RET_FLAG: ; 1E:0C1A, 0x03CC1A
     LDA #$01 ; Return timer ongoing.
 RTS: ; 1E:0C2A, 0x03CC2A
     RTS
-SET_TIMER_256: ; 1E:0C2B, 0x03CC2B
+SET_TIMER_40_0x256: ; 1E:0C2B, 0x03CC2B
     LDA #$00 ; A=
     LDY #$01 ; Y=
 SET_TIMER_YA: ; 1E:0C2F, 0x03CC2F
@@ -3114,7 +3007,7 @@ CLEAR_600-6A6_LOOP: ; 1E:0C77, 0x03CC77
     BNE CLEAR_600-6A6_LOOP ; No, loop.
     LDX #$00 ; Index
 CLEAR_[457]00_PAGES_LOOP: ; 1E:0C81, 0x03CC81
-    STA ARR_400_ANIM_UPDATE?,X ; Clear
+    STA ARR_400_ANIM_UPDATE?[1],X ; Clear
     STA **:$0500,X ; Clear
     STA **:$0700,X ; Clear
     INX ; X++
@@ -3346,14 +3239,14 @@ SKIP_OTHER_LOAD: ; 1E:0E2F, 0x03CE2F
     BEQ SKIP_UPDATE? ; If val == to, goto. NOTE: 0 or 2 can branch depending.
 PPU_FLAG_NOT_SET: ; 1E:0E31, 0x03CE31
     TAX ; A val to X.
-    STX R_**:$000B ; Store to.
+    STX TSEL_0B ; Store to.
     LDA 436_ARR_UNK,X ; A from
     AND #$03 ; Get bits 0000.0011 from val.
     STA ZP_0C_UNK ; Store them here.
     LDA 436_ARR_UNK,X
     AND #$E0 ; Get bits 1110.0000
     STA ZP_07_UNK ; Store here.
-    LDA ARR_424_UNK,X ; Load value.
+    LDA ARR_424_UNK[2],X ; Load value.
     STA ZP_11_UNK ; Store to.
     LDY #$00 ; Clear val.
     STY ZP_0D_UNK
@@ -3381,11 +3274,11 @@ OBJECT_ANIM_DECIDED?: ; 1E:0E71, 0x03CE71
     LDA ARR_556_UNK,X ; Load value from.
     AND #$03 ; Get bits 0000.0011
     STA TMP_06? ; Store to.
-    LDA ARR_400_ANIM_UPDATE?,X
+    LDA ARR_400_ANIM_UPDATE?[1],X
     BEQ SKIP_UPDATE? ; ==, goto.
     LDY ARR_46C_UNK,X ; Load from.
     STY TMP_01 ; To temp.
-    LDY ARR_47E_UNK,X ; Same
+    LDY ARR_47E_UNK[1],X ; Same
     STY TMP_02
     JSR RTN_ANIMATE_SPRITES? ; Do routine.
     LDA TMP_0F? ; Load.
@@ -3436,7 +3329,7 @@ SKIP_INC: ; 1E:0EDD, 0x03CEDD
     BCC 1E:0F41
     LDA **:$004C
     BNE 1E:0EA3
-    LDA ARR_424_UNK,X
+    LDA ARR_424_UNK[2],X
     BMI 1E:0F20
     CMP #$50
     BCS 1E:0EB5
@@ -3518,7 +3411,7 @@ VAL_LOADED: ; 1E:0F68, 0x03CF68
     BNE 1E:0FAC
     LDA ZP_0E_UNK
     BEQ 1E:0FB5
-    LDA R_**:$000B
+    LDA TSEL_0B
     CMP #$0A
     BEQ 1E:0FAC
     CMP #$0B
@@ -3617,7 +3510,7 @@ L_1E:1053: ; 1E:1053, 0x03D053
     LDY #$00
     STY ZP_12_UNK
 L_1E:1059: ; 1E:1059, 0x03D059
-    LDA ARR_400_ANIM_UPDATE?,X
+    LDA ARR_400_ANIM_UPDATE?[1],X
     BEQ L_1E:1079
     CPX #$04
     BCS L_1E:106C
@@ -3695,7 +3588,7 @@ L_1E:10C7: ; 1E:10C7, 0x03D0C7
 L_1E:10D7: ; 1E:10D7, 0x03D0D7
     LDX ARR_C6_UNK,Y
     BMI L_1E:10FC
-    LDA ARR_47E_UNK,X
+    LDA ARR_47E_UNK[1],X
     BPL L_1E:10EB
     STY R_**:$0015
     LDY R_**:$0017
@@ -3765,14 +3658,14 @@ L_1E:1139: ; 1E:1139, 0x03D139
     CPX #$12
     BCC 1E:113B
     RTS
-    LDA #$34
+    LDA #$34 ; Bank 14/15
     JSR BANK_PAIR_USE_A
-    JSR $8041
+    JSR 14:0041
     LDA **:$003F
     BEQ SWITCH_18_RTN_F
     INC **:$0027
     LDY #$00
-    STY 19_SUBSTATE_18?
+    STY SUBSTATE_18
     INY
     STY STATE_SWITCH_18
     RTS
@@ -4446,7 +4339,7 @@ BUF_MGMT_UNK: ; 1E:13FD, 0x03D3FD
     STA 61B_FLAG_UNK ; Set non-zero.
 MOVE_DONE: ; 1E:1409, 0x03D409
     LDA #$05 ; Load unk...
-    JMP UNK_RTN_CALL_BANKED ; Goto.
+    JMP UNK_STREAM_0x300_SETUP_BANK_1C/1D ; Goto.
     LDX PPU_INDEX_UNK_42 ; Load index.
     LDA L_1E:151A,X ; Load data.
 L_1E:1413: ; 1E:1413, 0x03D413
@@ -4477,7 +4370,7 @@ L_1E:1433: ; 1E:1433, 0x03D433
 MOVE_DATA_INDEX_TO_X_TARGET: ; 1E:143E, 0x03D43E
     INY ; Y++
     LDA [TMP_00],Y ; Load from stream ptr.
-    STA BUF_UNK[8],X ; Store to.
+    STA PPU_UPDATE_BUF_UNK[8],X ; Store to.
     INX ; X++
     CPX TMP_02 ; End X value.
     BNE MOVE_DATA_INDEX_TO_X_TARGET
@@ -4500,24 +4393,24 @@ DATA_INDEX_X_INITIAL: ; 1E:1450, 0x03D450
     .db 1C
 L_1E:145A: ; 1E:145A, 0x03D45A
     LDA L_1E:1842,Y
-    STA BUF_UNK[8],X
+    STA PPU_UPDATE_BUF_UNK[8],X
     INY
     INX
     CPX #$20
     BNE L_1E:145A
     BEQ SET_FLAG_61B+RTS
-    LDA R_**:$0033
+    LDA 33_TURTLE_SELECT_UNK
     LDX #$11
     JSR L_1E:1477
-    LDY R_**:$0047
+    LDY 47_UNK_PCOUNT?
     BEQ L_1E:148A
-    LDA R_**:$0034
+    LDA 34_TSELECT_FF/01?
     LDX #$15
 L_1E:1477: ; 1E:1477, 0x03D477
     ASL A
     TAY
     LDA #$0A
-    STA BUF_UNK[8],X
+    STA PPU_UPDATE_BUF_UNK[8],X
     LDA L_1E:148D,Y
     STA R_**:$06DA,X
     LDA L_1E:148E,Y
@@ -6178,52 +6071,55 @@ SOUND_INIT_RTN: ; 1E:1B28, 0x03DB28
     TXA
     PHA ; Save X
     LDY #$01
-    STY 28_BANK_CFG_INDEX_UNK ; Unsure why
+    STY 28_BANK_CFG_INDEX? ; Unsure why
     JSR SAVE_UP/LOW_AND_SWITCH_BANKS_18/19
     JSR SOUND_INIT
     JSR RESTORE_UPPER/LOWER
     LDY #$00
-    STY 28_BANK_CFG_INDEX_UNK
+    STY 28_BANK_CFG_INDEX?
     PLA
     TAX ; Restore X
     PLA
     TAY ; Restore Y.
     RTS
 SOUND_UNK: ; 1E:1B42, 0x03DB42
-    LDY 28_BANK_CFG_INDEX_UNK ; Get flag.
+    LDY 28_BANK_CFG_INDEX? ; Get flag.
     BNE RTS ; != 0, goto.
     LDY #$01
-    STY 28_BANK_CFG_INDEX_UNK ; Set
+    STY 28_BANK_CFG_INDEX? ; Set
     JSR SOUND_SCRIPT_UNK
     LDY #$00
-    STY 28_BANK_CFG_INDEX_UNK
+    STY 28_BANK_CFG_INDEX?
 RTS: ; 1E:1B51, 0x03DB51
     RTS
-    STA **:$03E5
-    LDA 28_BANK_CFG_INDEX_UNK
-    BNE RTS
-    TYA
+SND_BANKED_DISPATCH: ; 1E:1B52, 0x03DB52
+    STA TMP_CHOOSE_BANKS_RTN_UNK ; A to.
+    LDA 28_BANK_CFG_INDEX? ; Load val.
+    BNE RTS ; If data, leave?
+    TYA ; Save Y
     PHA
-    TXA
+    TXA ; Save X
     PHA
     LDY #$01
-    STY 28_BANK_CFG_INDEX_UNK
-    LDA **:$03E5
-    CMP #$6D
-    BCS 1E:1B6E
-    JSR SAVE_UP/LOW_AND_SWITCH_BANKS_18/19
-    JMP 1E:1B71
-    JSR SAVE_UP/LOW_AND_SWITCH_BANKS_1A/1B
-    LDA **:$03E5
-    JSR $803B
-    JSR RESTORE_UPPER/LOWER
+    STY 28_BANK_CFG_INDEX? ; Now val.
+    LDA TMP_CHOOSE_BANKS_RTN_UNK ; Load val.
+    CMP #$6D ; If A _ 6D
+    BCS BANK_SET_1A/1B ; >=, goto.
+    JSR SAVE_UP/LOW_AND_SWITCH_BANKS_18/19 ; Set up these banks.
+    JMP BANK_SET_CHOSEN
+BANK_SET_1A/1B: ; 1E:1B6E, 0x03DB6E
+    JSR SAVE_UP/LOW_AND_SWITCH_BANKS_1A/1B ; Or these banks.
+BANK_SET_CHOSEN: ; 1E:1B71, 0x03DB71
+    LDA TMP_CHOOSE_BANKS_RTN_UNK ; Load val.
+    JSR 18:003B ; 18 OR 1A, doing 18 first.
+    JSR RESTORE_UPPER/LOWER ; Restore previous.
     LDY #$00
-    STY 28_BANK_CFG_INDEX_UNK
-    PLA
+    STY 28_BANK_CFG_INDEX? ; No more index.
+    PLA ; Restore X+Y
     TAX
     PLA
     TAY
-    RTS
+    RTS ; Leave.
 SAVE_UP/LOW_AND_SWITCH_BANKS_18/19: ; 1E:1B83, 0x03DB83
     LDA $8000 ; Load lower bank data.
     STA LOW_BANK_DATA
@@ -6270,14 +6166,15 @@ RESTORE_UPPER/LOWER: ; 1E:1BCB, 0x03DBCB
     LDA COPY_BANK_CFG_F5
     STA MMC3_BANK_CFG ; Store config.
     RTS
+DISPATCH_CLEAR_SCREEN: ; 1E:1BEB, 0x03DBEB
     LDA $8000
-    STA LOWER_BANK_SAVE_PAIRED?
-    LDA #$34
+    STA LOWER_BANK_SAVE_PAIRED? ; Save lower
+    LDA #$34 ; To bank 14.
     JSR BANK_PAIR_USE_A
-    JSR $8491
-    LDA LOWER_BANK_SAVE_PAIRED?
+    JSR CLEAR_SCREEN_SUB ; Clear screen.
+    LDA LOWER_BANK_SAVE_PAIRED? ; Bank back.
     JMP BANK_PAIR_USE_A
-BANK_SAVE_PAIRED_RTN_14:0499: ; 1E:1BFD, 0x03DBFD
+BANK_PAIR_SAVE+PPU_FILE_BANK_14/15: ; 1E:1BFD, 0x03DBFD
     PHA ; Save A.
     LDA $8000 ; Load lower.
     STA LOWER_BANK_SAVE_PAIRED? ; Save.
@@ -6291,9 +6188,9 @@ BANK_SAVE_PAIRED_RTN_14:0499: ; 1E:1BFD, 0x03DBFD
     JSR BANK_PAIRED ; Bank in
     JSR RTN_UNK ; Run RTN.
     JMP RESTORE_BANK_PAIRED ; Restore.
-UNK_RTN_CALL_BANKED: ; 1E:1C1C, 0x03DC1C
+UNK_STREAM_0x300_SETUP_BANK_1C/1D: ; 1E:1C1C, 0x03DC1C
     PHA ; Save A.
-    LDA #$3C
+    LDA #$3C ; Bank 1C+1D
     JSR BANK_PAIRED
     PLA ; Pull A.
     JSR UNK_STREAM_SETUP_0x300_BUF ; Goto rtn.

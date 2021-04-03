@@ -4726,171 +4726,95 @@ DTABLE_UNK_HIGH: ; 1C:004B, 0x03804B
     .db 62
     .db 06
     .db 60
-    .db AD
-    .db 15
-    .db 06
-    .db 20
-    .db 98
-    .db CC
-    .db A7
-    .db 92
-    .db B1
-    .db 92
-    .db C4
-    .db 92
-    .db F2
-    .db 92
-    .db 5A
-    .db 93
-    .db 2B
-    .db 95
-    .db A9
-    .db 05
-    .db 85
-    .db 1D
-    .db EE
-    .db 15
-    .db 06
-    .db 4C
-    .db EB
-    .db DB
-    .db A5
-    .db 21
-    .db 29
-    .db 01
-    .db 05
-    .db 47
-    .db 85
-    .db 47
-    .db A9
-    .db 05
-    .db 85
-    .db 1D
-    .db 20
-    .db ED
-    .db D3
-    .db EE
-    .db 15
-    .db 06
-    .db 60
-    .db A9
-    .db E0
-    .db 85
-    .db 2D
-    .db A9
-    .db E2
-    .db 85
-    .db 2E
-    .db A2
-    .db 08
-    .db 20
-    .db FD
-    .db DB
-    .db A0
-    .db 00
-    .db 84
-    .db 33
-    .db C8
-    .db A5
-    .db 47
-    .db 49
-    .db 01
-    .db 8D
-    .db 01
-    .db 07
-    .db F0
-    .db 02
-    .db A0
-    .db FF
-    .db 84
-    .db 34
-    .db A9
-    .db 05
-    .db 85
-    .db 1D
-    .db EE
-    .db 15
-    .db 06
-    .db A9
-    .db 6A
-    .db 20
-    .db 52
-    .db DB
-    .db 4C
-    .db A1
-    .db FE
-    .db A9
-    .db 01
-    .db 8D
-    .db 24
-    .db 04
-    .db 8D
-    .db 25
-    .db 04
-    .db A9
-    .db C4
-    .db 85
-    .db 2F
-    .db A9
-    .db 00
-    .db 8D
-    .db 02
-    .db 07
-    .db 8D
-    .db 03
-    .db 07
-    .db A0
-    .db 00
-    .db B9
-    .db 3A
-    .db 93
-    .db 99
-    .db D9
-    .db 06
-    .db C8
-    .db C0
-    .db 20
-    .db 90
-    .db F5
-    .db A2
-    .db 00
-    .db A9
-    .db 09
-    .db A4
-    .db 33
-    .db 20
-    .db 3C
-    .db 94
-    .db A2
-    .db 01
-    .db A9
-    .db 12
-    .db A4
-    .db 34
-    .db 30
-    .db 03
-    .db 20
-    .db 3C
-    .db 94
-    .db A5
-    .db 33
-    .db 85
-    .db 0A
-    .db A5
-    .db 34
-    .db 85
-    .db 0B
-    .db 20
-    .db BB
-    .db 94
-    .db A9
-    .db 05
-    .db 85
-    .db 1D
-    .db EE
-    .db 15
-    .db 06
-    .db 60
+TURTLE_SELECT_RTN: ; 1C:1295, 0x039295
+    LDA STATE_TURTLE_SELECT
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(TURTLE_SELECT_CLEAR_SCREEN) ; Screen manip.
+    HIGH(TURTLE_SELECT_CLEAR_SCREEN)
+    LOW(TURTLE_SELECT_RTN_1) ; Cursor things?
+    HIGH(TURTLE_SELECT_RTN_1)
+    LOW(TURTLE_SELECT_RTN_2) ; Setup screen+music.
+    HIGH(TURTLE_SELECT_RTN_2)
+    LOW(TURTLE_SELECT_RTN_3) ; Pick?
+    HIGH(TURTLE_SELECT_RTN_3)
+    LOW(TURTLE_SELECT_RTN_4)
+    HIGH(TURTLE_SELECT_RTN_4)
+    LOW(TURTLE_SELECT_RTN_5)
+    HIGH(TURTLE_SELECT_RTN_5)
+TURTLE_SELECT_CLEAR_SCREEN: ; 1C:12A7, 0x0392A7
+    LDA #$05
+    STA DISABLE_RENDERING_X_FRAMES ; Disable rendering.
+    INC STATE_TURTLE_SELECT ; Next state.
+    JMP DISPATCH_CLEAR_SCREEN
+TURTLE_SELECT_RTN_1: ; 1C:12B1, 0x0392B1
+    LDA TITLE_PLAYERS_COUNT_CURSOR ; Get players count cursor.
+    AND #$01 ; Get 0/1
+    ORA 47_UNK_PCOUNT? ; Or with...?
+    STA 47_UNK_PCOUNT? ; Store...
+    LDA #$05
+    STA DISABLE_RENDERING_X_FRAMES ; Rendering.
+    JSR INIT_STREAM+MISC_UNK
+    INC STATE_TURTLE_SELECT
+    RTS
+TURTLE_SELECT_RTN_2: ; 1C:12C4, 0x0392C4
+    LDA #$E0 ; Set BG GFX
+    STA IRQ_GFX_DATA_BANK_R0
+    LDA #$E2
+    STA IRQ_GFX_DATA_BANK_R1
+    LDX #$08 ; Turtle select file.
+    JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15
+    LDY #$00
+    STY 33_TURTLE_SELECT_UNK
+    INY ; Y=1
+    LDA 47_UNK_PCOUNT? ; Load
+    EOR #$01 ; Invert.
+    STA 701_TSELECT_UNK
+    BEQ SKIP_Y_MANIP
+    LDY #$FF ; Y=
+SKIP_Y_MANIP: ; 1C:12E1, 0x0392E1
+    STY 34_TSELECT_FF/01? ; Store 1 or FF.
+    LDA #$05
+    STA DISABLE_RENDERING_X_FRAMES ; Stop rendering for 5 frames.
+    INC STATE_TURTLE_SELECT ; Next state.
+    LDA #$6A
+    JSR SND_BANKED_DISPATCH ; Start music.
+    JMP WRITE_PPU_CTRL_COPY ; Enable rendering?
+TURTLE_SELECT_RTN_3: ; 1C:12F2, 0x0392F2
+    LDA #$01 ; Enable?
+    STA ARR_424_UNK[2]
+    STA ARR_424_UNK+1
+    LDA #$C4 ; Set sprite bank
+    STA ZP_R2-R5_BANK_VALUES[4]
+    LDA #$00
+    STA ARR_702_UNK[2]
+    STA ARR_702_UNK+1
+    LDY #$00 ; Y=
+LOOP_MAKE_UPDATE_BUF: ; 1C:1308, 0x039308
+    LDA TESELECT_PALETTE_DATA_INIT,Y ; Load
+    STA PPU_UPDATE_BUF_UNK[8],Y ; Store to.
+    INY ; Y++
+    CPY #$20 ; If Y _ #$20
+    BCC LOOP_MAKE_UPDATE_BUF ; <, goto.
+    LDX #$00 ; X=
+    LDA #$09 ; A=
+    LDY 33_TURTLE_SELECT_UNK ; Y=
+    JSR TSELECT_RTN_UNK_A
+    LDX #$01 ; X=
+    LDA #$12 ; A=
+    LDY 34_TSELECT_FF/01? ; Y=
+    BMI DONT_RUN_P2_RTN ; If minus, don't run P2 RTN.
+    JSR TSELECT_RTN_UNK_A ; Do rtn.
+DONT_RUN_P2_RTN: ; 1C:1327, 0x039327
+    LDA 33_TURTLE_SELECT_UNK
+    STA TSEL_0A
+    LDA 34_TSELECT_FF/01?
+    STA TSEL_0B
+    JSR TSEL_RTN_UNK_B
+    LDA #$05
+    STA DISABLE_RENDERING_X_FRAMES
+    INC STATE_TURTLE_SELECT
+    RTS
+TESELECT_PALETTE_DATA_INIT: ; 1C:133A, 0x03933A
     .db 0F
     .db 16
     .db 18
@@ -4923,324 +4847,162 @@ DTABLE_UNK_HIGH: ; 1C:004B, 0x03804B
     .db 0F
     .db 16
     .db 20
-    .db 20
-    .db 00
-    .db 95
-    .db EE
-    .db 03
-    .db 07
-    .db AD
-    .db 03
-    .db 07
-    .db C9
-    .db 12
-    .db 90
-    .db 0D
-    .db A9
-    .db 00
-    .db 8D
-    .db 03
-    .db 07
-    .db AD
-    .db 02
-    .db 07
-    .db 49
-    .db 01
-    .db 8D
-    .db 02
-    .db 07
-    .db AD
-    .db 02
-    .db 07
-    .db D0
-    .db 11
-    .db A0
-    .db 00
-    .db AD
-    .db 01
-    .db 07
-    .db 4A
-    .db B0
-    .db 03
-    .db 8C
-    .db 01
-    .db 04
-    .db 4A
-    .db B0
-    .db 03
-    .db 8C
-    .db 00
-    .db 04
-    .db A5
-    .db 33
-    .db 85
-    .db 08
-    .db A5
-    .db 34
-    .db 85
-    .db 09
-    .db AD
-    .db 01
-    .db 07
-    .db C9
-    .db 03
-    .db F0
-    .db 20
-    .db 85
-    .db 00
-    .db A2
-    .db 01
-    .db 46
-    .db 00
-    .db B0
-    .db 09
-    .db 20
-    .db E9
-    .db 93
-    .db A5
-    .db 34
-    .db C5
-    .db 09
-    .db D0
-    .db 20
-    .db CA
-    .db 46
-    .db 00
-    .db B0
-    .db 09
-    .db 20
-    .db E9
-    .db 93
-    .db A5
-    .db 33
-    .db C5
-    .db 08
-    .db D0
-    .db 12
-    .db 60
-    .db EE
-    .db 15
-    .db 06
-    .db A9
-    .db 83
-    .db 8D
-    .db 01
-    .db 07
-    .db A9
-    .db 00
-    .db 8D
-    .db 02
-    .db 07
-    .db 8D
-    .db 03
-    .db 07
-    .db 60
-    .db A9
-    .db 00
-    .db B4
-    .db 08
-    .db 20
-    .db 3C
-    .db 94
-    .db 8A
-    .db 4A
-    .db A9
-    .db 09
-    .db 90
-    .db 02
-    .db A9
-    .db 12
-    .db B4
-    .db 33
-    .db 20
-    .db 3C
-    .db 94
-    .db A5
-    .db 33
-    .db 85
-    .db 0A
-    .db A5
-    .db 34
-    .db 85
-    .db 0B
-    .db 4C
-    .db BB
-    .db 94
-    .db B5
-    .db 38
-    .db 30
-    .db 11
-    .db 48
-    .db 29
-    .db 0C
-    .db F0
-    .db 03
-    .db 20
-    .db 0E
-    .db 94
-    .db 68
-    .db 29
-    .db 03
-    .db F0
-    .db 03
-    .db 20
-    .db 25
-    .db 94
-    .db 60
-    .db 8A
-    .db D0
-    .db 02
-    .db A9
-    .db 02
-    .db 0D
-    .db 01
-    .db 07
-    .db 8D
-    .db 01
-    .db 07
-    .db A9
-    .db 57
-    .db 4C
-    .db 52
-    .db DB
-    .db 8A
-    .db 49
-    .db 01
-    .db A8
-    .db B5
-    .db 33
-    .db 49
-    .db 02
-    .db D9
-    .db 33
-    .db 00
-    .db F0
-    .db 09
-    .db 95
-    .db 33
-    .db 48
-    .db A9
-    .db 56
-    .db 20
-    .db 52
-    .db DB
-    .db 68
-    .db 60
-    .db 8A
-    .db 49
-    .db 01
-    .db A8
-    .db B5
-    .db 33
-    .db 49
-    .db 01
-    .db D9
-    .db 33
-    .db 00
-    .db F0
-    .db 09
-    .db 95
-    .db 33
-    .db 48
-    .db A9
-    .db 56
-    .db 20
-    .db 52
-    .db DB
-    .db 68
-    .db 60
-    .db 86
-    .db 07
-    .db 85
-    .db 06
-    .db 98
-    .db 0A
-    .db A8
-    .db B9
-    .db 98
-    .db 94
-    .db 85
-    .db 02
-    .db B9
-    .db 99
-    .db 94
-    .db 85
-    .db 03
-    .db A4
-    .db 06
-    .db A9
-    .db 02
-    .db 85
-    .db 00
-    .db A6
-    .db 1E
-    .db A9
-    .db 04
-    .db 9D
-    .db 00
-    .db 03
-    .db A5
-    .db 02
-    .db 9D
-    .db 01
-    .db 03
-    .db A5
-    .db 03
-    .db 9D
-    .db 02
-    .db 03
-    .db A9
-    .db 03
-    .db 9D
-    .db 03
-    .db 03
-    .db B9
-    .db A0
-    .db 94
-    .db 9D
-    .db 04
-    .db 03
-    .db C8
-    .db B9
-    .db A0
-    .db 94
-    .db 9D
-    .db 05
-    .db 03
-    .db C8
-    .db B9
-    .db A0
-    .db 94
-    .db 9D
-    .db 06
-    .db 03
-    .db C8
-    .db 18
-    .db 8A
-    .db 69
-    .db 07
-    .db AA
-    .db 18
-    .db A9
-    .db 08
-    .db 65
-    .db 02
-    .db 85
-    .db 02
-    .db C6
-    .db 00
-    .db 10
-    .db C7
-    .db A9
-    .db 00
-    .db 9D
-    .db 00
-    .db 03
-    .db 86
-    .db 1E
-    .db A6
-    .db 07
-    .db 60
+TURTLE_SELECT_RTN_4: ; 1C:135A, 0x03935A
+    JSR 1C:1500
+    INC ARR_702_UNK+1
+    LDA ARR_702_UNK+1
+    CMP #$12
+    BCC 1C:1374
+    LDA #$00
+    STA ARR_702_UNK+1
+    LDA ARR_702_UNK[2]
+    EOR #$01
+    STA ARR_702_UNK[2]
+    LDA ARR_702_UNK[2]
+    BNE 1C:138A
+    LDY #$00
+    LDA 701_TSELECT_UNK
+    LSR A
+    BCS 1C:1384
+    STY **:$0401
+    LSR A
+    BCS 1C:138A
+    STY ARR_400_ANIM_UPDATE?[1]
+    LDA 33_TURTLE_SELECT_UNK
+    STA TMP_08_INDIRECT[2]
+    LDA 34_TSELECT_FF/01?
+    STA TMP_08_INDIRECT+1
+    LDA 701_TSELECT_UNK
+    CMP #$03
+    BEQ 1C:13B9
+    STA TMP_00
+    LDX #$01
+    LSR TMP_00
+    BCS 1C:13AA
+    JSR 1C:13E9
+    LDA 34_TSELECT_FF/01?
+    CMP TMP_08_INDIRECT+1
+    BNE 1C:13CA
+    DEX
+    LSR TMP_00
+    BCS 1C:13B8
+    JSR 1C:13E9
+    LDA 33_TURTLE_SELECT_UNK
+    CMP TMP_08_INDIRECT[2]
+    BNE 1C:13CA
+    RTS
+    INC STATE_TURTLE_SELECT
+    LDA #$83
+    STA 701_TSELECT_UNK
+    LDA #$00
+    STA ARR_702_UNK[2]
+    STA ARR_702_UNK+1
+    RTS
+    LDA #$00
+    LDY TMP_08_INDIRECT[2],X
+    JSR $943C
+    TXA
+    LSR A
+    LDA #$09
+    BCC 1C:13D9
+    LDA #$12
+    LDY 33_TURTLE_SELECT_UNK,X
+    JSR $943C
+    LDA 33_TURTLE_SELECT_UNK
+    STA TSEL_0A
+    LDA 34_TSELECT_FF/01?
+    STA TSEL_0B
+    JMP $94BB
+    LDA CTRL_NEWLY_PRESSED_A[2],X
+    BMI 1C:13FE
+    PHA
+    AND #$0C
+    BEQ 1C:13F5
+    JSR $940E
+    PLA
+    AND #$03
+    BEQ 1C:13FD
+    JSR $9425
+    RTS
+    TXA
+    BNE 1C:1403
+    LDA #$02
+    ORA 701_TSELECT_UNK
+    STA 701_TSELECT_UNK
+    LDA #$57
+    JMP SND_BANKED_DISPATCH
+    TXA
+    EOR #$01
+    TAY
+    LDA 33_TURTLE_SELECT_UNK,X
+    EOR #$02
+    CMP 33_TURTLE_SELECT_UNK,Y
+    BEQ 1C:1424
+    STA 33_TURTLE_SELECT_UNK,X
+    PHA
+    LDA #$56
+    JSR SND_BANKED_DISPATCH
+    PLA
+    RTS
+    TXA
+    EOR #$01
+    TAY
+    LDA 33_TURTLE_SELECT_UNK,X
+    EOR #$01
+    CMP 33_TURTLE_SELECT_UNK,Y
+    BEQ 1C:143B
+    STA 33_TURTLE_SELECT_UNK,X
+    PHA
+    LDA #$56
+    JSR SND_BANKED_DISPATCH
+    PLA
+    RTS
+TSELECT_RTN_UNK_A: ; 1C:143C, 0x03943C
+    STX ZP_07_UNK
+    STA TMP_06?
+    TYA
+    ASL A
+    TAY
+    LDA $9498,Y
+    STA TMP_02
+    LDA $9499,Y
+    STA TMP_03
+    LDY TMP_06?
+    LDA #$02
+    STA TMP_00
+    LDX INDEX_300_UPDATE_BUF
+    LDA #$04
+    STA PPU_UPDATE_BUF[1],X
+    LDA TMP_02
+    STA **:$0301,X
+    LDA TMP_03
+    STA **:$0302,X
+    LDA #$03
+    STA **:$0303,X
+    LDA $94A0,Y
+    STA **:$0304,X
+    INY
+    LDA $94A0,Y
+    STA **:$0305,X
+    INY
+    LDA $94A0,Y
+    STA **:$0306,X
+    INY
+    CLC
+    TXA
+    ADC #$07
+    TAX
+    CLC
+    LDA #$08
+    ADC TMP_02
+    STA TMP_02
+    DEC TMP_00
+    BPL 1C:1455
+    LDA #$00
+    STA PPU_UPDATE_BUF[1],X
+    STX INDEX_300_UPDATE_BUF
+    LDX ZP_07_UNK
+    RTS
     .db C9
     .db 23
     .db CC
@@ -5276,55 +5038,36 @@ DTABLE_UNK_HIGH: ; 1C:004B, 0x03804B
     .db 0C
     .db 0F
     .db 03
-    .db 8A
-    .db 48
-    .db A5
-    .db 0A
-    .db 0A
-    .db 0A
-    .db A8
-    .db A2
-    .db 08
-    .db 20
-    .db DB
-    .db 94
-    .db A5
-    .db 0B
-    .db 30
-    .db 08
-    .db 0A
-    .db 0A
-    .db A8
-    .db A2
-    .db 0C
-    .db 20
-    .db DB
-    .db 94
-    .db A9
-    .db 05
-    .db 20
-    .db 01
-    .db 80
-    .db 68
-    .db AA
-    .db 60
-    .db A9
-    .db 03
-    .db 85
-    .db 00
-    .db B9
-    .db EC
-    .db 94
-    .db 9D
-    .db D9
-    .db 06
-    .db E8
-    .db C8
-    .db C6
-    .db 00
-    .db 10
-    .db F4
-    .db 60
+TSEL_RTN_UNK_B: ; 1C:14BB, 0x0394BB
+    TXA
+    PHA
+    LDA TSEL_0A
+    ASL A
+    ASL A
+    TAY
+    LDX #$08
+    JSR $94DB
+    LDA TSEL_0B
+    BMI 1C:14D3
+    ASL A
+    ASL A
+    TAY
+    LDX #$0C
+    JSR $94DB
+    LDA #$05
+    JSR $8001
+    PLA
+    TAX
+    RTS
+    LDA #$03
+    STA TMP_00
+    LDA $94EC,Y
+    STA PPU_UPDATE_BUF_UNK[8],X
+    INX
+    INY
+    DEC TMP_00
+    BPL 1C:14DF
+    RTS
     .db 0F
     .db 1A
     .db 11
@@ -5388,330 +5131,141 @@ DTABLE_UNK_HIGH: ; 1C:004B, 0x03804B
     .db 90
     .db 94
     .db 90
-    .db A5
-    .db 38
-    .db 05
-    .db 39
-    .db 30
-    .db 38
-    .db 20
-    .db 00
-    .db 95
-    .db CE
-    .db 01
-    .db 07
-    .db F0
-    .db 30
-    .db EE
-    .db 03
-    .db 07
-    .db AD
-    .db 03
-    .db 07
-    .db C9
-    .db 11
-    .db 90
-    .db 0D
-    .db A9
-    .db 00
-    .db 8D
-    .db 03
-    .db 07
-    .db AD
-    .db 02
-    .db 07
-    .db 49
-    .db 01
-    .db 8D
-    .db 02
-    .db 07
-    .db AD
-    .db 02
-    .db 07
-    .db D0
-    .db 09
-    .db A9
-    .db 04
-    .db 85
-    .db 0A
-    .db 85
-    .db 0B
-    .db 4C
-    .db 66
-    .db 95
-    .db A5
-    .db 33
-    .db 85
-    .db 0A
-    .db A5
-    .db 34
-    .db 85
-    .db 0B
-    .db 4C
-    .db BB
-    .db 94
-    .db A5
-    .db 47
-    .db D0
-    .db 02
-    .db 85
-    .db 34
-    .db A9
-    .db 00
-    .db 8D
-    .db 15
-    .db 06
-    .db 8D
-    .db 01
-    .db 07
-    .db 8D
-    .db 02
-    .db 07
-    .db 8D
-    .db 03
-    .db 07
-    .db A2
-    .db 00
-    .db 20
-    .db D1
-    .db F4
-    .db E8
-    .db 20
-    .db D1
-    .db F4
-    .db 4C
-    .db 28
-    .db DB
-    .db BD
-    .db 44
-    .db 05
-    .db 1D
-    .db 32
-    .db 05
-    .db F0
-    .db 1B
-    .db BD
-    .db D8
-    .db 04
-    .db 18
-    .db 7D
-    .db 44
-    .db 05
-    .db 9D
-    .db D8
-    .db 04
-    .db BD
-    .db C6
-    .db 04
-    .db 7D
-    .db 32
-    .db 05
-    .db 30
-    .db 06
-    .db C9
-    .db 20
-    .db B0
-    .db 02
-    .db A9
-    .db 00
-    .db 9D
-    .db C6
-    .db 04
-    .db BD
-    .db FC
-    .db 04
-    .db 1D
-    .db EA
-    .db 04
-    .db F0
-    .db 13
-    .db BD
-    .db 90
-    .db 04
-    .db 18
-    .db 7D
-    .db FC
-    .db 04
-    .db 9D
-    .db 90
-    .db 04
-    .db BD
-    .db 7E
-    .db 04
-    .db 7D
-    .db EA
-    .db 04
-    .db 9D
-    .db 7E
-    .db 04
-    .db BD
-    .db 20
-    .db 05
-    .db 1D
-    .db 0E
-    .db 05
-    .db F0
-    .db 13
-    .db BD
-    .db B4
-    .db 04
-    .db 18
-    .db 7D
-    .db 20
-    .db 05
-    .db 9D
-    .db B4
-    .db 04
-    .db BD
-    .db A2
-    .db 04
-    .db 7D
-    .db 0E
-    .db 05
-    .db 9D
-    .db A2
-    .db 04
-    .db A5
-    .db 42
-    .db C9
-    .db 07
-    .db F0
-    .db 2E
-    .db A5
-    .db B7
-    .db 05
-    .db BA
-    .db F0
-    .db 11
-    .db BD
-    .db 90
-    .db 04
-    .db 38
-    .db E5
-    .db B7
-    .db 9D
-    .db 90
-    .db 04
-    .db BD
-    .db 7E
-    .db 04
-    .db E5
-    .db BA
-    .db 9D
-    .db 7E
-    .db 04
-    .db A5
-    .db 83
-    .db 05
-    .db 84
-    .db F0
-    .db 11
-    .db BD
-    .db B4
-    .db 04
-    .db 38
-    .db E5
-    .db 83
-    .db 9D
-    .db B4
-    .db 04
-    .db BD
-    .db A2
-    .db 04
-    .db E5
-    .db 84
-    .db 9D
-    .db A2
-    .db 04
-    .db BD
-    .db D8
-    .db 04
-    .db 18
-    .db 7D
-    .db B4
-    .db 04
-    .db BD
-    .db C6
-    .db 04
-    .db 7D
-    .db A2
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db 60
-    .db C9
-    .db 80
-    .db B0
-    .db 14
-    .db A8
-    .db BD
-    .db 12
-    .db 04
-    .db 29
-    .db 20
-    .db F0
-    .db 06
-    .db B9
-    .db 85
-    .db 96
-    .db 4C
-    .db 5C
-    .db 96
-    .db B9
-    .db 6F
-    .db 96
-    .db 4C
-    .db 5C
-    .db 96
-    .db 29
-    .db 7F
-    .db 85
-    .db 00
-    .db A4
-    .db 08
-    .db B9
-    .db 33
-    .db 00
-    .db 18
-    .db 65
-    .db 00
-    .db A8
-    .db BD
-    .db 12
-    .db 04
-    .db 29
-    .db 20
-    .db F0
-    .db 06
-    .db B9
-    .db B3
-    .db 96
-    .db 4C
-    .db 5C
-    .db 96
-    .db B9
-    .db 8F
-    .db 96
-    .db DD
-    .db 24
-    .db 04
-    .db F0
-    .db 0B
-    .db 9D
-    .db 24
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 48
-    .db 04
-    .db 9D
-    .db 5A
-    .db 04
-    .db A4
-    .db 08
-    .db 60
+TURTLE_SELECT_RTN_5: ; 1C:152B, 0x03952B
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    ORA CTRL_NEWLY_PRESSED_A+1
+    BMI 1C:1569
+    JSR 1C:1500
+    DEC 701_TSELECT_UNK
+    BEQ 1C:1569
+    INC ARR_702_UNK+1
+    LDA ARR_702_UNK+1
+    CMP #$11
+    BCC 1C:1550
+    LDA #$00
+    STA ARR_702_UNK+1
+    LDA ARR_702_UNK[2]
+    EOR #$01
+    STA ARR_702_UNK[2]
+    LDA ARR_702_UNK[2]
+    BNE 1C:155E
+    LDA #$04
+    STA TSEL_0A
+    STA TSEL_0B
+    JMP 1C:1566
+    LDA 33_TURTLE_SELECT_UNK
+    STA TSEL_0A
+    LDA 34_TSELECT_FF/01?
+    STA TSEL_0B
+    JMP TSEL_RTN_UNK_B
+    LDA 47_UNK_PCOUNT?
+    BNE 1C:156F
+    STA 34_TSELECT_FF/01?
+    LDA #$00
+    STA STATE_TURTLE_SELECT
+    STA 701_TSELECT_UNK
+    STA ARR_702_UNK[2]
+    STA ARR_702_UNK+1
+    LDX #$00
+    JSR 1F:14D1
+    INX
+    JSR 1F:14D1
+    JMP SOUND_INIT_RTN
+    LDA **:$0544,X
+    ORA **:$0532,X
+    BEQ 1C:15AC
+    LDA **:$04D8,X
+    CLC
+    ADC **:$0544,X
+    STA **:$04D8,X
+    LDA **:$04C6,X
+    ADC **:$0532,X
+    BMI 1C:15A9
+    CMP #$20
+    BCS 1C:15A9
+    LDA #$00
+    STA **:$04C6,X
+    LDA **:$04FC,X
+    ORA **:$04EA,X
+    BEQ 1C:15C7
+    LDA **:$0490,X
+    CLC
+    ADC **:$04FC,X
+    STA **:$0490,X
+    LDA ARR_47E_UNK[1],X
+    ADC **:$04EA,X
+    STA ARR_47E_UNK[1],X
+    LDA **:$0520,X
+    ORA **:$050E,X
+    BEQ 1C:15E2
+    LDA **:$04B4,X
+    CLC
+    ADC **:$0520,X
+    STA **:$04B4,X
+    LDA R_**:$04A2,X
+    ADC **:$050E,X
+    STA R_**:$04A2,X
+    LDA PPU_INDEX_UNK_42
+    CMP #$07
+    BEQ 1C:1616
+    LDA **:$00B7
+    ORA **:$00BA
+    BEQ 1C:15FF
+    LDA **:$0490,X
+    SEC
+    SBC **:$00B7
+    STA **:$0490,X
+    LDA ARR_47E_UNK[1],X
+    SBC **:$00BA
+    STA ARR_47E_UNK[1],X
+    LDA **:$0083
+    ORA **:$0084
+    BEQ 1C:1616
+    LDA **:$04B4,X
+    SEC
+    SBC **:$0083
+    STA **:$04B4,X
+    LDA R_**:$04A2,X
+    SBC **:$0084
+    STA R_**:$04A2,X
+    LDA **:$04D8,X
+    CLC
+    ADC **:$04B4,X
+    LDA **:$04C6,X
+    ADC R_**:$04A2,X
+    STA ARR_46C_UNK,X
+    RTS
+    CMP #$80
+    BCS 1C:163F
+    TAY
+    LDA **:$0412,X
+    AND #$20
+    BEQ 1C:1639
+    LDA 1C:1685,Y
+    JMP 1C:165C
+    LDA 1C:166F,Y
+    JMP 1C:165C
+    AND #$7F
+    STA TMP_00
+    LDY TMP_08_INDIRECT[2]
+    LDA 33_TURTLE_SELECT_UNK,Y
+    CLC
+    ADC TMP_00
+    TAY
+    LDA **:$0412,X
+    AND #$20
+    BEQ 1C:1659
+    LDA 1C:16B3,Y
+    JMP 1C:165C
+    LDA 1C:168F,Y
+    CMP ARR_424_UNK[2],X
+    BEQ 1C:166C
+    STA ARR_424_UNK[2],X
+    LDA #$00
+    STA **:$0448,X
+    STA **:$045A,X
+    LDY TMP_08_INDIRECT[2]
+    RTS
     .db 00
     .db 01
     .db 02

@@ -1,10 +1,6 @@
     .db 20
-    .db BD
-    .db 12
-    .db 04
-    .db 20
-    .db 98
-    .db CC
+    LDA **:$0412,X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
     .db 0B
     .db 80
     .db 26

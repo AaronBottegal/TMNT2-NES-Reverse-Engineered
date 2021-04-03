@@ -63,55 +63,28 @@
     .db 00
     .db 00
     .db 00
-    .db 20
-    .db CC
-    .db 80
-    .db A5
-    .db 3C
-    .db C9
-    .db 03
-    .db D0
-    .db 27
-    .db 20
-    .db AF
-    .db 80
-    .db A5
-    .db 00
-    .db C9
-    .db FF
-    .db F0
-    .db 2D
-    .db AD
-    .db E7
-    .db 03
-    .db F0
-    .db 1A
-    .db 20
-    .db 87
-    .db 80
-    .db CE
-    .db E7
-    .db 03
-    .db D0
-    .db 11
-    .db 18
-    .db A9
-    .db 02
-    .db 6D
-    .db E8
-    .db 03
-    .db 8D
-    .db E8
-    .db 03
-    .db A9
-    .db 00
-    .db 6D
-    .db E9
-    .db 03
-    .db 8D
-    .db E9
-    .db 03
-    .db 60
+    JSR ISOLATE_P1_BUTTONS?
+    LDA 3C_SWITCH_UNK ; Load switch.
+    CMP #$03 ; If _ #$03
+    BNE SWITCH_NOT_YET_3 ; !=, goto.
+    JSR 14:00AF ; If 3, do...?
+    LDA TMP_00
+    CMP #$FF
+    BEQ 14:0080
+    LDA **:$03E7
+    BEQ 14:0072
+    JSR 14:0087
+    DEC **:$03E7
+    BNE SWITCH_NOT_YET_3
+    CLC
+    LDA #$02
+    ADC **:$03E8
+    STA **:$03E8
+    LDA #$00
+    ADC **:$03E9
+    STA **:$03E9
+SWITCH_NOT_YET_3: ; 14:0071, 0x028071
+    RTS
     .db 20
     .db 87
     .db 80
@@ -202,25 +175,17 @@
     .db 4C
     .db 0F
     .db DB
-    .db A5
-    .db 3A
-    .db 29
-    .db 30
-    .db 85
-    .db 3A
-    .db A5
-    .db 38
-    .db 29
-    .db 30
-    .db 85
-    .db 38
-    .db A9
-    .db 00
-    .db 85
-    .db 3B
-    .db 85
-    .db 39
-    .db 60
+ISOLATE_P1_BUTTONS?: ; 14:00CC, 0x0280CC
+    LDA CTRL_PREV_A[2] ; Get previous.
+    AND #$30 ; Isolate SEL+START
+    STA CTRL_PREV_A[2] ; Store back.
+    LDA CTRL_NEWLY_PRESSED_A[2] ; Get previous
+    AND #$30 ; Isolate SEL+START
+    STA CTRL_NEWLY_PRESSED_A[2] ; Store back.
+    LDA #$00
+    STA CTRL_PREV_A+1 ; Clear P2?
+    STA CTRL_NEWLY_PRESSED_A+1
+    RTS
     .db 74
     .db 8D
     .db 96
@@ -1144,37 +1109,20 @@
     .db 00
     .db 01
     .db 45
-    .db 20
-    .db 28
-    .db DB
-    .db 20
-    .db 91
-    .db 84
-    .db A2
-    .db 02
-    .db 20
-    .db FD
-    .db DB
-    .db 20
-    .db ED
-    .db D3
-    .db A9
-    .db 05
-    .db 20
-    .db 1C
-    .db DC
-    .db 20
-    .db A1
-    .db FE
-    .db 60
-    .db A2
-    .db 00
-    .db 20
-    .db 99
-    .db 84
-    .db 4C
-    .db A1
-    .db FE
+14:047A_TITLE_SCRN_SETUP?: ; 14:047A, 0x02847A
+    JSR SOUND_INIT_RTN ; Sound
+    JSR CLEAR_SCREEN_SUB ; File 0 decompress, clear screen?
+    LDX #$02 ; Screen
+    JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15
+    JSR INIT_STREAM+MISC_UNK
+    LDA #$05 ; Objects?
+    JSR UNK_STREAM_0x300_SETUP_BANK_1C/1D
+    JSR WRITE_PPU_CTRL_COPY
+    RTS
+CLEAR_SCREEN_SUB: ; 14:0491, 0x028491
+    LDX #$00 ; Clear screen file?
+    JSR RTN_DECOMPRESS_TO_PPU ; Decompress.
+    JMP WRITE_PPU_CTRL_COPY ; Write PPU CTRL.
 RTN_DECOMPRESS_TO_PPU: ; 14:0499, 0x028499
     LDA DATA_PTRS_L,X ; Setup indirect.
     STA TMP_00
