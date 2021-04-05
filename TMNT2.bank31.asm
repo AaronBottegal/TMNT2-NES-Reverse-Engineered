@@ -5324,92 +5324,37 @@ BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
     .db 4C
     .db D1
     .db F4
-    .db A9
-    .db 00
-    .db 9D
-    .db 56
-    .db 05
-    .db 9D
-    .db 7E
-    .db 04
-    .db 9D
-    .db A2
-    .db 04
-    .db 9D
-    .db C6
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db 9D
-    .db 00
-    .db 04
-    .db 9D
-    .db 24
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 5A
-    .db 04
-    .db 9D
-    .db 48
-    .db 04
-    .db 9D
-    .db 12
-    .db 04
-    .db 9D
-    .db 90
-    .db 04
-    .db 9D
-    .db B4
-    .db 04
-    .db 9D
-    .db D8
-    .db 04
-    .db 9D
-    .db FC
-    .db 04
-    .db 9D
-    .db EA
-    .db 04
-    .db 9D
-    .db 20
-    .db 05
-    .db 9D
-    .db 0E
-    .db 05
-    .db 9D
-    .db 44
-    .db 05
-    .db 9D
-    .db 32
-    .db 05
-    .db 9D
-    .db 36
-    .db 04
-    .db 9D
-    .db 68
-    .db 05
-    .db 9D
-    .db 7A
-    .db 05
-    .db 9D
-    .db 8C
-    .db 05
-    .db 9D
-    .db 9E
-    .db 05
-    .db 9D
-    .db B0
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db 9D
-    .db D4
-    .db 05
-    .db 60
+INIT_OBJECT[X]_DATA?: ; 1F:14D1, 0x03F4D1
+    LDA #$00
+    STA 556_ARR_UNK[2],X
+    STA 47E_ARR_UNK[2],X
+    STA 4A2_ARR_UNK[2],X
+    STA 4C6_ARR_UNK[2],X
+    STA 46C_ARR_UNK[2],X
+    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X
+    STA ARR_SPRITE_ENABLED?[2],X
+    LDA #$00
+    STA 45A_ARR_UNK[2],X
+    STA 448_ARR_UNK[2],X
+    STA 412_ARR_OSTATE?[2],X
+    STA 490_ARR_UNK[2],X
+    STA 4B4_ARR_UNK[2],X
+    STA 4D8_ARR_UNK[2],X
+    STA 4FC_ARR_UNK[2],X
+    STA 4EA_ARR_UNK[2],X
+    STA 520_ARR_UNK[2],X
+    STA 50E_ARR_UNK[2],X
+    STA 544_ARR_UNK[2],X
+    STA 532_ARR_UNK[2],X
+    STA 436_ARR_UNK[2],X
+    STA 568_ARR_UNK[2],X
+    STA 57A_ARR_UNK[2],X
+    STA 58C_ARR_UNK[2],X
+    STA 59E_ARR_UNK[2],X
+    STA 5B0_ARR_UNK[2],X
+    STA 5C2_ARR_UNK[4],X
+    STA 5D4_ARR_OBJ_TIMER?[2],X
+    RTS
     .db 8A
     .db 48
     .db 98
@@ -6019,17 +5964,12 @@ BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
     .db 36
     .db 04
     .db 60
-    .db 18
-    .db BD
-    .db C6
-    .db 04
-    .db 7D
-    .db A2
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db 60
+MOVE_FINALIZE?: ; 1F:1788, 0x03F788
+    CLC ; Prep add.
+    LDA 4C6_ARR_UNK[2],X ; Load
+    ADC 4A2_ARR_UNK[2],X ; Add with.
+    STA 46C_ARR_UNK[2],X ; Store.
+    RTS ; Leave.
     .db 38
     .db BD
     .db 90
@@ -6226,93 +6166,49 @@ BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
     .db 40
     .db D0
     .db 00
+MOVE_RTN?: ; 1F:1857, 0x03F857
+    CLC ; Prep add.
+    ADC 544_ARR_UNK[2],X ; Add
+    STA 544_ARR_UNK[2],X ; Store.
+    BCC NO_OVERFLOW
+    INC 532_ARR_UNK[2],X ; Inc if overflow.
+NO_OVERFLOW: ; 1F:1863, 0x03F863
+    CLC ; Prep add.
+    LDA 544_ARR_UNK[2],X ; Load
+    ADC 4D8_ARR_UNK[2],X ; Add
+    STA 4D8_ARR_UNK[2],X ; Store.
+    LDA 532_ARR_UNK[2],X ; Load
+    ADC 4C6_ARR_UNK[2],X ; Add
+    STA 4C6_ARR_UNK[2],X ; Store.
+    BPL CARRY_SET_RET ; If positive result...?
+    CLC ; Carry cleared.
+    RTS
+CARRY_SET_RET: ; 1F:187A, 0x03F87A
+    SEC ; Carry set.
+    RTS
+FUNKY_ADD/ROT_RTN: ; 1F:187C, 0x03F87C
+    CLC ; Prep add.
+    LDA 4FC_ARR_UNK[2],X ; Load
+    ADC 490_ARR_UNK[2],X ; Add with.
+    STA 490_ARR_UNK[2],X ; Store.
+    LDA 4EA_ARR_UNK[2],X ; Load
+    ADC 47E_ARR_UNK[2],X ; Add with.
+    STA 47E_ARR_UNK[2],X ; Store to.
+    ROR A ; Rotate A
+    EOR 4EA_ARR_UNK[2],X ; Eor val.
+    ASL A ; Shift A back.
+    RTS ; RTS
     .db 18
-    .db 7D
-    .db 44
-    .db 05
-    .db 9D
-    .db 44
-    .db 05
-    .db 90
-    .db 03
-    .db FE
-    .db 32
-    .db 05
-    .db 18
-    .db BD
-    .db 44
-    .db 05
-    .db 7D
-    .db D8
-    .db 04
-    .db 9D
-    .db D8
-    .db 04
-    .db BD
-    .db 32
-    .db 05
-    .db 7D
-    .db C6
-    .db 04
-    .db 9D
-    .db C6
-    .db 04
-    .db 10
-    .db 02
-    .db 18
-    .db 60
-    .db 38
-    .db 60
-    .db 18
-    .db BD
-    .db FC
-    .db 04
-    .db 7D
-    .db 90
-    .db 04
-    .db 9D
-    .db 90
-    .db 04
-    .db BD
-    .db EA
-    .db 04
-    .db 7D
-    .db 7E
-    .db 04
-    .db 9D
-    .db 7E
-    .db 04
-    .db 6A
-    .db 5D
-    .db EA
-    .db 04
-    .db 0A
-    .db 60
-    .db 18
-    .db BD
-    .db 20
-    .db 05
-    .db 7D
-    .db B4
-    .db 04
-    .db 9D
-    .db B4
-    .db 04
-    .db BD
-    .db 0E
-    .db 05
-    .db 7D
-    .db A2
-    .db 04
-    .db 9D
-    .db A2
-    .db 04
-    .db 6A
-    .db 5D
-    .db 0E
-    .db 05
-    .db 0A
-    .db 60
+    LDA 520_ARR_UNK[2],X
+    ADC 4B4_ARR_UNK[2],X
+    STA 4B4_ARR_UNK[2],X
+    LDA 50E_ARR_UNK[2],X
+    ADC 4A2_ARR_UNK[2],X
+    STA 4A2_ARR_UNK[2],X
+    ROR A
+    EOR 50E_ARR_UNK[2],X
+    ASL A
+    RTS
     .db 02
     .db 03
     .db 04
@@ -6395,7 +6291,7 @@ LOOP_PPU_BOGUS_MANUAL_CLOCK: ; 1F:1906, 0x03F906
     DEX ; X--
     BNE LOOP_PPU_BOGUS_MANUAL_CLOCK ; !=0, loop.
     RTS ; Leave.
-INIT_IRQ_FLAGS_UNK: ; 1F:1912, 0x03F912
+CLEAR_IRQ_FLAGS_UNK: ; 1F:1912, 0x03F912
     LDA #$00
     STA IRQ_FLAG_R2-R5_EQ_7E
     STA IRQ_UNK_5E
@@ -7161,13 +7057,13 @@ LOOP_MOVE_3DATA: ; 1F:1E49, 0x03FE49
     JSR SOUND_UNK
     JSR CTRL_READ_SAFE ; Read controllers.
     JSR BUF_MGMT_UNK
-    JSR SWITCH_STATE_18_PRIMARY
+    JSR SWITCH_STATE_MENU
     JSR SPRITES_UPDATE?
-    LDX INDEX_300_UPDATE_BUF ; Load index.
+    LDX PPU_UPDATE_BUF_INDEX ; Load index.
     LDA #$00 ; Load
-    STA PPU_UPDATE_BUF[1],X ; Store EOF in buf.
+    STA PPU_UPDATE_BUFFER[20],X ; Store EOF in buf.
     INX ; X++
-    STX INDEX_300_UPDATE_BUF ; Store index back.
+    STX PPU_UPDATE_BUF_INDEX ; Store index back.
     STA FLAG_NMI_ALT_UNK
 LEAVE_NMI_RESTORE: ; 1F:1E81, 0x03FE81
     PLA

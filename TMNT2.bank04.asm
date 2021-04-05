@@ -638,7 +638,7 @@ RTN_UNK: ; 04:0278, 0x008278
     AND #$01 ; Test if odd?
     BNE RTS ; If set, leave.
     LDY #$00 ; Clear val?
-    STY TMP_08_INDIRECT+1
+    STY TMP_09
     LDA **:$0684,Y
     BPL 04:02D9
     LDA **:$0670,Y
@@ -646,38 +646,38 @@ RTN_UNK: ; 04:0278, 0x008278
     ASL A
     TAY
     LDA 04:02E7,Y
-    STA TSEL_0A
+    STA TSEL_PREV_P1?
     LDA 04:02E8,Y
-    STA TSEL_0B
-    LDY TMP_08_INDIRECT+1
-    LDA **:$04C6,X
+    STA TSEL_PREV_P2?
+    LDY TMP_09
+    LDA 4C6_ARR_UNK[2],X
     CMP #$08
     BCC 04:02AF
     LDA **:$068C,Y
-    CMP **:$04C6,X
+    CMP 4C6_ARR_UNK[2],X
     BCS 04:02D9
     LDA **:$0678,Y
-    CMP ARR_47E_UNK[1],X
+    CMP 47E_ARR_UNK[2],X
     BCS 04:02D9
     LDA **:$0678,Y
     CLC
-    ADC TSEL_0A
+    ADC TSEL_PREV_P1?
     BCS 04:02C4
-    CMP ARR_47E_UNK[1],X
+    CMP 47E_ARR_UNK[2],X
     BCC 04:02D9
     LDA **:$0680,Y
-    CMP R_**:$04A2,X
+    CMP 4A2_ARR_UNK[2],X
     BCS 04:02D9
     LDA **:$0680,Y
     CLC
-    ADC TSEL_0B
+    ADC TSEL_PREV_P2?
     BCS 04:0307
-    CMP R_**:$04A2,X
+    CMP 4A2_ARR_UNK[2],X
     BCS 04:0307
-    LDY TMP_08_INDIRECT+1
+    LDY TMP_09
     INY
     CPY #$04
-    STY TMP_08_INDIRECT+1
+    STY TMP_09
     BNE 04:0288
     LDA #$00
     STA TMP_00

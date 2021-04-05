@@ -1,49 +1,23 @@
     .db 34
-    .db A4
-    .db 27
-    .db B9
-    .db 36
-    .db 80
-    .db 85
-    .db 33
-    .db B9
-    .db 2E
-    .db 80
-    .db C9
-    .db FF
-    .db D0
-    .db 07
-    .db A9
-    .db 00
-    .db 85
-    .db 27
-    .db 4C
-    .db 01
-    .db 80
-    .db 85
-    .db 42
-    .db 0A
-    .db A8
-    .db B9
-    .db DF
-    .db 80
-    .db 8D
-    .db E8
-    .db 03
-    .db B9
-    .db E0
-    .db 80
-    .db 8D
-    .db E9
-    .db 03
-    .db A9
-    .db 00
-    .db 8D
-    .db E7
-    .db 03
-    .db 4C
-    .db CC
-    .db 80
+    LDY **:$0027
+    LDA $8036,Y
+    STA TURTLE_SELECT_POSITIONS[2]
+    LDA $802E,Y
+    CMP #$FF
+    BNE 14:0016
+    LDA #$00
+    STA **:$0027
+    JMP $8001
+    STA PPU_INDEX_UNK_42
+    ASL A
+    TAY
+    LDA $80DF,Y
+    STA **:$03E8
+    LDA $80E0,Y
+    STA **:$03E9
+    LDA #$00
+    STA **:$03E7
+    JMP $80CC
     .db 00
     .db 02
     .db 03
@@ -64,7 +38,7 @@
     .db 00
     .db 00
     JSR ISOLATE_P1_BUTTONS?
-    LDA 3C_SWITCH_UNK ; Load switch.
+    LDA 3C_SWITCH_CUTSCENE? ; Load switch.
     CMP #$03 ; If _ #$03
     BNE SWITCH_NOT_YET_3 ; !=, goto.
     JSR 14:00AF ; If 3, do...?

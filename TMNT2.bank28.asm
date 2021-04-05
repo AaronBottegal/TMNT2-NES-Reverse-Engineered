@@ -1,7 +1,7 @@
     .db 3C
 UNK_STREAM_SETUP_0x300_BUF: ; 1C:0001, 0x038001
     ASL A ; Shift A, make index.
-    TAY ; To index reg.
+    TAY ; To Y.
     LDA DT_UNK_LOW,Y ; Load low.
     STA TMP_00
     LDA DTABLE_UNK_HIGH,Y ; Load high.
@@ -35,11 +35,11 @@ FLAG_FE: ; 1C:0039, 0x038039
 A=FF_TO_300_INDEXED: ; 1C:003F, 0x03803F
     LDA #$FF ; A =
 A_TO_300_LOAD_INDEX: ; 1C:0041, 0x038041
-    LDX INDEX_300_UPDATE_BUF ; X from. NOTE: X is still index on ret.
+    LDX PPU_UPDATE_BUF_INDEX ; X from. NOTE: X is still index on ret.
 A_to_300_INDEXED: ; 1C:0043, 0x038043
-    STA PPU_UPDATE_BUF[1],X ; Store to.
+    STA PPU_UPDATE_BUFFER[20],X ; Store to.
     INX ; Next.
-    STX INDEX_300_UPDATE_BUF ; Store back.
+    STX PPU_UPDATE_BUF_INDEX ; Store back.
     RTS
 DT_UNK_LOW: ; 1C:004A, 0x03804A
     LOW(1C:0094)
@@ -4735,11 +4735,11 @@ TURTLE_SELECT_RTN: ; 1C:1295, 0x039295
     HIGH(TURTLE_SELECT_RTN_1)
     LOW(TURTLE_SELECT_RTN_2) ; Setup screen+music.
     HIGH(TURTLE_SELECT_RTN_2)
-    LOW(TURTLE_SELECT_RTN_3) ; Pick?
+    LOW(TURTLE_SELECT_RTN_3) ; Attribute updates.
     HIGH(TURTLE_SELECT_RTN_3)
-    LOW(TURTLE_SELECT_RTN_4)
+    LOW(TURTLE_SELECT_RTN_4) ; Mods the positions.
     HIGH(TURTLE_SELECT_RTN_4)
-    LOW(TURTLE_SELECT_RTN_5)
+    LOW(TURTLE_SELECT_RTN_5) ; Pick confirmed.
     HIGH(TURTLE_SELECT_RTN_5)
 TURTLE_SELECT_CLEAR_SCREEN: ; 1C:12A7, 0x0392A7
     LDA #$05
@@ -4747,10 +4747,10 @@ TURTLE_SELECT_CLEAR_SCREEN: ; 1C:12A7, 0x0392A7
     INC STATE_TURTLE_SELECT ; Next state.
     JMP DISPATCH_CLEAR_SCREEN
 TURTLE_SELECT_RTN_1: ; 1C:12B1, 0x0392B1
-    LDA TITLE_PLAYERS_COUNT_CURSOR ; Get players count cursor.
+    LDA TITLE_PLAYERS_COUNT_CURSOR_0/1 ; Get players count cursor.
     AND #$01 ; Get 0/1
-    ORA 47_UNK_PCOUNT? ; Or with...?
-    STA 47_UNK_PCOUNT? ; Store...
+    ORA 47_TWO_PLAYERS_FLAG? ; Or with...?
+    STA 47_TWO_PLAYERS_FLAG? ; Store...
     LDA #$05
     STA DISABLE_RENDERING_X_FRAMES ; Rendering.
     JSR INIT_STREAM+MISC_UNK
@@ -4764,15 +4764,15 @@ TURTLE_SELECT_RTN_2: ; 1C:12C4, 0x0392C4
     LDX #$08 ; Turtle select file.
     JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15
     LDY #$00
-    STY 33_TURTLE_SELECT_UNK
+    STY TURTLE_SELECT_POSITIONS[2] ; Clear..
     INY ; Y=1
-    LDA 47_UNK_PCOUNT? ; Load
+    LDA 47_TWO_PLAYERS_FLAG? ; Load
     EOR #$01 ; Invert.
-    STA 701_TSELECT_UNK
-    BEQ SKIP_Y_MANIP
+    STA 701_TSELECT_CONFIRMED/TIMER ; Store.
+    BEQ SKIP_Y_NEGATIVE ; If invert was 0, goto.
     LDY #$FF ; Y=
-SKIP_Y_MANIP: ; 1C:12E1, 0x0392E1
-    STY 34_TSELECT_FF/01? ; Store 1 or FF.
+SKIP_Y_NEGATIVE: ; 1C:12E1, 0x0392E1
+    STY TURTLE_SELECT_POSITIONS+1 ; Store 1 or FF.
     LDA #$05
     STA DISABLE_RENDERING_X_FRAMES ; Stop rendering for 5 frames.
     INC STATE_TURTLE_SELECT ; Next state.
@@ -4781,38 +4781,38 @@ SKIP_Y_MANIP: ; 1C:12E1, 0x0392E1
     JMP WRITE_PPU_CTRL_COPY ; Enable rendering?
 TURTLE_SELECT_RTN_3: ; 1C:12F2, 0x0392F2
     LDA #$01 ; Enable?
-    STA ARR_424_UNK[2]
-    STA ARR_424_UNK+1
-    LDA #$C4 ; Set sprite bank
+    STA ARR_SPRITE_ENABLED?[2]
+    STA ARR_SPRITE_ENABLED?+1
+    LDA #$C4 ; Set sprite bank R2.
     STA ZP_R2-R5_BANK_VALUES[4]
     LDA #$00
-    STA ARR_702_UNK[2]
-    STA ARR_702_UNK+1
-    LDY #$00 ; Y=
+    STA ARR_SPRITE_OBJ_TIMER?[2] ; Clear...?
+    STA ARR_SPRITE_OBJ_TIMER?+1
+    LDY #$00 ; Init loop.
 LOOP_MAKE_UPDATE_BUF: ; 1C:1308, 0x039308
     LDA TESELECT_PALETTE_DATA_INIT,Y ; Load
-    STA PPU_UPDATE_BUF_UNK[8],Y ; Store to.
+    STA PPU_PALETTE_BUF?[32],Y ; Store to.
     INY ; Y++
     CPY #$20 ; If Y _ #$20
     BCC LOOP_MAKE_UPDATE_BUF ; <, goto.
     LDX #$00 ; X=
-    LDA #$09 ; A=
-    LDY 33_TURTLE_SELECT_UNK ; Y=
-    JSR TSELECT_RTN_UNK_A
+    LDA #$09 ; Data update selection.
+    LDY TURTLE_SELECT_POSITIONS[2] ; Tutle select position.
+    JSR TURTLE_SELECTION_ATTR_UPDATE ; Update attrs.
     LDX #$01 ; X=
-    LDA #$12 ; A=
-    LDY 34_TSELECT_FF/01? ; Y=
+    LDA #$12 ; Data update selection.
+    LDY TURTLE_SELECT_POSITIONS+1 ; Selected pos.
     BMI DONT_RUN_P2_RTN ; If minus, don't run P2 RTN.
-    JSR TSELECT_RTN_UNK_A ; Do rtn.
+    JSR TURTLE_SELECTION_ATTR_UPDATE ; Do rtn.
 DONT_RUN_P2_RTN: ; 1C:1327, 0x039327
-    LDA 33_TURTLE_SELECT_UNK
-    STA TSEL_0A
-    LDA 34_TSELECT_FF/01?
-    STA TSEL_0B
-    JSR TSEL_RTN_UNK_B
+    LDA TURTLE_SELECT_POSITIONS[2] ; Load
+    STA TSEL_PREV_P1? ; Store
+    LDA TURTLE_SELECT_POSITIONS+1 ; Load
+    STA TSEL_PREV_P2?
+    JSR TSEL_QUEUE_BG_PALETTE_UPDATE ; Do...?
     LDA #$05
-    STA DISABLE_RENDERING_X_FRAMES
-    INC STATE_TURTLE_SELECT
+    STA DISABLE_RENDERING_X_FRAMES ; Stop rendering frames.
+    INC STATE_TURTLE_SELECT ; Next state.
     RTS
 TESELECT_PALETTE_DATA_INIT: ; 1C:133A, 0x03933A
     .db 0F
@@ -4848,162 +4848,179 @@ TESELECT_PALETTE_DATA_INIT: ; 1C:133A, 0x03933A
     .db 16
     .db 20
 TURTLE_SELECT_RTN_4: ; 1C:135A, 0x03935A
-    JSR 1C:1500
-    INC ARR_702_UNK+1
-    LDA ARR_702_UNK+1
-    CMP #$12
-    BCC 1C:1374
-    LDA #$00
-    STA ARR_702_UNK+1
-    LDA ARR_702_UNK[2]
-    EOR #$01
-    STA ARR_702_UNK[2]
-    LDA ARR_702_UNK[2]
-    BNE 1C:138A
-    LDY #$00
-    LDA 701_TSELECT_UNK
-    LSR A
-    BCS 1C:1384
-    STY **:$0401
-    LSR A
-    BCS 1C:138A
-    STY ARR_400_ANIM_UPDATE?[1]
-    LDA 33_TURTLE_SELECT_UNK
-    STA TMP_08_INDIRECT[2]
-    LDA 34_TSELECT_FF/01?
-    STA TMP_08_INDIRECT+1
-    LDA 701_TSELECT_UNK
-    CMP #$03
-    BEQ 1C:13B9
-    STA TMP_00
-    LDX #$01
-    LSR TMP_00
-    BCS 1C:13AA
-    JSR 1C:13E9
-    LDA 34_TSELECT_FF/01?
-    CMP TMP_08_INDIRECT+1
-    BNE 1C:13CA
-    DEX
-    LSR TMP_00
-    BCS 1C:13B8
-    JSR 1C:13E9
-    LDA 33_TURTLE_SELECT_UNK
-    CMP TMP_08_INDIRECT[2]
-    BNE 1C:13CA
+    JSR RTN_CURSOR_OBJECT_UPDATE? ; Update cursors?
+    INC ARR_SPRITE_OBJ_TIMER?+1 ; Inc ??
+    LDA ARR_SPRITE_OBJ_TIMER?+1 ; Load
+    CMP #$12 ; If _ #$12
+    BCC COUNTER_NOT_TRIGGERED_A? ; <, goto.
+    LDA #$00 ; Clear
+    STA ARR_SPRITE_OBJ_TIMER?+1 ; Clear counter?
+    LDA ARR_SPRITE_OBJ_TIMER?[2] ; Load val
+    EOR #$01 ; Invert bottom bit.
+    STA ARR_SPRITE_OBJ_TIMER?[2] ; Store back.
+COUNTER_NOT_TRIGGERED_A?: ; 1C:1374, 0x039374
+    LDA ARR_SPRITE_OBJ_TIMER?[2] ; Load data
+    BNE DATA_NOT_ZERO
+    LDY #$00 ; Y=
+    LDA 701_TSELECT_CONFIRMED/TIMER ; A=
+    LSR A ; >> 1
+    BCS SHIFTED_1_TO_CARRY
+    STY 400_ARR_SPR_ANIM_UPDATE_WHICH?+1 ; Clear.
+SHIFTED_1_TO_CARRY: ; 1C:1384, 0x039384
+    LSR A ; >> 1
+    BCS DATA_NOT_ZERO ; If we shift off a 1, goto.
+    STY 400_ARR_SPR_ANIM_UPDATE_WHICH?[2] ; Clear val.
+DATA_NOT_ZERO: ; 1C:138A, 0x03938A
+    LDA TURTLE_SELECT_POSITIONS[2] ; Load val
+    STA TMP_08 ; P1 previous
+    LDA TURTLE_SELECT_POSITIONS+1 ; Load val
+    STA TMP_09 ; P2 previous.
+    LDA 701_TSELECT_CONFIRMED/TIMER ; Load 
+    CMP #$03 ; If _ #$03
+    BEQ BOTH_TURTLES_SELECTED ; ==, goto.
+    STA TMP_00 ; Save.
+    LDX #$01 ; Player modifying.
+    LSR TMP_00 ; Shift bit.
+    BCS PLAYER_2_CONFIRMED ; If set, skip.
+    JSR RTN_MODIFY_SELECTION ; Mod selection.
+    LDA TURTLE_SELECT_POSITIONS+1 ; Load pos.
+    CMP TMP_09 ; Compare to previous.
+    BNE SELECTION_NOT_SAME_AS_PREV ; !=, goto.
+PLAYER_2_CONFIRMED: ; 1C:13AA, 0x0393AA
+    DEX ; X=0
+    LSR TMP_00 ; Shift temp.
+    BCS RTS ; If shift 1, leave.
+    JSR RTN_MODIFY_SELECTION ; Modify player 0.
+    LDA TURTLE_SELECT_POSITIONS[2] ; Load P1 Pos.
+    CMP TMP_08 ; Compare to previous.
+    BNE SELECTION_NOT_SAME_AS_PREV ; !=, goto.
+RTS: ; 1C:13B8, 0x0393B8
     RTS
-    INC STATE_TURTLE_SELECT
+BOTH_TURTLES_SELECTED: ; 1C:13B9, 0x0393B9
+    INC STATE_TURTLE_SELECT ; Next state.
     LDA #$83
-    STA 701_TSELECT_UNK
+    STA 701_TSELECT_CONFIRMED/TIMER ; Set....used as counter later?
+    LDA #$00 ; Clear/disable sprites used for cursors?
+    STA ARR_SPRITE_OBJ_TIMER?[2]
+    STA ARR_SPRITE_OBJ_TIMER?+1
+    RTS ; Leave.
+SELECTION_NOT_SAME_AS_PREV: ; 1C:13CA, 0x0393CA
     LDA #$00
-    STA ARR_702_UNK[2]
-    STA ARR_702_UNK+1
-    RTS
-    LDA #$00
-    LDY TMP_08_INDIRECT[2],X
-    JSR $943C
+    LDY TMP_08,X
+    JSR TURTLE_SELECTION_ATTR_UPDATE
     TXA
     LSR A
     LDA #$09
     BCC 1C:13D9
     LDA #$12
-    LDY 33_TURTLE_SELECT_UNK,X
-    JSR $943C
-    LDA 33_TURTLE_SELECT_UNK
-    STA TSEL_0A
-    LDA 34_TSELECT_FF/01?
-    STA TSEL_0B
-    JMP $94BB
-    LDA CTRL_NEWLY_PRESSED_A[2],X
-    BMI 1C:13FE
-    PHA
-    AND #$0C
-    BEQ 1C:13F5
-    JSR $940E
-    PLA
-    AND #$03
-    BEQ 1C:13FD
-    JSR $9425
-    RTS
-    TXA
-    BNE 1C:1403
-    LDA #$02
-    ORA 701_TSELECT_UNK
-    STA 701_TSELECT_UNK
-    LDA #$57
-    JMP SND_BANKED_DISPATCH
-    TXA
-    EOR #$01
-    TAY
-    LDA 33_TURTLE_SELECT_UNK,X
-    EOR #$02
-    CMP 33_TURTLE_SELECT_UNK,Y
-    BEQ 1C:1424
-    STA 33_TURTLE_SELECT_UNK,X
-    PHA
+    LDY TURTLE_SELECT_POSITIONS[2],X
+    JSR TURTLE_SELECTION_ATTR_UPDATE
+    LDA TURTLE_SELECT_POSITIONS[2]
+    STA TSEL_PREV_P1?
+    LDA TURTLE_SELECT_POSITIONS+1
+    STA TSEL_PREV_P2?
+    JMP TSEL_QUEUE_BG_PALETTE_UPDATE
+RTN_MODIFY_SELECTION: ; 1C:13E9, 0x0393E9
+    LDA CTRL_NEWLY_PRESSED_A[2],X ; Get pressed.
+    BMI A_BUTTON_PRESSED ; Branch if A pressed.
+    PHA ; Save A.
+    AND #$0C ; Keep bits up/down.
+    BEQ U/D_NOT_PRESSED ; Not pressed.
+    JSR TSELECT_INVERT_ROW ; Pressed, do rtn.
+U/D_NOT_PRESSED: ; 1C:13F5, 0x0393F5
+    PLA ; Pull buttons.
+    AND #$03 ; Keep left/right buttons.
+    BEQ 1C:13FD ; Not pressed, goto.
+    JSR TSELECT_INVERT_COLUMN ; Pressed, do rtn.
+    RTS ; Leave, modded.
+A_BUTTON_PRESSED: ; 1C:13FE, 0x0393FE
+    TXA ; Player to A.
+    BNE PLAYER_A_SELECT_2 ; != 0, goto.
+    LDA #$02 ; A=
+PLAYER_A_SELECT_2: ; 1C:1403, 0x039403
+    ORA 701_TSELECT_CONFIRMED/TIMER ; Or val.
+    STA 701_TSELECT_CONFIRMED/TIMER ; Store back.
+    LDA #$57 ; Play sound.
+    JMP SND_BANKED_DISPATCH ; Abuse RTS.
+TSELECT_INVERT_ROW: ; 1C:140E, 0x03940E
+    TXA ; X to A.
+    EOR #$01 ; Invert player data selection.
+    TAY ; Other player to Y index.
+    LDA TURTLE_SELECT_POSITIONS[2],X ; Load editing.
+    EOR #$02 ; Invert row.
+    CMP TURTLE_SELECT_POSITIONS[2],Y ; CODE MISTAKE: Not ZP mode. Compare to other player.
+    BEQ LEAVE_NO_MOD ; Other player has selected, abort.
+    STA TURTLE_SELECT_POSITIONS[2],X ; Otherwise, store.
+    PHA ; Save A.
     LDA #$56
-    JSR SND_BANKED_DISPATCH
-    PLA
+    JSR SND_BANKED_DISPATCH ; Play sound.
+    PLA ; Restore A.
+LEAVE_NO_MOD: ; 1C:1424, 0x039424
     RTS
+TSELECT_INVERT_COLUMN: ; 1C:1425, 0x039425
     TXA
     EOR #$01
     TAY
-    LDA 33_TURTLE_SELECT_UNK,X
+    LDA TURTLE_SELECT_POSITIONS[2],X
     EOR #$01
-    CMP 33_TURTLE_SELECT_UNK,Y
+    CMP TURTLE_SELECT_POSITIONS[2],Y
     BEQ 1C:143B
-    STA 33_TURTLE_SELECT_UNK,X
+    STA TURTLE_SELECT_POSITIONS[2],X
     PHA
     LDA #$56
     JSR SND_BANKED_DISPATCH
     PLA
     RTS
-TSELECT_RTN_UNK_A: ; 1C:143C, 0x03943C
-    STX ZP_07_UNK
-    STA TMP_06?
-    TYA
-    ASL A
-    TAY
-    LDA $9498,Y
-    STA TMP_02
-    LDA $9499,Y
-    STA TMP_03
-    LDY TMP_06?
-    LDA #$02
-    STA TMP_00
-    LDX INDEX_300_UPDATE_BUF
-    LDA #$04
-    STA PPU_UPDATE_BUF[1],X
-    LDA TMP_02
-    STA **:$0301,X
-    LDA TMP_03
-    STA **:$0302,X
-    LDA #$03
-    STA **:$0303,X
-    LDA $94A0,Y
-    STA **:$0304,X
-    INY
-    LDA $94A0,Y
-    STA **:$0305,X
-    INY
-    LDA $94A0,Y
-    STA **:$0306,X
-    INY
-    CLC
-    TXA
-    ADC #$07
-    TAX
-    CLC
-    LDA #$08
-    ADC TMP_02
-    STA TMP_02
-    DEC TMP_00
-    BPL 1C:1455
+TURTLE_SELECTION_ATTR_UPDATE: ; 1C:143C, 0x03943C
+    STX TMP_07 ; X to. Y=Pos
+    STA TMP_06 ; A to.
+    TYA ; Y val to A.
+    ASL A ; A to word index.
+    TAY ; Back to Y.
+    LDA TSELECT_DATA_PPU_ADDRS_L,Y ; Load PPU lower.
+    STA TMP_02 ; PPU Low here.
+    LDA TSELECT_DATA_PPU_ADDRS_H,Y ; Load PPU higher.
+    STA TMP_03 ; PPU High here.
+    LDY TMP_06 ; Load original A.
+    LDA #$02 ; A=
+    STA TMP_00 ; Setup loop count.
+    LDX PPU_UPDATE_BUF_INDEX ; Load X from.
+UPDATE_MAKE_LOOP: ; 1C:1455, 0x039455
+    LDA #$04 ; 4 byte update?
+    STA PPU_UPDATE_BUFFER[20],X ; Set up.
+    LDA TMP_02 ; Load PPU low.
+    STA PPU_UPDATE_BUFFER+1,X ; Make addr.
+    LDA TMP_03 ; Load PPU high.
+    STA PPU_UPDATE_BUFFER+2,X ; Make addr.
+    LDA #$03 ; Load from.
+    STA PPU_UPDATE_BUFFER+3,X ; To buf.
+    LDA TSELECT_PPU_BUF_DATA,Y ; Load data.
+    STA PPU_UPDATE_BUFFER+4,X ; Store to.
+    INY ; Stream++
+    LDA TSELECT_PPU_BUF_DATA,Y ; Load data.
+    STA PPU_UPDATE_BUFFER+5,X ; Store to.
+    INY ; Stream++
+    LDA TSELECT_PPU_BUF_DATA,Y ; A from
+    STA PPU_UPDATE_BUFFER+6,X ; Store to.
+    INY ; Stream++
+    CLC ; Prep add.
+    TXA ; Slot pos to A.
+    ADC #$07 ; Move to new slot.
+    TAX ; Slot index back to X.
+    CLC ; Prep add.
+    LDA #$08 ; A=
+    ADC TMP_02 ; Accumulate change to PPU low addr.
+    STA TMP_02 ; Store back.
+    DEC TMP_00 ; Dec loop count.
+    BPL UPDATE_MAKE_LOOP ; If positive, continue.
     LDA #$00
-    STA PPU_UPDATE_BUF[1],X
-    STX INDEX_300_UPDATE_BUF
-    LDX ZP_07_UNK
+    STA PPU_UPDATE_BUFFER[20],X ; Null next slot.
+    STX PPU_UPDATE_BUF_INDEX ; X final to index.
+    LDX TMP_07 ; Load X passed?
     RTS
+TSELECT_DATA_PPU_ADDRS_L: ; 1C:1498, 0x039498
     .db C9
+TSELECT_DATA_PPU_ADDRS_H: ; 1C:1499, 0x039499
     .db 23
     .db CC
     .db 23
@@ -5011,6 +5028,7 @@ TSELECT_RTN_UNK_A: ; 1C:143C, 0x03943C
     .db 23
     .db E4
     .db 23
+TSELECT_PPU_BUF_DATA: ; 1C:14A0, 0x0394A0
     .db 40
     .db 50
     .db 10
@@ -5038,36 +5056,40 @@ TSELECT_RTN_UNK_A: ; 1C:143C, 0x03943C
     .db 0C
     .db 0F
     .db 03
-TSEL_RTN_UNK_B: ; 1C:14BB, 0x0394BB
-    TXA
+TSEL_QUEUE_BG_PALETTE_UPDATE: ; 1C:14BB, 0x0394BB
+    TXA ; Save X.
     PHA
-    LDA TSEL_0A
+    LDA TSEL_PREV_P1? ; Load prev P1 turtle selected.
+    ASL A ; << 2, *4
     ASL A
+    TAY ; Yo Y index.
+    LDX #$08 ; Palette entry to change, BG[2]
+    JSR PALETTE_UPDATE_MOD_BG[X]
+    LDA TSEL_PREV_P2?
+    BMI NO_P2_PREV ; No P2 here.
+    ASL A ; << 2, *4
     ASL A
-    TAY
-    LDX #$08
-    JSR $94DB
-    LDA TSEL_0B
-    BMI 1C:14D3
-    ASL A
-    ASL A
-    TAY
-    LDX #$0C
-    JSR $94DB
-    LDA #$05
-    JSR $8001
-    PLA
+    TAY ; To Y index.
+    LDX #$0C ; Which entry to change, BG[3]
+    JSR PALETTE_UPDATE_MOD_BG[X]
+NO_P2_PREV: ; 1C:14D3, 0x0394D3
+    LDA #$05 ; Total size?
+    JSR UNK_STREAM_SETUP_0x300_BUF
+    PLA ; Restore X.
     TAX
+    RTS ; RTS.
+PALETTE_UPDATE_MOD_BG[X]: ; 1C:14DB, 0x0394DB
+    LDA #$03 ; To change.
+    STA TMP_00 ; Loop count.
+LOOP_MORE: ; 1C:14DF, 0x0394DF
+    LDA TSEL_BLANK_BLINK_PALETTE?,Y ; Load val
+    STA PPU_PALETTE_BUF?[32],X ; Store to update buf.
+    INX ; X++
+    INY ; Y++
+    DEC TMP_00 ; Loop--
+    BPL LOOP_MORE ; Move all 3 bytes.
     RTS
-    LDA #$03
-    STA TMP_00
-    LDA $94EC,Y
-    STA PPU_UPDATE_BUF_UNK[8],X
-    INX
-    INY
-    DEC TMP_00
-    BPL 1C:14DF
-    RTS
+TSEL_BLANK_BLINK_PALETTE?: ; 1C:14EC, 0x0394EC
     .db 0F
     .db 1A
     .db 11
@@ -5088,42 +5110,30 @@ TSEL_RTN_UNK_B: ; 1C:14BB, 0x0394BB
     .db 0F
     .db 0F
     .db 0F
-    .db A2
-    .db 00
-    .db A5
-    .db 33
-    .db 20
-    .db 0C
-    .db 95
-    .db E8
-    .db A5
-    .db 34
-    .db 30
-    .db 14
-    .db 0A
-    .db A8
-    .db B9
-    .db 23
-    .db 95
-    .db 9D
-    .db 7E
-    .db 04
-    .db B9
-    .db 24
-    .db 95
-    .db 9D
-    .db 6C
-    .db 04
-    .db BD
-    .db 21
-    .db 95
-    .db 9D
-    .db 00
-    .db 04
-    .db 60
+RTN_CURSOR_OBJECT_UPDATE?: ; 1C:1500, 0x039500
+    LDX #$00 ; X=Which player
+    LDA TURTLE_SELECT_POSITIONS[2] ; A=Selected pos.
+    JSR RTN_SETUP_OBJECT?
+    INX ; Player 2.
+    LDA TURTLE_SELECT_POSITIONS+1 ; Load pos.
+    BMI RTS ; If negative, not 2P games.
+RTN_SETUP_OBJECT?: ; 1C:150C, 0x03950C
+    ASL A ; A to word size.
+    TAY ; To Y index.
+    LDA TSELECT_CURSOR_POS_X,Y ; Load val
+    STA 47E_ARR_UNK[2],X ; Store to...
+    LDA TSELECT_CURSOR_POS_Y,Y ; Load val
+    STA 46C_ARR_UNK[2],X ; Store to...
+    LDA TSELECT_DATA_UNK,X ; Load val
+    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X ; Store to...
+RTS: ; 1C:1520, 0x039520
+    RTS
+TSELECT_DATA_UNK: ; 1C:1521, 0x039521
     .db 6A
     .db 6B
+TSELECT_CURSOR_POS_X: ; 1C:1523, 0x039523
     .db 34
+TSELECT_CURSOR_POS_Y: ; 1C:1524, 0x039524
     .db 30
     .db 94
     .db 30
@@ -5132,113 +5142,124 @@ TSEL_RTN_UNK_B: ; 1C:14BB, 0x0394BB
     .db 94
     .db 90
 TURTLE_SELECT_RTN_5: ; 1C:152B, 0x03952B
-    LDA CTRL_NEWLY_PRESSED_A[2]
-    ORA CTRL_NEWLY_PRESSED_A+1
-    BMI 1C:1569
-    JSR 1C:1500
-    DEC 701_TSELECT_UNK
-    BEQ 1C:1569
-    INC ARR_702_UNK+1
-    LDA ARR_702_UNK+1
-    CMP #$11
-    BCC 1C:1550
-    LDA #$00
-    STA ARR_702_UNK+1
-    LDA ARR_702_UNK[2]
-    EOR #$01
-    STA ARR_702_UNK[2]
-    LDA ARR_702_UNK[2]
-    BNE 1C:155E
-    LDA #$04
-    STA TSEL_0A
-    STA TSEL_0B
-    JMP 1C:1566
-    LDA 33_TURTLE_SELECT_UNK
-    STA TSEL_0A
-    LDA 34_TSELECT_FF/01?
-    STA TSEL_0B
-    JMP TSEL_RTN_UNK_B
-    LDA 47_UNK_PCOUNT?
-    BNE 1C:156F
-    STA 34_TSELECT_FF/01?
-    LDA #$00
+    LDA CTRL_NEWLY_PRESSED_A[2] ; Load pressed.
+    ORA CTRL_NEWLY_PRESSED_A+1 ; From both players.
+    BMI TSELECT_FINAL_ANIM_TIMEOUT/SKIP ; If A pressed on either.
+    JSR RTN_CURSOR_OBJECT_UPDATE? ; Update cursor.
+    DEC 701_TSELECT_CONFIRMED/TIMER ; Dec timer.
+    BEQ TSELECT_FINAL_ANIM_TIMEOUT/SKIP ; Timed out, goto.
+    INC ARR_SPRITE_OBJ_TIMER?+1 ; Inc sprite attr.
+    LDA ARR_SPRITE_OBJ_TIMER?+1 ; Load val
+    CMP #$11 ; If A _ #$11
+    BCC TIMER_UNDER ; <, goto.
+    LDA #$00 ; Clear
+    STA ARR_SPRITE_OBJ_TIMER?+1 ; This.
+    LDA ARR_SPRITE_OBJ_TIMER?[2] ; Load P1.
+    EOR #$01 ; Invert bit.
+    STA ARR_SPRITE_OBJ_TIMER?[2] ; Store back.
+TIMER_UNDER: ; 1C:1550, 0x039550
+    LDA ARR_SPRITE_OBJ_TIMER?[2] ; Load P1
+    BNE P1_VAL_NONZERO ; != 0, goto.
+    LDA #$04 ; A=
+    STA TSEL_PREV_P1? ; Store different previous?
+    STA TSEL_PREV_P2?
+    JMP QUEUE_BG_UPDATES ; Goto.
+P1_VAL_NONZERO: ; 1C:155E, 0x03955E
+    LDA TURTLE_SELECT_POSITIONS[2] ; Load P1 pos.
+    STA TSEL_PREV_P1? ; Store to.
+    LDA TURTLE_SELECT_POSITIONS+1 ; P2
+    STA TSEL_PREV_P2? ; Store to.
+QUEUE_BG_UPDATES: ; 1C:1566, 0x039566
+    JMP TSEL_QUEUE_BG_PALETTE_UPDATE ; Do rtn abuse RTS.
+TSELECT_FINAL_ANIM_TIMEOUT/SKIP: ; 1C:1569, 0x039569
+    LDA 47_TWO_PLAYERS_FLAG? ; Not really sure if flag or val.
+    BNE SINGLE_PLAYER_GAME? ; != 0, goto.
+    STA TURTLE_SELECT_POSITIONS+1 ; Store to select?
+SINGLE_PLAYER_GAME?: ; 1C:156F, 0x03956F
+    LDA #$00 ; Clear
     STA STATE_TURTLE_SELECT
-    STA 701_TSELECT_UNK
-    STA ARR_702_UNK[2]
-    STA ARR_702_UNK+1
-    LDX #$00
-    JSR 1F:14D1
-    INX
-    JSR 1F:14D1
-    JMP SOUND_INIT_RTN
-    LDA **:$0544,X
-    ORA **:$0532,X
-    BEQ 1C:15AC
-    LDA **:$04D8,X
+    STA 701_TSELECT_CONFIRMED/TIMER
+    STA ARR_SPRITE_OBJ_TIMER?[2] ; Sprites
+    STA ARR_SPRITE_OBJ_TIMER?+1
+    LDX #$00 ; P1?
+    JSR INIT_OBJECT[X]_DATA?
+    INX ; P2?
+    JSR INIT_OBJECT[X]_DATA?
+    JMP SOUND_INIT_RTN ; Sound init, abuse RTS.
+    LDA 544_ARR_UNK[2],X ; Load
+    ORA 532_ARR_UNK[2],X ; Or with
+    BEQ VALUES_NOT_SET_A
+    LDA 4D8_ARR_UNK[2],X ; Load val
+    CLC ; Prep add.
+    ADC 544_ARR_UNK[2],X ; Add with.
+    STA 4D8_ARR_UNK[2],X ; Store to.
+    LDA 4C6_ARR_UNK[2],X ; Load val
+    ADC 532_ARR_UNK[2],X ; Add with
+    BMI ADD_RESULT_NEGATIVE ; Minus set, goto.
+    CMP #$20 ; If A _ #$20
+    BCS ADD_RESULT_NEGATIVE ; >=, goto.
+    LDA #$00 ; Store 0.
+ADD_RESULT_NEGATIVE: ; 1C:15A9, 0x0395A9
+    STA 4C6_ARR_UNK[2],X ; Store.
+VALUES_NOT_SET_A: ; 1C:15AC, 0x0395AC
+    LDA 4FC_ARR_UNK[2],X ; Load value.
+    ORA 4EA_ARR_UNK[2],X ; Or with.
+    BEQ VALUES_NOT_SET_B ; None set, goto.
+    LDA 490_ARR_UNK[2],X ; Load val
     CLC
-    ADC **:$0544,X
-    STA **:$04D8,X
-    LDA **:$04C6,X
-    ADC **:$0532,X
-    BMI 1C:15A9
-    CMP #$20
-    BCS 1C:15A9
-    LDA #$00
-    STA **:$04C6,X
-    LDA **:$04FC,X
-    ORA **:$04EA,X
-    BEQ 1C:15C7
-    LDA **:$0490,X
-    CLC
-    ADC **:$04FC,X
-    STA **:$0490,X
-    LDA ARR_47E_UNK[1],X
-    ADC **:$04EA,X
-    STA ARR_47E_UNK[1],X
-    LDA **:$0520,X
-    ORA **:$050E,X
-    BEQ 1C:15E2
-    LDA **:$04B4,X
-    CLC
-    ADC **:$0520,X
-    STA **:$04B4,X
-    LDA R_**:$04A2,X
-    ADC **:$050E,X
-    STA R_**:$04A2,X
-    LDA PPU_INDEX_UNK_42
-    CMP #$07
-    BEQ 1C:1616
-    LDA **:$00B7
-    ORA **:$00BA
-    BEQ 1C:15FF
-    LDA **:$0490,X
-    SEC
-    SBC **:$00B7
-    STA **:$0490,X
-    LDA ARR_47E_UNK[1],X
-    SBC **:$00BA
-    STA ARR_47E_UNK[1],X
-    LDA **:$0083
-    ORA **:$0084
-    BEQ 1C:1616
-    LDA **:$04B4,X
-    SEC
-    SBC **:$0083
-    STA **:$04B4,X
-    LDA R_**:$04A2,X
-    SBC **:$0084
-    STA R_**:$04A2,X
-    LDA **:$04D8,X
-    CLC
-    ADC **:$04B4,X
-    LDA **:$04C6,X
-    ADC R_**:$04A2,X
-    STA ARR_46C_UNK,X
+    ADC 4FC_ARR_UNK[2],X ; Add with.
+    STA 490_ARR_UNK[2],X ; Store to.
+    LDA 47E_ARR_UNK[2],X ; Load val.
+    ADC 4EA_ARR_UNK[2],X ; Add with.
+    STA 47E_ARR_UNK[2],X ; Store to.
+VALUES_NOT_SET_B: ; 1C:15C7, 0x0395C7
+    LDA 520_ARR_UNK[2],X ; Load val
+    ORA 50E_ARR_UNK[2],X ; Or bits.
+    BEQ VALUES_NOT_SET_C ; Not set.
+    LDA 4B4_ARR_UNK[2],X ; Load val
+    CLC ; Prep add.
+    ADC 520_ARR_UNK[2],X ; Add val.
+    STA 4B4_ARR_UNK[2],X ; Store.
+    LDA 4A2_ARR_UNK[2],X ; Load
+    ADC 50E_ARR_UNK[2],X ; Add
+    STA 4A2_ARR_UNK[2],X ; Store.
+VALUES_NOT_SET_C: ; 1C:15E2, 0x0395E2
+    LDA PPU_INDEX_UNK_42 ; Load
+    CMP #$07 ; If _ #$07
+    BEQ VALUES_NOT_SET_E ; ==, goto.
+    LDA B7_UNK_SPRITES? ; Load val
+    ORA BA_UNK_SPRITES? ; Add bits.
+    BEQ VALUES_NOT_SET_D
+    LDA 490_ARR_UNK[2],X ; Load val
+    SEC ; Prep sub.
+    SBC B7_UNK_SPRITES? ; Subtract.
+    STA 490_ARR_UNK[2],X ; Store back.
+    LDA 47E_ARR_UNK[2],X ; Load val
+    SBC BA_UNK_SPRITES? ; Subtract.
+    STA 47E_ARR_UNK[2],X ; Store back.
+VALUES_NOT_SET_D: ; 1C:15FF, 0x0395FF
+    LDA 83_UNK ; Load val.
+    ORA 84_UNK ; Get 
+    BEQ VALUES_NOT_SET_E
+    LDA 4B4_ARR_UNK[2],X ; Load val.
+    SEC ; Prep sub.
+    SBC 83_UNK ; Subtract with.
+    STA 4B4_ARR_UNK[2],X ; Store.
+    LDA 4A2_ARR_UNK[2],X ; Load
+    SBC 84_UNK ; Subtract.
+    STA 4A2_ARR_UNK[2],X ; Store.
+VALUES_NOT_SET_E: ; 1C:1616, 0x039616
+    LDA 4D8_ARR_UNK[2],X ; Load value.
+    CLC ; Prep add.
+    ADC 4B4_ARR_UNK[2],X ; Add with.
+    LDA 4C6_ARR_UNK[2],X ; Load
+    ADC 4A2_ARR_UNK[2],X ; Add.
+    STA 46C_ARR_UNK[2],X ; Store.
     RTS
     CMP #$80
     BCS 1C:163F
     TAY
-    LDA **:$0412,X
+    LDA 412_ARR_OSTATE?[2],X
     AND #$20
     BEQ 1C:1639
     LDA 1C:1685,Y
@@ -5247,24 +5268,24 @@ TURTLE_SELECT_RTN_5: ; 1C:152B, 0x03952B
     JMP 1C:165C
     AND #$7F
     STA TMP_00
-    LDY TMP_08_INDIRECT[2]
-    LDA 33_TURTLE_SELECT_UNK,Y
+    LDY TMP_08
+    LDA TURTLE_SELECT_POSITIONS[2],Y
     CLC
     ADC TMP_00
     TAY
-    LDA **:$0412,X
+    LDA 412_ARR_OSTATE?[2],X
     AND #$20
     BEQ 1C:1659
     LDA 1C:16B3,Y
     JMP 1C:165C
     LDA 1C:168F,Y
-    CMP ARR_424_UNK[2],X
+    CMP ARR_SPRITE_ENABLED?[2],X
     BEQ 1C:166C
-    STA ARR_424_UNK[2],X
+    STA ARR_SPRITE_ENABLED?[2],X
     LDA #$00
-    STA **:$0448,X
-    STA **:$045A,X
-    LDY TMP_08_INDIRECT[2]
+    STA 448_ARR_UNK[2],X
+    STA 45A_ARR_UNK[2],X
+    LDY TMP_08
     RTS
     .db 00
     .db 01
