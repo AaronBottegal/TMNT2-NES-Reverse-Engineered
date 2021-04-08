@@ -1,12 +1,12 @@
     .db 34
-    LDY **:$0027
+    LDY 27_ATTRACT_WHICH?
     LDA $8036,Y
     STA TURTLE_SELECT_POSITIONS[2]
     LDA $802E,Y
     CMP #$FF
     BNE 14:0016
     LDA #$00
-    STA **:$0027
+    STA 27_ATTRACT_WHICH?
     JMP $8001
     STA PPU_INDEX_UNK_42
     ASL A
@@ -455,582 +455,368 @@ ISOLATE_P1_BUTTONS?: ; 14:00CC, 0x0280CC
     .db ED
     .db 03
     .db 60
-    .db 8A
-    .db A8
-    .db F0
-    .db 01
-    .db C8
-    .db B9
-    .db F0
-    .db 03
-    .db 85
-    .db 14
-    .db B9
-    .db F1
-    .db 03
-    .db 85
-    .db 15
-    .db B9
-    .db F2
-    .db 03
-    .db 85
-    .db 16
-    .db A6
-    .db 1E
-    .db A9
-    .db 04
-    .db 9D
-    .db 00
-    .db 03
-    .db 98
-    .db 29
-    .db 02
-    .db A8
-    .db B9
-    .db 85
-    .db 82
-    .db 9D
-    .db 01
-    .db 03
-    .db B9
-    .db 86
-    .db 82
-    .db 9D
-    .db 02
-    .db 03
-    .db A9
-    .db 05
-    .db 9D
-    .db 03
-    .db 03
-    .db A5
-    .db 16
-    .db 29
-    .db 0F
-    .db 18
-    .db 69
-    .db 01
-    .db 9D
-    .db 04
-    .db 03
-    .db A5
-    .db 15
-    .db 48
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 18
-    .db 69
-    .db 01
-    .db 9D
-    .db 05
-    .db 03
-    .db 68
-    .db 29
-    .db 0F
-    .db 18
-    .db 69
-    .db 01
-    .db 9D
-    .db 06
-    .db 03
-    .db A5
-    .db 14
-    .db 48
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 18
-    .db 69
-    .db 01
-    .db 9D
-    .db 07
-    .db 03
-    .db 68
-    .db 29
-    .db 0F
-    .db 18
-    .db 69
-    .db 01
-    .db 9D
-    .db 08
-    .db 03
-    .db 18
-    .db 8A
-    .db 69
-    .db 09
-    .db 85
-    .db 1E
-    .db A0
-    .db 03
-    .db BD
-    .db 04
-    .db 03
-    .db C9
-    .db 01
-    .db D0
-    .db 09
-    .db A9
-    .db 00
-    .db 9D
-    .db 04
-    .db 03
-    .db E8
-    .db 88
-    .db 10
-    .db F0
-    .db 60
+UPDATE_??: ; 14:0206, 0x028206
+    TXA
+    TAY
+    BEQ 14:020B
+    INY
+    LDA **:$03F0,Y
+    STA R_**:$0014
+    LDA **:$03F1,Y
+    STA R_**:$0015
+    LDA **:$03F2,Y
+    STA BCD_VAL_XY[2]
+    LDX PPU_UPDATE_BUF_INDEX
+    LDA #$04
+    STA PPU_UPDATE_BUFFER[20],X
+    TYA
+    AND #$02
+    TAY
+    LDA $8285,Y
+    STA PPU_UPDATE_BUFFER+1,X
+    LDA $8286,Y
+    STA PPU_UPDATE_BUFFER+2,X
+    LDA #$05
+    STA PPU_UPDATE_BUFFER+3,X
+    LDA BCD_VAL_XY[2]
+    AND #$0F
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER+4,X
+    LDA R_**:$0015
+    PHA
+    LSR A
+    LSR A
+    LSR A
+    LSR A
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER+5,X
+    PLA
+    AND #$0F
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER+6,X
+    LDA R_**:$0014
+    PHA
+    LSR A
+    LSR A
+    LSR A
+    LSR A
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER+7,X
+    PLA
+    AND #$0F
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER+8,X
+    CLC
+    TXA
+    ADC #$09
+    STA PPU_UPDATE_BUF_INDEX
+    LDY #$03
+    LDA PPU_UPDATE_BUFFER+4,X
+    CMP #$01
+    BNE 14:0284
+    LDA #$00
+    STA PPU_UPDATE_BUFFER+4,X
+    INX
+    DEY
+    BPL 14:0274
+    RTS
     .db 65
     .db 20
     .db 73
     .db 20
-    .db A5
-    .db 1E
-    .db D0
-    .db F7
-    .db A2
-    .db 00
-    .db AD
-    .db 62
-    .db 06
-    .db F0
-    .db 08
-    .db A9
-    .db 00
-    .db 8D
-    .db 62
-    .db 06
-    .db 20
-    .db A8
-    .db 82
-    .db A2
-    .db 02
-    .db AD
-    .db 63
-    .db 06
-    .db F0
-    .db E1
-    .db A9
-    .db 00
-    .db 8D
-    .db 63
-    .db 06
-    .db 8A
-    .db 48
-    .db A9
-    .db 05
-    .db 85
-    .db 13
-    .db A0
-    .db 00
-    .db BD
-    .db 68
-    .db 05
-    .db F0
-    .db 18
-    .db C9
-    .db 05
-    .db B0
-    .db 02
-    .db A9
-    .db 05
-    .db C9
-    .db 3D
-    .db 90
-    .db 05
-    .db A9
-    .db 3C
-    .db 9D
-    .db 68
-    .db 05
-    .db 38
-    .db C8
-    .db E9
-    .db 05
-    .db F0
-    .db 03
-    .db B0
-    .db F9
-    .db 88
-    .db 98
-    .db 29
-    .db 01
-    .db 85
-    .db 11
-    .db 98
-    .db 4A
-    .db C9
-    .db 07
-    .db 90
-    .db 02
-    .db A9
-    .db 06
-    .db 85
-    .db 10
-    .db A4
-    .db 1E
-    .db A9
-    .db 04
-    .db 99
-    .db 00
-    .db 03
-    .db BD
-    .db 2D
-    .db 83
-    .db 99
-    .db 01
-    .db 03
-    .db BD
-    .db 2E
-    .db 83
-    .db 99
-    .db 02
-    .db 03
-    .db A9
-    .db 06
-    .db 99
-    .db 03
-    .db 03
-    .db C8
-    .db C8
-    .db C8
-    .db C8
-    .db A6
-    .db 10
-    .db F0
-    .db 0B
-    .db A9
-    .db 4C
-    .db 99
-    .db 00
-    .db 03
-    .db C6
-    .db 13
-    .db C8
-    .db CA
-    .db D0
-    .db F7
-    .db A5
-    .db 11
-    .db F0
-    .db 0A
-    .db A9
-    .db 4D
-    .db 99
-    .db 00
-    .db 03
-    .db C8
-    .db C6
-    .db 13
-    .db 30
-    .db 0E
-    .db A5
-    .db 13
-    .db 30
-    .db 0A
-    .db A9
-    .db 00
-    .db 99
-    .db 00
-    .db 03
-    .db C8
-    .db C6
-    .db 13
-    .db 10
-    .db F8
-    .db 18
-    .db A5
-    .db 1E
-    .db 69
-    .db 0A
-    .db 85
-    .db 1E
-    .db 68
-    .db AA
-    .db 60
+    LDA PPU_UPDATE_BUF_INDEX
+    BNE 14:0284
+    LDX #$00
+    LDA **:$0662
+    BEQ 14:029C
+    LDA #$00
+    STA **:$0662
+    JSR $82A8
+    LDX #$02
+    LDA **:$0663
+    BEQ 14:0284
+    LDA #$00
+    STA **:$0663
+UPDATE_??: ; 14:02A8, 0x0282A8
+    TXA
+    PHA
+    LDA #$05
+    STA ZP_13_UNK
+    LDY #$00
+    LDA 568_OBJ_DATA_PTR_UNK_L[18],X
+    BEQ 14:02CD
+    CMP #$05
+    BCS 14:02BB
+    LDA #$05
+    CMP #$3D
+    BCC 14:02C4
+    LDA #$3C
+    STA 568_OBJ_DATA_PTR_UNK_L[18],X
+    SEC
+    INY
+    SBC #$05
+    BEQ 14:02CD
+    BCS 14:02C5
+    DEY
+    TYA
+    AND #$01
+    STA ZP_11_UNK
+    TYA
+    LSR A
+    CMP #$07
+    BCC 14:02DA
+    LDA #$06
+    STA TMP_10
+    LDY PPU_UPDATE_BUF_INDEX
+    LDA #$04
+    STA PPU_UPDATE_BUFFER[20],Y
+    LDA $832D,X
+    STA PPU_UPDATE_BUFFER+1,Y
+    LDA $832E,X
+    STA PPU_UPDATE_BUFFER+2,Y
+    LDA #$06
+    STA PPU_UPDATE_BUFFER+3,Y
+    INY
+    INY
+    INY
+    INY
+    LDX TMP_10
+    BEQ 14:0307
+    LDA #$4C
+    STA PPU_UPDATE_BUFFER[20],Y
+    DEC ZP_13_UNK
+    INY
+    DEX
+    BNE 14:02FE
+    LDA ZP_11_UNK
+    BEQ 14:0315
+    LDA #$4D
+    STA PPU_UPDATE_BUFFER[20],Y
+    INY
+    DEC ZP_13_UNK
+    BMI 14:0323
+    LDA ZP_13_UNK
+    BMI 14:0323
+    LDA #$00
+    STA PPU_UPDATE_BUFFER[20],Y
+    INY
+    DEC ZP_13_UNK
+    BPL 14:031B
+    CLC
+    LDA PPU_UPDATE_BUF_INDEX
+    ADC #$0A
+    STA PPU_UPDATE_BUF_INDEX
+    PLA
+    TAX
+    RTS
     .db 89
     .db 20
     .db 97
     .db 20
-    .db 8A
-    .db 48
-    .db 4A
-    .db A8
-    .db A9
-    .db 00
-    .db 85
-    .db 16
-    .db 85
-    .db 17
-    .db B9
-    .db 4D
-    .db 00
-    .db 30
-    .db 18
-    .db C9
-    .db 64
-    .db 90
-    .db 05
-    .db A9
-    .db 63
-    .db 99
-    .db 4D
-    .db 00
-    .db 38
-    .db E6
-    .db 16
-    .db E9
-    .db 0A
-    .db F0
-    .db 06
-    .db B0
-    .db F8
-    .db 69
-    .db 0A
-    .db C6
-    .db 16
-    .db 85
-    .db 17
-    .db A4
-    .db 1E
-    .db A9
-    .db 04
-    .db 99
-    .db 00
-    .db 03
-    .db BD
-    .db 8F
-    .db 83
-    .db 99
-    .db 01
-    .db 03
-    .db BD
-    .db 90
-    .db 83
-    .db 99
-    .db 02
-    .db 03
-    .db A9
-    .db 02
-    .db 99
-    .db 03
-    .db 03
-    .db 18
-    .db A5
-    .db 16
-    .db 69
-    .db 01
-    .db C9
-    .db 01
-    .db D0
-    .db 02
-    .db A9
-    .db 00
-    .db 99
-    .db 04
-    .db 03
-    .db 18
-    .db A5
-    .db 17
-    .db 69
-    .db 01
-    .db 99
-    .db 05
-    .db 03
-    .db 18
-    .db 98
-    .db 69
-    .db 06
-    .db 85
-    .db 1E
-    .db 68
-    .db AA
-    .db 60
+PLAYER_LIVES_TO_BCD+DISPLAY_UPDATE: ; 14:0331, 0x028331
+    TXA ; Save X.
+    PHA
+    LSR A ; >> 1, /2.
+    TAY ; To Y index.
+    LDA #$00
+    STA BCD_VAL_XY[2] ; Clear.
+    STA BCD_VAL_XY+1
+    LDA NUM_PLAYER_LIVES[2],Y ; Load A.
+    BMI CREATE_UPDATE_BUFFER
+    CMP #$64 ; If _ #$64, 100 decimal.
+    BCC LESS_THAN_ONE_HUNDRED ; <, goto.
+    LDA #$63 ; Cap to 99.
+    STA NUM_PLAYER_LIVES[2],Y ; Store.
+LESS_THAN_ONE_HUNDRED: ; 14:0349, 0x028349
+    SEC ; Set carry.
+MORE_TO_GO: ; 14:034A, 0x02834A
+    INC BCD_VAL_XY[2] ; ++ tens.
+    SBC #$0A ; -=10.
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    BCS MORE_TO_GO ; >= value subbed.
+    ADC #$0A ; Underflow, add back.
+    DEC BCD_VAL_XY[2] ; -- tens.
+VAL_EQ_ZERO: ; 14:0356, 0x028356
+    STA BCD_VAL_XY+1 ; Store lower.
+CREATE_UPDATE_BUFFER: ; 14:0358, 0x028358
+    LDY PPU_UPDATE_BUF_INDEX ; Get index.
+    LDA #$04
+    STA PPU_UPDATE_BUFFER[20],Y ; Type.
+    LDA UPDATE_ADDRS_L,X ; Move
+    STA PPU_UPDATE_BUFFER+1,Y
+    LDA UPDATE_ADDRS_H,X ; Move
+    STA PPU_UPDATE_BUFFER+2,Y
+    LDA #$02 ; Count.
+    STA PPU_UPDATE_BUFFER+3,Y
+    CLC ; Prep add.
+    LDA BCD_VAL_XY[2] ; Load high.
+    ADC #$01 ; += 1
+    CMP #$01 ; If _ #$01
+    BNE DONT_BLANK ; !=, goto.
+    LDA #$00 ; Blank tile if no upper to display.
+DONT_BLANK: ; 14:037B, 0x02837B
+    STA PPU_UPDATE_BUFFER+4,Y ; Store to buf.
+    CLC ; Prep add.
+    LDA BCD_VAL_XY+1 ; Load lower.
+    ADC #$01 ; += 1
+    STA PPU_UPDATE_BUFFER+5,Y ; Store to buffer.
+    CLC ; Prep add.
+    TYA ; Index to A.
+    ADC #$06 ; Move index.
+    STA PPU_UPDATE_BUF_INDEX ; Store.
+    PLA
+    TAX ; Restore X.
+    RTS ; Leave.
+UPDATE_ADDRS_L: ; 14:038F, 0x02838F
     .db AB
+UPDATE_ADDRS_H: ; 14:0390, 0x028390
     .db 20
     .db B9
     .db 20
-    .db 8A
-    .db 48
-    .db A2
-    .db 00
-    .db 20
-    .db A6
-    .db 83
-    .db A5
-    .db 47
-    .db F0
-    .db 05
-    .db A2
-    .db 02
-    .db 20
-    .db A6
-    .db 83
-    .db 68
-    .db AA
-    .db 60
-    .db BD
-    .db EC
-    .db 83
-    .db 85
-    .db 02
-    .db BD
-    .db ED
-    .db 83
-    .db 85
-    .db 03
-    .db A5
-    .db 1E
-    .db 85
-    .db 04
-    .db 8A
-    .db 4A
-    .db A8
-    .db B9
-    .db 33
-    .db 00
-    .db 0A
-    .db A8
-    .db B9
-    .db E4
-    .db 83
-    .db 85
-    .db 00
-    .db B9
-    .db E5
-    .db 83
-    .db 85
-    .db 01
-    .db A0
-    .db 00
-    .db A6
-    .db 1E
-    .db B1
-    .db 00
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db C8
-    .db C0
-    .db 09
-    .db 90
-    .db F5
-    .db 86
-    .db 1E
-    .db A4
-    .db 04
-    .db A5
-    .db 02
-    .db 99
-    .db 01
-    .db 03
-    .db A5
-    .db 03
-    .db 99
-    .db 02
-    .db 03
-    .db 60
-    .db F0
-    .db 83
-    .db F9
-    .db 83
-    .db 02
-    .db 84
-    .db 0B
-    .db 84
-    .db 44
-    .db 20
-    .db 52
-    .db 20
+RTN_NAME_TURTLES: ; 14:0393, 0x028393
+    TXA ; Save X.
+    PHA
+    LDX #$00 ; P1 index.
+    JSR RTN_TURTLE_NAME_TO_STATUS_BAR
+    LDA 47_TWO_PLAYERS_FLAG?
+    BEQ NOT_TWO_PLAYERS
+    LDX #$02 ; P2 index.
+    JSR RTN_TURTLE_NAME_TO_STATUS_BAR
+NOT_TWO_PLAYERS: ; 14:03A3, 0x0283A3
+    PLA ; Restore X.
+    TAX
+    RTS ; Leave.
+RTN_TURTLE_NAME_TO_STATUS_BAR: ; 14:03A6, 0x0283A6
+    LDA SCREEN_PPU_ADDR_L,X ; Move data.
+    STA TMP_02
+    LDA SCREEN_PPU_ADDR_H,X
+    STA TMP_03
+    LDA PPU_UPDATE_BUF_INDEX ; Load index.
+    STA TMP_04 ; To here.
+    TXA ; X passed to A.
+    LSR A ; << 1, *2
+    TAY ; To Y index.
+    LDA TURTLE_SELECT_POSITIONS[2],Y ; Load pos.
+    ASL A ; << 1, *2
+    TAY ; To Y index.
+    LDA TURTLE_NAMES_DATA_PTRS_L,Y
+    STA TMP_00
+    LDA TURTLE_NAMES_DATA_PTRS_H,Y
+    STA TMP_01
+    LDY #$00 ; Stream reset.
+    LDX PPU_UPDATE_BUF_INDEX ; Get index.
+LOOP_MAKE_NAME_BUF_UPD8: ; 14:03CA, 0x0283CA
+    LDA [TMP_00],Y ; Load val from file.
+    STA PPU_UPDATE_BUFFER[20],X ; Store to buf.
+    INX ; Buf++
+    INY ; Stream++
+    CPY #$09 ; Stream.pos _ #$09
+    BCC LOOP_MAKE_NAME_BUF_UPD8 ; <, goto.
+    STX PPU_UPDATE_BUF_INDEX ; Store index back.
+    LDY TMP_04 ; Y from.
+    LDA TMP_02 ; A from.
+    STA PPU_UPDATE_BUFFER+1,Y ; PPU addr.
+    LDA TMP_03
+    STA PPU_UPDATE_BUFFER+2,Y ; PPU addr.
+    RTS
+TURTLE_NAMES_DATA_PTRS_L: ; 14:03E4, 0x0283E4
+    LOW(TURTLE_NAME_LEO)
+TURTLE_NAMES_DATA_PTRS_H: ; 14:03E5, 0x0283E5
+    HIGH(TURTLE_NAME_LEO)
+    LOW(TURTLE_NAME_MIKE)
+    HIGH(TURTLE_NAME_MIKE)
+    LOW(TURTLE_NAME_DON)
+    HIGH(TURTLE_NAME_DON)
+    LOW(TURTLE_NAME_RAPH)
+    HIGH(TURTLE_NAME_RAPH)
+SCREEN_PPU_ADDR_L: ; 14:03EC, 0x0283EC
+    .db 44 ; X_POS_P1
+SCREEN_PPU_ADDR_H: ; 14:03ED, 0x0283ED
+    .db 20 ; Y_POS_P1
+    .db 52 ; X_POS_P2
+    .db 20 ; Y_POS_P2
+TURTLE_NAME_LEO: ; 14:03F0, 0x0283F0
     .db 04
     .db 00
     .db 20
     .db 05
-    .db 16
-    .db 0F
-    .db 19
-    .db 4A
-    .db 49
+    .db 16 ; L
+    .db 0F ; E
+    .db 19 ; O
+    .db 4A ; -
+    .db 49 ; Long -
+TURTLE_NAME_MIKE: ; 14:03F9, 0x0283F9
     .db 04
     .db 00
     .db 20
     .db 05
-    .db 17
-    .db 13
-    .db 15
-    .db 0F
-    .db 4A
+    .db 17 ; M
+    .db 13 ; I
+    .db 15 ; K
+    .db 0F ; E
+    .db 4A ; -
+TURTLE_NAME_DON: ; 14:0402, 0x028402
     .db 04
     .db 00
     .db 20
     .db 05
-    .db 0E
-    .db 19
-    .db 18
-    .db 4A
-    .db 49
+    .db 0E ; D
+    .db 19 ; O
+    .db 18 ; N
+    .db 4A ; -
+    .db 49 ; Long -
+TURTLE_NAME_RAPH: ; 14:040B, 0x02840B
     .db 04
     .db 00
     .db 20
     .db 05
-    .db 1C
-    .db 0B
-    .db 1A
-    .db 12
-    .db 4A
-    .db 29
-    .db 01
-    .db 85
-    .db 00
-    .db 8A
-    .db 48
-    .db 29
-    .db 02
-    .db 05
-    .db 00
-    .db 0A
-    .db A8
-    .db B9
-    .db 3E
-    .db 84
-    .db 85
-    .db 00
-    .db B9
-    .db 3F
-    .db 84
-    .db 85
-    .db 01
-    .db A0
-    .db 00
-    .db A6
-    .db 1E
-    .db B1
-    .db 00
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db C8
-    .db C0
-    .db 0D
-    .db 90
-    .db F5
-    .db 86
-    .db 1E
-    .db 68
-    .db AA
-    .db 60
-    .db 46
-    .db 84
-    .db 53
-    .db 84
-    .db 60
-    .db 84
-    .db 6D
-    .db 84
+    .db 1C ; R
+    .db 0B ; A
+    .db 1A ; P
+    .db 12 ; H
+    .db 4A ; -
+MAKE_UPDATE_BUF_??: ; 14:0414, 0x028414
+    AND #$01 ; Get bottom bit.
+    STA TMP_00
+    TXA ; X to A.
+    PHA ; Save
+    AND #$02 ; Get P2 bit.
+    ORA TMP_00 ; OR with bottom in A originally.
+    ASL A ; << 1, *2.
+    TAY ; To Y index.
+    LDA DATA_A,Y ; Move stream ptr.
+    STA TMP_00
+    LDA DATA_B,Y
+    STA TMP_01
+    LDY #$00 ; Stream reset.
+    LDX PPU_UPDATE_BUF_INDEX ; Update index.
+LOOP_DATA_MOVE: ; 14:042E, 0x02842E
+    LDA [TMP_00],Y ; A from stream.
+    STA PPU_UPDATE_BUFFER[20],X ; Move to buf.
+    INX ; Buf++
+    INY ; Stream++
+    CPY #$0D ; Bytes of data.
+    BCC LOOP_DATA_MOVE ; <, goto.
+    STX PPU_UPDATE_BUF_INDEX ; Store back.
+    PLA
+    TAX ; Restore X.
+    RTS
+DATA_A: ; 14:043E, 0x02843E
+    LOW(DATA_A)
+DATA_B: ; 14:043F, 0x02843F
+    HIGH(DATA_A)
+    LOW(DATA_B)
+    HIGH(DATA_B)
+    LOW(DATA_C)
+    HIGH(DATA_C)
+    LOW(DATA_D)
+    HIGH(DATA_D)
+DATA_A: ; 14:0446, 0x028446
     .db 04
     .db A5
     .db 20
@@ -1044,6 +830,7 @@ ISOLATE_P1_BUTTONS?: ; 14:00CC, 0x0280CC
     .db 20
     .db 0F
     .db 1C
+DATA_B: ; 14:0453, 0x028453
     .db 04
     .db A5
     .db 20
@@ -1057,6 +844,7 @@ ISOLATE_P1_BUTTONS?: ; 14:00CC, 0x0280CC
     .db 00
     .db 01
     .db 45
+DATA_C: ; 14:0460, 0x028460
     .db 04
     .db B3
     .db 20
@@ -1070,6 +858,7 @@ ISOLATE_P1_BUTTONS?: ; 14:00CC, 0x0280CC
     .db 20
     .db 0F
     .db 1C
+DATA_D: ; 14:046D, 0x02846D
     .db 04
     .db B3
     .db 20
@@ -1084,7 +873,7 @@ ISOLATE_P1_BUTTONS?: ; 14:00CC, 0x0280CC
     .db 01
     .db 45
 14:047A_TITLE_SCRN_SETUP?: ; 14:047A, 0x02847A
-    JSR SOUND_INIT_RTN ; Sound
+    JSR SOUND_INIT_RTN? ; Sound
     JSR CLEAR_SCREEN_SUB ; File 0 decompress, clear screen?
     LDX #$02 ; Screen
     JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15
@@ -1116,7 +905,7 @@ LOOP_NEW_PPU_ADDR: ; 14:04AC, 0x0284AC
     STA PPU_ADDR ; Set PPU.
     LDX #$00 ; X=
     LDA #$02 ; Seed add with val.
-    JSR ADD_A_TO_TMP_00_ADDR ; Add 2 to.
+    JSR FORWARD_TMP[X]_BY_A ; Add 2 to.
 STREAM_PACKET_FETCH_NEW: ; 14:04C3, 0x0284C3
     LDY #$00 ; Reset stream.
     LDA [TMP_00],Y ; Load data from.
@@ -1141,7 +930,7 @@ UNIQUE_COMPLETED: ; 14:04E4, 0x0284E4
     CLC ; Prep add.
     ADC TMP_02 ; Add num of tiles done.
 CONSUME_PACKET_A_SIZE: ; 14:04E9, 0x0284E9
-    JSR ADD_A_TO_TMP_00_ADDR ; Add A to stream.
+    JSR FORWARD_TMP[X]_BY_A ; Add A to stream.
     JMP STREAM_PACKET_FETCH_NEW ; Do new tile.
 RTN_RLEISH: ; 14:04EF, 0x0284EF
     LDY #$01 ; Stream index.
@@ -1156,7 +945,7 @@ LOOP_TILE_Y: ; 14:04F7, 0x0284F7
     BNE CONSUME_PACKET_A_SIZE ; Always taken.
 VAL_7F: ; 14:0501, 0x028501
     LDA #$01
-    JSR ADD_A_TO_TMP_00_ADDR
+    JSR FORWARD_TMP[X]_BY_A
     JMP LOOP_NEW_PPU_ADDR
 RTS: ; 14:0509, 0x028509
     RTS

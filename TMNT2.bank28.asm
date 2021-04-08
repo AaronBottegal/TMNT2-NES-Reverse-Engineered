@@ -4781,8 +4781,8 @@ SKIP_Y_NEGATIVE: ; 1C:12E1, 0x0392E1
     JMP WRITE_PPU_CTRL_COPY ; Enable rendering?
 TURTLE_SELECT_RTN_3: ; 1C:12F2, 0x0392F2
     LDA #$01 ; Enable?
-    STA ARR_SPRITE_ENABLED?[2]
-    STA ARR_SPRITE_ENABLED?+1
+    STA ARR_OBJECT_ENABLED?[18]
+    STA ARR_OBJECT_ENABLED?+1
     LDA #$C4 ; Set sprite bank R2.
     STA ZP_R2-R5_BANK_VALUES[4]
     LDA #$00
@@ -4806,9 +4806,9 @@ LOOP_MAKE_UPDATE_BUF: ; 1C:1308, 0x039308
     JSR TURTLE_SELECTION_ATTR_UPDATE ; Do rtn.
 DONT_RUN_P2_RTN: ; 1C:1327, 0x039327
     LDA TURTLE_SELECT_POSITIONS[2] ; Load
-    STA TSEL_PREV_P1? ; Store
+    STA TMP_0A ; Store
     LDA TURTLE_SELECT_POSITIONS+1 ; Load
-    STA TSEL_PREV_P2?
+    STA TMP_0B
     JSR TSEL_QUEUE_BG_PALETTE_UPDATE ; Do...?
     LDA #$05
     STA DISABLE_RENDERING_X_FRAMES ; Stop rendering frames.
@@ -4865,11 +4865,11 @@ COUNTER_NOT_TRIGGERED_A?: ; 1C:1374, 0x039374
     LDA 701_TSELECT_CONFIRMED/TIMER ; A=
     LSR A ; >> 1
     BCS SHIFTED_1_TO_CARRY
-    STY 400_ARR_SPR_ANIM_UPDATE_WHICH?+1 ; Clear.
+    STY 400_ARR_SPR_ANIM_FRAME_WHICH?+1 ; Clear.
 SHIFTED_1_TO_CARRY: ; 1C:1384, 0x039384
     LSR A ; >> 1
     BCS DATA_NOT_ZERO ; If we shift off a 1, goto.
-    STY 400_ARR_SPR_ANIM_UPDATE_WHICH?[2] ; Clear val.
+    STY 400_ARR_SPR_ANIM_FRAME_WHICH?[18] ; Clear val.
 DATA_NOT_ZERO: ; 1C:138A, 0x03938A
     LDA TURTLE_SELECT_POSITIONS[2] ; Load val
     STA TMP_08 ; P1 previous
@@ -4916,9 +4916,9 @@ SELECTION_NOT_SAME_AS_PREV: ; 1C:13CA, 0x0393CA
     LDY TURTLE_SELECT_POSITIONS[2],X
     JSR TURTLE_SELECTION_ATTR_UPDATE
     LDA TURTLE_SELECT_POSITIONS[2]
-    STA TSEL_PREV_P1?
+    STA TMP_0A
     LDA TURTLE_SELECT_POSITIONS+1
-    STA TSEL_PREV_P2?
+    STA TMP_0B
     JMP TSEL_QUEUE_BG_PALETTE_UPDATE
 RTN_MODIFY_SELECTION: ; 1C:13E9, 0x0393E9
     LDA CTRL_NEWLY_PRESSED_A[2],X ; Get pressed.
@@ -5059,13 +5059,13 @@ TSELECT_PPU_BUF_DATA: ; 1C:14A0, 0x0394A0
 TSEL_QUEUE_BG_PALETTE_UPDATE: ; 1C:14BB, 0x0394BB
     TXA ; Save X.
     PHA
-    LDA TSEL_PREV_P1? ; Load prev P1 turtle selected.
+    LDA TMP_0A ; Load prev P1 turtle selected.
     ASL A ; << 2, *4
     ASL A
     TAY ; Yo Y index.
     LDX #$08 ; Palette entry to change, BG[2]
     JSR PALETTE_UPDATE_MOD_BG[X]
-    LDA TSEL_PREV_P2?
+    LDA TMP_0B
     BMI NO_P2_PREV ; No P2 here.
     ASL A ; << 2, *4
     ASL A
@@ -5121,11 +5121,11 @@ RTN_SETUP_OBJECT?: ; 1C:150C, 0x03950C
     ASL A ; A to word size.
     TAY ; To Y index.
     LDA TSELECT_CURSOR_POS_X,Y ; Load val
-    STA 47E_ARR_UNK[2],X ; Store to...
+    STA 47E_ARR_UNK[18],X ; Store to...
     LDA TSELECT_CURSOR_POS_Y,Y ; Load val
-    STA 46C_ARR_UNK[2],X ; Store to...
+    STA 46C_ARR_UNK[18],X ; Store to...
     LDA TSELECT_DATA_UNK,X ; Load val
-    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X ; Store to...
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X ; Store to...
 RTS: ; 1C:1520, 0x039520
     RTS
 TSELECT_DATA_UNK: ; 1C:1521, 0x039521
@@ -5161,14 +5161,14 @@ TIMER_UNDER: ; 1C:1550, 0x039550
     LDA ARR_SPRITE_OBJ_TIMER?[2] ; Load P1
     BNE P1_VAL_NONZERO ; != 0, goto.
     LDA #$04 ; A=
-    STA TSEL_PREV_P1? ; Store different previous?
-    STA TSEL_PREV_P2?
+    STA TMP_0A ; Store different previous?
+    STA TMP_0B
     JMP QUEUE_BG_UPDATES ; Goto.
 P1_VAL_NONZERO: ; 1C:155E, 0x03955E
     LDA TURTLE_SELECT_POSITIONS[2] ; Load P1 pos.
-    STA TSEL_PREV_P1? ; Store to.
+    STA TMP_0A ; Store to.
     LDA TURTLE_SELECT_POSITIONS+1 ; P2
-    STA TSEL_PREV_P2? ; Store to.
+    STA TMP_0B ; Store to.
 QUEUE_BG_UPDATES: ; 1C:1566, 0x039566
     JMP TSEL_QUEUE_BG_PALETTE_UPDATE ; Do rtn abuse RTS.
 TSELECT_FINAL_ANIM_TIMEOUT/SKIP: ; 1C:1569, 0x039569
@@ -5185,44 +5185,44 @@ SINGLE_PLAYER_GAME?: ; 1C:156F, 0x03956F
     JSR INIT_OBJECT[X]_DATA?
     INX ; P2?
     JSR INIT_OBJECT[X]_DATA?
-    JMP SOUND_INIT_RTN ; Sound init, abuse RTS.
-    LDA 544_ARR_UNK[2],X ; Load
-    ORA 532_ARR_UNK[2],X ; Or with
+    JMP SOUND_INIT_RTN? ; Sound init, abuse RTS.
+    LDA 544_ARR_UNK[18],X ; Load
+    ORA 532_ARR_UNK[18],X ; Or with
     BEQ VALUES_NOT_SET_A
-    LDA 4D8_ARR_UNK[2],X ; Load val
+    LDA 4D8_ARR_UNK[18],X ; Load val
     CLC ; Prep add.
-    ADC 544_ARR_UNK[2],X ; Add with.
-    STA 4D8_ARR_UNK[2],X ; Store to.
-    LDA 4C6_ARR_UNK[2],X ; Load val
-    ADC 532_ARR_UNK[2],X ; Add with
+    ADC 544_ARR_UNK[18],X ; Add with.
+    STA 4D8_ARR_UNK[18],X ; Store to.
+    LDA 4C6_ARR_UNK[18],X ; Load val
+    ADC 532_ARR_UNK[18],X ; Add with
     BMI ADD_RESULT_NEGATIVE ; Minus set, goto.
     CMP #$20 ; If A _ #$20
     BCS ADD_RESULT_NEGATIVE ; >=, goto.
     LDA #$00 ; Store 0.
 ADD_RESULT_NEGATIVE: ; 1C:15A9, 0x0395A9
-    STA 4C6_ARR_UNK[2],X ; Store.
+    STA 4C6_ARR_UNK[18],X ; Store.
 VALUES_NOT_SET_A: ; 1C:15AC, 0x0395AC
-    LDA 4FC_ARR_UNK[2],X ; Load value.
-    ORA 4EA_ARR_UNK[2],X ; Or with.
+    LDA 4FC_ARR_UNK[18],X ; Load value.
+    ORA 4EA_ARR_UNK[18],X ; Or with.
     BEQ VALUES_NOT_SET_B ; None set, goto.
-    LDA 490_ARR_UNK[2],X ; Load val
+    LDA 490_ARR_UNK[18],X ; Load val
     CLC
-    ADC 4FC_ARR_UNK[2],X ; Add with.
-    STA 490_ARR_UNK[2],X ; Store to.
-    LDA 47E_ARR_UNK[2],X ; Load val.
-    ADC 4EA_ARR_UNK[2],X ; Add with.
-    STA 47E_ARR_UNK[2],X ; Store to.
+    ADC 4FC_ARR_UNK[18],X ; Add with.
+    STA 490_ARR_UNK[18],X ; Store to.
+    LDA 47E_ARR_UNK[18],X ; Load val.
+    ADC 4EA_ARR_UNK[18],X ; Add with.
+    STA 47E_ARR_UNK[18],X ; Store to.
 VALUES_NOT_SET_B: ; 1C:15C7, 0x0395C7
-    LDA 520_ARR_UNK[2],X ; Load val
-    ORA 50E_ARR_UNK[2],X ; Or bits.
+    LDA 520_ARR_UNK[18],X ; Load val
+    ORA 50E_ARR_UNK[18],X ; Or bits.
     BEQ VALUES_NOT_SET_C ; Not set.
-    LDA 4B4_ARR_UNK[2],X ; Load val
+    LDA 4B4_ARR_UNK[18],X ; Load val
     CLC ; Prep add.
-    ADC 520_ARR_UNK[2],X ; Add val.
-    STA 4B4_ARR_UNK[2],X ; Store.
-    LDA 4A2_ARR_UNK[2],X ; Load
-    ADC 50E_ARR_UNK[2],X ; Add
-    STA 4A2_ARR_UNK[2],X ; Store.
+    ADC 520_ARR_UNK[18],X ; Add val.
+    STA 4B4_ARR_UNK[18],X ; Store.
+    LDA 4A2_ARR_UNK[18],X ; Load
+    ADC 50E_ARR_UNK[18],X ; Add
+    STA 4A2_ARR_UNK[18],X ; Store.
 VALUES_NOT_SET_C: ; 1C:15E2, 0x0395E2
     LDA PPU_INDEX_UNK_42 ; Load
     CMP #$07 ; If _ #$07
@@ -5230,36 +5230,36 @@ VALUES_NOT_SET_C: ; 1C:15E2, 0x0395E2
     LDA B7_UNK_SPRITES? ; Load val
     ORA BA_UNK_SPRITES? ; Add bits.
     BEQ VALUES_NOT_SET_D
-    LDA 490_ARR_UNK[2],X ; Load val
+    LDA 490_ARR_UNK[18],X ; Load val
     SEC ; Prep sub.
     SBC B7_UNK_SPRITES? ; Subtract.
-    STA 490_ARR_UNK[2],X ; Store back.
-    LDA 47E_ARR_UNK[2],X ; Load val
+    STA 490_ARR_UNK[18],X ; Store back.
+    LDA 47E_ARR_UNK[18],X ; Load val
     SBC BA_UNK_SPRITES? ; Subtract.
-    STA 47E_ARR_UNK[2],X ; Store back.
+    STA 47E_ARR_UNK[18],X ; Store back.
 VALUES_NOT_SET_D: ; 1C:15FF, 0x0395FF
     LDA 83_UNK ; Load val.
     ORA 84_UNK ; Get 
     BEQ VALUES_NOT_SET_E
-    LDA 4B4_ARR_UNK[2],X ; Load val.
+    LDA 4B4_ARR_UNK[18],X ; Load val.
     SEC ; Prep sub.
     SBC 83_UNK ; Subtract with.
-    STA 4B4_ARR_UNK[2],X ; Store.
-    LDA 4A2_ARR_UNK[2],X ; Load
+    STA 4B4_ARR_UNK[18],X ; Store.
+    LDA 4A2_ARR_UNK[18],X ; Load
     SBC 84_UNK ; Subtract.
-    STA 4A2_ARR_UNK[2],X ; Store.
+    STA 4A2_ARR_UNK[18],X ; Store.
 VALUES_NOT_SET_E: ; 1C:1616, 0x039616
-    LDA 4D8_ARR_UNK[2],X ; Load value.
+    LDA 4D8_ARR_UNK[18],X ; Load value.
     CLC ; Prep add.
-    ADC 4B4_ARR_UNK[2],X ; Add with.
-    LDA 4C6_ARR_UNK[2],X ; Load
-    ADC 4A2_ARR_UNK[2],X ; Add.
-    STA 46C_ARR_UNK[2],X ; Store.
+    ADC 4B4_ARR_UNK[18],X ; Add with.
+    LDA 4C6_ARR_UNK[18],X ; Load
+    ADC 4A2_ARR_UNK[18],X ; Add.
+    STA 46C_ARR_UNK[18],X ; Store.
     RTS
     CMP #$80
     BCS 1C:163F
     TAY
-    LDA 412_ARR_OSTATE?[2],X
+    LDA 412_ARR_OSTATE?[18],X
     AND #$20
     BEQ 1C:1639
     LDA 1C:1685,Y
@@ -5273,18 +5273,18 @@ VALUES_NOT_SET_E: ; 1C:1616, 0x039616
     CLC
     ADC TMP_00
     TAY
-    LDA 412_ARR_OSTATE?[2],X
+    LDA 412_ARR_OSTATE?[18],X
     AND #$20
     BEQ 1C:1659
     LDA 1C:16B3,Y
     JMP 1C:165C
     LDA 1C:168F,Y
-    CMP ARR_SPRITE_ENABLED?[2],X
+    CMP ARR_OBJECT_ENABLED?[18],X
     BEQ 1C:166C
-    STA ARR_SPRITE_ENABLED?[2],X
+    STA ARR_OBJECT_ENABLED?[18],X
     LDA #$00
-    STA 448_ARR_UNK[2],X
-    STA 45A_ARR_UNK[2],X
+    STA 448_ARR_UNK[18],X
+    STA 45A_ARR_UNK[18],X
     LDY TMP_08
     RTS
     .db 00

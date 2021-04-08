@@ -3439,153 +3439,85 @@
     .db D4
     .db 03
     .db 60
-    .db A9
-    .db 0A
-    .db 8D
-    .db DA
-    .db 03
-    .db AD
-    .db D6
-    .db 03
-    .db D0
-    .db 0E
-    .db A9
-    .db 00
-    .db 8D
-    .db D4
-    .db 03
-    .db AD
-    .db DA
-    .db 03
-    .db 8D
-    .db D7
-    .db 03
-    .db EE
-    .db D6
-    .db 03
-    .db CE
-    .db D7
-    .db 03
-    .db D0
-    .db 10
-    .db AD
-    .db DA
-    .db 03
-    .db 8D
-    .db D7
-    .db 03
-    .db EE
-    .db D4
-    .db 03
-    .db AD
-    .db D4
-    .db 03
-    .db C9
-    .db 05
-    .db B0
-    .db 06
-    .db AD
-    .db D4
-    .db 03
-    .db 4C
-    .db B4
-    .db AD
-    .db A9
-    .db 00
-    .db 8D
-    .db D6
-    .db 03
-    .db 8D
-    .db D7
-    .db 03
-    .db 8D
-    .db D4
-    .db 03
-    .db A9
-    .db 03
-    .db 85
-    .db 1D
-    .db 60
-    .db 86
-    .db 01
-    .db 84
-    .db 02
-    .db 0A
-    .db 0A
-    .db 0A
-    .db 0A
-    .db 85
-    .db 00
-    .db A6
-    .db 1E
-    .db A9
-    .db 04
-    .db 9D
-    .db 00
-    .db 03
-    .db A9
-    .db 00
-    .db 9D
-    .db 01
-    .db 03
-    .db A9
-    .db 3F
-    .db 9D
-    .db 02
-    .db 03
-    .db A9
-    .db 20
-    .db 9D
-    .db 03
-    .db 03
-    .db A0
-    .db 00
-    .db 38
-    .db B9
-    .db D9
-    .db 06
-    .db E5
-    .db 00
-    .db C9
-    .db 40
-    .db 90
-    .db 02
-    .db A9
-    .db 0F
-    .db 9D
-    .db 04
-    .db 03
-    .db E8
-    .db C8
-    .db C0
-    .db 20
-    .db 90
-    .db EB
-    .db 18
-    .db A5
-    .db 1E
-    .db 69
-    .db 24
-    .db 85
-    .db 1E
-    .db A6
-    .db 01
-    .db A4
-    .db 02
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db A9
-    .db 04
-    .db 20
-    .db 1C
-    .db DC
-    .db 68
-    .db A8
-    .db 68
-    .db AA
-    .db 60
+PSWAP_FADEOUT_TEXT: ; 13:0D71, 0x026D71
+    LDA #$0A ; Time between ticks.
+    STA 3DA_PSWAP_COUNTDOWN_VAL ; Set
+    LDA 3D6_PSWAP_RTN_INITD ; Load
+    BNE VAL_SET
+    LDA #$00 ; Clear val.
+    STA PSWAP_INDEX? ; Clear
+    LDA 3DA_PSWAP_COUNTDOWN_VAL ; Load
+    STA 3D7_PSWAP_COUNTDOWN ; Set.
+    INC 3D6_PSWAP_RTN_INITD ; Set
+VAL_SET: ; 13:0D89, 0x026D89
+    DEC 3D7_PSWAP_COUNTDOWN ; --
+    BNE PSWAP_NOT_READY
+    LDA 3DA_PSWAP_COUNTDOWN_VAL ; Reset
+    STA 3D7_PSWAP_COUNTDOWN
+    INC PSWAP_INDEX? ; ++
+    LDA PSWAP_INDEX? ; Load
+    CMP #$05 ; If A _ #$05
+    BCS PSWAP_FINISH ; >=, goto.
+PSWAP_NOT_READY: ; 13:0D9E, 0x026D9E
+    LDA PSWAP_INDEX? ; Load index.
+    JMP COMMIT_NEW_PALETTE_COLOR
+PSWAP_FINISH: ; 13:0DA4, 0x026DA4
+    LDA #$00 ; Re-init.
+    STA 3D6_PSWAP_RTN_INITD
+    STA 3D7_PSWAP_COUNTDOWN
+    STA PSWAP_INDEX?
+    LDA #$03 ; 3 frames no rendering.
+    STA DISABLE_RENDERING_X_FRAMES
+    RTS ; Leave.
+COMMIT_NEW_PALETTE_COLOR: ; 13:0DB4, 0x026DB4
+    STX TMP_01 ; Save X
+    STY TMP_02 ; Save Y.
+    ASL A ; << 4, *16
+    ASL A
+    ASL A
+    ASL A
+    STA TMP_00 ; Save index.
+    LDX PPU_UPDATE_BUF_INDEX ; Load index.
+    LDA #$04
+    STA PPU_UPDATE_BUFFER[20],X ; Set ..
+    LDA #$00
+    STA PPU_UPDATE_BUFFER+1,X ; Set to palette.
+    LDA #$3F
+    STA PPU_UPDATE_BUFFER+2,X
+    LDA #$20
+    STA PPU_UPDATE_BUFFER+3,X ; Set length, 32 bytes.
+    LDY #$00 ; Loop count init.
+LOOP_NOT_DONE: ; 13:0DD6, 0x026DD6
+    SEC ; Prep sub.
+    LDA PPU_PALETTE_BUF?[32],Y ; Load val.
+    SBC TMP_00 ; Subtract val.
+    CMP #$40 ; If result _ #$40
+    BCC RESULT_UNDER ; <, goto.
+    LDA #$0F ; Black for underflows.
+RESULT_UNDER: ; 13:0DE2, 0x026DE2
+    STA PPU_UPDATE_BUFFER+4,X ; Store back.
+    INX ; X++;Y++
+    INY
+    CPY #$20 ; Loop _ #$20
+    BCC LOOP_NOT_DONE ; <, goto.
+    CLC
+    LDA PPU_UPDATE_BUF_INDEX ; Load
+    ADC #$24 ; Index += size.
+    STA PPU_UPDATE_BUF_INDEX ; Store back.
+    LDX TMP_01 ; Restore X
+    LDY TMP_02 ; Restore Y
+    TXA
+    PHA ; Push X
+    TYA
+    PHA ; Push Y.
+    LDA #$04
+    JSR UNK_STREAM_0x300_SETUP_BANK_1C/1D ; Upload..?
+    PLA
+    TAY ; Restore Y.
+    PLA
+    TAX ; Restore X.
+    RTS
+4B_SWITCH_RTN_A: ; 13:0E04, 0x026E04
     .db AD
     .db 39
     .db 06
@@ -3868,6 +3800,7 @@
     .db E6
     .db 4B
     .db 60
+4B_SWITCH_RTN_B: ; 13:0F1E, 0x026F1E
     .db 20
     .db 39
     .db AF

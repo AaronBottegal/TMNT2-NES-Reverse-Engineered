@@ -1,5 +1,5 @@
     .db 20
-    LDA 412_ARR_OSTATE?[2],X
+    LDA 412_ARR_OSTATE?[18],X
     JSR SWITCH_CODE_PTRS_PAST_JSR
     .db 0B
     .db 80

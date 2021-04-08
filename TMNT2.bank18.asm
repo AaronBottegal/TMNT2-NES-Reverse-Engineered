@@ -3356,24 +3356,24 @@ PREP_OBJS_0-3: ; 12:0D0E, 0x024D0E
     INC 532_ARR_UNK+1,X
     CLC
     LDA 544_ARR_UNK+1,X
-    ADC 4D8_ARR_UNK[2],X
-    STA 4D8_ARR_UNK[2],X
+    ADC 4D8_ARR_UNK[18],X
+    STA 4D8_ARR_UNK[18],X
     LDA 532_ARR_UNK+1,X
-    ADC 4C6_ARR_UNK[2],X
-    STA 4C6_ARR_UNK[2],X
+    ADC 4C6_ARR_UNK[18],X
+    STA 4C6_ARR_UNK[18],X
     BPL 12:0D43
     CLC
     BMI 12:0D44
     SEC
     RTS
-    CMP 47E_ARR_UNK[2],X
-    LDA 436_ARR_UNK[2],X
+    CMP 47E_ARR_UNK[18],X
+    LDA 436_ARR_UNK[18],X
     AND #$BF
     BCS 12:0D51
     ORA #$40
-    STA 436_ARR_UNK[2],X
+    STA 436_ARR_UNK[18],X
     RTS
-RTN_PALETTE+BG_MODS?: ; 12:0D55, 0x024D55
+RTN_PALETTE+BG_MOD: ; 12:0D55, 0x024D55
     JSR PALETTE_MOD_FROM_FILE
     TXA ; Save X.
     PHA
@@ -5097,16 +5097,16 @@ PALETTE_DATA_1C: ; 12:0F48, 0x024F48
     .db 38
     .db 06
     .db FE
-CUTSCENE?IDK_GOES_DEEP: ; 12:1416, 0x025416
+CUTSCENE_SCENE_1: ; 12:1416, 0x025416
     LDA CTRL_NEWLY_PRESSED_A[2] ; Get pressed.
     ORA CTRL_NEWLY_PRESSED_A+1 ; For both players.
     BPL A_NOT_PRESSED_EITHER ; If A not pressed.
-    JSR SOUND_INIT_RTN ; Init sound.
+    JSR SOUND_INIT_RTN? ; Init sound.
     JMP INTRO_CUTSCENE_RTN_G
 A_NOT_PRESSED_EITHER: ; 12:1422, 0x025422
     LDA #$80
     STA 4C_UNK ; Set unk.
-    LDA 63E_SWITCH_INTRO_CUTSCENE?
+    LDA 63E_SWITCH_CUTSCENE_NOT_FINISHED_FLAG?
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LOW(INTRO_CUTSCENE_RTN_A) ; Init screen.
     HIGH(INTRO_CUTSCENE_RTN_A)
@@ -5128,7 +5128,7 @@ INTRO_CUTSCENE_RTN_A: ; 12:143A, 0x02543A
     LDA #$04
     STA DISABLE_RENDERING_X_FRAMES ; Rendering disable.
 63E_SWITCH_MOVE: ; 12:1444, 0x025444
-    INC 63E_SWITCH_INTRO_CUTSCENE? ; Switch++
+    INC 63E_SWITCH_CUTSCENE_NOT_FINISHED_FLAG? ; Switch++
     RTS
 INTRO_CUTSCENE_RTN_B: ; 12:1448, 0x025448
     LDA #$C6 ; Set banks R2-R4
@@ -5144,40 +5144,40 @@ INTRO_CUTSCENE_RTN_B: ; 12:1448, 0x025448
     LDX #$0C ; Upload screen.
     JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15
     LDA #$04 ; BG mod.
-    JSR RTN_PALETTE+BG_MODS?
+    JSR RTN_PALETTE+BG_MOD
     LDX #$00
 SPRITE_OBJECT_FILLOUT_LOOP: ; 12:1468, 0x025468
     JSR INIT_OBJECT[X]_DATA? ; Init object X.
     LDA #$01
-    STA ARR_SPRITE_ENABLED?[2],X ; Enable GFX?
+    STA ARR_OBJECT_ENABLED?[18],X ; Enable GFX?
     LDA #$01
-    STA 412_ARR_OSTATE?[2],X
+    STA 412_ARR_OSTATE?[18],X
     LDA SPRITE_DATA_47E,X
-    STA 47E_ARR_UNK[2],X
+    STA 47E_ARR_UNK[18],X
     LDA SPRITE_DATA_4A2,X
-    STA 4A2_ARR_UNK[2],X
-    STA 46C_ARR_UNK[2],X
+    STA 4A2_ARR_UNK[18],X
+    STA 46C_ARR_UNK[18],X
     LDA SPRITE_DATA_400,X
-    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X
     LDA #$88
-    STA 448_ARR_UNK[2],X
+    STA 448_ARR_UNK[18],X
     LDA SPRITE_DATA_45A,X
-    STA 45A_ARR_UNK[2],X
+    STA 45A_ARR_UNK[18],X
     LDA SPRITE_DATA_4FC
-    STA 4FC_ARR_UNK[2],X
+    STA 4FC_ARR_UNK[18],X
     LDA SPRITE_DATA_4EA
-    STA 4EA_ARR_UNK[2],X
+    STA 4EA_ARR_UNK[18],X
     LDA SPRITE_DATA_544
-    STA 544_ARR_UNK[2],X
+    STA 544_ARR_UNK[18],X
     LDA SPRITE_DATA_532
-    STA 532_ARR_UNK[2],X
+    STA 532_ARR_UNK[18],X
     INX ; X++
     CPX #$04 ; If X _ #$04
     BCC SPRITE_OBJECT_FILLOUT_LOOP ; <, goto.
     LDX #$06 ; X=
     LDA #$00 ; Clear
-    STA 448_ARR_UNK[2],X ; Clear
-    STA 45A_ARR_UNK[2],X ; Clear
+    STA 448_ARR_UNK[18],X ; Clear
+    STA 45A_ARR_UNK[18],X ; Clear
     LDA #$03
     STA DISABLE_RENDERING_X_FRAMES ; Disable rendering for frames.
     JSR 63E_SWITCH_MOVE ; State++
@@ -5225,7 +5225,7 @@ BIT_NOT_SET: ; 12:14E8, 0x0254E8
     TYA ; Y to A.
     JSR QUEUE_PPU_UPDATE_???
     LDX #$06 ; x=
-    LDA 448_ARR_UNK[2],X ; Load object ???
+    LDA 448_ARR_UNK[18],X ; Load object ???
     CMP #$FF ; If A _ #$FF
     BEQ VAL_MAXED? ; ==, goto.
     LDY #$00 ; Y=
@@ -5235,7 +5235,7 @@ LOOP_SMOL: ; 12:14F7, 0x0254F7
     BEQ EOF_MARKER ; ==, goto.
     INY ; Y+=2
     INY
-    CMP 448_ARR_UNK[2],X ; If A _ Var
+    CMP 448_ARR_UNK[18],X ; If A _ Var
     BNE LOOP_SMOL ; !=, goto.
     LDA 12:1572,Y ; Load from.
     CMP #$10 ; If A _ #$10
@@ -5246,40 +5246,40 @@ LOOP_SMOL: ; 12:14F7, 0x0254F7
 QUEUE_PPU_UPDATE_JSR: ; 12:1514, 0x025514
     JSR QUEUE_PPU_UPDATE_??? ; Make update.
 EOF_MARKER: ; 12:1517, 0x025517
-    INC 448_ARR_UNK[2],X ; Inc ???
+    INC 448_ARR_UNK[18],X ; Inc ???
 VAL_MAXED?: ; 12:151A, 0x02551A
     LDX #$00 ; X=
 LOOP_ALL_OBJECTS: ; 12:151C, 0x02551C
-    LDA 412_ARR_OSTATE?[2],X ; Load
+    LDA 412_ARR_OSTATE?[18],X ; Load
     BEQ LOADED_ZERO
-    LDA 45A_ARR_UNK[2],X ; Load
+    LDA 45A_ARR_UNK[18],X ; Load
     BNE LOADED_NZERO ; != 0, goto.
     JSR FUNKY_ADD/ROT_RTN ; Do sub.
     LDA #$18 ; Move val?
     JSR MOVE_RTN?
     JSR MOVE_FINALIZE?
-    LDA 46C_ARR_UNK[2],X ; Load
+    LDA 46C_ARR_UNK[18],X ; Load
     CMP #$B8 ; If A _ #$B8
     BCS CLEAR_OBJ_412/400? ; >=, goto.
     LDA DATA_UNK,X ; Load ???
-    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X ; Store to object.
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X ; Store to object.
 LOADED_ZERO: ; 12:153E, 0x02553E
     INX ; Object++
     CPX #$04 ; All 4 objects?
     BCC LOOP_ALL_OBJECTS ; <, goto.
-    LDA 412_ARR_OSTATE?[2] ; Load
+    LDA 412_ARR_OSTATE?[18] ; Load
     ORA 412_ARR_OSTATE?+1 ; Or
-    ORA **:$0414 ; Or
-    ORA **:$0415 ; Or
+    ORA 412_ARR_OSTATE?+2 ; Or
+    ORA 412_ARR_OSTATE?+3 ; Or
     BEQ ALL_VALUES_ZERO?
     RTS
 LOADED_NZERO: ; 12:1552, 0x025552
-    DEC 45A_ARR_UNK[2],X ; --
+    DEC 45A_ARR_UNK[18],X ; --
     JMP LOADED_ZERO ; JMP back in.
 CLEAR_OBJ_412/400?: ; 12:1558, 0x025558
     LDA #$00
-    STA 412_ARR_OSTATE?[2],X ; Clear these.
-    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X
+    STA 412_ARR_OSTATE?[18],X ; Clear these.
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X
     JMP LOADED_ZERO
 ALL_VALUES_ZERO?: ; 12:1563, 0x025563
     JSR PREP_OBJS_0-3 ; Prep objects.
@@ -5318,35 +5318,35 @@ INTRO_CUTSCENE_RTN_E: ; 12:1588, 0x025588
     LDX #$0E
     JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15 ; Upload screen.
     LDA #$05
-    JSR RTN_PALETTE+BG_MODS? ; Palette?
+    JSR RTN_PALETTE+BG_MOD ; Palette?
     LDX #$00 ; Object
 LOOP: ; 12:15A4, 0x0255A4
     TXA ; Clear A
     TAY ; Clear Y
     CLC
     ADC #$01 ; A+=1
-    STA ARR_SPRITE_ENABLED?[2],X ; Enable?
+    STA ARR_OBJECT_ENABLED?[18],X ; Enable?
     LDA #$30 ; Val?
-    STA 47E_ARR_UNK[2],X
+    STA 47E_ARR_UNK[18],X
     LDA #$98 ; Val?
-    STA 4A2_ARR_UNK[2],X
+    STA 4A2_ARR_UNK[18],X
     LDA #$81 ; Val?
-    STA 4C6_ARR_UNK[2],X
+    STA 4C6_ARR_UNK[18],X
     JSR MOVE_FINALIZE? ; Move?
     LDA #$01 ; Val?
-    STA 5C2_ARR_UNK[4],X
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
     LDA DATA_UNK_A ; Val?
-    STA 4FC_ARR_UNK[2],X
+    STA 4FC_ARR_UNK[18],X
     LDA DATA_UNK_B ; Val?
-    STA 4EA_ARR_UNK[2],X
+    STA 4EA_ARR_UNK[18],X
     LDA DATA_UNK_C ; Val?
-    STA 544_ARR_UNK[2],X
+    STA 544_ARR_UNK[18],X
     LDA DATA_UNK_D ; Val?
-    STA 532_ARR_UNK[2],X
+    STA 532_ARR_UNK[18],X
     LDA DATA_UNK_E,Y ; Val?
-    STA 5D4_ARR_OBJ_TIMER?[2],X
+    STA 5D4_ARR_OBJ_TIMER?[18],X
     LDA DATA_UNK_F,Y ; Val?
-    STA 436_ARR_UNK[2],X
+    STA 436_ARR_UNK[18],X
     INX ; Object++
     CPX #$04 ; If X _ #$04
     BCC LOOP ; <, goto. Do all 4 turtles.
@@ -5377,10 +5377,10 @@ LOOP_ALL_OBJS: ; 12:1600, 0x025600
     INX ; Object++
     CPX #$04 ; If X _ #$04
     BCC LOOP_ALL_OBJS ; <, goto. Do all 4.
-    LDA 5C2_ARR_UNK[4] ; Load
-    ORA 5C2_ARR_UNK+1 ; Or
-    ORA 5C2_ARR_UNK+2 ; Or
-    ORA 5C2_ARR_UNK+3 ; Or
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18] ; Load
+    ORA 5C2_OBJ_DATA_PTR_STREAM_INDEX+1 ; Or
+    ORA 5C2_OBJ_DATA_PTR_STREAM_INDEX+2 ; Or
+    ORA 5C2_OBJ_DATA_PTR_STREAM_INDEX+3 ; Or
     BEQ INTRO_CUTSCENE_RTN_G ; All 0, goto.
     LDA CTRL_NEWLY_PRESSED_A+1 ; Load if A pressed.
     BPL RTS ; Not pressed, RTS.
@@ -5388,7 +5388,7 @@ LOOP_ALL_OBJS: ; 12:1600, 0x025600
 INTRO_CUTSCENE_RTN_G: ; 12:161D, 0x02561D
     LDA #$00 ; Clear...
     STA 4C_UNK
-    STA 63E_SWITCH_INTRO_CUTSCENE?
+    STA 63E_SWITCH_CUTSCENE_NOT_FINISHED_FLAG?
     LDA #$04 ; Stop rendering.
     STA DISABLE_RENDERING_X_FRAMES
     LDX #$00 ; Objects 0-3
@@ -5404,7 +5404,7 @@ INTRO_CUTSCENE_RTN_G: ; 12:161D, 0x02561D
 RTS: ; 12:163E, 0x02563E
     RTS
 SWITCH_OBJ[X]_412: ; 12:163F, 0x02563F
-    LDA 412_ARR_OSTATE?[2],X ; Load each object switch.
+    LDA 412_ARR_OSTATE?[18],X ; Load each object switch.
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LOW(INTRO_FALLING_RTN_A) ; Wait to display.
     HIGH(INTRO_FALLING_RTN_A)
@@ -5417,14 +5417,14 @@ SWITCH_OBJ[X]_412: ; 12:163F, 0x02563F
     LOW(INTRO_FALLING_RTN_E) ; Clean up sprites?
     HIGH(INTRO_FALLING_RTN_E)
 INTRO_FALLING_RTN_A: ; 12:164F, 0x02564F
-    DEC 5D4_ARR_OBJ_TIMER?[2],X ; --
+    DEC 5D4_ARR_OBJ_TIMER?[18],X ; --
     BNE RTS ; If not expired.
-    INC 412_ARR_OSTATE?[2],X ; Switch state++
+    INC 412_ARR_OSTATE?[18],X ; Switch state++
 RTS: ; 12:1657, 0x025657
     RTS
 INTRO_FALLING_RTN_B: ; 12:1658, 0x025658
     LDA DATA_UNK_A,X ; Load
-    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X ; Store
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X ; Store
     LDA DATA_GFX_BANK,X ; Load
     STA ZP_R2-R5_BANK_VALUES[4],X ; Store new bank in R2-R5.
     JSR FUNKY_ADD/ROT_RTN ; Do...
@@ -5434,21 +5434,21 @@ INTRO_FALLING_RTN_B: ; 12:1658, 0x025658
     LDA #$4C
     JSR SND_BANKED_DISPATCH ; Do sound. Landing?
     LDA DATA_UNK_C,X
-    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X ; Store...
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X ; Store...
     LDA DATA_UNK_D,X ; Load
     STA ZP_R2-R5_BANK_VALUES[4],X ; Store.
     CPX #$01 ; If X _ #$01
     BNE OBJ_NOT_1 ; !=, goto.
     LDA DATA_FELL_ANIM_VAL_A ; Load
-    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X ; Move
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X ; Move
     LDA DATA_FELL_ANIM_VAL_B ; Load
     STA ZP_R2-R5_BANK_VALUES[4],X ; Store bank.
 OBJ_NOT_1: ; 12:168C, 0x02568C
     LDA DATA_UNK_F,X ; Load
-    STA 5D4_ARR_OBJ_TIMER?[2],X ; Store
-    INC 412_ARR_OSTATE?[2],X ; State++
+    STA 5D4_ARR_OBJ_TIMER?[18],X ; Store
+    INC 412_ARR_OSTATE?[18],X ; State++
     LDA #$00
-    STA 4C6_ARR_UNK[2],X ; Clear.
+    STA 4C6_ARR_UNK[18],X ; Clear.
 CCLEARED: ; 12:169A, 0x02569A
     JMP MOVE_FINALIZE? ; Finalize changes.
 DATA_UNK_A: ; 12:169D, 0x02569D
@@ -5477,22 +5477,22 @@ DATA_UNK_F: ; 12:16AD, 0x0256AD
     .db 20
     .db 20
 INTRO_FALLING_RTN_C: ; 12:16B1, 0x0256B1
-    DEC 5D4_ARR_OBJ_TIMER?[2],X ; Timer
+    DEC 5D4_ARR_OBJ_TIMER?[18],X ; Timer
     BNE 12:16B9
-    INC 412_ARR_OSTATE?[2],X
+    INC 412_ARR_OSTATE?[18],X
     RTS
 INTRO_FALLING_RTN_D: ; 12:16BA, 0x0256BA
     JSR FUNKY_ADD/ROT_RTN ; Move
-    LDA 47E_ARR_UNK[2],X ; Load
+    LDA 47E_ARR_UNK[18],X ; Load
     CMP #$D4 ; If _ #$D4
     BCS NEXT_OBJ_STATE ; >=, goto.
-    DEC 448_ARR_UNK[2],X ; --
+    DEC 448_ARR_UNK[18],X ; --
     BPL NOT_FINISHED ; Not underflowed.
     LDA #$07 ; Load
-    STA 448_ARR_UNK[2],X ; Store
-    INC 45A_ARR_UNK[2],X ; ++
+    STA 448_ARR_UNK[18],X ; Store
+    INC 45A_ARR_UNK[18],X ; ++
 NOT_FINISHED: ; 12:16D1, 0x0256D1
-    LDA 45A_ARR_UNK[2],X ; Load
+    LDA 45A_ARR_UNK[18],X ; Load
     AND #$03 ; Get bottom 2 bits.
     STA TMP_00 ; To
     TXA ; Obj to A.
@@ -5501,16 +5501,16 @@ NOT_FINISHED: ; 12:16D1, 0x0256D1
     ORA TMP_00 ; Put bottom 2 bits back?
     TAY ; To Y index.
     LDA DATA_WALK_ANIM_A?,Y ; Load data.
-    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X ; Store to.
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X ; Store to.
     LDA DATA_WALK_ANIM_B?,X ; Load data.
     STA ZP_R2-R5_BANK_VALUES[4],X ; Switch in bank.
     RTS ; Leave.
 NEXT_OBJ_STATE: ; 12:16EA, 0x0256EA
-    INC 412_ARR_OSTATE?[2],X
+    INC 412_ARR_OSTATE?[18],X
 INTRO_FALLING_RTN_E: ; 12:16ED, 0x0256ED
     LDA #$00 ; Clear these.
-    STA 400_ARR_SPR_ANIM_UPDATE_WHICH?[2],X
-    STA 5C2_ARR_UNK[4],X
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
     RTS
 DATA_FELL_ANIM_VAL_A: ; 12:16F6, 0x0256F6
     .db BF
@@ -6274,844 +6274,514 @@ IDK_DATA_H: ; 12:1734, 0x025734
     .db 99
     .db 38
     .db 60
-    LDY PPU_INDEX_UNK_42
-    LDA 12:1A15,Y
-    BEQ 12:1A6D
-    LDA CTRL_NEWLY_PRESSED_A[2]
+RTN_TEXT_AFTER_CUTSCENE?: ; 12:19FA, 0x0259FA
+    LDY PPU_INDEX_UNK_42 ; Load index.
+    LDA DATA_UNK,Y
+    BEQ DLOAD_ZERO ; Load 0, goto.
+    LDA CTRL_NEWLY_PRESSED_A[2] ; Load buttons P1+P2
     ORA CTRL_NEWLY_PRESSED_A+1
-    BMI 12:1A6D
-    LDA **:$063B
+    BMI DLOAD_ZERO ; A pressed, goto.
+    LDA 63B_TEXT_FADE_OUT_DONE? ; Load val.
+    JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch on it.
+    LOW(63B_RTN_A) ; Screen setup?
+    HIGH(63B_RTN_A)
+    LOW(63B_RTN_B) ; Init text sprite objs.
+    HIGH(63B_RTN_B)
+    LOW(63B_RTN_C_TEXT?) ; Continue and wait for all to complete.
+    HIGH(63B_RTN_C_TEXT?)
+    LOW(63B_RTN_TEXT_FADE_OUT) ; Fade out of text.
+    HIGH(63B_RTN_TEXT_FADE_OUT)
+DATA_UNK: ; 12:1A15, 0x025A15
+    .db 01
+    .db 00
+    .db 01
+    .db 00
+    .db 01
+    .db 00
+    .db 01
+    .db 00
+    .db 01
+    .db 01
+    .db 01
+    .db 00
+    .db 00
+    .db 00
+    .db 00
+    .db 00
+63B_RTN_A: ; 12:1A25, 0x025A25
+    LDA #$03
+    STA 3D5_UNK ; Store to.
+    LDA #$05
+    STA DISABLE_RENDERING_X_FRAMES ; Disable rendering.
+    INC 63B_TEXT_FADE_OUT_DONE? ; Switch++
+    LDA #$03
+    JSR RTN_PALETTE+BG_MOD ; Do palette.
+    JMP CLEAR_IRQ_FLAGS_UNK
+63B_RTN_B: ; 12:1A39, 0x025A39
+    JSR DISPATCH_CLEAR_SCREEN ; Clear screen.
+    LDA PPU_INDEX_UNK_42 ; Load index.
+    JSR INIT_GFX_BANKS+OBJ_STREAMS_TEXT ; Do sub.
+    INC 63B_TEXT_FADE_OUT_DONE? ; Next state.
+    RTS
+63B_RTN_C_TEXT?: ; 12:1A45, 0x025A45
+    JSR OBJ_PROCESS_UNK_RET_CC_UNFINISHED
+    BCC RTS ; Carry clear, not finished.
+    LDA #$00
+    STA DISABLE_RENDERING_X_FRAMES ; Stop disable.
+    STA 3D6_PSWAP_RTN_INITD ; Clear
+    INC 63B_TEXT_FADE_OUT_DONE? ; ++
+RTS: ; 12:1A54, 0x025A54
+    RTS
+63B_RTN_TEXT_FADE_OUT: ; 12:1A55, 0x025A55
+    JSR PSWAP_FADEOUT_TEXT ; Do.
+    LDA 3D6_PSWAP_RTN_INITD ; Load.
+    BNE RTS ; != 0, goto.
+PREP_TEXT_FADE_RTN: ; 12:1A5D, 0x025A5D
+    LDA #$03
+    STA DISABLE_RENDERING_X_FRAMES ; Disable rendering 3 frames.
+    LDA #$00
+    STA 3D6_PSWAP_RTN_INITD ; Prep text.
+    STA 63B_TEXT_FADE_OUT_DONE? ; Prep flag.
+    JSR INIT_OBJS[7-18]_DRENDER_LSPRITES ; Do sub.
+RTS: ; 12:1A6C, 0x025A6C
+    RTS
+DLOAD_ZERO: ; 12:1A6D, 0x025A6D
+    JMP PREP_TEXT_FADE_RTN ; Abuse RTS.
+RTN_BG_UPDATE_QUEUE: ; 12:1A70, 0x025A70
+    PHA ; Save A.
+    STY TMP_07 ; Y to.
+    LDY #$04 ; Y=
+    LDA #$00 ; A=
+    STA TMP_03 ; Clear
+    LDA TMP_01 ; Load
+LOOP_STATE_MIXUP: ; 12:1A7B, 0x025A7B
+    ASL A ; << 1.
+    ROL TMP_03 ; Shift into.
+    DEY ; Y--
+    BPL LOOP_STATE_MIXUP
+    CLC ; Prep add.
+    ADC TMP_00 ; Add
+    STA TMP_02 ; To.
+    BCC SKIP_HIGH_INC
+    INC TMP_03 ; Overflow inc.
+SKIP_HIGH_INC: ; 12:1A8A, 0x025A8A
+    CLC ; Prep add.
+    LDA #$20 ; A=
+    ADC TMP_03 ; Add
+    STA TMP_03 ; To.
+    LDY PPU_UPDATE_BUF_INDEX ; Get index.
+    LDA #$04 ; Bytes.
+    STA PPU_UPDATE_BUFFER[20],Y
+    LDA #$01
+    STA PPU_UPDATE_BUFFER+3,Y ; Store.
+    LDA #$00
+    STA PPU_UPDATE_BUFFER+5,Y ; Store.
+    LDA TMP_02
+    STA PPU_UPDATE_BUFFER+1,Y ; Store low.
+    LDA TMP_03
+    STA PPU_UPDATE_BUFFER+2,Y ; Store high.
+    PLA ; Pull value.
+    STA PPU_UPDATE_BUFFER+4,Y ; To buffer.
+    TYA ; Index to Y.
+    CLC
+    ADC #$05 ; Mod size.
+    STA PPU_UPDATE_BUF_INDEX ; Restore.
+    LDY TMP_07 ; Restore Y.
+    RTS
+INIT_GFX_BANKS+OBJ_STREAMS_TEXT: ; 12:1AB9, 0x025AB9
+    PHA ; Save A
+    LDX #$06 ; Object 6 mod.
+    JSR INIT_OBJECT[X]_DATA?
+    LDA #$01
+    STA ARR_OBJECT_ENABLED?[18],X ; Enable sprite?
+    PLA ; Pull val.
+    ASL A ; Turn to index.
+    TAY ; To Y reg.
+    LDA TEXT?_PTR_L,Y ; Load val.
+    STA 568_OBJ_DATA_PTR_UNK_L[18],X ; TO.
+    LDA TEXT?_PTR_H,Y ; Load val.
+    STA 57A_OBJ_DATA_PTR_UNK_H[18],X ; To.
+    LDA #$68
+    STA IRQ_GFX_DATA_BANK_R0 ; Set GFX banks R0-R1
+    LDA #$6A
+    STA IRQ_GFX_DATA_BANK_R1
+    LDA #$68
+    STA ZP_R2-R5_BANK_VALUES[4] ; Also set R2-R5.
+    LDA #$69
+    STA ZP_R2-R5_BANK_VALUES+1
+    LDA #$6A
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$6B
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDA PPU_CTRL_RAM_COPY ; Disable large sprites, since text is put in sprites.
+    AND #$DF
+    STA PPU_CTRL_RAM_COPY
+    LDA #$80
+    STA 4C_UNK ; Set negative.
+    LDA #$00 ; A=
+    TAX ; X=
+LOOP_WRITE_OBJ_ATTR: ; 12:1AF8, 0x025AF8
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X ; Zero anim ???
+    INX ; Obj++
+    CPX #$12 ; 18 done?
+    BCC LOOP_WRITE_OBJ_ATTR ; <, goto.
+    JMP INIT_OBJ_DATA_UNK ; Goto, abuse RTS.
+OBJ_PROCESS_UNK_RET_CC_UNFINISHED: ; 12:1B03, 0x025B03
+    LDX #$06 ; Object 7
+    LDA 568_OBJ_DATA_PTR_UNK_L[18],X ; Load val
+    STA TMP_08 ; Store to.
+    LDA 57A_OBJ_DATA_PTR_UNK_H[18],X ; Load val.
+    STA TMP_09 ; Store to.
+    JSR RTN_FORWARD_OBJ+?_RET_CS_COMPLETED ; Spawn request.
+    ROR A ; Rotate result into A.
+    PHA ; Save...
+    JSR CHECK_ALL_TEXT_COMPLETED?_RET_CC_UNFINISHED
+    PLA ; Pull value.
+    BPL RTN_UNFINISHED
+    BCC RTN_UNFINISHED
+INIT_OBJS[7-18]_DRENDER_LSPRITES: ; 12:1B1C, 0x025B1C
+    LDX #$06 ; Init object 7-18.
+ALL_OBJS: ; 12:1B1E, 0x025B1E
+    JSR INIT_OBJECT[X]_DATA? ; Init
+    INX ; Obj++
+    CPX #$12 ; Obj _ #$12
+    BCC ALL_OBJS ; <, goto.
+    LDA #$03
+    STA DISABLE_RENDERING_X_FRAMES ; Stop rendering.
+    LDA #$00
+    STA 4C_UNK ; Clear.
+    LDA PPU_CTRL_RAM_COPY ; Enable large sprites.
+    ORA #$20
+    STA PPU_CTRL_RAM_COPY
+    SEC ; Set carry.
+    RTS ; Leave.
+RTN_UNFINISHED: ; 12:1B36, 0x025B36
+    CLC
+    RTS
+RTN_FORWARD_OBJ+?_RET_CS_COMPLETED: ; 12:1B38, 0x025B38
+    LDY 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X ; Load from object. NOTE: Carry set means completed?
+LOOP_KEEP_Y_ASIS: ; 12:1B3B, 0x025B3B
+    LDA 5D4_ARR_OBJ_TIMER?[18],X ; Load timer?
+    BNE TIMER_NONZERO ; != 0, goto.
+    LDA [TMP_08],Y ; Load data from stream.
+    BMI VAL_NEGATIVE ; Top bit set, goto.
+    BEQ VAL_ZERO ; == 0, goto.
+REENTER_RTN_??: ; 12:1B46, 0x025B46
+    INC 448_ARR_UNK[18],X ; ++
+    LDA 448_ARR_UNK[18],X ; Load
+    CMP 45A_ARR_UNK[18],X ; If A _ var
+    BCC SUB_NOT_READY_FWD ; <, goto.
+    LDA 47E_ARR_UNK[18],X ; Setup temp..?
+    STA TMP_00
+    LDA 4A2_ARR_UNK[18],X
+    STA TMP_01
+    LDA [TMP_08],Y ; Move next stream val.
+    STA TMP_02
+    JSR RTN_MAKE_OBJ_RET_CS_FAIL ; Do subroutine.
+    DEC 448_ARR_UNK[18],X ; --
+    BCS SUB_NOT_READY_FWD ; If sub failed
+    LDA #$00
+    STA 448_ARR_UNK[18],X ; Set.
+    JSR FORWARD_XOBJ_STREAM_PTR ; Do...?
+    INC 47E_ARR_UNK[18],X ; ++
+    LDA 47E_ARR_UNK[18],X ; Load
+    AND #$1F ; Isolate bits.
+    STA 47E_ARR_UNK[18],X ; Store to.
+SUB_NOT_READY_FWD: ; 12:1B7A, 0x025B7A
+    CLC ; Clear.
+    TYA ; Y to A.
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X ; Store index back to object.
+    RTS ; Leave.
+VAL_ZERO: ; 12:1B80, 0x025B80
+    JSR FORWARD_XOBJ_STREAM_PTR ; Forward ???
+    INC 47E_ARR_UNK[18],X ; ++
+    JMP LOOP_KEEP_Y_ASIS ; Goto.
+TIMER_NONZERO: ; 12:1B89, 0x025B89
+    DEC 5D4_ARR_OBJ_TIMER?[18],X ; --
+    JMP SUB_NOT_READY_FWD
+VAL_NEGATIVE: ; 12:1B8F, 0x025B8F
+    CMP #$50 ; A _ #$50
+    BEQ REENTER_RTN_?? ; ==, goto. Impossible since BMI here? lol.
+    EOR #$FF ; Invert val.
+    BEQ CARRY_SET_RTS ; == 0, was FF, goto.
+    JSR DO_SWITCH_IN_A ; Do rtn, rtsing to here.
+    JMP LOOP_KEEP_Y_ASIS ; Do rtn.
+DO_SWITCH_IN_A: ; 12:1B9D, 0x025B9D
     JSR SWITCH_CODE_PTRS_PAST_JSR
-    .db 25
-    .db 9A
-    .db 39
-    .db 9A
-    .db 45
-    .db 9A
-    .db 55
-    .db 9A
-    .db 01
-    .db 00
-    .db 01
-    .db 00
-    .db 01
-    .db 00
-    .db 01
-    .db 00
-    .db 01
-    .db 01
-    .db 01
-    .db 00
-    .db 00
-    .db 00
-    .db 00
-    .db 00
-    .db A9
-    .db 03
-    .db 8D
-    .db D5
-    .db 03
-    .db A9
-    .db 05
-    .db 85
-    .db 1D
-    .db EE
-    .db 3B
-    .db 06
-    .db A9
-    .db 03
-    .db 20
-    .db 55
-    .db 8D
-    .db 4C
-    .db 12
-    .db F9
-    .db 20
-    .db EB
-    .db DB
-    .db A5
-    .db 42
-    .db 20
-    .db B9
-    .db 9A
-    .db EE
-    .db 3B
-    .db 06
+    LOW(CARRY_SET_RTS) ; Carry set and RTS.
+    HIGH(CARRY_SET_RTS)
+    LOW(STREAM_TO_OBJ_B) ; 3x forwards.
+    HIGH(STREAM_TO_OBJ_B)
+    LOW(SWITCH_TO_OBJ_C) ; Forward+Clear
+    HIGH(SWITCH_TO_OBJ_C)
+    LOW(SWITCH_TO_OBJ_D) ; 3x forwards.
+    HIGH(SWITCH_TO_OBJ_D)
+CARRY_SET_RTS: ; 12:1BA8, 0x025BA8
+    .db 38 ; Set carry.
     .db 60
-    .db 20
-    .db 03
-    .db 9B
-    .db 90
-    .db 0A
-    .db A9
-    .db 00
-    .db 85
-    .db 1D
-    .db 8D
-    .db D6
-    .db 03
-    .db EE
-    .db 3B
-    .db 06
-    .db 60
-    .db 20
-    .db 71
-    .db AD
-    .db AD
-    .db D6
-    .db 03
-    .db D0
-    .db 0F
-    .db A9
-    .db 03
-    .db 85
-    .db 1D
-    .db A9
-    .db 00
-    .db 8D
-    .db D6
-    .db 03
-    .db 8D
-    .db 3B
-    .db 06
-    .db 20
-    .db 1C
-    .db 9B
-    .db 60
-    .db 4C
-    .db 5D
-    .db 9A
-    .db 48
-    .db 84
-    .db 07
-    .db A0
-    .db 04
-    .db A9
-    .db 00
-    .db 85
-    .db 03
-    .db A5
-    .db 01
-    .db 0A
-    .db 26
-    .db 03
-    .db 88
-    .db 10
-    .db FA
-    .db 18
-    .db 65
-    .db 00
-    .db 85
-    .db 02
-    .db 90
-    .db 02
-    .db E6
-    .db 03
-    .db 18
-    .db A9
-    .db 20
-    .db 65
-    .db 03
-    .db 85
-    .db 03
-    .db A4
-    .db 1E
-    .db A9
-    .db 04
-    .db 99
-    .db 00
-    .db 03
-    .db A9
-    .db 01
-    .db 99
-    .db 03
-    .db 03
-    .db A9
-    .db 00
-    .db 99
-    .db 05
-    .db 03
-    .db A5
-    .db 02
-    .db 99
-    .db 01
-    .db 03
-    .db A5
-    .db 03
-    .db 99
-    .db 02
-    .db 03
-    .db 68
-    .db 99
-    .db 04
-    .db 03
-    .db 98
-    .db 18
-    .db 69
-    .db 05
-    .db 85
-    .db 1E
-    .db A4
-    .db 07
-    .db 60
-    .db 48
-    .db A2
-    .db 06
-    .db 20
-    .db D1
-    .db F4
-    .db A9
-    .db 01
-    .db 9D
-    .db 24
-    .db 04
-    .db 68
-    .db 0A
-    .db A8
-    .db B9
-    .db 2D
-    .db 9D
-    .db 9D
-    .db 68
-    .db 05
-    .db B9
-    .db 2E
-    .db 9D
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db 68
-    .db 85
-    .db 2D
-    .db A9
-    .db 6A
-    .db 85
-    .db 2E
-    .db A9
-    .db 68
-    .db 85
-    .db 2F
-    .db A9
-    .db 69
-    .db 85
-    .db 30
-    .db A9
-    .db 6A
-    .db 85
-    .db 31
-    .db A9
-    .db 6B
-    .db 85
-    .db 32
-    .db A5
-    .db FF
-    .db 29
-    .db DF
-    .db 85
-    .db FF
-    .db A9
-    .db 80
-    .db 85
-    .db 4C
-    .db A9
-    .db 00
-    .db AA
-    .db 9D
-    .db 00
-    .db 04
-    .db E8
-    .db E0
-    .db 12
-    .db 90
-    .db F8
-    .db 4C
-    .db 71
-    .db 9C
-    .db A2
-    .db 06
-    .db BD
-    .db 68
-    .db 05
-    .db 85
-    .db 08
-    .db BD
-    .db 7A
-    .db 05
-    .db 85
-    .db 09
-    .db 20
-    .db 38
-    .db 9B
-    .db 6A
-    .db 48
-    .db 20
-    .db 8C
-    .db 9C
-    .db 68
-    .db 10
-    .db 1C
-    .db 90
-    .db 1A
-    .db A2
-    .db 06
-    .db 20
-    .db D1
-    .db F4
-    .db E8
-    .db E0
-    .db 12
-    .db 90
-    .db F8
-    .db A9
-    .db 03
-    .db 85
-    .db 1D
-    .db A9
-    .db 00
-    .db 85
-    .db 4C
-    .db A5
-    .db FF
-    .db 09
-    .db 20
-    .db 85
-    .db FF
-    .db 38
-    .db 60
-    .db 18
-    .db 60
-    .db BC
-    .db C2
-    .db 05
-    .db BD
-    .db D4
-    .db 05
-    .db D0
-    .db 49
-    .db B1
-    .db 08
-    .db 30
-    .db 4B
-    .db F0
-    .db 3A
-    .db FE
-    .db 48
-    .db 04
-    .db BD
-    .db 48
-    .db 04
-    .db DD
-    .db 5A
-    .db 04
-    .db 90
-    .db 29
-    .db BD
-    .db 7E
-    .db 04
-    .db 85
-    .db 00
-    .db BD
-    .db A2
-    .db 04
-    .db 85
-    .db 01
-    .db B1
-    .db 08
-    .db 85
-    .db 02
-    .db 20
-    .db E3
-    .db 9C
-    .db DE
-    .db 48
-    .db 04
-    .db B0
-    .db 13
-    .db A9
-    .db 00
-    .db 9D
-    .db 48
-    .db 04
-    .db 20
-    .db DB
-    .db 9B
-    .db FE
-    .db 7E
-    .db 04
-    .db BD
-    .db 7E
-    .db 04
-    .db 29
-    .db 1F
-    .db 9D
-    .db 7E
-    .db 04
-    .db 18
-    .db 98
-    .db 9D
-    .db C2
-    .db 05
-    .db 60
-    .db 20
-    .db DB
-    .db 9B
-    .db FE
-    .db 7E
-    .db 04
-    .db 4C
-    .db 3B
-    .db 9B
-    .db DE
-    .db D4
-    .db 05
-    .db 4C
-    .db 7A
-    .db 9B
-    .db C9
-    .db 50
-    .db F0
-    .db B3
-    .db 49
-    .db FF
-    .db F0
-    .db 11
-    .db 20
-    .db 9D
-    .db 9B
-    .db 4C
-    .db 3B
-    .db 9B
-    .db 20
-    .db 98
-    .db CC
-    .db A8
-    .db 9B
-    .db AA
-    .db 9B
-    .db BE
-    .db 9B
-    .db CF
-    .db 9B
-    .db 38
-    .db 60
-    .db 20
-    .db DB
-    .db 9B
-    .db B1
-    .db 08
-    .db 9D
-    .db 7E
-    .db 04
-    .db 20
-    .db DB
-    .db 9B
-    .db B1
-    .db 08
-    .db 9D
-    .db A2
-    .db 04
-    .db 20
-    .db DB
-    .db 9B
-    .db 60
-    .db 20
-    .db DB
-    .db 9B
-    .db B1
-    .db 08
-    .db 9D
-    .db 5A
-    .db 04
-    .db 20
-    .db DB
-    .db 9B
-    .db A9
-    .db 00
-    .db 9D
-    .db 48
-    .db 04
-    .db 60
-    .db 20
-    .db DB
-    .db 9B
-    .db B1
-    .db 08
-    .db 9D
-    .db D4
-    .db 05
-    .db 20
-    .db DB
-    .db 9B
-    .db 60
-    .db C8
-    .db D0
-    .db 05
-    .db E6
-    .db 09
-    .db FE
-    .db 7A
-    .db 05
-    .db 60
-    .db 84
-    .db 0F
-    .db A8
-    .db F0
-    .db 1E
-    .db C9
-    .db 25
-    .db 90
-    .db 17
-    .db A0
-    .db 00
-    .db D9
-    .db 0A
-    .db 9C
-    .db F0
-    .db 0A
-    .db C8
-    .db C0
-    .db 05
-    .db 90
-    .db F6
-    .db A9
-    .db 00
-    .db 4C
-    .db 07
-    .db 9C
-    .db B9
-    .db 0F
-    .db 9C
-    .db 4C
-    .db 07
-    .db 9C
-    .db 18
-    .db 69
-    .db 23
-    .db A4
-    .db 0F
-    .db 60
+STREAM_TO_OBJ_B: ; 12:1BAA, 0x025BAA
+    JSR FORWARD_XOBJ_STREAM_PTR ; Forward.
+    LDA [TMP_08],Y ; Load from stream.
+    STA 47E_ARR_UNK[18],X ; Store to obj.
+    JSR FORWARD_XOBJ_STREAM_PTR ; Forward.
+    LDA [TMP_08],Y ; Load from stream.
+    STA 4A2_ARR_UNK[18],X ; Store to obj.
+    JSR FORWARD_XOBJ_STREAM_PTR ; Forward.
+    RTS
+SWITCH_TO_OBJ_C: ; 12:1BBE, 0x025BBE
+    JSR FORWARD_XOBJ_STREAM_PTR ; Forward.
+    LDA [TMP_08],Y ; Load.
+    STA 45A_ARR_UNK[18],X ; Store to obj.
+    JSR FORWARD_XOBJ_STREAM_PTR ; Forward.
+    LDA #$00 ; Clear in obj.
+    STA 448_ARR_UNK[18],X ; Clear.
+    RTS
+SWITCH_TO_OBJ_D: ; 12:1BCF, 0x025BCF
+    JSR FORWARD_XOBJ_STREAM_PTR ; Forward steam.
+    LDA [TMP_08],Y ; Load val.
+    STA 5D4_ARR_OBJ_TIMER?[18],X ; Store to obj.
+    JSR FORWARD_XOBJ_STREAM_PTR ; Forward.
+    RTS
+FORWARD_XOBJ_STREAM_PTR: ; 12:1BDB, 0x025BDB
+    INY ; Stream++
+    BNE RTS ; No overflow, keep.
+    INC TMP_09 ; Inc RAM high ptr.
+    INC 57A_OBJ_DATA_PTR_UNK_H[18],X ; Obj copy, too.
+RTS: ; 12:1BE3, 0x025BE3
+    RTS
+RTN_MODIFY_A_???: ; 12:1BE4, 0x025BE4
+    STY TMP_0F? ; Y object val to.
+    TAY ; A val to Y.
+    BEQ RTS ; A == 0, goto.
+    CMP #$25 ; If A _ #$25
+    BCC VAL_LT_#$25 ; <, goto.
+    LDY #$00 ; Index init.
+SEARCH_MATCH_LOOP: ; 12:1BEF, 0x025BEF
+    CMP DATA_MATCH_UNK,Y ; Compare to data.
+    BEQ DATA_EQUAL ; Data equal, goto.
+    INY ; Y++
+    CPY #$05 ; If _ #$05
+    BCC SEARCH_MATCH_LOOP ; <, goto.
+    LDA #$00 ; A=
+    JMP RTS
+DATA_EQUAL: ; 12:1BFE, 0x025BFE
+    LDA DATA_MATCH_LOADED,Y ; Load data translated?
+    JMP RTS ; Reload Y.
+VAL_LT_#$25: ; 12:1C04, 0x025C04
+    CLC ; Prep add.
+    ADC #$23 ; Modify with add.
+RTS: ; 12:1C07, 0x025C07
+    LDY TMP_0F? ; Reload object.
+    RTS ; Leave
+DATA_MATCH_UNK: ; 12:1C0A, 0x025C0A
     .db 3F
     .db 4C
     .db 50
     .db 4E
     .db 4F
+DATA_MATCH_LOADED: ; 12:1C0F, 0x025C0F
     .db 48
     .db 49
     .db 4A
     .db 4B
     .db 4C
-    .db 86
-    .db 0B
-    .db 84
-    .db 0C
-    .db A6
-    .db 1E
-    .db A9
-    .db 04
-    .db 9D
-    .db 00
-    .db 03
-    .db A9
-    .db 10
-    .db 9D
-    .db 01
-    .db 03
-    .db A9
-    .db 3F
-    .db 9D
-    .db 02
-    .db 03
-    .db A9
-    .db 10
-    .db 9D
-    .db 03
-    .db 03
-    .db A0
-    .db 10
-    .db 84
-    .db 0A
-    .db 98
-    .db 4A
-    .db 4A
-    .db 29
-    .db 03
-    .db A8
-    .db B9
-    .db 61
-    .db 04
-    .db 0A
-    .db 0A
-    .db 0A
-    .db 0A
-    .db A4
-    .db 0A
-    .db 85
-    .db 0A
-    .db 38
-    .db B9
-    .db D9
-    .db 06
-    .db E5
-    .db 0A
-    .db C9
-    .db 40
-    .db 90
-    .db 02
-    .db A9
-    .db 0F
-    .db 9D
-    .db 04
-    .db 03
-    .db E8
-    .db C8
-    .db C0
-    .db 20
-    .db 90
-    .db D8
-    .db 18
-    .db A5
-    .db 1E
-    .db 69
-    .db 14
-    .db 85
-    .db 1E
-    .db A6
-    .db 0B
-    .db A4
-    .db 0C
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db A9
-    .db 04
-    .db 20
-    .db 1C
-    .db DC
-    .db 68
-    .db A8
-    .db 68
-    .db AA
-    .db 60
-    .db A2
-    .db 07
-    .db A0
-    .db 00
-    .db 20
-    .db D1
-    .db F4
-    .db E0
-    .db 0B
-    .db B0
-    .db 0A
-    .db A9
-    .db 04
-    .db 9D
-    .db 5A
-    .db 04
-    .db 98
-    .db 9D
-    .db 36
-    .db 04
-    .db C8
-    .db E8
-    .db E0
-    .db 12
-    .db 90
-    .db EA
-    .db 60
-    .db A9
-    .db 00
-    .db 85
-    .db 10
-    .db A2
-    .db 07
-    .db BD
-    .db 24
-    .db 04
-    .db F0
-    .db 07
-    .db 20
-    .db AE
-    .db 9C
-    .db A9
-    .db 01
-    .db 85
-    .db 10
-    .db E8
-    .db E0
-    .db 0B
-    .db 90
-    .db EF
-    .db A5
-    .db 10
-    .db 48
-    .db 20
-    .db 14
-    .db 9C
-    .db 68
-    .db 49
-    .db 01
-    .db 4A
-    .db 60
-    .db DE
-    .db 48
-    .db 04
-    .db D0
-    .db 2F
-    .db AD
-    .db D5
-    .db 03
-    .db 9D
-    .db 48
-    .db 04
-    .db DE
-    .db 5A
-    .db 04
-    .db D0
-    .db 24
-    .db BD
-    .db 7E
-    .db 04
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 85
-    .db 00
-    .db FE
-    .db A2
-    .db 04
-    .db BD
-    .db A2
-    .db 04
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 85
-    .db 01
-    .db BD
-    .db D4
-    .db 05
-    .db 20
-    .db 70
-    .db 9A
-    .db BD
-    .db 36
-    .db 04
-    .db 48
-    .db 20
-    .db D1
-    .db F4
-    .db 68
-    .db 9D
-    .db 36
-    .db 04
-    .db 60
-    .db 98
-    .db 48
-    .db 20
-    .db 1F
-    .db 9D
-    .db B0
-    .db 32
-    .db A9
-    .db 70
-    .db 99
-    .db 24
-    .db 04
-    .db A5
-    .db 00
-    .db 0A
-    .db 0A
-    .db 0A
-    .db 99
-    .db 7E
-    .db 04
-    .db A5
-    .db 01
-    .db 0A
-    .db 0A
-    .db 0A
-    .db 38
-    .db E9
-    .db 01
-    .db 99
-    .db A2
-    .db 04
-    .db 99
-    .db 6C
-    .db 04
-    .db A5
-    .db 02
-    .db 99
-    .db D4
-    .db 05
-    .db 20
-    .db E4
-    .db 9B
-    .db 99
-    .db 00
-    .db 04
-    .db A9
-    .db 03
-    .db 99
-    .db 5A
-    .db 04
-    .db AD
-    .db D5
-    .db 03
-    .db 99
-    .db 48
-    .db 04
-    .db 18
-    .db 68
-    .db A8
-    .db 60
-    .db A0
-    .db 07
-    .db 18
-    .db B9
-    .db 24
-    .db 04
-    .db F0
-    .db 05
-    .db C8
-    .db C0
-    .db 0B
-    .db 90
-    .db F6
-    .db 60
-    .db 4B
-    .db 9D
-    .db 80
-    .db 9D
-    .db 80
-    .db 9D
-    .db B9
-    .db 9D
-    .db B9
-    .db 9D
-    .db F5
-    .db 9D
-    .db F5
-    .db 9D
-    .db 2E
-    .db 9E
-    .db 2E
-    .db 9E
-    .db 62
-    .db 9E
-    .db 9F
-    .db 9E
-    .db D4
-    .db 9E
-    .db D4
-    .db 9E
-    .db D4
-    .db 9E
-    .db D4
-    .db 9E
+RTN_BG_UPDATES_TEXT_FADE_IN?: ; 12:1C14, 0x025C14
+    STX TMP_0B ; X to.
+    STY TMP_0C ; Y to.
+    LDX PPU_UPDATE_BUF_INDEX ; Load index.
+    LDA #$04
+    STA PPU_UPDATE_BUFFER[20],X ; Config?
+    LDA #$10
+    STA PPU_UPDATE_BUFFER+1,X ; Val.
+    LDA #$3F
+    STA PPU_UPDATE_BUFFER+2,X ; Addr $3F10, sprites.
+    LDA #$10
+    STA PPU_UPDATE_BUFFER+3,X ; Length
+    LDY #$10
+LOOP_WHOLE_PALETTE: ; 12:1C30, 0x025C30
+    STY TMP_0A ; Store to.
+    TYA ; Y to A.
+    LSR A ; >> 2, *4.
+    LSR A
+    AND #$03 ; Keep bits.
+    TAY ; To Y index.
+    LDA 45A_ARR_UNK+7,Y ; Load from obj 7-10
+    ASL A ; << 4, *16.
+    ASL A
+    ASL A
+    ASL A
+    LDY TMP_0A ; Y from.
+    STA TMP_0A ; A to.
+    SEC ; Prep sub.
+    LDA PPU_PALETTE_BUF?[32],Y ; Load color.
+    SBC TMP_0A ; Subtract with.
+    CMP #$40 ; If _ #$40
+    BCC 12:1C4F ; <, goto.
+    LDA #$0F ; Load, black?
+    STA PPU_UPDATE_BUFFER+4,X ; Store to update buf.
+    INX ; Next buf data.
+    INY ; Next palette data.
+    CPY #$20 ; If Y _ #$20
+    BCC LOOP_WHOLE_PALETTE ; <, goto.
+    CLC
+    LDA PPU_UPDATE_BUF_INDEX ; Load
+    ADC #$14 ; Add
+    STA PPU_UPDATE_BUF_INDEX ; Store.
+    LDX TMP_0B ; X from.
+    LDY TMP_0C ; Y from.
+    TXA
+    PHA ; Save X.
+    TYA
+    PHA ; Save Y.
+    LDA #$04
+    JSR UNK_STREAM_0x300_SETUP_BANK_1C/1D ; Add file.
+    PLA
+    TAY ; Restore X and Y.
+    PLA
+    TAX
+    RTS ; Leave.
+INIT_OBJ_DATA_UNK: ; 12:1C71, 0x025C71
+    LDX #$07 ; Object 8
+    LDY #$00 ; Other value setting.
+LOOP_TO_OBJ_18: ; 12:1C75, 0x025C75
+    JSR INIT_OBJECT[X]_DATA? ; Init object.
+    CPX #$0B ; Object 12?
+    BCS OBJ_PAST_CHECK ; >=, goto. Don't set values.
+    LDA #$04
+    STA 45A_ARR_UNK[18],X ; Set to 4.
+    TYA
+    STA 436_ARR_UNK[18],X ; Y val to here.
+    INY ; Y++
+OBJ_PAST_CHECK: ; 12:1C86, 0x025C86
+    INX ; X++
+    CPX #$12 ; To obj 18?
+    BCC LOOP_TO_OBJ_18 ; >, no, goto.
+    RTS
+CHECK_ALL_TEXT_COMPLETED?_RET_CC_UNFINISHED: ; 12:1C8C, 0x025C8C
+    LDA #$00 ; Load
+    STA TMP_10 ; Init cleared.
+    LDX #$07 ; Object start.
+LOOP_ALL_OBJS: ; 12:1C92, 0x025C92
+    LDA ARR_OBJECT_ENABLED?[18],X ; Load...
+    BEQ OBJ_AVAILABLE ; Free.
+    JSR RTN_UPDATES_BG? ; Update BG from object?
+    LDA #$01
+    STA TMP_10 ; Set flag, not all done.
+OBJ_AVAILABLE: ; 12:1C9E, 0x025C9E
+    INX ; Next obj.
+    CPX #$0B ; Obj _ 11
+    BCC LOOP_ALL_OBJS ; <, goto. Not done.
+    LDA TMP_10 ; Load flag, not all done.
+    PHA ; Save.
+    JSR RTN_BG_UPDATES_TEXT_FADE_IN? ; Do...
+    PLA ; Pull saved.
+    EOR #$01 ; Invert.
+    LSR A ; Shift off bit into carry.
+    RTS ; Leave.
+RTN_UPDATES_BG?: ; 12:1CAE, 0x025CAE
+    DEC 448_ARR_UNK[18],X ; --
+    BNE RTS ; Not timed down, RTS.
+    LDA 3D5_UNK ; Load.
+    STA 448_ARR_UNK[18],X ; Store to.
+    DEC 45A_ARR_UNK[18],X ; --
+    BNE RTS ; Not timed down, rts.
+    LDA 47E_ARR_UNK[18],X ; Load
+    LSR A ; >> 3, /8.
+    LSR A
+    LSR A
+    STA TMP_00 ; To tmp.
+    INC 4A2_ARR_UNK[18],X ; ++
+    LDA 4A2_ARR_UNK[18],X ; Load val
+    LSR A ; >> 3, /8.
+    LSR A
+    LSR A
+    STA TMP_01 ; Store to.
+    LDA 5D4_ARR_OBJ_TIMER?[18],X ; Load.
+    JSR RTN_BG_UPDATE_QUEUE ; Do sub.
+    LDA 436_ARR_UNK[18],X ; Load
+    PHA ; Save
+    JSR INIT_OBJECT[X]_DATA? ; Init obj X.
+    PLA ; Pull
+    STA 436_ARR_UNK[18],X ; Restore.
+RTS: ; 12:1CE2, 0x025CE2
+    RTS
+RTN_MAKE_OBJ_RET_CS_FAIL: ; 12:1CE3, 0x025CE3
+    TYA ; Save Y. NOTE: Carry set means failure.
+    PHA
+    JSR REQUEST_OBJECT_SLOT_IN_Y ; Get obj slot.
+    BCS RESTORE+RTS ; Failure.
+    LDA #$70
+    STA ARR_OBJECT_ENABLED?[18],Y ; Enabled.
+    LDA TMP_00 ; Load val.
+    ASL A ; << 3, *8
+    ASL A
+    ASL A
+    STA 47E_ARR_UNK[18],Y ; Store to object.
+    LDA TMP_01 ; Load val.
+    ASL A ; << 3, *8
+    ASL A
+    ASL A
+    SEC ; Prep sub.
+    SBC #$01 ; -=1
+    STA 4A2_ARR_UNK[18],Y ; Store to.
+    STA 46C_ARR_UNK[18],Y ; Also here.
+    LDA TMP_02 ; Load val.
+    STA 5D4_ARR_OBJ_TIMER?[18],Y ; Store.
+    JSR RTN_MODIFY_A_???
+    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],Y ; Store to anim?
+    LDA #$03
+    STA 45A_ARR_UNK[18],Y ; Set val.
+    LDA 3D5_UNK
+    STA 448_ARR_UNK[18],Y ; Set val.
+    CLC ; Clear carry.
+RESTORE+RTS: ; 12:1D1C, 0x025D1C
+    PLA ; Restore Y.
+    TAY
+    RTS ; Leave.
+REQUEST_OBJECT_SLOT_IN_Y: ; 12:1D1F, 0x025D1F
+    LDY #$07 ; Obj 8. NOTE: Carry set signals a failure.
+    CLC ; Prep ?
+LOOP_SEARCH: ; 12:1D22, 0x025D22
+    LDA ARR_OBJECT_ENABLED?[18],Y ; Load val.
+    BEQ RTS_CARRY_CLEAR ; == 0, goto.
+    INY ; Obj++
+    CPY #$0B ; Obj _ 11
+    BCC LOOP_SEARCH ; <, goto.
+RTS_CARRY_CLEAR: ; 12:1D2C, 0x025D2C
+    RTS ; If naturally gets here, >=, carry set. Failure.
+TEXT?_PTR_L: ; 12:1D2D, 0x025D2D
+    LOW(TEXT_FILE_A)
+TEXT?_PTR_H: ; 12:1D2E, 0x025D2E
+    HIGH(TEXT_FILE_A)
+    LOW(TEXT_FILE_B)
+    HIGH(TEXT_FILE_B)
+    LOW(TEXT_FILE_B)
+    HIGH(TEXT_FILE_B)
+    LOW(TEXT_FILE_C)
+    HIGH(TEXT_FILE_C)
+    LOW(TEXT_FILE_C)
+    HIGH(TEXT_FILE_C)
+    LOW(TEXT_FILE_D)
+    HIGH(TEXT_FILE_D)
+    LOW(TEXT_FILE_D)
+    HIGH(TEXT_FILE_D)
+    LOW(TEXT_FILE_E)
+    HIGH(TEXT_FILE_E)
+    LOW(TEXT_FILE_E)
+    HIGH(TEXT_FILE_E)
+    LOW(TEXT_FILE_F)
+    HIGH(TEXT_FILE_F)
+    LOW(TEXT_FILE_G)
+    HIGH(TEXT_FILE_G)
+    LOW(TEXT_FILE_H)
+    HIGH(TEXT_FILE_H)
+    LOW(TEXT_FILE_H)
+    HIGH(TEXT_FILE_H)
+    LOW(TEXT_FILE_H)
+    HIGH(TEXT_FILE_H)
+    LOW(TEXT_FILE_H)
+    HIGH(TEXT_FILE_H)
+TEXT_FILE_A: ; 12:1D4B, 0x025D4B
     .db FE
     .db 0C
     .db 0A
@@ -7165,6 +6835,7 @@ IDK_DATA_H: ; 12:1734, 0x025734
     .db FC
     .db 70
     .db FF
+TEXT_FILE_B: ; 12:1D80, 0x025D80
     .db FE
     .db 0C
     .db 0A
@@ -7222,6 +6893,7 @@ IDK_DATA_H: ; 12:1734, 0x025734
     .db FC
     .db 70
     .db FF
+TEXT_FILE_C: ; 12:1DB9, 0x025DB9
     .db FE
     .db 0C
     .db 0A
@@ -7282,6 +6954,7 @@ IDK_DATA_H: ; 12:1734, 0x025734
     .db FC
     .db 70
     .db FF
+TEXT_FILE_D: ; 12:1DF5, 0x025DF5
     .db FE
     .db 0C
     .db 0A
@@ -7339,6 +7012,7 @@ IDK_DATA_H: ; 12:1734, 0x025734
     .db FC
     .db 70
     .db FF
+TEXT_FILE_E: ; 12:1E2E, 0x025E2E
     .db FE
     .db 0C
     .db 0A
@@ -7391,6 +7065,7 @@ IDK_DATA_H: ; 12:1734, 0x025734
     .db FC
     .db 70
     .db FF
+TEXT_FILE_F: ; 12:1E62, 0x025E62
     .db FE
     .db 0C
     .db 0A
@@ -7452,6 +7127,7 @@ IDK_DATA_H: ; 12:1734, 0x025734
     .db FC
     .db 70
     .db FF
+TEXT_FILE_G: ; 12:1E9F, 0x025E9F
     .db FE
     .db 0C
     .db 0A
@@ -7505,6 +7181,7 @@ IDK_DATA_H: ; 12:1734, 0x025734
     .db FC
     .db 70
     .db FF
+TEXT_FILE_H: ; 12:1ED4, 0x025ED4
     .db FD
     .db 03
     .db FC
