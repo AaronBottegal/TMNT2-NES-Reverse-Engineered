@@ -5805,33 +5805,31 @@ RESULT_UNDER: ; 13:0DE2, 0x026DE2
     .db 20
     .db 20
     .db FF
-    .db A5
-    .db 4B
-    .db 20
-    .db 98
-    .db CC
-    .db 0D
-    .db B7
-    .db 20
-    .db B7
-    .db 2F
-    .db B7
-    .db 46
-    .db B7
-    .db A8
-    .db B7
-    .db D7
-    .db B7
-    .db 22
-    .db B8
-    .db 77
-    .db B8
-    .db 89
-    .db B8
-    .db C7
-    .db B8
-    .db DB
-    .db B8
+4B_SWITCH: ; 13:16F2, 0x0276F2
+    LDA 4B_SWITCH_UNK
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(SWITCH_RTN_A)
+    HIGH(SWITCH_RTN_A)
+    LOW(SWITCH_RTN_B)
+    HIGH(SWITCH_RTN_B)
+    LOW(SWITCH_RTN_C)
+    HIGH(SWITCH_RTN_C)
+    LOW(SWITCH_RTN_D)
+    HIGH(SWITCH_RTN_D)
+    LOW(SWITCH_RTN_E)
+    HIGH(SWITCH_RTN_E)
+    LOW(SWITCH_RTN_F)
+    HIGH(SWITCH_RTN_F)
+    LOW(SWITCH_RTN_G)
+    HIGH(SWITCH_RTN_G)
+    LOW(SWITCH_RTN_H)
+    HIGH(SWITCH_RTN_H)
+    LOW(SWITCH_RTN_I)
+    HIGH(SWITCH_RTN_I)
+    LOW(SWITCH_RTN_J)
+    HIGH(SWITCH_RTN_J)
+    LOW(SWITCH_RTN_K)
+    HIGH(SWITCH_RTN_K)
     .db A9
     .db 00
     .db 8D

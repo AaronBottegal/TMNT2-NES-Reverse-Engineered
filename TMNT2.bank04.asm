@@ -1,67 +1,37 @@
     .db 24
-    .db A5
-    .db 42
-    .db C9
-    .db 0B
-    .db F0
-    .db 38
-    .db C9
-    .db 07
-    .db F0
-    .db 34
-    .db A5
-    .db 42
-    .db 0A
-    .db A8
-    .db B9
-    .db 72
-    .db 80
-    .db 85
-    .db 00
-    .db B9
-    .db 73
-    .db 80
-    .db 85
-    .db 01
-    .db AC
-    .db 0B
-    .db 06
-    .db B1
-    .db 00
-    .db C9
-    .db FF
-    .db F0
-    .db 4F
-    .db A5
-    .db B4
-    .db D1
-    .db 00
-    .db F0
-    .db 04
-    .db B0
-    .db 09
-    .db 90
-    .db 45
-    .db A5
-    .db B1
-    .db C8
-    .db D1
-    .db 00
-    .db 90
-    .db 3E
-    .db A2
-    .db 00
-    .db BD
-    .db 70
-    .db 06
-    .db F0
-    .db 06
-    .db E8
-    .db E0
-    .db 04
-    .db D0
-    .db F6
-    .db 60
+RTN_UNK: ; 04:0001, 0x008001
+    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
+    CMP #$0B
+    BEQ 04:003F
+    CMP #$07
+    BEQ 04:003F
+    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
+    ASL A
+    TAY
+    LDA $8072,Y
+    STA TMP_00
+    LDA $8073,Y
+    STA TMP_01
+    LDY **:$060B
+    LDA [TMP_00],Y
+    CMP #$FF
+    BEQ 04:0071
+    LDA B4_ARR_UNK_NAMETABLE?[2]
+    CMP [TMP_00],Y
+    BEQ 04:002C
+    BCS 04:0033
+    BCC 04:0071
+    LDA B1_SCROLL_X_COPY_IRQ_ZP[2]
+    INY
+    CMP [TMP_00],Y
+    BCC 04:0071
+    LDX #$00
+    LDA **:$0670,X
+    BEQ 04:0040
+    INX
+    CPX #$04
+    BNE 04:0035
+    RTS
     .db C8
     .db B1
     .db 00
@@ -490,85 +460,42 @@
     .db FF
     .db 00
     .db FF
-    .db A2
-    .db 00
-    .db BD
-    .db 70
-    .db 06
-    .db F0
-    .db 42
-    .db C9
-    .db 02
-    .db D0
-    .db 0C
-    .db BD
-    .db 84
-    .db 06
-    .db 30
-    .db 07
-    .db F0
-    .db 05
-    .db A9
-    .db 16
-    .db 20
-    .db F2
-    .db EE
-    .db A5
-    .db B7
-    .db 05
-    .db BA
-    .db F0
-    .db 2C
-    .db BD
-    .db 74
-    .db 06
-    .db 38
-    .db E5
-    .db B7
-    .db 9D
-    .db 74
-    .db 06
-    .db BD
-    .db 78
-    .db 06
-    .db E5
-    .db BA
-    .db 9D
-    .db 78
-    .db 06
-    .db 90
-    .db 1F
-    .db A5
-    .db 83
-    .db 05
-    .db 84
-    .db F0
-    .db 13
-    .db BD
-    .db 7C
-    .db 06
-    .db 38
-    .db E5
-    .db 83
-    .db 9D
-    .db 7C
-    .db 06
-    .db BD
-    .db 80
-    .db 06
-    .db E5
-    .db 84
-    .db 9D
-    .db 80
-    .db 06
-    .db 90
-    .db 06
-    .db E8
-    .db E0
-    .db 04
-    .db D0
-    .db B4
-    .db 60
+    LDX #$00
+    LDA **:$0670,X
+    BEQ 04:0235
+    CMP #$02
+    BNE 04:0203
+    LDA **:$0684,X
+    BMI 04:0203
+    BEQ 04:0203
+    LDA #$16
+    JSR 1F:0EF2
+    LDA B7_UNK_SPRITES?
+    ORA BA_UNK_SPRITES?
+    BEQ 04:0235
+    LDA **:$0674,X
+    SEC
+    SBC B7_UNK_SPRITES?
+    STA **:$0674,X
+    LDA **:$0678,X
+    SBC BA_UNK_SPRITES?
+    STA **:$0678,X
+    BCC 04:023B
+    LDA 83_UNK
+    ORA 84_UNK
+    BEQ 04:0235
+    LDA **:$067C,X
+    SEC
+    SBC 83_UNK
+    STA **:$067C,X
+    LDA **:$0680,X
+    SBC 84_UNK
+    STA **:$0680,X
+    BCC 04:023B
+    INX
+    CPX #$04
+    BNE 04:01EE
+    RTS
     .db 20
     .db 41
     .db 82
@@ -631,7 +558,7 @@
     .db AA
     .db 60
 RTN_UNK: ; 04:0278, 0x008278
-    LDA PPU_INDEX_UNK_42 ; Load val.
+    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load val.
     CMP #$07 ; If _ #$07
     BEQ RTS ; ==, goto.
     LDA IRQ_COUNT? ; Load count.

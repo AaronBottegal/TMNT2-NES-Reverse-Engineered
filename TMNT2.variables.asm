@@ -83,9 +83,7 @@ PPU_UPDATE_BUF_INDEX:                         .rs 1
 TWO_PLAYERS_FLAG:                             .rs 1
 TITLE_PLAYERS_COUNT_CURSOR_0/1:               .rs 1
 INF_LOOP_COUNTER_UNK:                         .rs 1
-
-
-          .rsset 0x0025
+RANDOM_VALS?:                                 .rs 2
 KONAMI_CODE_TRIGGERED_FLAG?:                  .rs 1
 
 
@@ -111,7 +109,9 @@ CTRL_PREV_A:                                  .rs 2
 3E_UNK:                                       .rs 1
 3F_ATTRACT_EXIT_FLAG:                         .rs 1
 40_TIMER?:                                    .rs 2
-PPU_INDEX_UNK_42:                             .rs 1
+42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT:    .rs 1
+43_PLAYER_UNK:                                .rs 2
+45_UNK:                                       .rs 1
 
 
           .rsset 0x0047
@@ -145,22 +145,44 @@ IRQ_EXTENDED/HANDLER:                         .rs 1
 IRQ_UNK_5E:                                   .rs 1
 
 
+          .rsset 0x0060
+60_PLAYER_UNK:                                .rs 1
+
+
           .rsset 0x0072
 72_STREAM_PTR_UNK:                            .rs 2
 74_STREAM_UNK:                                .rs 1
 75_UNK:                                       .rs 1
 76_UNK:                                       .rs 1
 77_UNK:                                       .rs 1
+PLAYER?_UNK:                                  .rs 2
 
 
           .rsset 0x007B
 7B_UNK:                                       .rs 1
 7C_UNK:                                       .rs 1
+7D_UNK:                                       .rs 1
+
+
+          .rsset 0x0081
+81_UNK:                                       .rs 1
 
 
           .rsset 0x0083
 83_UNK:                                       .rs 1
 84_UNK:                                       .rs 1
+85_PLAYER_UNK?:                               .rs 2
+
+
+          .rsset 0x008B
+8B_UNK:                                       .rs 1
+8C_UNK:                                       .rs 1
+8D_UNK:                                       .rs 1
+8E_UNK:                                       .rs 1
+
+
+          .rsset 0x0093
+93_PLAYER_UNK:                                .rs 2
 
 
           .rsset 0x0097
@@ -173,6 +195,7 @@ IRQ_UNK_5E:                                   .rs 1
 9D_UNK:                                       .rs 1
 9E_UNK:                                       .rs 1
 9F_UNK:                                       .rs 1
+A0_PLAYER_UNK:                                .rs 2
 
 
           .rsset 0x00A6
@@ -182,25 +205,22 @@ IRQ_FLAG_R2-R5_EQ_7E:                         .rs 1
           .rsset 0x00AD
 R_**:$00AD:                                   .rs 1
 AE_ARR_UNK:                                   .rs 2
-
-
-          .rsset 0x00B1
+B0_UNK:                                       .rs 1
 B1_SCROLL_X_COPY_IRQ_ZP:                      .rs 2
-
-
-          .rsset 0x00B4
+B3_UNK:                                       .rs 1
 B4_ARR_UNK_NAMETABLE?:                        .rs 2
-
-
-          .rsset 0x00B7
+B6_UNK:                                       .rs 1
 B7_UNK_SPRITES?:                              .rs 1
-
-
-          .rsset 0x00BA
+B8_UNK:                                       .rs 1
+B9_UNK:                                       .rs 1
 BA_UNK_SPRITES?:                              .rs 1
+BB_UNK:                                       .rs 1
+BC_UNK:                                       .rs 1
+BD_PLAYER?_UNK:                               .rs 2
 
 
-          .rsset 0x00C6
+          .rsset 0x00C5
+C5_UNK:                                       .rs 1
 ARR_C6_UNK:                                   .rs 1
 R_**:$00C7:                                   .rs 1
 
@@ -208,6 +228,10 @@ R_**:$00C7:                                   .rs 1
           .rsset 0x00D8
 IRQ_D8_UNK:                                   .rs 1
 IRQ_D9_UNK:                                   .rs 1
+
+
+          .rsset 0x00DF
+DF_UNK:                                       .rs 1
 
 
           .rsset 0x00E2
@@ -276,10 +300,10 @@ KONAMI_CODE_TRACKERS?:                        .rs 3
 
           .rsset 0x0400
 400_ARR_SPR_ANIM_FRAME_WHICH?:                .rs 18
-412_ARR_OSTATE?:                              .rs 18
+OBJ_STATE/SWITCH:                             .rs 18
 ARR_OBJECT_ENABLED?:                          .rs 18
-436_ARR_UNK:                                  .rs 18
-448_ARR_UNK:                                  .rs 18
+OBJ_DIRECTION_RELATED?:                       .rs 18
+OBJ_ANIM_HOLD_TIMER?:                         .rs 18
 45A_ARR_UNK:                                  .rs 18
 46C_ARR_UNK:                                  .rs 18
 47E_ARR_UNK:                                  .rs 18
@@ -295,8 +319,8 @@ ARR_OBJECT_ENABLED?:                          .rs 18
 532_ARR_UNK:                                  .rs 18
 544_ARR_UNK:                                  .rs 18
 556_ARR_UNK:                                  .rs 18
-568_OBJ_DATA_PTR_UNK_L:                       .rs 18
-57A_OBJ_DATA_PTR_UNK_H:                       .rs 18
+OBJECT_DATA_EXTRA_A?:                         .rs 18
+OBJECT_DATA_EXTRA_B?:                         .rs 18
 58C_ARR_UNK:                                  .rs 18
 59E_ARR_UNK:                                  .rs 18
 5B0_ARR_UNK:                                  .rs 18
@@ -304,8 +328,18 @@ ARR_OBJECT_ENABLED?:                          .rs 18
 5D4_ARR_OBJ_TIMER?:                           .rs 18
 
 
-          .rsset 0x0601
+          .rsset 0x05F8
+R_**:$05F8:                                   .rs 1
+
+
+          .rsset 0x05FB
+R_**:$05FB:                                   .rs 1
+
+
+          .rsset 0x0600
+600_UNK:                                      .rs 1
 601_IRQ_INC_Y_FLAG:                           .rs 1
+602_UNK:                                      .rs 1
 
 
           .rsset 0x0606
@@ -313,17 +347,20 @@ ARR_OBJECT_ENABLED?:                          .rs 18
 607_UNK:                                      .rs 1
 
 
-          .rsset 0x060D
+          .rsset 0x060C
+60C_UNK:                                      .rs 1
 R2_TO_R5_BANK_DATA:                           .rs 4
-
-
-          .rsset 0x0612
+611_SWITCH_UNK:                               .rs 1
 612_UNK:                                      .rs 1
 
 
           .rsset 0x0615
 STATE_TURTLE_SELECT:                          .rs 1
 PPU_FLAG_UNK:                                 .rs 1
+
+
+          .rsset 0x0618
+PLAYER_ANIM_FRAME_SWAP?:                      .rs 2
 
 
           .rsset 0x061B
@@ -337,8 +374,9 @@ PPU_FLAG_UNK:                                 .rs 1
 
           .rsset 0x0636
 636_UNK:                                      .rs 1
-R_**:$0637:                                   .rs 1
-R_**:$0638:                                   .rs 1
+637_UNK:                                      .rs 1
+638_UNK:                                      .rs 1
+R_**:$0639:                                   .rs 1
 
 
           .rsset 0x063B
@@ -363,6 +401,10 @@ FLAG_UPDATE_P2_HEALTH?:                       .rs 1
 UPDATE_PPU_UNK:                               .rs 1
 
 
+          .rsset 0x0654
+654_UPDATE_UNK_FLAG:                          .rs 1
+
+
           .rsset 0x0656
 656_ARR_AE_COPY_UNK:                          .rs 2
 
@@ -378,6 +420,7 @@ NAMETABLE_VAR_UNK:                            .rs 1
           .rsset 0x065F
 FLAG_IRQ_65F:                                 .rs 1
 FLAG_IRQ_660:                                 .rs 1
+R_**:$0661:                                   .rs 1
 
 
           .rsset 0x066D
@@ -395,6 +438,10 @@ PPU_PALETTE_BUF?:                             .rs 32
           .rsset 0x0701
 701_TSELECT_CONFIRMED/TIMER:                  .rs 1
 ARR_SPRITE_OBJ_TIMER?:                        .rs 2
+
+
+          .rsset 0x070C
+R_**:$070C:                                   .rs 1
 
 
           .rsset 0x071C

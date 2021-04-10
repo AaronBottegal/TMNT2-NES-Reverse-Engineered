@@ -8,7 +8,7 @@
     LDA #$00
     STA 27_ATTRACT_WHICH?
     JMP $8001
-    STA PPU_INDEX_UNK_42
+    STA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
     ASL A
     TAY
     LDA $80DF,Y
@@ -548,7 +548,7 @@ UPDATE_??: ; 14:02A8, 0x0282A8
     LDA #$05
     STA ZP_13_UNK
     LDY #$00
-    LDA 568_OBJ_DATA_PTR_UNK_L[18],X
+    LDA OBJECT_DATA_EXTRA_A?[18],X
     BEQ 14:02CD
     CMP #$05
     BCS 14:02BB
@@ -556,7 +556,7 @@ UPDATE_??: ; 14:02A8, 0x0282A8
     CMP #$3D
     BCC 14:02C4
     LDA #$3C
-    STA 568_OBJ_DATA_PTR_UNK_L[18],X
+    STA OBJECT_DATA_EXTRA_A?[18],X
     SEC
     INY
     SBC #$05
@@ -780,9 +780,9 @@ TURTLE_NAME_RAPH: ; 14:040B, 0x02840B
     .db 1A ; P
     .db 12 ; H
     .db 4A ; -
-MAKE_UPDATE_BUF_??: ; 14:0414, 0x028414
+MAKE_UPDATE_BUF_LIVES/STATUS?: ; 14:0414, 0x028414
     AND #$01 ; Get bottom bit.
-    STA TMP_00
+    STA TMP_00 ; Player focus.
     TXA ; X to A.
     PHA ; Save
     AND #$02 ; Get P2 bit.
@@ -5562,6 +5562,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 00
     .db FF
     .db 00
+SWITCH_RTN_A: ; 14:170D, 0x02970D
     .db 64
     .db 02
     .db 02
@@ -5581,6 +5582,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 01
     .db 01
     .db 05
+SWITCH_RTN_B: ; 14:1720, 0x029720
     .db A1
     .db 01
     .db 81
@@ -5596,6 +5598,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 01
     .db 13
     .db A1
+SWITCH_RTN_C: ; 14:172F, 0x02972F
     .db 01
     .db 81
     .db 01
@@ -5619,6 +5622,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 09
     .db 51
     .db 01
+SWITCH_RTN_D: ; 14:1746, 0x029746
     .db 41
     .db 11
     .db 01
@@ -5717,6 +5721,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 01
     .db 85
     .db 01
+SWITCH_RTN_E: ; 14:17A8, 0x0297A8
     .db 84
     .db 08
     .db 04
@@ -5764,6 +5769,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 01
     .db 0B
     .db A1
+SWITCH_RTN_F: ; 14:17D7, 0x0297D7
     .db 01
     .db 81
     .db 09
@@ -5839,6 +5845,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 64
     .db 65
     .db 66
+SWITCH_RTN_G: ; 14:1822, 0x029822
     .db 67
     .db 68
     .db 69
@@ -5924,6 +5931,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db AB
     .db AC
     .db AD
+SWITCH_RTN_H: ; 14:1877, 0x029877
     .db AE
     .db AF
     .db EB
@@ -5942,6 +5950,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db B4
     .db B5
     .db B6
+SWITCH_RTN_I: ; 14:1889, 0x029889
     .db B7
     .db B8
     .db B9
@@ -6004,6 +6013,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 8D
     .db 53
     .db 00
+SWITCH_RTN_J: ; 14:18C7, 0x0298C7
     .db 15
     .db 19
     .db 18
@@ -6024,6 +6034,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 1F
     .db 1C
     .db 1E
+SWITCH_RTN_K: ; 14:18DB, 0x0298DB
     .db 16
     .db 0F
     .db 38
