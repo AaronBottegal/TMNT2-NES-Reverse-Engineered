@@ -79,7 +79,7 @@ IRQ_COUNT?:                                   .rs 1
 FLAG_NMI_ALT_UNK:                             .rs 1
 DISABLE_RENDERING_X_FRAMES:                   .rs 1
 PPU_UPDATE_BUF_INDEX:                         .rs 1
-1F_TITLE_UNK:                                 .rs 1
+GAME_STARTED:                                 .rs 1
 TWO_PLAYERS_FLAG:                             .rs 1
 TITLE_PLAYERS_COUNT_CURSOR_0/1:               .rs 1
 INF_LOOP_COUNTER_UNK:                         .rs 1
@@ -88,7 +88,7 @@ KONAMI_CODE_TRIGGERED_FLAG?:                  .rs 1
 
 
           .rsset 0x0027
-27_ATTRACT_WHICH?:                            .rs 1
+ATTRACT_LEVEL:                                .rs 1
 28_BANK_CFG_INDEX?:                           .rs 1
 LOWER_BANK_SAVE_PAIRED?:                      .rs 1
 IRQ_BANK_VALUES:                              .rs 2
@@ -104,12 +104,12 @@ TURTLE_SELECT_POSITIONS:                      .rs 2
           .rsset 0x0038
 CTRL_NEWLY_PRESSED_A:                         .rs 2
 CTRL_PREV_A:                                  .rs 2
-3C_SWITCH_CUTSCENE?:                          .rs 1
+3C_SWITCH_CORE:                               .rs 1
 3D_UNK:                                       .rs 1
 3E_UNK:                                       .rs 1
 3F_ATTRACT_EXIT_FLAG:                         .rs 1
 40_TIMER?:                                    .rs 2
-42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT:    .rs 1
+LEVEL_SCREEN_ON:                              .rs 1
 43_PLAYER_UNK:                                .rs 2
 45_UNK:                                       .rs 1
 
@@ -120,7 +120,7 @@ PPU_ADDR_IRQ:                                 .rs 2
 
 
           .rsset 0x004B
-4B_SWITCH_UNK:                                .rs 1
+PLAYERS_ENABLED_STEP?:                        .rs 1
 4C_UNK:                                       .rs 1
 NUM_PLAYER_LIVES:                             .rs 2
 
@@ -230,6 +230,10 @@ IRQ_D8_UNK:                                   .rs 1
 IRQ_D9_UNK:                                   .rs 1
 
 
+          .rsset 0x00DC
+DC_UNK:                                       .rs 1
+
+
           .rsset 0x00DF
 DF_UNK:                                       .rs 1
 
@@ -294,6 +298,11 @@ UPPER_BANK_DATA:                              .rs 1
 TMP_CHOOSE_BANKS_RTN_UNK:                     .rs 1
 
 
+          .rsset 0x03E7
+ATTRACT_UNK:                                  .rs 1
+ATTRACT_DATA_PTR?:                            .rs 2
+
+
           .rsset 0x03EC
 KONAMI_CODE_TRACKERS?:                        .rs 3
 
@@ -301,7 +310,7 @@ KONAMI_CODE_TRACKERS?:                        .rs 3
           .rsset 0x0400
 400_ARR_SPR_ANIM_FRAME_WHICH?:                .rs 18
 OBJ_STATE/SWITCH:                             .rs 18
-ARR_OBJECT_ENABLED?:                          .rs 18
+ARR_OBJECT_ENABLED+MORE?:                     .rs 18
 OBJ_DIRECTION_RELATED?:                       .rs 18
 OBJ_ANIM_HOLD_TIMER?:                         .rs 18
 45A_ARR_UNK:                                  .rs 18
@@ -376,10 +385,8 @@ PLAYER_ANIM_FRAME_SWAP?:                      .rs 2
 636_UNK:                                      .rs 1
 637_UNK:                                      .rs 1
 638_UNK:                                      .rs 1
-R_**:$0639:                                   .rs 1
-
-
-          .rsset 0x063B
+639_UNK:                                      .rs 1
+63A_UNK:                                      .rs 1
 63B_TEXT_FADE_OUT_DONE?:                      .rs 1
 
 
@@ -420,11 +427,19 @@ NAMETABLE_VAR_UNK:                            .rs 1
           .rsset 0x065F
 FLAG_IRQ_65F:                                 .rs 1
 FLAG_IRQ_660:                                 .rs 1
-R_**:$0661:                                   .rs 1
+661_UNK_LEVEL_A_SETS:                         .rs 1
 
 
           .rsset 0x066D
 66D_LEVEL_SELECT_WHICH:                       .rs 1
+
+
+          .rsset 0x0694
+694_OBJ/PLAYER_UNK?:                          .rs 4
+
+
+          .rsset 0x06A8
+6A8_COPIED_TO_PLAYERS_UNK:                    .rs 2
 
 
           .rsset 0x06D7

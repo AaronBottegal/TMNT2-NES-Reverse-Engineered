@@ -1,23 +1,26 @@
     .db 34
-    LDY 27_ATTRACT_WHICH?
-    LDA $8036,Y
-    STA TURTLE_SELECT_POSITIONS[2]
-    LDA $802E,Y
-    CMP #$FF
-    BNE 14:0016
+ATTRACT_SETUP?: ; 14:0001, 0x028001
+    LDY ATTRACT_LEVEL ; Load which scene.
+    LDA TURTLE_SELECTED_ATTRACT_SEED,Y
+    STA TURTLE_SELECT_POSITIONS[2] ; Set selected.
+    LDA DATA_42_ATTRACT_SEED,Y ; Load unk.
+    CMP #$FF ; Test end of data.
+    BNE DONT_RESET_SWITCH
     LDA #$00
-    STA 27_ATTRACT_WHICH?
-    JMP $8001
-    STA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
-    ASL A
+    STA ATTRACT_LEVEL ; Reset which.
+    JMP ATTRACT_SETUP? ; Redo rtn.
+DONT_RESET_SWITCH: ; 14:0016, 0x028016
+    STA LEVEL_SCREEN_ON ; Set level.
+    ASL A ; << 1, *2
     TAY
-    LDA $80DF,Y
-    STA **:$03E8
-    LDA $80E0,Y
-    STA **:$03E9
+    LDA ATTRACT_DPTRS_L,Y ; Move ptr. Controller input RLE data? Guessing.
+    STA ATTRACT_DATA_PTR?[2]
+    LDA ATTRACT_DPTRS_H,Y
+    STA ATTRACT_DATA_PTR?+1
     LDA #$00
-    STA **:$03E7
-    JMP $80CC
+    STA ATTRACT_UNK ; Clear.
+    JMP ISOLATE_P1_SEL/START_ONLY ; Isolate, abuse RTS.
+DATA_42_ATTRACT_SEED: ; 14:002E, 0x02802E
     .db 00
     .db 02
     .db 03
@@ -26,6 +29,7 @@
     .db 0A
     .db 0B
     .db FF
+TURTLE_SELECTED_ATTRACT_SEED: ; 14:0036, 0x028036
     .db 00
     .db 01
     .db 02
@@ -37,26 +41,26 @@
     .db 00
     .db 00
     .db 00
-    JSR ISOLATE_P1_BUTTONS?
-    LDA 3C_SWITCH_CUTSCENE? ; Load switch.
+    JSR ISOLATE_P1_SEL/START_ONLY
+    LDA 3C_SWITCH_CORE ; Load switch.
     CMP #$03 ; If _ #$03
     BNE SWITCH_NOT_YET_3 ; !=, goto.
     JSR 14:00AF ; If 3, do...?
     LDA TMP_00
     CMP #$FF
     BEQ 14:0080
-    LDA **:$03E7
+    LDA ATTRACT_UNK
     BEQ 14:0072
     JSR 14:0087
-    DEC **:$03E7
+    DEC ATTRACT_UNK
     BNE SWITCH_NOT_YET_3
     CLC
     LDA #$02
-    ADC **:$03E8
-    STA **:$03E8
+    ADC ATTRACT_DATA_PTR?[2]
+    STA ATTRACT_DATA_PTR?[2]
     LDA #$00
-    ADC **:$03E9
-    STA **:$03E9
+    ADC ATTRACT_DATA_PTR?+1
+    STA ATTRACT_DATA_PTR?+1
 SWITCH_NOT_YET_3: ; 14:0071, 0x028071
     RTS
     .db 20
@@ -149,7 +153,7 @@ SWITCH_NOT_YET_3: ; 14:0071, 0x028071
     .db 4C
     .db 0F
     .db DB
-ISOLATE_P1_BUTTONS?: ; 14:00CC, 0x0280CC
+ISOLATE_P1_SEL/START_ONLY: ; 14:00CC, 0x0280CC
     LDA CTRL_PREV_A[2] ; Get previous.
     AND #$30 ; Isolate SEL+START
     STA CTRL_PREV_A[2] ; Store back.
@@ -157,33 +161,35 @@ ISOLATE_P1_BUTTONS?: ; 14:00CC, 0x0280CC
     AND #$30 ; Isolate SEL+START
     STA CTRL_NEWLY_PRESSED_A[2] ; Store back.
     LDA #$00
-    STA CTRL_PREV_A+1 ; Clear P2?
+    STA CTRL_PREV_A+1 ; Clear P2, want no influence from.
     STA CTRL_NEWLY_PRESSED_A+1
     RTS
-    .db 74
-    .db 8D
-    .db 96
-    .db 8F
-    .db 96
-    .db 8F
-    .db B0
-    .db 90
-    .db C0
-    .db 93
-    .db C0
-    .db 93
-    .db 38
-    .db 95
-    .db 38
-    .db 95
-    .db A0
-    .db 95
-    .db A0
-    .db 95
-    .db A0
-    .db 95
-    .db 0A
-    .db 97
+ATTRACT_DPTRS_L: ; 14:00DF, 0x0280DF
+    LOW(ATTRACT_DATA_1)
+ATTRACT_DPTRS_H: ; 14:00E0, 0x0280E0
+    HIGH(ATTRACT_DATA_1)
+    LOW(ATTRACT_DATA_2)
+    HIGH(ATTRACT_DATA_2)
+    LOW(ATTRACT_DATA_2)
+    HIGH(ATTRACT_DATA_2)
+    LOW(ATTRACT_DATA_3)
+    HIGH(ATTRACT_DATA_3)
+    LOW(ATTRACT_DATA_4)
+    HIGH(ATTRACT_DATA_4)
+    LOW(ATTRACT_DATA_4)
+    HIGH(ATTRACT_DATA_4)
+    LOW(ATTRACT_DATA_5)
+    HIGH(ATTRACT_DATA_5)
+    LOW(ATTRACT_DATA_5)
+    HIGH(ATTRACT_DATA_5)
+    LOW(ATTRACT_DATA_6)
+    HIGH(ATTRACT_DATA_6)
+    LOW(ATTRACT_DATA_6)
+    HIGH(ATTRACT_DATA_6)
+    LOW(ATTRACT_DATA_6)
+    HIGH(ATTRACT_DATA_6)
+    LOW(ATTRACT_DATA_7)
+    HIGH(ATTRACT_DATA_7)
     .db A5
     .db 1E
     .db D0
@@ -3105,6 +3111,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 16
     .db 00
     .db FF
+ATTRACT_DATA_1: ; 14:0D74, 0x028D74
     .db 01
     .db 72
     .db 00
@@ -3651,6 +3658,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 82
     .db FF
     .db FF
+ATTRACT_DATA_2: ; 14:0F96, 0x028F96
     .db 01
     .db 5F
     .db 00
@@ -3933,6 +3941,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 5D
     .db FF
     .db FF
+ATTRACT_DATA_3: ; 14:10B0, 0x0290B0
     .db 01
     .db B4
     .db 00
@@ -4717,6 +4726,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db A9
     .db FF
     .db FF
+ATTRACT_DATA_4: ; 14:13C0, 0x0293C0
     .db 01
     .db 37
     .db A1
@@ -5093,6 +5103,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db A4
     .db FF
     .db FF
+ATTRACT_DATA_5: ; 14:1538, 0x029538
     .db 00
     .db 76
     .db 01
@@ -5197,6 +5208,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db F2
     .db FF
     .db FF
+ATTRACT_DATA_6: ; 14:15A0, 0x0295A0
     .db 01
     .db 37
     .db 05
@@ -5559,10 +5571,10 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 50
     .db FF
     .db FF
+ATTRACT_DATA_7: ; 14:170A, 0x02970A
     .db 00
     .db FF
     .db 00
-SWITCH_RTN_A: ; 14:170D, 0x02970D
     .db 64
     .db 02
     .db 02
@@ -5582,7 +5594,6 @@ SWITCH_RTN_A: ; 14:170D, 0x02970D
     .db 01
     .db 01
     .db 05
-SWITCH_RTN_B: ; 14:1720, 0x029720
     .db A1
     .db 01
     .db 81
@@ -5598,7 +5609,6 @@ SWITCH_RTN_B: ; 14:1720, 0x029720
     .db 01
     .db 13
     .db A1
-SWITCH_RTN_C: ; 14:172F, 0x02972F
     .db 01
     .db 81
     .db 01
@@ -5622,7 +5632,6 @@ SWITCH_RTN_C: ; 14:172F, 0x02972F
     .db 09
     .db 51
     .db 01
-SWITCH_RTN_D: ; 14:1746, 0x029746
     .db 41
     .db 11
     .db 01
@@ -5721,7 +5730,6 @@ SWITCH_RTN_D: ; 14:1746, 0x029746
     .db 01
     .db 85
     .db 01
-SWITCH_RTN_E: ; 14:17A8, 0x0297A8
     .db 84
     .db 08
     .db 04
@@ -5769,7 +5777,6 @@ SWITCH_RTN_E: ; 14:17A8, 0x0297A8
     .db 01
     .db 0B
     .db A1
-SWITCH_RTN_F: ; 14:17D7, 0x0297D7
     .db 01
     .db 81
     .db 09
@@ -5845,7 +5852,6 @@ SWITCH_RTN_F: ; 14:17D7, 0x0297D7
     .db 64
     .db 65
     .db 66
-SWITCH_RTN_G: ; 14:1822, 0x029822
     .db 67
     .db 68
     .db 69
@@ -5931,7 +5937,6 @@ SWITCH_RTN_G: ; 14:1822, 0x029822
     .db AB
     .db AC
     .db AD
-SWITCH_RTN_H: ; 14:1877, 0x029877
     .db AE
     .db AF
     .db EB
@@ -5950,7 +5955,6 @@ SWITCH_RTN_H: ; 14:1877, 0x029877
     .db B4
     .db B5
     .db B6
-SWITCH_RTN_I: ; 14:1889, 0x029889
     .db B7
     .db B8
     .db B9
@@ -6013,7 +6017,6 @@ SWITCH_RTN_I: ; 14:1889, 0x029889
     .db 8D
     .db 53
     .db 00
-SWITCH_RTN_J: ; 14:18C7, 0x0298C7
     .db 15
     .db 19
     .db 18
@@ -6034,7 +6037,6 @@ SWITCH_RTN_J: ; 14:18C7, 0x0298C7
     .db 1F
     .db 1C
     .db 1E
-SWITCH_RTN_K: ; 14:18DB, 0x0298DB
     .db 16
     .db 0F
     .db 38

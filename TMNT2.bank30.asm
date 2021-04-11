@@ -2675,8 +2675,8 @@ GAME_SCRIPT_SWITCHES: ; 1E:0A83, 0x03CA83
     HIGH(SWITCH_18_TITLE_DATA_MOVE)
     LOW(SWITCH_18_SELECT_TURTLE) ; Select turtle screen.
     HIGH(SWITCH_18_SELECT_TURTLE)
-    LOW(SWITCH_18_RTN_CUTSCENE+GAMEPLAY) ; Cutscene+Gameplay?
-    HIGH(SWITCH_18_RTN_CUTSCENE+GAMEPLAY)
+    LOW(SWITCH_18_RTN_CORE_GAMEPLAY) ; Cutscene+Gameplay?
+    HIGH(SWITCH_18_RTN_CORE_GAMEPLAY)
 SWITCH_18_RTN_FIRST_SCREEN: ; 1E:0A96, 0x03CA96
     LDA SUBSTATE_MENU
     BNE 19_NOT_ZERO
@@ -2710,7 +2710,7 @@ SWITCH_18_TITLE_SCREEN: ; 1E:0AC4, 0x03CAC4
     HIGH(18:1_SUBSTATE_TITLE_SELECTED)
 18:1_SUBSTATE_TITLE_SETUP: ; 1E:0ACF, 0x03CACF
     LDA #$00
-    STA 1F_TITLE_UNK
+    STA GAME_STARTED
     INC SUBSTATE_MENU ; Substate 1 now.
     JSR CLEAR_IRQ_FLAGS_UNK ; IRQ stuff.
     JSR INIT+CLEAR_MANY_POOLS ; Pools...
@@ -2869,7 +2869,7 @@ SWITCH_18_RTN_ATTRACT: ; 1E:0BC6, 0x03CBC6
     BNE SUBSTATE_NONZERO ; != 0, goto.
     JSR INIT+CLEAR_MANY_POOLS ; Clear pools.
     LDA #$01
-    STA 1F_TITLE_UNK ; Set true.
+    STA GAME_STARTED ; Set true.
     INC SUBSTATE_MENU ; Substate setup.
     RTS
 SUBSTATE_NONZERO: ; 1E:0BD4, 0x03CBD4
@@ -2884,7 +2884,7 @@ RETURN_TO_TITLE_SCREEN: ; 1E:0BDE, 0x03CBDE
 SWITCH_18_TITLE_DATA_MOVE: ; 1E:0BE3, 0x03CBE3
     JSR INIT+CLEAR_MANY_POOLS ; Clear pools.
     LDA #$00
-    STA 1F_TITLE_UNK ; Set idk.
+    STA GAME_STARTED ; Set idk.
     LDA #$05
     STA DISABLE_RENDERING_X_FRAMES ; Wait time for next state.
     LDA TITLE_PLAYERS_COUNT_CURSOR_0/1
@@ -2894,7 +2894,7 @@ SWITCH_18_TITLE_DATA_MOVE: ; 1E:0BE3, 0x03CBE3
     JMP INC_STATE_18 ; Next state, abuse RTS.
 SWITCH_18_SELECT_TURTLE: ; 1E:0BFA, 0x03CBFA
     LDA #$00
-    STA 3C_SWITCH_CUTSCENE? ; Init cutscene?
+    STA 3C_SWITCH_CORE ; Init cutscene?
     LDA #$3C ; Bank 1C/1D
     JSR BANK_PAIR_USE_A ; Goto bank.
     JSR TURTLE_SELECT_RTN
@@ -2961,16 +2961,16 @@ CLEAR_6A8-6FF_LOOP: ; 1E:0C5E, 0x03CC5E
     INX ; X++
     BNE CLEAR_6A8-6FF_LOOP ; Loop to end.
     LDX #$38 ; X=
-    BNE CLEAR_$00-$E0_WITH_ZERO ; Always taken.
-L_1E:0C68: ; 1E:0C68, 0x03CC68
-    LDX #$60
-CLEAR_$00-$E0_WITH_ZERO: ; 1E:0C6A, 0x03CC6A
-    LDA #$00 ; A=
-CLEAR_$00-$E0_LOOP: ; 1E:0C6C, 0x03CC6C
+    BNE CLEAR_$X-$E0_WITH_ZERO ; Always taken.
+CLEAR_$60-$E0_WITH_ZERO: ; 1E:0C68, 0x03CC68
+    LDX #$60 ; Start at ZP+0x60.
+CLEAR_$X-$E0_WITH_ZERO: ; 1E:0C6A, 0x03CC6A
+    LDA #$00 ; Clear with 0.
+CLEAR_ZP[X]-ZP[E0]_WITH_A_LOOP: ; 1E:0C6C, 0x03CC6C
     STA TMP_00,X ; Clear
     INX ; X++
     CPX #$E0 ; End?
-    BNE CLEAR_$00-$E0_LOOP ; No, continue.
+    BNE CLEAR_ZP[X]-ZP[E0]_WITH_A_LOOP ; No, continue.
     LDX #$00 ; X=
     LDA #$00 ; Yet again unneeded.
 CLEAR_600-6A6_LOOP: ; 1E:0C77, 0x03CC77
@@ -3219,7 +3219,7 @@ PPU_FLAG_NOT_SET: ; 1E:0E31, 0x03CE31
     LDA OBJ_DIRECTION_RELATED?[18],X
     AND #$E0 ; Get bits 1110.0000
     STA TMP_07 ; Store here.
-    LDA ARR_OBJECT_ENABLED?[18],X ; Load value.
+    LDA ARR_OBJECT_ENABLED+MORE?[18],X ; Load value.
     STA ZP_11_UNK ; Store to.
     LDY #$00 ; Clear val.
     STY ZP_0D_UNK
@@ -3302,7 +3302,7 @@ SKIP_INC: ; 1E:0EDD, 0x03CEDD
     BCC 1E:0F41
     LDA 4C_UNK
     BNE 1E:0EA3
-    LDA ARR_OBJECT_ENABLED?[18],X
+    LDA ARR_OBJECT_ENABLED+MORE?[18],X
     BMI 1E:0F20
     CMP #$50
     BCS 1E:0EB5
@@ -3378,7 +3378,7 @@ VAL_LOADED: ; 1E:0F68, 0x03CF68
     BNE 1E:0FA7
     LDA ZP_13_UNK
     BEQ 1E:0F93
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
+    LDA LEVEL_SCREEN_ON
     CMP #$07
     BEQ 1E:0FB5
     BNE 1E:0FAC
@@ -3636,25 +3636,25 @@ ATTRACT_RUN: ; 1E:1149, 0x03D149
     JSR BANK_PAIR_USE_A
     JSR 14:0041
     LDA 3F_ATTRACT_EXIT_FLAG
-    BEQ SWITCH_18_RTN_CUTSCENE+GAMEPLAY
-    INC 27_ATTRACT_WHICH?
+    BEQ SWITCH_18_RTN_CORE_GAMEPLAY
+    INC ATTRACT_LEVEL
     LDY #$00
     STY SUBSTATE_MENU ; Substate reset.
     INY
     STY STATE_SWITCH_MENU ; Next menu switch.
     RTS
-SWITCH_18_RTN_CUTSCENE+GAMEPLAY: ; 1E:115F, 0x03D15F
-    LDA 3C_SWITCH_CUTSCENE?
+SWITCH_18_RTN_CORE_GAMEPLAY: ; 1E:115F, 0x03D15F
+    LDA 3C_SWITCH_CORE
     CMP #$03 ; If _ #$03
-    BNE CUTSCENE_STATE_SWITCH ; !=, goto.
+    BNE CORE_STATE_SWITCH ; !=, goto.
     LDA 3DB_UNKNOWN ; Load val.
-    BNE CUTSCENE_STATE_SWITCH ; !=, goto.
+    BNE CORE_STATE_SWITCH ; !=, goto.
     JSR CUTSCENE_START_DOES_SOMETHING? ; Do rtn.
     LDA 3D_UNK ; Load val.
-    BEQ CUTSCENE_STATE_SWITCH ; != 0, goto.
+    BEQ CORE_STATE_SWITCH ; != 0, goto.
     RTS ; Leave.
-CUTSCENE_STATE_SWITCH: ; 1E:1172, 0x03D172
-    LDA 3C_SWITCH_CUTSCENE? ; Load switch value.
+CORE_STATE_SWITCH: ; 1E:1172, 0x03D172
+    LDA 3C_SWITCH_CORE ; Load switch value.
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LOW(SWITCH_3C_RTN_A) ; Clear screen, set lives count.
     HIGH(SWITCH_3C_RTN_A)
@@ -3664,15 +3664,15 @@ CUTSCENE_STATE_SWITCH: ; 1E:1172, 0x03D172
     HIGH(SWITCH_3C_RTN_C)
     LOW(SWITCH_3C_RTN_D) ; Gameplay?
     HIGH(SWITCH_3C_RTN_D)
-    LOW(SWITCH_3C_RTN_E) ; Continue screen?
+    LOW(SWITCH_3C_RTN_E) ; Checks if all players dead?
     HIGH(SWITCH_3C_RTN_E)
-    LOW(SWITCH_3C_RTN_F)
+    LOW(SWITCH_3C_RTN_F) ; Unk, can send to epilogue.
     HIGH(SWITCH_3C_RTN_F)
-    LOW(SWITCH_3C_RTN_G)
+    LOW(SWITCH_3C_RTN_G) ; Set up loads of gameplay stuff, turtle attrs, level sound.
     HIGH(SWITCH_3C_RTN_G)
-    LOW(SWITCH_3C_RTN_H)
+    LOW(SWITCH_3C_RTN_H) ; Game over screen?
     HIGH(SWITCH_3C_RTN_H)
-    LOW(SWITCH_3C_RTN_I)
+    LOW(SWITCH_3C_RTN_I) ; Epilogue/credits.
     HIGH(SWITCH_3C_RTN_I)
 SWITCH_3C_RTN_A: ; 1E:1189, 0x03D189
     JSR DISPATCH_CLEAR_SCREEN ; Clear screen.
@@ -3684,17 +3684,17 @@ SWITCH_3C_RTN_A: ; 1E:1189, 0x03D189
 CODE_NOT_ENTERED: ; 1E:1195, 0x03D195
     STA NUM_PLAYER_LIVES+1 ; Give that lives.
     STA NUM_PLAYER_LIVES[2]
-    INC 3C_SWITCH_CUTSCENE? ; Goto next switch.
+    INC 3C_SWITCH_CORE ; Goto next switch.
     JMP INIT_STREAM+MISC_UNK
 SWITCH_3C_RTN_B: ; 1E:119E, 0x03D19E
-    LDA 1F_TITLE_UNK ; Load val.
-    BEQ FIRST_SCREENS_SWITCH ; == 0, goto.
+    LDA GAME_STARTED ; Load val.
+    BEQ FIRST_SCREENS_SWITCH ; Not set, goto.
     LDA #$34 ; Bank 14/15
     JSR BANK_PAIR_USE_A ; Bank pair in.
-    JSR 14:0001 ; Do rtn.
+    JSR ATTRACT_SETUP? ; Do rtn.
     JMP RTN_C_FINISHED ; Goto.
 FIRST_SCREENS_SWITCH: ; 1E:11AD, 0x03D1AD
-    LDA 4B_SWITCH_UNK ; Load switch val.
+    LDA PLAYERS_ENABLED_STEP? ; Load switch val.
     JSR SWITCH_CODE_PTRS_PAST_JSR ; Do code.
     LOW(4B_SWITCH_RTN_A) ; Level select?
     HIGH(4B_SWITCH_RTN_A)
@@ -3707,11 +3707,11 @@ FIRST_SCREENS_SWITCH: ; 1E:11AD, 0x03D1AD
     LDA 66D_LEVEL_SELECT_WHICH ; Load
     BNE RTS ; != 0, goto.
 INC_4B_STATE: ; 1E:11C0, 0x03D1C0
-    INC 4B_SWITCH_UNK ; Next state.
+    INC PLAYERS_ENABLED_STEP? ; Next state.
 RTS: ; 1E:11C2, 0x03D1C2
     RTS
 4B_SWITCH_RTN_B: ; 1E:11C3, 0x03D1C3
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load level selected?
+    LDA LEVEL_SCREEN_ON ; Load level selected?
     BNE INC_4B_STATE ; If not clear, goto next state?
     LDA #$32 ; Bank 12.
     JSR BANK_PAIR_USE_A ; Bank pair.
@@ -3727,8 +3727,8 @@ RTS: ; 1E:11C2, 0x03D1C2
     BNE RTS ; != 0, RTS.
 RTN_C_FINISHED: ; 1E:11E3, 0x03D1E3
     LDA #$00 ; Clear
-    STA 4B_SWITCH_UNK ; Switch
-    INC 3C_SWITCH_CUTSCENE? ; ++
+    STA PLAYERS_ENABLED_STEP? ; Switch
+    INC 3C_SWITCH_CORE ; ++
     JSR LEVEL_RELATED_DATA_A_FROM_42 ; Do from 42?
     LDA #$1F ; Why val?
     JSR LEVEL_RELATED_DATA_A_PASSED? ; Use in rtn.
@@ -3753,7 +3753,7 @@ SWITCH_3C_RTN_C: ; 1E:120E, 0x03D20E
     JSR BG_UPDATE_SWITCH? ; BG updates?
     LDA 606_NMI_SWITCH_STATE_UNK ; Load
     BNE RTS ; Leave if set.
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load
+    LDA LEVEL_SCREEN_ON ; Load
     CMP #$01 ; If _ #$01
     BEQ SKIP_PLAYER_LIVES ; ==, goto.
     LDA #$3C ; A=
@@ -3777,65 +3777,69 @@ RTN_PLAYER_UI_TO_STATUS?: ; 1E:1234, 0x03D234
 NOT_2P_GAME: ; 1E:1242, 0x03D242
     JSR RTS_SET_IRQ_5E_UNK
     LDA #$06 ; Set switch, routine F.
-    STA 3C_SWITCH_CUTSCENE?
+    STA 3C_SWITCH_CORE
 RTS: ; 1E:1249, 0x03D249
     RTS
 SWITCH_3C_RTN_G: ; 1E:124A, 0x03D24A
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
-    CMP #$08
-    BNE L_1E:1257
-    LDA 4B_SWITCH_UNK
-    BNE L_1E:1257
-    JMP L_1F:12AB
-L_1E:1257: ; 1E:1257, 0x03D257
+    LDA LEVEL_SCREEN_ON ; Load val.
+    CMP #$08 ; If _ #$08
+    BNE NOT_SCREEN_8 ; !=, goto.
+    LDA PLAYERS_ENABLED_STEP? ; Load val.
+    BNE NOT_SCREEN_8 ; If set to anything, goto.
+    JMP LEVEL_8_PLAYERS_NOT_ENABLED ; Cutscene at beginning.
+NOT_SCREEN_8: ; 1E:1257, 0x03D257
     LDA #$00
-    STA DISABLE_RENDERING_X_FRAMES
+    STA DISABLE_RENDERING_X_FRAMES ; Enable rendering.
     LDA #$03
-    STA 3C_SWITCH_CUTSCENE?
+    STA 3C_SWITCH_CORE ; Switch to setup level.
     LDA #$00
-    STA 4B_SWITCH_UNK
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
-    CMP #$01
-    BNE L_1E:1273
+    STA PLAYERS_ENABLED_STEP? ; Clear.
+    LDA LEVEL_SCREEN_ON ; Load screen.
+    CMP #$01 ; If _ #$01
+    BNE NOT_LEVEL_1 ; !=, goto.
     LDA #$24
-    JSR BANK_PAIR_USE_A
-    LDA #$03
-    JSR $862D
-L_1E:1273: ; 1E:1273, 0x03D273
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
-    CMP #$07
-    BNE L_1E:127D
+    JSR BANK_PAIR_USE_A ; Swap to bank 4/5.
+    LDA #$03 ; Val?
+    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE ; Do..?
+NOT_LEVEL_1: ; 1E:1273, 0x03D273
+    LDA LEVEL_SCREEN_ON ; Load again.
+    CMP #$07 ; If _ #$07
+    BNE LEVEL_NOT_7 ; !=, goto.
     LDA #$54
-    STA ZP_R2-R5_BANK_VALUES+3
-L_1E:127D: ; 1E:127D, 0x03D27D
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
-    CMP #$0A
-    BNE L_1E:1288
+    STA ZP_R2-R5_BANK_VALUES+3 ; Set R5 GFX.
+LEVEL_NOT_7: ; 1E:127D, 0x03D27D
+    LDA LEVEL_SCREEN_ON ; Load level.
+    CMP #$0A ; If _ #$0A
+    BNE NOT_LEVEL_A ; !=, goto.
     LDA #$01
-    STA R_**:$0661
-L_1E:1288: ; 1E:1288, 0x03D288
-    JSR L_1E:1468
+    STA 661_UNK_LEVEL_A_SETS ; Set.
+NOT_LEVEL_A: ; 1E:1288, 0x03D288
+    JSR RTN_TURTLE_COLORS_ASSIGN? ; Do..
     LDA #$3C
-    JSR BANK_PAIR_USE_A
-    JSR $8135
+    JSR BANK_PAIR_USE_A ; Bank in 1C/1D
+    JSR TURTLES_GAMEPLAY_INIT ; Init turtles.
     LDA #$00
-    STA RANDOM_VALS?[2]
+    STA RANDOM_VALS?[2] ; Init randoms.
     STA RANDOM_VALS?+1
-    LDA 1F_TITLE_UNK
-    BNE RTS
-    LDY 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
-    LDA L_1E:12A7,Y
-    BEQ RTS
-    JMP SND_BANKED_DISPATCH
-L_1E:12A7: ; 1E:12A7, 0x03D2A7
-    ADC **:$6E6D
-    ???
-    ADC [**:$0070],Y
-    ???
-    ???
-    BRK
-    ???
-    ADC **:$0063,X
+    LDA GAME_STARTED ; Load..
+    BNE RTS ; If set, leave.
+    LDY LEVEL_SCREEN_ON ; Load screen on.
+    LDA SOUNDS_PER_SCREEN,Y
+    BEQ RTS ; Nothing to play, exit.
+    JMP SND_BANKED_DISPATCH ; Abuse RTS, set sound for level.
+SOUNDS_PER_SCREEN: ; 1E:12A7, 0x03D2A7
+    .db 6D
+    .db 6D
+    .db 6E
+    .db 6F
+    .db 71
+    .db 70
+    .db 72
+    .db 73
+    .db 00
+    .db 74
+    .db 75
+    .db 63
 PLAYER_INFO_TO_SCREEN?: ; 1E:12B3, 0x03D2B3
     LDA NUM_PLAYER_LIVES[2],Y ; Load lives of player.
     BPL PLAYER_HAS_LIVES
@@ -3867,8 +3871,8 @@ SWITCH_3C_RTN_D: ; 1E:12C9, 0x03D2C9
     JSR L_09:08CF
     LDA #$2A
     JSR BANK_PAIR_USE_A
-    JSR OBJECTS_PROCESS_UNK
-    JSR L_1F:0FFC
+    JSR OBJECTS_PROCESS_0x04-0x11_UNK
+    JSR WAIT_SETTLE?
     JSR L_1F:12F6
     JSR BANKED_RTNS_UNK
     JSR BANKED_RTN_UNK
@@ -3876,35 +3880,38 @@ SWITCH_3C_RTN_D: ; 1E:12C9, 0x03D2C9
     LDA #$00
     STA STATE_SWITCH_MENU
     STA SUBSTATE_MENU
+RTS: ; 1E:1313, 0x03D313
     RTS
 SWITCH_3C_RTN_E: ; 1E:1314, 0x03D314
-    LDA 4B_SWITCH_UNK
-    CMP #$02
-    BEQ 1E:133B
+    LDA PLAYERS_ENABLED_STEP? ; Load
+    CMP #$02 ; If _ #$02
+    BEQ BOTH_PLAYERS_DEAD? ; ==, goto.
     LDA #$00
-    STA CTRL_PREV_A[2]
+    STA CTRL_PREV_A[2] ; Clear controller.
     STA CTRL_PREV_A+1
     STA CTRL_NEWLY_PRESSED_A[2]
     STA CTRL_NEWLY_PRESSED_A+1
     LDA #$3C
-    JSR BANK_PAIR_USE_A
-    JSR $81F9
-    LDA OBJ_STATE/SWITCH[18]
-    ORA OBJ_STATE/SWITCH+2
-    AND #$0F
-    BNE 1E:1338
-    INC 4B_SWITCH_UNK
-    JMP BANKED_RTN_UNK
+    JSR BANK_PAIR_USE_A ; Bank in 1C/1D
+    JSR PLAYER_LIFE_STEAL+? ; Do..
+    LDA OBJ_STATE/SWITCH[18] ; Load P1 state.
+    ORA OBJ_STATE/SWITCH+2 ; Load P2.
+    AND #$0F ; Keep 0000.1111
+    BNE ANY_STATE_SET ; If either any bits set, goto.
+    INC PLAYERS_ENABLED_STEP? ; Otherwise, ++
+ANY_STATE_SET: ; 1E:1338, 0x03D338
+    JMP BANKED_RTN_UNK ; Do instead.
+BOTH_PLAYERS_DEAD?: ; 1E:133B, 0x03D33B
     LDA #$00
-    STA 3DB_UNKNOWN
+    STA 3DB_UNKNOWN ; Clear ?
     LDA #$00
-    STA 4B_SWITCH_UNK
-    INC 3C_SWITCH_CUTSCENE?
-    LDY 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
-    LDA DATA_UNK,Y
-    BEQ 1E:1313
-    JMP SND_BANKED_DISPATCH
-DATA_UNK: ; 1E:1350, 0x03D350
+    STA PLAYERS_ENABLED_STEP? ; Reset.
+    INC 3C_SWITCH_CORE ; Next switch.
+    LDY LEVEL_SCREEN_ON ; Load level.
+    LDA PER_LEVEL_SOUND_DATA,Y ; Load..
+    BEQ RTS ; No value loaded, don't play sound.
+    JMP SND_BANKED_DISPATCH ; Do sound, abuse RTS.
+PER_LEVEL_SOUND_DATA: ; 1E:1350, 0x03D350
     .db 00
     .db 67
     .db 65
@@ -3918,66 +3925,66 @@ DATA_UNK: ; 1E:1350, 0x03D350
     .db 65
     .db 00
 SWITCH_3C_RTN_F: ; 1E:135C, 0x03D35C
-    JSR L_1F:0FFC
+    JSR WAIT_SETTLE? ; Do..
     LDA #$32
     JSR BANK_PAIR_USE_A
-    JSR L_12:0001
-    LDA R_**:$0639
-    BNE L_1E:13A4
-    INC 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
+    JSR RTN_UNK_RET_CC_CONTINUE?
+    LDA 639_UNK ; Load
+    BNE RTS_RTS ; If set, RTS.
+    INC LEVEL_SCREEN_ON ; Move to next.
     LDA #$01
-    STA 3C_SWITCH_CUTSCENE?
+    STA 3C_SWITCH_CORE ; Switch to cutscene handler.
     LDA #$02
-    STA 4B_SWITCH_UNK
-    JSR SOUND_INIT_RTN?
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
-    CMP #$0C
-    BEQ L_1E:1382
-    JSR DISPATCH_CLEAR_SCREEN
-L_1E:1382: ; 1E:1382, 0x03D382
-    LDA OBJECT_DATA_EXTRA_A?[18]
+    STA PLAYERS_ENABLED_STEP? ; Players not alive.
+    JSR SOUND_INIT_RTN? ; Sound cleaning.
+    LDA LEVEL_SCREEN_ON ; Load
+    CMP #$0C ; If _ #$0C, end of game.
+    BEQ SKIP_CLEAR ; ==, don't clear screen.
+    JSR DISPATCH_CLEAR_SCREEN ; Clear the screen instead.
+SKIP_CLEAR: ; 1E:1382, 0x03D382
+    LDA OBJECT_DATA_EXTRA_A?[18] ; Load P1, save.
     PHA
-    LDA OBJECT_DATA_EXTRA_A?+2
+    LDA OBJECT_DATA_EXTRA_A?+2 ; Load P2, save.
     PHA
-    JSR L_1E:0C68
-    PLA
+    JSR CLEAR_$60-$E0_WITH_ZERO ; Clean up data.
+    PLA ; Restore player vars.
     STA OBJECT_DATA_EXTRA_A?+2
     PLA
     STA OBJECT_DATA_EXTRA_A?[18]
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
-    CMP #$0C
-    BNE L_1E:13A4
+    LDA LEVEL_SCREEN_ON ; Load level on.
+    CMP #$0C ; If _ #$0C, end of game.
+    BNE RTS_RTS ; !=, goto.
     LDA #$08
-    STA 3C_SWITCH_CUTSCENE?
+    STA 3C_SWITCH_CORE ; Epilogue switch.
     LDA #$00
-    STA 4B_SWITCH_UNK
-    RTS
-L_1E:13A4: ; 1E:13A4, 0x03D3A4
+    STA PLAYERS_ENABLED_STEP? ; No players dead?
+    RTS ; Extra RTS, heh. Mistake. Oops.
+RTS_RTS: ; 1E:13A4, 0x03D3A4
     RTS
 SWITCH_3C_RTN_H: ; 1E:13A5, 0x03D3A5
     LDA #$32
-    JSR BANK_PAIR_USE_A ; Bank 2
+    JSR BANK_PAIR_USE_A ; Bank 12/13.
     JMP 4B_SWITCH ; Do.
 SWITCH_3C_RTN_I: ; 1E:13AD, 0x03D3AD
     LDA #$32
-    JSR BANK_PAIR_USE_A
-    LDA 4B_SWITCH_UNK
+    JSR BANK_PAIR_USE_A ; Bank in 12/13.
+    LDA PLAYERS_ENABLED_STEP? ; Use this as switch now? lol.
     JSR SWITCH_CODE_PTRS_PAST_JSR
-    LOW(4B_SWITCH_RTN_A) ; Goes to another switch kms.
+    LOW(4B_SWITCH_RTN_A) ; Another switch.
     HIGH(4B_SWITCH_RTN_A)
-    LOW(4B_SWITCH_RTN_B)
+    LOW(4B_SWITCH_RTN_B) ; Switch off same variable but different meaning, sub too.
     HIGH(4B_SWITCH_RTN_B)
-    LOW(4B_SWITCH_RTN_C)
+    LOW(4B_SWITCH_RTN_C) ; Finished epilogue/credits?
     HIGH(4B_SWITCH_RTN_C)
 4B_SWITCH_RTN_C: ; 1E:13BD, 0x03D3BD
     LDA #$07
-    STA 3C_SWITCH_CUTSCENE?
+    STA 3C_SWITCH_CORE ; Switch core to state 7, game over?
     LDA #$00
-    STA 4B_SWITCH_UNK
+    STA PLAYERS_ENABLED_STEP? ; Clear vars.
     STA 3D3_UNK
     RTS
 CUTSCENE_START_DOES_SOMETHING?: ; 1E:13C9, 0x03D3C9
-    LDA 1F_TITLE_UNK ; Load val.
+    LDA GAME_STARTED ; Load val.
     ORA 3E_UNK ; Or with.
     ORA DISABLE_RENDERING_X_FRAMES ; Or with disabled frames.
     BNE RTS ; Any bits set, RTS.
@@ -4018,7 +4025,7 @@ MOVE_DONE: ; 1E:1409, 0x03D409
     LDA #$05 ; Load unk...
     JMP UNK_STREAM_0x300_SETUP_BANK_1C/1D ; Goto.
 LEVEL_RELATED_DATA_A_FROM_42: ; 1E:140E, 0x03D40E
-    LDX 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load index.
+    LDX LEVEL_SCREEN_ON ; Load index.
     LDA INIT_A_VAL_FROM_42,X ; Load data.
 LEVEL_RELATED_DATA_A_PASSED?: ; 1E:1413, 0x03D413
     ASL A ; << 1
@@ -4077,34 +4084,39 @@ L_1E:145A: ; 1E:145A, 0x03D45A
     CPX #$20
     BNE L_1E:145A
     BEQ RTS_FLAG_61B_SET
-L_1E:1468: ; 1E:1468, 0x03D468
-    LDA TURTLE_SELECT_POSITIONS[2]
-    LDX #$11
-    JSR L_1E:1477
-    LDY 47_TWO_PLAYERS_FLAG?
-    BEQ L_1E:148A
-    LDA TURTLE_SELECT_POSITIONS+1
-    LDX #$15
-L_1E:1477: ; 1E:1477, 0x03D477
-    ASL A
-    TAY
-    LDA #$0A
-    STA PPU_PALETTE_BUF?[32],X
-    LDA L_1E:148D,Y
-    STA ARR_6D7_UNK+3,X
-    LDA L_1E:148E,Y
-    STA ARR_6D7_UNK+4,X
-L_1E:148A: ; 1E:148A, 0x03D48A
-    JMP RTS_FLAG_61B_SET
-L_1E:148D: ; 1E:148D, 0x03D48D
-    AND #$11
-    ???
-    ???
-    AND #$14
-    ???
-    ASL R_**:$00AD,X
-    ROL TMP_06,X ; Rotate TMP[6+X]
+RTN_TURTLE_COLORS_ASSIGN?: ; 1E:1468, 0x03D468
+    LDA TURTLE_SELECT_POSITIONS[2] ; Load P1 selected.
+    LDX #$11 ; Palette entry.
+    JSR SUB_SET_COLORS_PLAYERS? ; Set a color?
+    LDY 47_TWO_PLAYERS_FLAG? ; Load flag.
+    BEQ NOT_2P_GAME ; Not set, goto. Abuse this RTS exactly the same.
+    LDA TURTLE_SELECT_POSITIONS+1 ; Get P2 turtle.
+    LDX #$15 ; Palette entry.
+SUB_SET_COLORS_PLAYERS?: ; 1E:1477, 0x03D477
+    ASL A ; << 1, *2.
+    TAY ; To Y index.
+    LDA #$0A ; Color dark green.
+    STA PPU_PALETTE_BUF?[32],X ; Store as BG color.
+    LDA TURTLE_DATA_A,Y ; Move from turtle selected.
+    STA ARR_6D7_UNK+3,X ; To obj 3.
+    LDA TURTLE_DATA_B,Y ; Move..
+    STA ARR_6D7_UNK+4,X ; To obj 4.
+NOT_2P_GAME: ; 1E:148A, 0x03D48A
+    JMP RTS_FLAG_61B_SET ; Set flag, abuse RTS.
+TURTLE_DATA_A: ; 1E:148D, 0x03D48D
+    .db 29
+TURTLE_DATA_B: ; 1E:148E, 0x03D48E
+    .db 11
+    .db 2B
+    .db 27
+    .db 29
+    .db 14
+    .db 2B
+    .db 16
+RTN_STREAM_UNK: ; 1E:1495, 0x03D495
+    LDA 636_UNK ; Load val.
     BNE RESULT_NOT_ZERO ; != 0, goto.
+CLEAR_637/638_RTN: ; 1E:149A, 0x03D49A
     LDA #$00 ; Clear vals.
     STA 637_UNK
     STA 638_UNK
@@ -5185,16 +5197,16 @@ A_NOT_PRESSED: ; 1E:18F2, 0x03D8F2
     BEQ LEFT_NOT_PRESSED
     LDA #$56 ; Play sound.
     JSR SND_BANKED_DISPATCH
-    DEC 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; --
+    DEC LEVEL_SCREEN_ON ; --
     BMI 42_UNDERFLOW ; Under 0?
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load
+    LDA LEVEL_SCREEN_ON ; Load
     CMP #$01 ; If _ #$01
     BNE MAKE_UPDATE_BUF? ; !=, goto.
-    DEC 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; 0 now.
+    DEC LEVEL_SCREEN_ON ; 0 now.
     JMP MAKE_UPDATE_BUF? ; Goto.
 42_UNDERFLOW: ; 1E:190C, 0x03D90C
     LDA #$0A ; A=
-    STA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Store index.
+    STA LEVEL_SCREEN_ON ; Store index.
     BNE MAKE_UPDATE_BUF? ; Always taken.
 LEFT_NOT_PRESSED: ; 1E:1912, 0x03D912
     LDA CTRL_NEWLY_PRESSED_A[2] ; Load pressed P1.
@@ -5202,16 +5214,16 @@ LEFT_NOT_PRESSED: ; 1E:1912, 0x03D912
     BEQ MAKE_UPDATE_BUF? ; A not pressed.
     LDA #$56 ; Play sound.
     JSR SND_BANKED_DISPATCH
-    INC 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; ++
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load
+    INC LEVEL_SCREEN_ON ; ++
+    LDA LEVEL_SCREEN_ON ; Load
     CMP #$01 ; If _ #$01
     BNE 42_NOT_1_B ; !=, goto.
-    INC 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; ++
+    INC LEVEL_SCREEN_ON ; ++
 42_NOT_1_B: ; 1E:1927, 0x03D927
     CMP #$0B ; If A _ #$0B
     BCC MAKE_UPDATE_BUF? ; <, goto.
     LDA #$00 ; A=
-    STA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Clear.
+    STA LEVEL_SCREEN_ON ; Clear.
 MAKE_UPDATE_BUF?: ; 1E:192F, 0x03D92F
     LDX PPU_UPDATE_BUF_INDEX ; X=
     LDA #$01 ; Type?
@@ -5223,7 +5235,7 @@ MAKE_UPDATE_BUF?: ; 1E:192F, 0x03D92F
     LDA #$21 ; Addr high.
     STA PPU_UPDATE_BUFFER[20],X ; Store.
     INX ; Buf++
-    LDY 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Y=
+    LDY LEVEL_SCREEN_ON ; Y=
     LDA CUTSCENE_1_TILE_BUF?,Y ; A from data.
     CLC ; Mistake: Not needed.
     LSR A ; >> 4
@@ -5232,7 +5244,7 @@ MAKE_UPDATE_BUF?: ; 1E:192F, 0x03D92F
     LSR A
     STA PPU_UPDATE_BUFFER[20],X ; Store to buf.
     INX ; Buf++
-    LDY 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Re-load Y. Mistake, unneeded.
+    LDY LEVEL_SCREEN_ON ; Re-load Y. Mistake, unneeded.
     LDA CUTSCENE_1_TILE_BUF?,Y ; Data from
     AND #$0F ; Get bottom bits.
     STA PPU_UPDATE_BUFFER[20],X ; To buffer.
@@ -6030,14 +6042,14 @@ BG_UPDATE_SWITCH?: ; 1E:1D97, 0x03DD97
     LDA #$C0
     STX PPU_ADDR_IRQ+1 ; Store PPU Address..?
     STA PPU_ADDR_IRQ[2]
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load
+    LDA LEVEL_SCREEN_ON ; Load
     ASL A ; << 1, *2.
     TAX ; To X index.
     LDA DATA_UNK_L,X
     STA 72_STREAM_PTR_UNK[2] ; Set up ptr.
     LDA DATA_UNK_H,X
     STA 72_STREAM_PTR_UNK+1
-    LDY 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Y from.
+    LDY LEVEL_SCREEN_ON ; Y from.
     LDA DATA_UNK,Y ; A from.
     ASL A ; << 1, *2.
     TAY ; To Y index.
@@ -6048,7 +6060,7 @@ BG_UPDATE_SWITCH?: ; 1E:1D97, 0x03DD97
     STA IRQ_BANK_VALUES+1 ; Set value.
     STA IRQ_GFX_DATA_BANK_R1 ; Set as R1, too.
     JSR BANKSWITCH_R0/R1 ; Commit values.
-    LDY 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load index.
+    LDY LEVEL_SCREEN_ON ; Load index.
     LDA DATA_UNK,Y
     ASL A ; << 2, *4.
     ASL A
@@ -6072,7 +6084,7 @@ BG_UPDATE_SWITCH?: ; 1E:1D97, 0x03DD97
     STA 99_UNK ; Store.
     LDY #$80
     STY 7B_UNK ; Set.
-    LDX 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; X from.
+    LDX LEVEL_SCREEN_ON ; X from.
     LDA DATA_UNK,X ; Load from.
     BEQ DATA_LOADED_ZERO
     STY 7C_UNK ; Set top bit.
@@ -6083,7 +6095,7 @@ DATA_LOADED_ZERO: ; 1E:1E1A, 0x03DE1A
     LDA DATA_UNK_B,X ; Move
     STA IRQ_D9_UNK
     LDX #$01 ; X=..
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; A=
+    LDA LEVEL_SCREEN_ON ; A=
     CMP #$0A ; If A _ #$0A
     BEQ OUTPUT_X_TO_636 ; ==, goto.
     CMP #$0B ; If A _ #$0B

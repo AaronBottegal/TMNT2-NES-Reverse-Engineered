@@ -1,119 +1,83 @@
     .db 32
-L_12:0001: ; 12:0001, 0x024001
-    .db AD
-    .db 39
-    .db 06
-    .db 30
-    .db 20
-    .db 20
-    .db 41
-    .db 80
-    .db 18
-    .db AD
-    .db 39
-    .db 06
-    .db D0
-    .db 31
-    .db A4
-    .db 42
-    .db B9
-    .db 7F
-    .db 80
-    .db F0
-    .db 16
-    .db 8D
-    .db 3A
-    .db 06
-    .db A9
-    .db FF
-    .db 8D
-    .db 39
-    .db 06
-    .db A9
-    .db 00
-    .db 85
-    .db 1D
-    .db 18
-    .db 4C
-    .db 40
-    .db 80
-    .db 18
-    .db CE
-    .db 3A
-    .db 06
-    .db D0
-    .db 14
-    .db AD
-    .db A8
-    .db 06
-    .db 8D
-    .db 68
-    .db 05
-    .db AD
-    .db A9
-    .db 06
-    .db 8D
-    .db 6A
-    .db 05
-    .db A9
-    .db 00
-    .db 85
-    .db 4C
-    .db 8D
-    .db 39
-    .db 06
-    .db 38
-    .db 60
-    .db AD
-    .db 39
-    .db 06
-    .db 20
-    .db 98
-    .db CC
-    .db 8B
-    .db 80
-    .db B1
-    .db 82
-    .db 38
-    .db 83
-    .db 2A
-    .db 84
-    .db 8E
-    .db 84
-    .db D6
-    .db 84
-    .db CE
-    .db 85
-    .db E7
-    .db 87
-    .db 8D
-    .db 89
-    .db 18
-    .db 8C
-    .db 24
-    .db 8C
-    .db 30
-    .db 8C
-    .db 3C
-    .db 8C
-    .db 85
-    .db 87
-    .db B1
-    .db 82
-    .db 48
-    .db 8C
-    .db A7
-    .db 86
-    .db BD
-    .db 86
-    .db 32
-    .db 87
-    .db 51
-    .db 87
-    .db 6C
-    .db 87
-    .db 7D
-    .db 87
+RTN_UNK_RET_CC_CONTINUE?: ; 12:0001, 0x024001
+    LDA 639_UNK ; Load
+    BMI VAL_NEG ; If negative, goto.
+    JSR SWITCH_RTN_639 ; Do script.
+    CLC ; Clear carry.
+    LDA 639_UNK ; Load
+    BNE RTS ; If set, goto.
+    LDY LEVEL_SCREEN_ON ; Load level.
+    LDA LEVEL_DATA_UNK,Y
+    BEQ LEVEL_DATA_ZERO
+    STA 63A_UNK ; Otherwise set.
+    LDA #$FF
+    STA 639_UNK ; Set flag unk.
+    LDA #$00
+    STA DISABLE_RENDERING_X_FRAMES ; Enable rendering.
+    CLC ; Clear.
+    JMP RTS ; Bad code, coulda just RTS'd here.
+VAL_NEG: ; 12:0026, 0x024026
+    CLC ; Clear carry.
+    DEC 63A_UNK ; --
+    BNE RTS ; Not done, RTS.
+LEVEL_DATA_ZERO: ; 12:002C, 0x02402C
+    LDA 6A8_COPIED_TO_PLAYERS_UNK[2] ; Load val.
+    STA OBJECT_DATA_EXTRA_A?[18] ; Store to P1.
+    LDA 6A8_COPIED_TO_PLAYERS_UNK+1 ; Load val.
+    STA OBJECT_DATA_EXTRA_A?+2 ; Store to P2.
+    LDA #$00
+    STA 4C_UNK ; Clear these.
+    STA 639_UNK
+    SEC ; Set carry.
+RTS: ; 12:0040, 0x024040
+    RTS
+SWITCH_RTN_639: ; 12:0041, 0x024041
+    LDA 639_UNK ; Switch on.
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(SWITCH_RTN_A)
+    HIGH(SWITCH_RTN_A)
+    LOW(SWITCH_RTN_B)
+    HIGH(SWITCH_RTN_B)
+    LOW(SWITCH_RTN_C)
+    HIGH(SWITCH_RTN_C)
+    LOW(SWITCH_RTN_D)
+    HIGH(SWITCH_RTN_D)
+    LOW(SWITCH_RTN_E)
+    HIGH(SWITCH_RTN_E)
+    LOW(SWITCH_RTN_F)
+    HIGH(SWITCH_RTN_F)
+    LOW(SWITCH_RTN_G)
+    HIGH(SWITCH_RTN_G)
+    LOW(SWITCH_RTN_H)
+    HIGH(SWITCH_RTN_H)
+    LOW(SWITCH_RTN_I)
+    HIGH(SWITCH_RTN_I)
+    LOW(SWITCH_RTN_J)
+    HIGH(SWITCH_RTN_J)
+    LOW(SWITCH_RTN_K)
+    HIGH(SWITCH_RTN_K)
+    LOW(SWITCH_RTN_L)
+    HIGH(SWITCH_RTN_L)
+    LOW(SWITCH_RTN_M)
+    HIGH(SWITCH_RTN_M)
+    LOW(SWITCH_RTN_N)
+    HIGH(SWITCH_RTN_N)
+    LOW(SWITCH_RTN_B)
+    HIGH(SWITCH_RTN_B)
+    LOW(SWITCH_RTN_O)
+    HIGH(SWITCH_RTN_O)
+    LOW(SWITCH_RTN_P)
+    HIGH(SWITCH_RTN_P)
+    LOW(SWITCH_RTN_Q)
+    HIGH(SWITCH_RTN_Q)
+    LOW(SWITCH_RTN_R)
+    HIGH(SWITCH_RTN_R)
+    LOW(SWITCH_RTN_S)
+    HIGH(SWITCH_RTN_S)
+    LOW(SWITCH_RTN_U)
+    HIGH(SWITCH_RTN_U)
+    LOW(SWITCH_RTN_V)
+    HIGH(SWITCH_RTN_V)
     .db 01
     .db 02
     .db 05
@@ -126,6 +90,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 0B
     .db 0E
     .db 0A
+LEVEL_DATA_UNK: ; 12:007F, 0x02407F
     .db 40
     .db 00
     .db 00
@@ -138,6 +103,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 00
     .db 60
     .db 00
+SWITCH_RTN_A: ; 12:008B, 0x02408B
     .db AD
     .db 68
     .db 05
@@ -688,6 +654,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 98
     .db 60
     .db 60
+SWITCH_RTN_B: ; 12:02B1, 0x0242B1
     .db AD
     .db 3A
     .db 06
@@ -823,6 +790,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db FF
     .db 00
     .db 00
+SWITCH_RTN_C: ; 12:0338, 0x024338
     .db A2
     .db 07
     .db BD
@@ -1065,6 +1033,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 0E
     .db 8D
     .db 60
+SWITCH_RTN_D: ; 12:042A, 0x02442A
     .db A9
     .db 80
     .db 85
@@ -1165,6 +1134,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 52
     .db DB
     .db 60
+SWITCH_RTN_E: ; 12:048E, 0x02448E
     .db CE
     .db 3A
     .db 06
@@ -1237,6 +1207,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 80
     .db 6F
     .db 00
+SWITCH_RTN_F: ; 12:04D6, 0x0244D6
     .db A2
     .db 00
     .db 20
@@ -1485,6 +1456,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 97
     .db 92
     .db 98
+SWITCH_RTN_G: ; 12:05CE, 0x0245CE
     .db A2
     .db 00
     .db 20
@@ -1702,6 +1674,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 01
     .db 4A
     .db 60
+SWITCH_RTN_P: ; 12:06A7, 0x0246A7
     .db AD
     .db 3A
     .db 06
@@ -1724,6 +1697,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 39
     .db 06
     .db 60
+SWITCH_RTN_Q: ; 12:06BD, 0x0246BD
     .db A9
     .db 80
     .db 85
@@ -1841,6 +1815,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db D0
     .db 6F
     .db 50
+SWITCH_RTN_R: ; 12:0732, 0x024732
     .db AD
     .db 3A
     .db 06
@@ -1872,6 +1847,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 39
     .db 06
     .db 60
+SWITCH_RTN_S: ; 12:0751, 0x024751
     .db A5
     .db 1B
     .db 4A
@@ -1899,6 +1875,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 39
     .db 06
     .db 60
+SWITCH_RTN_U: ; 12:076C, 0x02476C
     .db 20
     .db 71
     .db AD
@@ -1916,6 +1893,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 39
     .db 06
     .db 60
+SWITCH_RTN_V: ; 12:077D, 0x02477D
     .db CE
     .db 3A
     .db 06
@@ -1924,6 +1902,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 4C
     .db 00
     .db 8D
+SWITCH_RTN_N: ; 12:0785, 0x024785
     .db A2
     .db 00
     .db 20
@@ -2022,6 +2001,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 12
     .db 04
     .db 60
+SWITCH_RTN_H: ; 12:07E7, 0x0247E7
     .db A2
     .db 00
     .db 20
@@ -2444,6 +2424,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db FC
     .db 8C
     .db 60
+SWITCH_RTN_I: ; 12:098D, 0x02498D
     .db AD
     .db 13
     .db 04
@@ -3095,6 +3076,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 13
     .db 04
     .db 60
+SWITCH_RTN_J: ; 12:0C18, 0x024C18
     .db 20
     .db 14
     .db A0
@@ -3107,6 +3089,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 00
     .db 8D
     .db 60
+SWITCH_RTN_K: ; 12:0C24, 0x024C24
     .db 20
     .db E4
     .db A6
@@ -3119,6 +3102,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 04
     .db 8D
     .db 60
+SWITCH_RTN_L: ; 12:0C30, 0x024C30
     .db 20
     .db F7
     .db A8
@@ -3131,6 +3115,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 00
     .db 8D
     .db 60
+SWITCH_RTN_M: ; 12:0C3C, 0x024C3C
     .db 20
     .db F6
     .db A3
@@ -3143,6 +3128,7 @@ L_12:0001: ; 12:0001, 0x024001
     .db 00
     .db 8D
     .db 60
+SWITCH_RTN_O: ; 12:0C48, 0x024C48
     .db 20
     .db 93
     .db A4
@@ -5150,7 +5136,7 @@ INTRO_CUTSCENE_RTN_B: ; 12:1448, 0x025448
 SPRITE_OBJECT_FILLOUT_LOOP: ; 12:1468, 0x025468
     JSR INIT_OBJECT[X]_DATA? ; Init object X.
     LDA #$01
-    STA ARR_OBJECT_ENABLED?[18],X ; Enable GFX?
+    STA ARR_OBJECT_ENABLED+MORE?[18],X ; Enable GFX?
     LDA #$01
     STA OBJ_STATE/SWITCH[18],X
     LDA SPRITE_DATA_47E,X
@@ -5326,7 +5312,7 @@ LOOP: ; 12:15A4, 0x0255A4
     TAY ; Clear Y
     CLC
     ADC #$01 ; A+=1
-    STA ARR_OBJECT_ENABLED?[18],X ; Enable?
+    STA ARR_OBJECT_ENABLED+MORE?[18],X ; Enable?
     LDA #$30 ; Val?
     STA 47E_ARR_UNK[18],X
     LDA #$98 ; Val?
@@ -6276,7 +6262,7 @@ IDK_DATA_H: ; 12:1734, 0x025734
     .db 38
     .db 60
 RTN_TEXT_AFTER_CUTSCENE?: ; 12:19FA, 0x0259FA
-    LDY 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load index.
+    LDY LEVEL_SCREEN_ON ; Load index.
     LDA DATA_UNK,Y
     BEQ DLOAD_ZERO ; Load 0, goto.
     LDA CTRL_NEWLY_PRESSED_A[2] ; Load buttons P1+P2
@@ -6320,7 +6306,7 @@ DATA_UNK: ; 12:1A15, 0x025A15
     JMP CLEAR_IRQ_FLAGS_UNK
 63B_RTN_B: ; 12:1A39, 0x025A39
     JSR DISPATCH_CLEAR_SCREEN ; Clear screen.
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load index.
+    LDA LEVEL_SCREEN_ON ; Load index.
     JSR INIT_GFX_BANKS+OBJ_STREAMS_TEXT ; Do sub.
     INC 63B_TEXT_FADE_OUT_DONE? ; Next state.
     RTS
@@ -6394,7 +6380,7 @@ INIT_GFX_BANKS+OBJ_STREAMS_TEXT: ; 12:1AB9, 0x025AB9
     LDX #$06 ; Object 6 mod.
     JSR INIT_OBJECT[X]_DATA?
     LDA #$01
-    STA ARR_OBJECT_ENABLED?[18],X ; Enable sprite?
+    STA ARR_OBJECT_ENABLED+MORE?[18],X ; Enable sprite?
     PLA ; Pull val.
     ASL A ; Turn to index.
     TAY ; To Y reg.
@@ -6663,7 +6649,7 @@ CHECK_ALL_TEXT_COMPLETED?_RET_CC_UNFINISHED: ; 12:1C8C, 0x025C8C
     STA TMP_10 ; Init cleared.
     LDX #$07 ; Object start.
 LOOP_ALL_OBJS: ; 12:1C92, 0x025C92
-    LDA ARR_OBJECT_ENABLED?[18],X ; Load...
+    LDA ARR_OBJECT_ENABLED+MORE?[18],X ; Load...
     BEQ OBJ_AVAILABLE ; Free.
     JSR RTN_UPDATES_BG? ; Update BG from object?
     LDA #$01
@@ -6712,7 +6698,7 @@ RTN_MAKE_OBJ_RET_CS_FAIL: ; 12:1CE3, 0x025CE3
     JSR REQUEST_OBJECT_SLOT_IN_Y ; Get obj slot.
     BCS RESTORE+RTS ; Failure.
     LDA #$70
-    STA ARR_OBJECT_ENABLED?[18],Y ; Enabled.
+    STA ARR_OBJECT_ENABLED+MORE?[18],Y ; Enabled.
     LDA TMP_00 ; Load val.
     ASL A ; << 3, *8
     ASL A
@@ -6743,7 +6729,7 @@ REQUEST_OBJECT_SLOT_IN_Y: ; 12:1D1F, 0x025D1F
     LDY #$07 ; Obj 8. NOTE: Carry set signals a failure.
     CLC ; Prep ?
 LOOP_SEARCH: ; 12:1D22, 0x025D22
-    LDA ARR_OBJECT_ENABLED?[18],Y ; Load val.
+    LDA ARR_OBJECT_ENABLED+MORE?[18],Y ; Load val.
     BEQ RTS_CARRY_CLEAR ; == 0, goto.
     INY ; Obj++
     CPY #$0B ; Obj _ 11

@@ -460,7 +460,7 @@ DATA_UNK: ; 1F:005A, 0x03E05A
     .db 1E
     .db 60
 BANK_SWITCH_PAIR_FROM_42: ; 1F:01DB, 0x03E1DB
-    LDY 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load index.
+    LDY LEVEL_SCREEN_ON ; Load index.
     LDA BANK_USE_DATA,Y ; Load bank.
     JMP BANK_PAIR_USE_A ; Goto bank.
 BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
@@ -1571,7 +1571,7 @@ RTN_UNK_RTS_CARRY_SET_FAIL?: ; 1F:0630, 0x03E630
     STA 8E_UNK ; A to.
     AND #$7F ; Get bottom bits.
     STA 8C_UNK ; Store to.
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load
+    LDA LEVEL_SCREEN_ON ; Load
     CMP #$07 ; If _ #$07
     BNE 42_NE_SEVEN ; !=, goto.
     LDA 8E_UNK ; Load
@@ -1767,7 +1767,7 @@ DATA_UNK_B: ; 1F:06EA, 0x03E6EA
     .db FF
 RTN_UNK: ; 1F:0721, 0x03E721
     STA 8C_UNK
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
+    LDA LEVEL_SCREEN_ON
     CMP #$07
     BEQ 1F:0798
     CMP #$02
@@ -1844,7 +1844,7 @@ RTN_UNK: ; 1F:0721, 0x03E721
     RTS
 RTN_SCREEN?_UNK: ; 1F:07AA, 0x03E7AA
     PHA ; Save A.
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load
+    LDA LEVEL_SCREEN_ON ; Load
     CMP #$02 ; If _ #$02
     BNE 42_NOT_TWO ; !=, goto.
     PLA ; Pull
@@ -2116,8 +2116,8 @@ RTS_A_TO_8C: ; 1F:080A, 0x03E80A
     STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X
     LDA OBJ_STATE/SWITCH[18],Y
     STA OBJ_STATE/SWITCH[18],X
-    LDA ARR_OBJECT_ENABLED?[18],Y
-    STA ARR_OBJECT_ENABLED?[18],X
+    LDA ARR_OBJECT_ENABLED+MORE?[18],Y
+    STA ARR_OBJECT_ENABLED+MORE?[18],X
     LDA OBJ_DIRECTION_RELATED?[18],Y
     STA OBJ_DIRECTION_RELATED?[18],X
     LDA OBJ_ANIM_HOLD_TIMER?[18],Y
@@ -3283,19 +3283,20 @@ DATA_UNK_D: ; 1F:0EBF, 0x03EEBF
     .db 8E
     .db F0
     .db 8C
-L_1F:0FFC: ; 1F:0FFC, 0x03EFFC
-    LDA PLAYER?_UNK[2]
-    ORA PPU_UPDATE_BUF_INDEX
-    BEQ 1F:1003
-    RTS
+WAIT_SETTLE?: ; 1F:0FFC, 0x03EFFC
+    LDA PLAYER?_UNK[2] ; Load P1 unk.
+    ORA PPU_UPDATE_BUF_INDEX ; Combine with BG updates.
+    BEQ GAME_STATE_SETTLED ; If neither active/set, do.
+    RTS ; Leave, not settled.
+GAME_STATE_SETTLED: ; 1F:1003, 0x03F003
     LDX #$00
-    LDA **:$0694,X
+    LDA 694_OBJ/PLAYER_UNK?[4],X
     BNE 1F:100D
     JMP 1F:10B3
     BMI 1F:1042
     LDA #$24
     JSR BANK_PAIR_USE_A
-    LDA **:$0694,X
+    LDA 694_OBJ/PLAYER_UNK?[4],X
     CMP #$09
     BEQ 1F:101F
     CMP #$0A
@@ -3305,7 +3306,7 @@ L_1F:0FFC: ; 1F:0FFC, 0x03EFFC
     BNE 1F:102B
     LDA #$4A
     JSR SND_BANKED_DISPATCH
-    LDA **:$0694,X
+    LDA 694_OBJ/PLAYER_UNK?[4],X
     AND #$3F
     TAY
     DEY
@@ -3319,7 +3320,7 @@ L_1F:0FFC: ; 1F:0FFC, 0x03EFFC
     JMP 1F:105B
     LDA #$30
     JSR BANK_PAIR_USE_A
-    LDA **:$0694,X
+    LDA 694_OBJ/PLAYER_UNK?[4],X
     AND #$7F
     TAY
     DEY
@@ -3356,12 +3357,12 @@ L_1F:0FFC: ; 1F:0FFC, 0x03EFFC
     BEQ 1F:10C1
     TXA
     PHA
-    LDA **:$0694,X
+    LDA 694_OBJ/PLAYER_UNK?[4],X
     BPL 1F:109A
     LDA [TMP_02],Y
     JSR $8675
     JMP 1F:10AE
-    LDA **:$0694,X
+    LDA 694_OBJ/PLAYER_UNK?[4],X
     AND #$40
     BEQ 1F:10A9
     LDA [TMP_02],Y
@@ -3378,17 +3379,17 @@ L_1F:0FFC: ; 1F:0FFC, 0x03EFFC
     JMP 1F:1005
     RTS
     LDA #$00
-    STA **:$0694,X
+    STA 694_OBJ/PLAYER_UNK?[4],X
     LDA #$00
     STA **:$0698,X
     STA **:$069C,X
     BEQ 1F:10B3
-OBJECTS_PROCESS_UNK: ; 1F:10CB, 0x03F0CB
+OBJECTS_PROCESS_0x04-0x11_UNK: ; 1F:10CB, 0x03F0CB
     LDX #$04 ; Obj start.
 LOOP_ALL_OBJS: ; 1F:10CD, 0x03F0CD
-    LDA ARR_OBJECT_ENABLED?[18],X ; Test enabled.
-    BEQ NEXT_OBJ
-    BMI 1F:10FA
+    LDA ARR_OBJECT_ENABLED+MORE?[18],X ; Test enabled.
+    BEQ NEXT_OBJ ; Needs to be set to SOMETHING.
+    BMI 1F:10FA ; If negative, goto.
     CMP #$30
     BCC 1F:10EC
     CMP #$36
@@ -3417,7 +3418,7 @@ NEXT_OBJ: ; 1F:10F4, 0x03F0F4
     BNE 1F:10EE
     LDA #$28
     BNE 1F:10EE
-    LDA ARR_OBJECT_ENABLED?[18],X
+    LDA ARR_OBJECT_ENABLED+MORE?[18],X
     ASL A
     TAY
     BCC 1F:111C
@@ -3818,82 +3819,43 @@ CODE_PTR_H: ; 1F:112A, 0x03F12A
     .db 95
     .db 43
     .db 8D
-L_1F:12AB: ; 1F:12AB, 0x03F2AB
-    .db A5
-    .db DC
-    .db D0
-    .db 06
-    .db 20
-    .db C9
-    .db F2
-    .db E6
-    .db DC
-    .db 60
-    .db 20
-    .db CB
-    .db F0
-    .db 20
-    .db 55
-    .db F3
-    .db 90
-    .db 0B
-    .db A9
-    .db 4A
-    .db 20
-    .db 13
-    .db D4
-    .db A9
-    .db 00
-    .db 85
-    .db DC
-    .db E6
-    .db 4B
-    .db 60
-    .db A9
-    .db 00
-    .db 85
-    .db 1D
-    .db A9
-    .db 69
-    .db 85
-    .db 31
-    .db A9
-    .db E7
-    .db 85
-    .db 32
-    .db A9
-    .db 49
-    .db 20
-    .db 13
-    .db D4
-    .db A9
-    .db E8
-    .db 8D
-    .db 85
-    .db 04
-    .db A9
-    .db D0
-    .db 8D
-    .db A9
-    .db 04
-    .db A9
-    .db 40
-    .db 8D
-    .db 2B
-    .db 04
-    .db A9
-    .db 02
-    .db 8D
-    .db 5D
-    .db 05
-    .db A9
-    .db 70
-    .db 4C
-    .db 52
-    .db DB
-    .db 4C
-    .db D1
-    .db F4
+LEVEL_8_PLAYERS_NOT_ENABLED: ; 1F:12AB, 0x03F2AB
+    LDA DC_UNK ; Load
+    BNE DC_SET ; If set, goto.
+    JSR INIT_LEVEL_AND_OBJ[7]_STUFF ; Do rtn.
+    INC DC_UNK ; Set.
+    RTS ; Leave.
+DC_SET: ; 1F:12B5, 0x03F2B5
+    JSR OBJECTS_PROCESS_0x04-0x11_UNK ; Do..
+    JSR SUB_CHECK_OBJS-0x7-0x11_RET_CS_FINISHED ; Check to see if stil in use.
+    BCC RTS ; Not finished, RTS.
+    LDA #$4A
+    JSR LEVEL_RELATED_DATA_A_PASSED? ; Level data.
+    LDA #$00
+    STA DC_UNK ; Clear.
+    INC PLAYERS_ENABLED_STEP? ; ++
+RTS: ; 1F:12C8, 0x03F2C8
+    RTS
+INIT_LEVEL_AND_OBJ[7]_STUFF: ; 1F:12C9, 0x03F2C9
+    LDA #$00
+    STA DISABLE_RENDERING_X_FRAMES ; Enable rendering.
+    LDA #$69
+    STA ZP_R2-R5_BANK_VALUES+2 ; GFX, R4.
+    LDA #$E7
+    STA ZP_R2-R5_BANK_VALUES+3 ; GFX, R5.
+    LDA #$49
+    JSR LEVEL_RELATED_DATA_A_PASSED? ; Level data?
+    LDA #$E8
+    STA 47E_ARR_UNK+7 ; Set unk.
+    LDA #$D0
+    STA 4A2_ARR_UNK+7 ; Set unk.
+    LDA #$40
+    STA ARR_OBJECT_ENABLED+MORE?+7 ; Set obj 7 state.
+    LDA #$02
+    STA 556_ARR_UNK+7 ; Set obj 7 unk.
+    LDA #$70
+    JMP SND_BANKED_DISPATCH ; Sound. Abuse RTS.
+    JMP INIT_OBJECT[X]_DATA? ; Mistake? TODO: See if gets to anyhow.
 L_1F:12F6: ; 1F:12F6, 0x03F2F6
     LDA R_**:$05F8
     BMI L_1F:1305
@@ -3908,12 +3870,12 @@ L_1F:1305: ; 1F:1305, 0x03F305
     STA R_**:$070C
     STA R_**:$05F8
     LDA #$04 ; Switch to cutscene, my bet is continue screen.
-    STA 3C_SWITCH_CUTSCENE?
+    STA 3C_SWITCH_CORE
 RTS: ; 1F:1316, 0x03F316
     RTS
     LDX #$07
 L_1F:1319: ; 1F:1319, 0x03F319
-    LDA ARR_OBJECT_ENABLED?[18],X
+    LDA ARR_OBJECT_ENABLED+MORE?[18],X
     BEQ L_1F:1325
 L_1F:131E: ; 1F:131E, 0x03F31E
     INX
@@ -3922,7 +3884,7 @@ L_1F:131E: ; 1F:131E, 0x03F31E
     BCC L_1F:1319
     RTS
 L_1F:1325: ; 1F:1325, 0x03F325
-    LDA ARR_OBJECT_ENABLED?+1,X
+    LDA ARR_OBJECT_ENABLED+MORE?+1,X
     BNE L_1F:131E
     CLC
     RTS
@@ -3930,7 +3892,7 @@ L_1F:1325: ; 1F:1325, 0x03F325
     STA BCD_VAL_XY+1
     LDY #$07
 L_1F:1332: ; 1F:1332, 0x03F332
-    LDA ARR_OBJECT_ENABLED?[18],Y
+    LDA ARR_OBJECT_ENABLED+MORE?[18],Y
     BEQ L_1F:133E
 L_1F:1337: ; 1F:1337, 0x03F337
     INY
@@ -3939,13 +3901,13 @@ L_1F:1337: ; 1F:1337, 0x03F337
     BCC L_1F:1332
     RTS
 L_1F:133E: ; 1F:133E, 0x03F33E
-    LDA ARR_OBJECT_ENABLED?+1,Y
+    LDA ARR_OBJECT_ENABLED+MORE?+1,Y
     BNE L_1F:1337
     CLC
     RTS
     LDY #$07
 L_1F:1347: ; 1F:1347, 0x03F347
-    LDA ARR_OBJECT_ENABLED?[18],Y
+    LDA ARR_OBJECT_ENABLED+MORE?[18],Y
     BEQ L_1F:1353
     INY
     INY
@@ -3955,33 +3917,34 @@ L_1F:1347: ; 1F:1347, 0x03F347
 L_1F:1353: ; 1F:1353, 0x03F353
     CLC
     RTS
-    TXA
+SUB_CHECK_OBJS-0x7-0x11_RET_CS_FINISHED: ; 1F:1355, 0x03F355
+    TXA ; Save X
     PHA
-    TYA
+    TYA ; Save Y.
     PHA
-    STX TMP_08
-    LDY #$07
-L_1F:135D: ; 1F:135D, 0x03F35D
-    CPY TMP_08
-    BEQ L_1F:1366
-    LDA ARR_OBJECT_ENABLED?[18],Y
-    BNE L_1F:1370
-L_1F:1366: ; 1F:1366, 0x03F366
-    INY
-    CPY #$11
-    BCC L_1F:135D
+    STX TMP_08 ; X to.
+    LDY #$07 ; Y=
+LOOP_MORE_OBJS: ; 1F:135D, 0x03F35D
+    CPY TMP_08 ; If Y _ Var
+    BEQ Y_EQ_TMP8 ; ==, goto.
+    LDA ARR_OBJECT_ENABLED+MORE?[18],Y ; Load object value.
+    BNE OBJ_NONZERO. ; If set..
+Y_EQ_TMP8: ; 1F:1366, 0x03F366
+    INY ; Obj++
+    CPY #$11 ; If Y _ #$11
+    BCC LOOP_MORE_OBJS ; <, goto.
     PLA
-    TAY
+    TAY ; Restore Y.
     PLA
-    TAX
+    TAX ; Restore X.
     RTS
-L_1F:1370: ; 1F:1370, 0x03F370
-    CLC
+OBJ_NONZERO.: ; 1F:1370, 0x03F370
+    CLC ; Return CC clear, not finished.
     PLA
-    TAY
+    TAY ; Restore Y
     PLA
-    TAX
-    RTS
+    TAX ; Restore X.
+    RTS ; Leave.
     JSR L_1F:13F1
     JMP L_1F:13CB
     LDA 58C_ARR_UNK[18],X
@@ -4331,7 +4294,7 @@ INIT_OBJECT[X]_DATA?: ; 1F:14D1, 0x03F4D1
     STA 4C6_ARR_UNK[18],X
     STA 46C_ARR_UNK[18],X
     STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X
-    STA ARR_OBJECT_ENABLED?[18],X
+    STA ARR_OBJECT_ENABLED+MORE?[18],X
     LDA #$00
     STA 45A_ARR_UNK[18],X
     STA OBJ_ANIM_HOLD_TIMER?[18],X
@@ -5425,7 +5388,7 @@ MUCH_IRQ_RTN/BANKING/ETC/MORE: ; 1F:198E, 0x03F98E
     STA PPU_ADDR
     STA PPU_ADDR
     LDY #$30 ; Y=
-    LDX 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; X=
+    LDX LEVEL_SCREEN_ON ; X=
     DEX ; X-=2
     DEX
     BNE X_WASNT_TWO ; != 0, goto.
@@ -5479,10 +5442,10 @@ D9_WAS_4: ; 1F:1A31, 0x03FA31
     LDA #$0B ; Load.
     BNE 1F:1A47 ; Always taken.
 D9_NOT_7: ; 1F:1A3A, 0x03FA3A
-    LDX 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Index from.
+    LDX LEVEL_SCREEN_ON ; Index from.
     LDA IRQ_DATA_A,X ; Load data.
     JSR SET_IRQ_HANDLER_ADDR ; Do.
-    LDX 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Re-load.
+    LDX LEVEL_SCREEN_ON ; Re-load.
     LDA IRQ_DATA_B,X ; Data from.
     STA IRQ_EXTENDED/HANDLER ; Store to.
     LDA #$00 ; Load.
@@ -5571,7 +5534,7 @@ DELAY_LOOP: ; 1F:1A93, 0x03FA93
     LDA #$00
     STA IRQ_FLAG_R2-R5_EQ_7E ; Use RAM ones.
     JSR BANK_R2-R5_FROM_60D ; Switch graphics.
-    LDX 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; X from
+    LDX LEVEL_SCREEN_ON ; X from
     LDA RTN_EXTRA_DATA,X
     STA IRQ_EXTENDED/HANDLER
 SET_BANK_CONFIG+RESTORE_RTI: ; 1F:1AD4, 0x03FAD4

@@ -1,11 +1,11 @@
     .db 24
 RTN_UNK: ; 04:0001, 0x008001
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
+    LDA LEVEL_SCREEN_ON
     CMP #$0B
     BEQ 04:003F
     CMP #$07
     BEQ 04:003F
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT
+    LDA LEVEL_SCREEN_ON
     ASL A
     TAY
     LDA $8072,Y
@@ -558,7 +558,7 @@ RTN_UNK: ; 04:0001, 0x008001
     .db AA
     .db 60
 RTN_UNK: ; 04:0278, 0x008278
-    LDA 42_IDK_LOOK_INTO_THIS_OFFLINE_V_IMPORTANT ; Load val.
+    LDA LEVEL_SCREEN_ON ; Load val.
     CMP #$07 ; If _ #$07
     BEQ RTS ; ==, goto.
     LDA IRQ_COUNT? ; Load count.
@@ -1448,58 +1448,36 @@ RTS: ; 04:02E6, 0x0082E6
     .db 10
     .db 00
     .db 00
-    .db 85
-    .db 00
-    .db A2
-    .db 00
-    .db BD
-    .db 94
-    .db 06
-    .db D0
-    .db 07
-    .db A5
-    .db 00
-    .db 9D
-    .db 94
-    .db 06
-    .db 18
-    .db 60
-    .db E8
-    .db E0
-    .db 04
-    .db D0
-    .db EF
-    .db 38
-    .db 60
-    .db 85
-    .db 00
-    .db A2
-    .db 00
-    .db BD
-    .db 94
-    .db 06
-    .db C5
-    .db 00
-    .db F0
-    .db 06
-    .db E8
-    .db E0
-    .db 04
-    .db 90
-    .db F4
-    .db 60
-    .db A9
-    .db 00
-    .db 9D
-    .db 94
-    .db 06
-    .db 9D
-    .db 98
-    .db 06
-    .db 9D
-    .db 9C
-    .db 06
-    .db 60
+FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE: ; 04:062D, 0x00862D
+    STA TMP_00 ; Passed to TMP.
+    LDX #$00 ; X reset.
+LOOP_FIND_OBJ_SLOT: ; 04:0631, 0x008631
+    LDA 694_OBJ/PLAYER_UNK?[4],X ; Load val.
+    BNE NEXT_OBJ ; If set, goto.
+    LDA TMP_00 ; Load val.
+    STA 694_OBJ/PLAYER_UNK?[4],X ; Store passed to.
+    CLC ; Set CC, object made.
+    RTS
+NEXT_OBJ: ; 04:063D, 0x00863D
+    INX ; Obj++
+    CPX #$04 ; If X _ #$04
+    BNE LOOP_FIND_OBJ_SLOT ; !=, goto.
+    SEC ; Set for failure, no object made/found.
+    RTS ; Leave.
+    STA TMP_00
+    LDX #$00
+    LDA 694_OBJ/PLAYER_UNK?[4],X
+    CMP TMP_00
+    BEQ 04:0655
+    INX
+    CPX #$04
+    BCC 04:0648
+    RTS
+    LDA #$00
+    STA 694_OBJ/PLAYER_UNK?[4],X
+    STA **:$0698,X
+    STA **:$069C,X
+    RTS
     .db 97
     .db 86
     .db 9E
