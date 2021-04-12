@@ -1,5 +1,5 @@
     .db 24
-RTN_UNK: ; 04:0001, 0x008001
+RTN_UNK_A: ; 04:0001, 0x008001
     LDA LEVEL_SCREEN_ON
     CMP #$0B
     BEQ 04:003F
@@ -460,6 +460,7 @@ RTN_UNK: ; 04:0001, 0x008001
     .db FF
     .db 00
     .db FF
+RTN_UNK_B: ; 04:01EC, 0x0081EC
     LDX #$00
     LDA **:$0670,X
     BEQ 04:0235
@@ -561,7 +562,7 @@ RTN_UNK: ; 04:0278, 0x008278
     LDA LEVEL_SCREEN_ON ; Load val.
     CMP #$07 ; If _ #$07
     BEQ RTS ; ==, goto.
-    LDA IRQ_COUNT? ; Load count.
+    LDA IRQ/SCRIPT_RUN_COUNT? ; Load count.
     AND #$01 ; Test if odd?
     BNE RTS ; If set, leave.
     LDY #$00 ; Clear val?
@@ -577,29 +578,29 @@ RTN_UNK: ; 04:0278, 0x008278
     LDA 04:02E8,Y
     STA TMP_0B
     LDY TMP_09
-    LDA 4C6_ARR_UNK[18],X
+    LDA 4C6_OBJ_UNK_POS?[18],X
     CMP #$08
     BCC 04:02AF
     LDA **:$068C,Y
-    CMP 4C6_ARR_UNK[18],X
+    CMP 4C6_OBJ_UNK_POS?[18],X
     BCS 04:02D9
     LDA **:$0678,Y
-    CMP 47E_ARR_UNK[18],X
+    CMP OBJ_POS_X[18],X
     BCS 04:02D9
     LDA **:$0678,Y
     CLC
     ADC TMP_0A
     BCS 04:02C4
-    CMP 47E_ARR_UNK[18],X
+    CMP OBJ_POS_X[18],X
     BCC 04:02D9
     LDA **:$0680,Y
-    CMP 4A2_ARR_UNK[18],X
+    CMP 4A2_OBJ_UNK_POS?[18],X
     BCS 04:02D9
     LDA **:$0680,Y
     CLC
     ADC TMP_0B
     BCS 04:0307
-    CMP 4A2_ARR_UNK[18],X
+    CMP 4A2_OBJ_UNK_POS?[18],X
     BCS 04:0307
     LDY TMP_09
     INY
@@ -1475,10 +1476,12 @@ NEXT_OBJ: ; 04:063D, 0x00863D
     RTS
     LDA #$00
     STA 694_OBJ/PLAYER_UNK?[4],X
-    STA **:$0698,X
-    STA **:$069C,X
+    STA PLAYER_UNK_698[4],X
+    STA PLAYER_UNK_69C[4],X
     RTS
+DATA_PLAYER_PTR_UNK_L: ; 04:0661, 0x008661
     .db 97
+DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 86
     .db 9E
     .db 86
@@ -1963,6 +1966,7 @@ NEXT_OBJ: ; 04:063D, 0x00863D
     .db 7B
     .db 7D
     .db FE
+RTN_UNK_B_PAIR: ; 04:0846, 0x008846
     .db 85
     .db 00
     .db A5
@@ -2071,6 +2075,7 @@ NEXT_OBJ: ; 04:063D, 0x00863D
     .db B0
     .db D2
     .db 60
+RTN_UNK_B: ; 04:08B2, 0x0088B2
     .db 0A
     .db AA
     .db BD

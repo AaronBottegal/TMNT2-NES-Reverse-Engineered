@@ -1,5 +1,5 @@
     .db 26 ; Bank val.
-RTN_SCREEN_UNK?: ; 06:0001, 0x00C001
+RTN_LEVEL_GROUP_6_UNK_A: ; 06:0001, 0x00C001
     JSR INIT_MANY?
     LDA 60C_UNK
     CMP #$05
@@ -769,7 +769,7 @@ RTS: ; 06:02CB, 0x00C2CB
     .db 00
     .db 08
     .db FF
-L_06:03F3: ; 06:03F3, 0x00C3F3
+RTN_LEVEL_GROUP_7_UNK_C: ; 06:03F3, 0x00C3F3
     LDA PPU_UPDATE_BUF_INDEX ; Load val.
     BEQ VAL_ZERO ; == 0, goto.
     RTS ; RTS if nonzero.
@@ -890,7 +890,7 @@ VAL_ZERO: ; 06:03F8, 0x00C3F8
     BEQ 06:04CF
     JMP $83FC
     RTS
-RTN_LEVEL_UNK?: ; 06:04D0, 0x00C4D0
+RTN_LEVEL_GROUP_6_UNK_B: ; 06:04D0, 0x00C4D0
     LDA PPU_UPDATE_BUF_INDEX ; Test index.
     BNE RTS ; Nonzero, goto.
     LDY 602_UNK ; Y from

@@ -2662,7 +2662,7 @@ SOUND_FORWARD_BANKED?: ; 1E:095C, 0x03C95C
     .db 9C
     .db 90
 GAME_SCRIPT_SWITCHES: ; 1E:0A83, 0x03CA83
-    INC IRQ_COUNT? ; ++
+    INC IRQ/SCRIPT_RUN_COUNT? ; ++
     LDA STATE_SWITCH_MENU ; Load switch state.
     JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch it up.
     LOW(SWITCH_18_RTN_FIRST_SCREEN) ; Initial screen.
@@ -2678,7 +2678,7 @@ GAME_SCRIPT_SWITCHES: ; 1E:0A83, 0x03CA83
     LOW(SWITCH_18_RTN_CORE_GAMEPLAY) ; Cutscene+Gameplay?
     HIGH(SWITCH_18_RTN_CORE_GAMEPLAY)
 SWITCH_18_RTN_FIRST_SCREEN: ; 1E:0A96, 0x03CA96
-    LDA SUBSTATE_MENU
+    LDA SUBSTATE_SWITCH_MENU
     BNE 19_NOT_ZERO
     JSR CLEAR_IRQ_FLAGS_UNK ; Init
     JSR SOUND_INIT_RTN?
@@ -2689,18 +2689,18 @@ SWITCH_18_RTN_FIRST_SCREEN: ; 1E:0A96, 0x03CA96
     LDX #$1E ; Title screen file.
     JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15
     JSR SET_TIMER_40_0x256
-    INC SUBSTATE_MENU ; Next state.
+    INC SUBSTATE_SWITCH_MENU ; Next state.
     JMP WRITE_PPU_CTRL_COPY ; Enable rendering.
 19_NOT_ZERO: ; 1E:0AB8, 0x03CAB8
     JSR SUB_40/41_TIMER_RET_FLAG ; Do timer.
     BNE RTS ; If timer is ongoing, goto.
     LDA #$00
-    STA SUBSTATE_MENU ; Init substate.
+    STA SUBSTATE_SWITCH_MENU ; Init substate.
     INC STATE_SWITCH_MENU ; State++
 RTS: ; 1E:0AC3, 0x03CAC3
     RTS
 SWITCH_18_TITLE_SCREEN: ; 1E:0AC4, 0x03CAC4
-    LDA SUBSTATE_MENU ; Get substate.
+    LDA SUBSTATE_SWITCH_MENU ; Get substate.
     JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch on it.
     LOW(18:1_SUBSTATE_TITLE_SETUP) ; Set up/display title screen.
     HIGH(18:1_SUBSTATE_TITLE_SETUP)
@@ -2711,7 +2711,7 @@ SWITCH_18_TITLE_SCREEN: ; 1E:0AC4, 0x03CAC4
 18:1_SUBSTATE_TITLE_SETUP: ; 1E:0ACF, 0x03CACF
     LDA #$00
     STA GAME_STARTED
-    INC SUBSTATE_MENU ; Substate 1 now.
+    INC SUBSTATE_SWITCH_MENU ; Substate 1 now.
     JSR CLEAR_IRQ_FLAGS_UNK ; IRQ stuff.
     JSR INIT+CLEAR_MANY_POOLS ; Pools...
     LDA #$0D ; BG GFX?
@@ -2815,14 +2815,14 @@ NO_CONTROLLER_NEWLY_PRESSED: ; 1E:0B65, 0x03CB65
     CPX #$03 ; If X _ #$03
     BCC X_INDEX_LOOP ; <, goto.
     LDA #$50 ; A=
-    STA 47E_ARR_UNK[18] ; To
+    STA OBJ_POS_X[18] ; To
     LDA #$74 ; A=
-    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18] ; To
+    STA OBJ_ANIMATION_FRAME_TO[18] ; To
     LDA #$C4 ; A=
     STA ZP_R2-R5_BANK_VALUES[4] ; To.
     LDX TITLE_PLAYERS_COUNT_CURSOR_0/1 ; X=
     LDA TITLE_DATA_Y_POS,X
-    STA 46C_ARR_UNK[18] ; To here
+    STA OBJ_POS_Y[18] ; To here
     LDA CTRL_NEWLY_PRESSED_B[2] ; Load pressed.
     AND #$20 ; Test select?
     BEQ SELECT_NOT_PRESSED
@@ -2840,7 +2840,7 @@ SELECT_NOT_PRESSED: ; 1E:0B94, 0x03CB94
     JSR SND_BANKED_DISPATCH ; Dispatch.
     LDA #$80 ; Set timer.
     STA 40_TIMER?[2]
-    INC SUBSTATE_MENU ; Next state.
+    INC SUBSTATE_SWITCH_MENU ; Next state.
 RTS: ; 1E:0BA5, 0x03CBA5
     RTS
 TITLE_DATA_Y_POS: ; 1E:0BA6, 0x03CBA6
@@ -2865,12 +2865,12 @@ SKIP_RTN: ; 1E:0BBD, 0x03CBBD
     LDA #$03 ; Goto state.
     JMP SWITCH_MENU_STATE_TO_A
 SWITCH_18_RTN_ATTRACT: ; 1E:0BC6, 0x03CBC6
-    LDX SUBSTATE_MENU ; Get substate.
+    LDX SUBSTATE_SWITCH_MENU ; Get substate.
     BNE SUBSTATE_NONZERO ; != 0, goto.
     JSR INIT+CLEAR_MANY_POOLS ; Clear pools.
     LDA #$01
     STA GAME_STARTED ; Set true.
-    INC SUBSTATE_MENU ; Substate setup.
+    INC SUBSTATE_SWITCH_MENU ; Substate setup.
     RTS
 SUBSTATE_NONZERO: ; 1E:0BD4, 0x03CBD4
     LDA CTRL_NEWLY_PRESSED_A[2] ; Get pressed.
@@ -2890,7 +2890,7 @@ SWITCH_18_TITLE_DATA_MOVE: ; 1E:0BE3, 0x03CBE3
     LDA TITLE_PLAYERS_COUNT_CURSOR_0/1
     STA TWO_PLAYERS_FLAG ; Store here.
     LDA #$03
-    STA 3D3_UNK ; Store 3 to.
+    STA CONTINUES_LEFT ; Store 3 to.
     JMP INC_STATE_18 ; Next state, abuse RTS.
 SWITCH_18_SELECT_TURTLE: ; 1E:0BFA, 0x03CBFA
     LDA #$00
@@ -2905,7 +2905,7 @@ INC_STATE_18: ; 1E:0C0E, 0x03CC0E
     INC STATE_SWITCH_MENU ; Next menu state.
 CLEAR_18_SUBSTATE: ; 1E:0C10, 0x03CC10
     LDA #$00 ; Clear substate.
-    STA SUBSTATE_MENU
+    STA SUBSTATE_SWITCH_MENU
 RTS: ; 1E:0C14, 0x03CC14
     RTS
 SWITCH_MENU_STATE_TO_A: ; 1E:0C15, 0x03CC15
@@ -2980,7 +2980,7 @@ CLEAR_600-6A6_LOOP: ; 1E:0C77, 0x03CC77
     BNE CLEAR_600-6A6_LOOP ; No, loop.
     LDX #$00 ; Index
 CLEAR_[457]00_PAGES_LOOP: ; 1E:0C81, 0x03CC81
-    STA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X ; Clear
+    STA OBJ_ANIMATION_FRAME_TO[18],X ; Clear
     STA 4FC_ARR_UNK+4,X ; Clear
     STA **:$0700,X ; Clear
     INX ; X++
@@ -3200,7 +3200,7 @@ LOOP_LARGE_SPRITES?: ; 1E:0E12, 0x03CE12
     BMI SPRITE_CLEAR_ENTRY ; Top bit set, goto.
     LDY PPU_FLAG_UNK ; Load PPU flag.
     BEQ PPU_FLAG_NOT_SET ; No value, goto.
-    LDA IRQ_COUNT? ; Load...
+    LDA IRQ/SCRIPT_RUN_COUNT? ; Load...
     LSR A ; Shift.
     BCC SHIFTED_0 ; If shifted 0, goto.
     LDA ARR_C6_UNK,X ; Load val.
@@ -3247,11 +3247,11 @@ OBJECT_ANIM_DECIDED?: ; 1E:0E71, 0x03CE71
     LDA 556_ARR_UNK[18],X ; Load value from.
     AND #$03 ; Get bits 0000.0011
     STA TMP_06 ; Store to.
-    LDA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X
+    LDA OBJ_ANIMATION_FRAME_TO[18],X
     BEQ SKIP_UPDATE? ; ==, goto.
-    LDY 46C_ARR_UNK[18],X ; Load from.
+    LDY OBJ_POS_Y[18],X ; Load from.
     STY TMP_01 ; To temp.
-    LDY 47E_ARR_UNK[18],X ; Same
+    LDY OBJ_POS_X[18],X ; Same
     STY TMP_02
     JSR RTN_ANIMATE_SPRITES? ; Do routine.
     LDA TMP_0F? ; Load.
@@ -3483,7 +3483,7 @@ L_1E:1053: ; 1E:1053, 0x03D053
     LDY #$00
     STY ZP_12_UNK
 L_1E:1059: ; 1E:1059, 0x03D059
-    LDA 400_ARR_SPR_ANIM_FRAME_WHICH?[18],X
+    LDA OBJ_ANIMATION_FRAME_TO[18],X
     BEQ L_1E:1079
     CPX #$04
     BCS L_1E:106C
@@ -3496,7 +3496,7 @@ L_1E:106C: ; 1E:106C, 0x03D06C
     CMP #$04
     BEQ L_1E:1044
 L_1E:1070: ; 1E:1070, 0x03D070
-    LDA 4A2_ARR_UNK[18],X
+    LDA 4A2_OBJ_UNK_POS?[18],X
     STA TMP_00,Y
     STX ARR_C6_UNK,Y
     INY
@@ -3561,7 +3561,7 @@ L_1E:10C7: ; 1E:10C7, 0x03D0C7
 L_1E:10D7: ; 1E:10D7, 0x03D0D7
     LDX ARR_C6_UNK,Y
     BMI L_1E:10FC
-    LDA 47E_ARR_UNK[18],X
+    LDA OBJ_POS_X[18],X
     BPL L_1E:10EB
     STY R_**:$0015
     LDY BCD_VAL_XY+1
@@ -3585,7 +3585,7 @@ L_1E:10FC: ; 1E:10FC, 0x03D0FC
     STA BCD_VAL_XY+1
     TAX
     TAY
-    LDA IRQ_COUNT?
+    LDA IRQ/SCRIPT_RUN_COUNT?
     LSR A
     BCS L_1E:1129
     LDY BCD_VAL_XY+1
@@ -3639,7 +3639,7 @@ ATTRACT_RUN: ; 1E:1149, 0x03D149
     BEQ SWITCH_18_RTN_CORE_GAMEPLAY
     INC ATTRACT_LEVEL
     LDY #$00
-    STY SUBSTATE_MENU ; Substate reset.
+    STY SUBSTATE_SWITCH_MENU ; Substate reset.
     INY
     STY STATE_SWITCH_MENU ; Next menu switch.
     RTS
@@ -3658,15 +3658,15 @@ CORE_STATE_SWITCH: ; 1E:1172, 0x03D172
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LOW(SWITCH_3C_RTN_A) ; Clear screen, set lives count.
     HIGH(SWITCH_3C_RTN_A)
-    LOW(SWITCH_3C_RTN_B) ; Level select screen, first cutscene.
+    LOW(SWITCH_3C_RTN_B) ; Level select screen, cutscene.
     HIGH(SWITCH_3C_RTN_B)
     LOW(SWITCH_3C_RTN_C) ; Turtle UI info?
     HIGH(SWITCH_3C_RTN_C)
-    LOW(SWITCH_3C_RTN_D) ; Gameplay?
+    LOW(SWITCH_3C_RTN_D) ; Gameplay/level stuff?
     HIGH(SWITCH_3C_RTN_D)
-    LOW(SWITCH_3C_RTN_E) ; Checks if all players dead?
+    LOW(SWITCH_3C_RTN_E) ; End level begin?
     HIGH(SWITCH_3C_RTN_E)
-    LOW(SWITCH_3C_RTN_F) ; Unk, can send to epilogue.
+    LOW(SWITCH_3C_RTN_F) ; End level script?
     HIGH(SWITCH_3C_RTN_F)
     LOW(SWITCH_3C_RTN_G) ; Set up loads of gameplay stuff, turtle attrs, level sound.
     HIGH(SWITCH_3C_RTN_G)
@@ -3694,11 +3694,11 @@ SWITCH_3C_RTN_B: ; 1E:119E, 0x03D19E
     JSR ATTRACT_SETUP? ; Do rtn.
     JMP RTN_C_FINISHED ; Goto.
 FIRST_SCREENS_SWITCH: ; 1E:11AD, 0x03D1AD
-    LDA PLAYERS_ENABLED_STEP? ; Load switch val.
+    LDA 4B_SWITCH_UNK ; Load switch val.
     JSR SWITCH_CODE_PTRS_PAST_JSR ; Do code.
     LOW(4B_SWITCH_RTN_A) ; Level select?
     HIGH(4B_SWITCH_RTN_A)
-    LOW(4B_SWITCH_RTN_B) ; Cutscene 1.
+    LOW(4B_SWITCH_RTN_B) ; Cutscene.
     HIGH(4B_SWITCH_RTN_B)
     LOW(4B_SWITCH_RTN_C) ; Text after cutscene, plus game overlay.
     HIGH(4B_SWITCH_RTN_C)
@@ -3707,7 +3707,7 @@ FIRST_SCREENS_SWITCH: ; 1E:11AD, 0x03D1AD
     LDA 66D_LEVEL_SELECT_WHICH ; Load
     BNE RTS ; != 0, goto.
 INC_4B_STATE: ; 1E:11C0, 0x03D1C0
-    INC PLAYERS_ENABLED_STEP? ; Next state.
+    INC 4B_SWITCH_UNK ; Next state.
 RTS: ; 1E:11C2, 0x03D1C2
     RTS
 4B_SWITCH_RTN_B: ; 1E:11C3, 0x03D1C3
@@ -3727,7 +3727,7 @@ RTS: ; 1E:11C2, 0x03D1C2
     BNE RTS ; != 0, RTS.
 RTN_C_FINISHED: ; 1E:11E3, 0x03D1E3
     LDA #$00 ; Clear
-    STA PLAYERS_ENABLED_STEP? ; Switch
+    STA 4B_SWITCH_UNK ; Switch
     INC 3C_SWITCH_CORE ; ++
     JSR LEVEL_RELATED_DATA_A_FROM_42 ; Do from 42?
     LDA #$1F ; Why val?
@@ -3784,7 +3784,7 @@ SWITCH_3C_RTN_G: ; 1E:124A, 0x03D24A
     LDA LEVEL_SCREEN_ON ; Load val.
     CMP #$08 ; If _ #$08
     BNE NOT_SCREEN_8 ; !=, goto.
-    LDA PLAYERS_ENABLED_STEP? ; Load val.
+    LDA 4B_SWITCH_UNK ; Load val.
     BNE NOT_SCREEN_8 ; If set to anything, goto.
     JMP LEVEL_8_PLAYERS_NOT_ENABLED ; Cutscene at beginning.
 NOT_SCREEN_8: ; 1E:1257, 0x03D257
@@ -3793,7 +3793,7 @@ NOT_SCREEN_8: ; 1E:1257, 0x03D257
     LDA #$03
     STA 3C_SWITCH_CORE ; Switch to setup level.
     LDA #$00
-    STA PLAYERS_ENABLED_STEP? ; Clear.
+    STA 4B_SWITCH_UNK ; Clear.
     LDA LEVEL_SCREEN_ON ; Load screen.
     CMP #$01 ; If _ #$01
     BNE NOT_LEVEL_1 ; !=, goto.
@@ -3858,34 +3858,34 @@ SWITCH_3C_RTN_D: ; 1E:12C9, 0x03D2C9
     LDA #$3C ; Bank 1C/1D.
     JSR BANK_PAIR_USE_A
     JSR PLAYER_LIFE_STEAL+? ; Test life steal and a bunch of related stuff.
-    JSR BANK_SWITCH_PAIR_FROM_42 ; Bank in 6/7 or E/F
-    JSR RTN_SCREEN_UNK?
-    JSR RTN_LEVEL_UNK?
-    JSR L_06:03F3
-    LDA #$24
+    JSR BANK_SWITCH_BASED_ON_SCREEN/LEVEL ; Bank in 6/7 or E/F
+    JSR RTN_LEVEL_GROUP_6_UNK_A ; TODO: Mark E/F too.
+    JSR RTN_LEVEL_GROUP_6_UNK_B
+    JSR RTN_LEVEL_GROUP_7_UNK_C
+    LDA #$24 ; Bank 4/5
+    JSR BANK_PAIR_USE_A
+    JSR RTN_UNK_A
+    JSR RTN_UNK_B
+    LDA #$28 ; Bank 8/9
     JSR BANK_PAIR_USE_A
     JSR RTN_UNK
-    JSR 04:01EC
-    LDA #$28
-    JSR BANK_PAIR_USE_A
-    JSR L_09:08CF
     LDA #$2A
     JSR BANK_PAIR_USE_A
     JSR OBJECTS_PROCESS_0x04-0x11_UNK
-    JSR WAIT_SETTLE?
-    JSR L_1F:12F6
+    JSR WAIT_UPDATES_AND_???
+    JSR RTN_ALL_OBJS_DISABLED?_UNK
     JSR BANKED_RTNS_UNK
-    JSR BANKED_RTN_UNK
-    RTS
+    JSR BANKED_RTN_TURTLE?
+    RTS ; Leave.
     LDA #$00
     STA STATE_SWITCH_MENU
-    STA SUBSTATE_MENU
+    STA SUBSTATE_SWITCH_MENU
 RTS: ; 1E:1313, 0x03D313
     RTS
 SWITCH_3C_RTN_E: ; 1E:1314, 0x03D314
-    LDA PLAYERS_ENABLED_STEP? ; Load
+    LDA 4B_SWITCH_UNK ; Load
     CMP #$02 ; If _ #$02
-    BEQ BOTH_PLAYERS_DEAD? ; ==, goto.
+    BEQ PLAYER_STEP_EQ_2 ; ==, goto.
     LDA #$00
     STA CTRL_PREV_A[2] ; Clear controller.
     STA CTRL_PREV_A+1
@@ -3893,21 +3893,21 @@ SWITCH_3C_RTN_E: ; 1E:1314, 0x03D314
     STA CTRL_NEWLY_PRESSED_A+1
     LDA #$3C
     JSR BANK_PAIR_USE_A ; Bank in 1C/1D
-    JSR PLAYER_LIFE_STEAL+? ; Do..
+    JSR PLAYER_LIFE_STEAL+? ; Do life steal.
     LDA OBJ_STATE/SWITCH[18] ; Load P1 state.
     ORA OBJ_STATE/SWITCH+2 ; Load P2.
     AND #$0F ; Keep 0000.1111
     BNE ANY_STATE_SET ; If either any bits set, goto.
-    INC PLAYERS_ENABLED_STEP? ; Otherwise, ++
+    INC 4B_SWITCH_UNK ; Otherwise, ++
 ANY_STATE_SET: ; 1E:1338, 0x03D338
-    JMP BANKED_RTN_UNK ; Do instead.
-BOTH_PLAYERS_DEAD?: ; 1E:133B, 0x03D33B
+    JMP BANKED_RTN_TURTLE? ; Do instead.
+PLAYER_STEP_EQ_2: ; 1E:133B, 0x03D33B
     LDA #$00
     STA 3DB_UNKNOWN ; Clear ?
     LDA #$00
-    STA PLAYERS_ENABLED_STEP? ; Reset.
+    STA 4B_SWITCH_UNK ; Reset.
     INC 3C_SWITCH_CORE ; Next switch.
-    LDY LEVEL_SCREEN_ON ; Load level.
+    LDY LEVEL_SCREEN_ON ; Load level on.
     LDA PER_LEVEL_SOUND_DATA,Y ; Load..
     BEQ RTS ; No value loaded, don't play sound.
     JMP SND_BANKED_DISPATCH ; Do sound, abuse RTS.
@@ -3925,17 +3925,17 @@ PER_LEVEL_SOUND_DATA: ; 1E:1350, 0x03D350
     .db 65
     .db 00
 SWITCH_3C_RTN_F: ; 1E:135C, 0x03D35C
-    JSR WAIT_SETTLE? ; Do..
-    LDA #$32
+    JSR WAIT_UPDATES_AND_??? ; Do..
+    LDA #$32 ; Bank pair 12/13.
     JSR BANK_PAIR_USE_A
-    JSR RTN_UNK_RET_CC_CONTINUE?
-    LDA 639_UNK ; Load
-    BNE RTS_RTS ; If set, RTS.
+    JSR EOL_CUTSCENE?
+    LDA 639_SWITCH_EOL_SCRIPT? ; Load
+    BNE RTS_RTS ; If set, RTS. Still in cutscene.
     INC LEVEL_SCREEN_ON ; Move to next.
     LDA #$01
     STA 3C_SWITCH_CORE ; Switch to cutscene handler.
     LDA #$02
-    STA PLAYERS_ENABLED_STEP? ; Players not alive.
+    STA 4B_SWITCH_UNK ; Players enabled?
     JSR SOUND_INIT_RTN? ; Sound cleaning.
     LDA LEVEL_SCREEN_ON ; Load
     CMP #$0C ; If _ #$0C, end of game.
@@ -3957,7 +3957,7 @@ SKIP_CLEAR: ; 1E:1382, 0x03D382
     LDA #$08
     STA 3C_SWITCH_CORE ; Epilogue switch.
     LDA #$00
-    STA PLAYERS_ENABLED_STEP? ; No players dead?
+    STA 4B_SWITCH_UNK ; No players dead?
     RTS ; Extra RTS, heh. Mistake. Oops.
 RTS_RTS: ; 1E:13A4, 0x03D3A4
     RTS
@@ -3968,7 +3968,7 @@ SWITCH_3C_RTN_H: ; 1E:13A5, 0x03D3A5
 SWITCH_3C_RTN_I: ; 1E:13AD, 0x03D3AD
     LDA #$32
     JSR BANK_PAIR_USE_A ; Bank in 12/13.
-    LDA PLAYERS_ENABLED_STEP? ; Use this as switch now? lol.
+    LDA 4B_SWITCH_UNK ; Use this as switch now? lol.
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LOW(4B_SWITCH_RTN_A) ; Another switch.
     HIGH(4B_SWITCH_RTN_A)
@@ -3980,8 +3980,8 @@ SWITCH_3C_RTN_I: ; 1E:13AD, 0x03D3AD
     LDA #$07
     STA 3C_SWITCH_CORE ; Switch core to state 7, game over?
     LDA #$00
-    STA PLAYERS_ENABLED_STEP? ; Clear vars.
-    STA 3D3_UNK
+    STA 4B_SWITCH_UNK ; Clear vars.
+    STA CONTINUES_LEFT
     RTS
 CUTSCENE_START_DOES_SOMETHING?: ; 1E:13C9, 0x03D3C9
     LDA GAME_STARTED ; Load val.
@@ -5732,7 +5732,7 @@ SND_BANKED_DISPATCH: ; 1E:1B52, 0x03DB52
     CMP #$6D ; If A _ 6D
     BCS BANK_SET_1A/1B ; >=, goto.
     JSR SAVE_UP/LOW_AND_SWITCH_BANKS_18/19 ; Set up these banks.
-    JMP BANK_SET_CHOSEN
+    JMP BANK_SET_CHOSEN ; Abuse RTS.
 BANK_SET_1A/1B: ; 1E:1B6E, 0x03DB6E
     JSR SAVE_UP/LOW_AND_SWITCH_BANKS_1A/1B ; Or these banks.
 BANK_SET_CHOSEN: ; 1E:1B71, 0x03DB71
@@ -5823,47 +5823,47 @@ UNK_STREAM_0x300_SETUP_BANK_1C/1D: ; 1E:1C1C, 0x03DC1C
     JSR UNK_STREAM_SETUP_0x300_BUF ; Goto rtn.
     JMP RESTORE_BANK_PAIRED ; Abuse RTS.
     PHA
-    LDA #$32
+    LDA #$32 ; Set bank 12/13
     JSR BANK_PAIRED
     PLA
-    JSR $9AB9
+    JSR INIT_GFX_BANKS+OBJ_STREAMS_TEXT
     JMP RESTORE_BANK_PAIRED
     LDA #$32
     JSR BANK_PAIRED
-    JSR $9B03
+    JSR OBJ_PROCESS_UNK_RET_CC_UNFINISHED
     PHP
     JSR RESTORE_BANK_PAIRED
     PLP
     RTS
     LDA #$3C
     JSR BANK_PAIRED
-    JSR $96D3
+    JSR ANIMATE_UPDATE_OBJ_X?
     JMP RESTORE_BANK_PAIRED
     LDA #$3C
     JSR BANK_PAIRED
-    JSR $9589
+    JSR OBJECT_X_DO_UNK
     JMP RESTORE_BANK_PAIRED
     PHA
     LDA #$3C
     JSR BANK_PAIRED
     PLA
-    JSR $9627
+    JSR OBJECT_TO_STATE_A_COMPLEX?
     JMP RESTORE_BANK_PAIRED
 BANKED_RTNS_UNK: ; 1E:1C67, 0x03DC67
-    LDA #$34
+    LDA #$34 ; Bank 13/15
     JSR BANK_PAIRED
-    JSR $80F7
+    JSR RTN_UNK_A
     JMP RESTORE_BANK_PAIRED
     PHA
     LDA #$34
     JSR BANK_PAIRED
     PLA
-    JSR $812C
+    JSR RTN_UNK_B
     JMP RESTORE_BANK_PAIRED
     LDA #$34
     JSR BANK_PAIRED
-    JSR $80FB
-    JMP RESTORE_BANK_PAIRED
+    JSR RTN_UNK_C
+    JMP RESTORE_BANK_PAIRED ; Abuse RTS.
 UPDATE_??: ; 1E:1C8A, 0x03DC8A
     PHA ; Save A
     LDA #$34
@@ -5876,7 +5876,7 @@ UPDATE_??: ; 1E:1C97, 0x03DC97
     JSR BANK_PAIRED
     JSR UPDATE_??
     JMP RESTORE_BANK_PAIRED
-BANKED_RTN_UNK: ; 1E:1CA2, 0x03DCA2
+BANKED_RTN_TURTLE?: ; 1E:1CA2, 0x03DCA2
     LDA #$34
     JSR BANK_PAIRED
     JSR 14:0289
@@ -6022,7 +6022,7 @@ BANKSWITCH_R0/R1: ; 1E:1D82, 0x03DD82
     STA MMC3_BANK_DATA ; Switch.
     RTS
 BG_UPDATE_SWITCH?: ; 1E:1D97, 0x03DD97
-    JSR BANK_SWITCH_PAIR_FROM_42 ; Switch PRG bank paired.
+    JSR BANK_SWITCH_BASED_ON_SCREEN/LEVEL ; Switch PRG bank paired.
     LDA 606_NMI_SWITCH_STATE_UNK ; Load other state.
     JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch.
     LOW(606_SWITCH_RTN_A) ; Init a lot.

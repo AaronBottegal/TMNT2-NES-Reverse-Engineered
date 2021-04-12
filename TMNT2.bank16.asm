@@ -1631,7 +1631,9 @@
     .db 9C
     .db 06
     .db 60
+DATA_PLAYER_PTR_UNK_L_ALT: ; 10:0661, 0x020661
     .db 63
+DATA_PLAYER_PTR_UNK_H_ALT: ; 10:0662, 0x020662
     .db 86
     .db 0A
     .db 00
@@ -1651,6 +1653,7 @@
     .db C0
     .db C1
     .db FF
+RTN_UNK_A: ; 10:0675, 0x020675
     .db 85
     .db 00
     .db A5
