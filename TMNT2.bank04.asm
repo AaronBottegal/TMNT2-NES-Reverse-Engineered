@@ -8,15 +8,15 @@ RTN_UNK_A: ; 04:0001, 0x008001
     LDA LEVEL_SCREEN_ON
     ASL A
     TAY
-    LDA $8072,Y
+    LDA 04:0072,Y
     STA TMP_00
-    LDA $8073,Y
+    LDA 04:0073,Y
     STA TMP_01
-    LDY **:$060B
+    LDY 60B_UNK
     LDA [TMP_00],Y
     CMP #$FF
     BEQ 04:0071
-    LDA B4_ARR_UNK_NAMETABLE?[2]
+    LDA NAMETABLE_FOCUS_VAL[2]
     CMP [TMP_00],Y
     BEQ 04:002C
     BCS 04:0033
@@ -26,7 +26,7 @@ RTN_UNK_A: ; 04:0001, 0x008001
     CMP [TMP_00],Y
     BCC 04:0071
     LDX #$00
-    LDA **:$0670,X
+    LDA 670_UNK,X
     BEQ 04:0040
     INX
     CPX #$04
@@ -462,11 +462,11 @@ RTN_UNK_A: ; 04:0001, 0x008001
     .db FF
 RTN_UNK_B: ; 04:01EC, 0x0081EC
     LDX #$00
-    LDA **:$0670,X
+    LDA 670_UNK,X
     BEQ 04:0235
     CMP #$02
     BNE 04:0203
-    LDA **:$0684,X
+    LDA 684_UNK,X
     BMI 04:0203
     BEQ 04:0203
     LDA #$16
@@ -474,24 +474,24 @@ RTN_UNK_B: ; 04:01EC, 0x0081EC
     LDA B7_UNK_SPRITES?
     ORA BA_UNK_SPRITES?
     BEQ 04:0235
-    LDA **:$0674,X
+    LDA 674_UNK,X
     SEC
     SBC B7_UNK_SPRITES?
-    STA **:$0674,X
-    LDA **:$0678,X
+    STA 674_UNK,X
+    LDA 678_UNK,X
     SBC BA_UNK_SPRITES?
-    STA **:$0678,X
+    STA 678_UNK,X
     BCC 04:023B
     LDA 83_UNK
     ORA 84_UNK
     BEQ 04:0235
-    LDA **:$067C,X
+    LDA 67C_UNK,X
     SEC
     SBC 83_UNK
-    STA **:$067C,X
-    LDA **:$0680,X
+    STA 67C_UNK,X
+    LDA 680_UNK,X
     SBC 84_UNK
-    STA **:$0680,X
+    STA 680_UNK,X
     BCC 04:023B
     INX
     CPX #$04
@@ -567,9 +567,9 @@ RTN_UNK: ; 04:0278, 0x008278
     BNE RTS ; If set, leave.
     LDY #$00 ; Clear val?
     STY TMP_09
-    LDA **:$0684,Y
+    LDA 684_UNK,Y
     BPL 04:02D9
-    LDA **:$0670,Y
+    LDA 670_UNK,Y
     BEQ 04:02D9
     ASL A
     TAY
@@ -584,19 +584,19 @@ RTN_UNK: ; 04:0278, 0x008278
     LDA **:$068C,Y
     CMP 4C6_OBJ_UNK_POS?[18],X
     BCS 04:02D9
-    LDA **:$0678,Y
+    LDA 678_UNK,Y
     CMP OBJ_POS_X[18],X
     BCS 04:02D9
-    LDA **:$0678,Y
+    LDA 678_UNK,Y
     CLC
     ADC TMP_0A
     BCS 04:02C4
     CMP OBJ_POS_X[18],X
     BCC 04:02D9
-    LDA **:$0680,Y
+    LDA 680_UNK,Y
     CMP 4A2_OBJ_UNK_POS?[18],X
     BCS 04:02D9
-    LDA **:$0680,Y
+    LDA 680_UNK,Y
     CLC
     ADC TMP_0B
     BCS 04:0307

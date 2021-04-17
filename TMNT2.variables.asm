@@ -70,7 +70,7 @@ ZP_13_UNK:                                    .rs 1
 R_**:$0014:                                   .rs 1
 R_**:$0015:                                   .rs 1
 BCD_VAL_XY:                                   .rs 2
-STATE_SWITCH_MENU:                            .rs 1
+STATE_SWITCH_INITIAL_MENUS:                   .rs 1
 SUBSTATE_SWITCH_MENU:                         .rs 1
 
 
@@ -91,7 +91,7 @@ KONAMI_CODE_TRIGGERED_FLAG?:                  .rs 1
 ATTRACT_LEVEL:                                .rs 1
 28_BANK_CFG_INDEX?:                           .rs 1
 LOWER_BANK_SAVE_PAIRED?:                      .rs 1
-IRQ_BANK_VALUES:                              .rs 2
+IRQ_BANK_VALUES_R[0/1]:                       .rs 2
 
 
           .rsset 0x002D
@@ -115,12 +115,10 @@ LEVEL_SCREEN_ON:                              .rs 1
 
 
           .rsset 0x0047
-47_TWO_PLAYERS_FLAG?:                         .rs 1
+47_TWO_PLAYERS_FLAG:                          .rs 1
 PPU_ADDR_IRQ:                                 .rs 2
-
-
-          .rsset 0x004B
-4B_SWITCH_UNK:                                .rs 1
+4A_UNK:                                       .rs 1
+4B_SWITCH_GAME_OVER/FINISHED:                 .rs 1
 4C_UNK:                                       .rs 1
 NUM_PLAYER_LIVES:                             .rs 2
 
@@ -131,18 +129,18 @@ IRQ_HANDLER_JMP:                              .rs 3
 
           .rsset 0x0056
 IRQ_56_OR'D:                                  .rs 1
-IRQ_LATCH_VALUE:                              .rs 1
+IRQ_LATCH_VALUE_COPY_57:                      .rs 1
 58_IRQ_UNK:                                   .rs 1
 
 
           .rsset 0x005A
-IRQ_LATCH_VALUE:                              .rs 1
+IRQ_LATCH_VALUE_COPY_5A:                      .rs 1
 
 
           .rsset 0x005C
-IRQ_EXTENDED/HANDLER:                         .rs 1
+IRQ_EXTENDED/HANDLER/SECONDARY:               .rs 1
 5D_IRQ_BANK?:                                 .rs 1
-IRQ_UNK_5E:                                   .rs 1
+IRQ_VAL_UNK:                                  .rs 1
 
 
           .rsset 0x0060
@@ -151,8 +149,8 @@ IRQ_UNK_5E:                                   .rs 1
 
           .rsset 0x0072
 72_STREAM_PTR_UNK:                            .rs 2
-74_STREAM_UNK:                                .rs 1
-75_UNK:                                       .rs 1
+74_STREAM_UNK_A:                              .rs 1
+75_STREAM_UNK_B:                              .rs 1
 76_UNK:                                       .rs 1
 77_UNK:                                       .rs 1
 PLAYER?_UNK:                                  .rs 2
@@ -161,14 +159,14 @@ PLAYER?_UNK:                                  .rs 2
           .rsset 0x007B
 7B_UNK:                                       .rs 1
 7C_UNK:                                       .rs 1
-7D_UNK:                                       .rs 1
+IRQ_I_SECONDARY_KEEP_IF_POSITIVE:             .rs 1
+7E_UNK:                                       .rs 1
 
 
-          .rsset 0x0081
+          .rsset 0x0080
+80_UNK:                                       .rs 1
 81_UNK:                                       .rs 1
-
-
-          .rsset 0x0083
+82_UNK:                                       .rs 1
 83_UNK:                                       .rs 1
 84_UNK:                                       .rs 1
 85_PLAYER_UNK?:                               .rs 2
@@ -196,10 +194,14 @@ PLAYER?_UNK:                                  .rs 2
 9E_UNK:                                       .rs 1
 9F_UNK:                                       .rs 1
 A0_PLAYER_UNK:                                .rs 2
+A2_UNK:                                       .rs 1
+A3_UNK:                                       .rs 1
 
 
-          .rsset 0x00A6
-IRQ_FLAG_R2-R5_EQ_7E:                         .rs 1
+          .rsset 0x00A5
+A5_UNK:                                       .rs 1
+IRQ_FLAG_R2-R5_BANK_7E:                       .rs 1
+A7_IRQ_REPLACE_SECONDARY_INDEX:               .rs 1
 
 
           .rsset 0x00AD
@@ -207,9 +209,9 @@ R_**:$00AD:                                   .rs 1
 AE_ARR_UNK:                                   .rs 2
 B0_UNK:                                       .rs 1
 B1_SCROLL_X_COPY_IRQ_ZP:                      .rs 2
-B3_UNK:                                       .rs 1
-B4_ARR_UNK_NAMETABLE?:                        .rs 2
-B6_UNK:                                       .rs 1
+B3_SCROLL_X_IRQ_J:                            .rs 1
+NAMETABLE_FOCUS_VAL:                          .rs 2
+B6_NAMETABLE_FOCUS_UNK:                       .rs 1
 B7_UNK_SPRITES?:                              .rs 1
 B8_UNK:                                       .rs 1
 B9_UNK:                                       .rs 1
@@ -219,15 +221,22 @@ BC_UNK:                                       .rs 1
 BD_PLAYER?_UNK:                               .rs 2
 
 
-          .rsset 0x00C5
+          .rsset 0x00C0
+C0_UNK:                                       .rs 1
+
+
+          .rsset 0x00C3
+C3_UNK:                                       .rs 1
+C4_UNK:                                       .rs 1
 C5_UNK:                                       .rs 1
 ARR_C6_UNK:                                   .rs 1
 R_**:$00C7:                                   .rs 1
 
 
           .rsset 0x00D8
-IRQ_D8_UNK:                                   .rs 1
-IRQ_D9_UNK:                                   .rs 1
+IRQ_D8_PAIR_UNK:                              .rs 1
+IRQ_D9_PAIR_UNK:                              .rs 1
+DA_UNK:                                       .rs 1
 
 
           .rsset 0x00DC
@@ -340,26 +349,30 @@ OBJECT_DATA_EXTRA_B?:                         .rs 18
 5F8_UNK:                                      .rs 1
 
 
-          .rsset 0x05FB
+          .rsset 0x05FA
+5FA_UNK:                                      .rs 1
 5FB_TIMER_ALL_FINISHED?:                      .rs 1
 
 
           .rsset 0x0600
-600_UNK:                                      .rs 1
-601_IRQ_INC_Y_FLAG:                           .rs 1
-602_UNK:                                      .rs 1
-
-
-          .rsset 0x0606
+600_UNK_INDEX:                                .rs 1
+601_IRQ_FLAG_DELAY_MOD_+:                     .rs 1
+602_COUNTER?_UNK:                             .rs 1
+603_unk:                                      .rs 1
+604_UNK:                                      .rs 1
+605_UNK:                                      .rs 1
 606_NMI_SWITCH_STATE_UNK:                     .rs 1
 607_UNK:                                      .rs 1
+608_UNK:                                      .rs 1
+609_UNK:                                      .rs 1
 
 
-          .rsset 0x060C
-60C_UNK:                                      .rs 1
+          .rsset 0x060B
+60B_UNK:                                      .rs 1
+60C_UNK_INDEX:                                .rs 1
 R2_TO_R5_BANK_DATA:                           .rs 4
 611_SWITCH_UNK:                               .rs 1
-612_UNK:                                      .rs 1
+612_STEP?_UNK:                                .rs 1
 
 
           .rsset 0x0615
@@ -369,9 +382,7 @@ PPU_FLAG_UNK:                                 .rs 1
 
           .rsset 0x0618
 PLAYER_ANIM_FRAME_SWAP?:                      .rs 2
-
-
-          .rsset 0x061B
+61A_UNK_INDEX:                                .rs 1
 61B_FLAG_UNK:                                 .rs 1
 61C_UNK:                                      .rs 1
 
@@ -380,7 +391,9 @@ PLAYER_ANIM_FRAME_SWAP?:                      .rs 2
 628_UNK:                                      .rs 1
 
 
-          .rsset 0x0636
+          .rsset 0x0634
+634_UNK_INDEX:                                .rs 1
+635_UNK_INDEX?:                               .rs 1
 636_UNK:                                      .rs 1
 637_UNK:                                      .rs 1
 638_UNK:                                      .rs 1
@@ -396,14 +409,14 @@ TIMER_GAME_SCRIPT?:                           .rs 1
           .rsset 0x0640
 FLAG_UPDATE_P1_HEALTH?:                       .rs 1
 PPU_ADDR_UNK_A:                               .rs 2
+PPU_ADDR_OR_A:                                .rs 1
 PPU_ADDR_UNK_B:                               .rs 2
-
-
-          .rsset 0x0647
+PPU_ADDR_OR_B:                                .rs 1
 FLAG_UPDATE_P2_HEALTH?:                       .rs 1
-
-
-          .rsset 0x064E
+PPU_ADDR_UNK_C:                               .rs 2
+PPU_ADDR_OR_C:                                .rs 1
+PPU_ADDR_UNK_D:                               .rs 2
+PPU_ADDR_OR_D:                                .rs 1
 UPDATE_PPU_UNK:                               .rs 1
 
 
@@ -415,20 +428,46 @@ CONTINUE_OPTION_ON:                           .rs 1
 
           .rsset 0x0659
 PPU_SCROLL_X_COPY_IRQ:                        .rs 1
+IRQ_L_SCROLL_X:                               .rs 1
 
 
           .rsset 0x065C
 NAMETABLE_VAR_UNK:                            .rs 1
+IRQ_L_NAMETABLE_FOCUS:                        .rs 1
 
 
           .rsset 0x065F
-FLAG_IRQ_65F:                                 .rs 1
+FLAG_IRQ_65F_INDEX_UNK:                       .rs 1
 FLAG_IRQ_660:                                 .rs 1
 661_UNK_LEVEL_A_SETS:                         .rs 1
 
 
           .rsset 0x066D
 66D_LEVEL_SELECT_WHICH:                       .rs 1
+
+
+          .rsset 0x0670
+670_UNK:                                      .rs 1
+
+
+          .rsset 0x0674
+674_UNK:                                      .rs 1
+
+
+          .rsset 0x0678
+678_UNK:                                      .rs 1 ; 678_UNK
+
+
+          .rsset 0x067C
+67C_UNK:                                      .rs 1
+
+
+          .rsset 0x0680
+680_UNK:                                      .rs 1
+
+
+          .rsset 0x0684
+684_UNK:                                      .rs 1
 
 
           .rsset 0x0694

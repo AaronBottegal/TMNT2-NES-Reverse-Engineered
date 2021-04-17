@@ -1,216 +1,239 @@
     .db 26 ; Bank val.
 RTN_LEVEL_GROUP_6_UNK_A: ; 06:0001, 0x00C001
-    JSR INIT_MANY?
-    LDA 60C_UNK
-    CMP #$05
-    BEQ 06:0019
+    JSR ADD_NAMETABLE_THINGS?
+    LDA 60C_UNK_INDEX ; Load
+    CMP #$05 ; If _ #$05
+    BEQ VAL_EQ_FIVE ; ==, goto.
     LDA #$00
-    STA B7_UNK_SPRITES?
+    STA B7_UNK_SPRITES? ; Clear these if not 5.
     STA BA_UNK_SPRITES?
     STA 83_UNK
     STA 84_UNK
     STA B8_UNK
     STA BB_UNK
-    LDA 8B_UNK
-    BNE 06:0059
-    LDA B4_ARR_UNK_NAMETABLE?[2]
-    CMP 9E_UNK
-    BCC 06:0062
-    LDA B1_SCROLL_X_COPY_IRQ_ZP[2]
-    CMP 9F_UNK
-    BCC 06:0062
-    LDA LEVEL_SCREEN_ON
-    CMP #$02
-    BNE 06:0059
-    LDY #$00
-    LDA 600_UNK
-    CMP #$01
-    BEQ 06:0044
-    BCS 06:0059
+VAL_EQ_FIVE: ; 06:0019, 0x00C019
+    LDA 8B_UNK ; Load
+    BNE CLEAR_UNK ; If != 0, goto.
+    LDA NAMETABLE_FOCUS_VAL[2] ; LOad
+    CMP 9E_UNK ; If _ var
+    BCC ALT_RTN ; <, goto.
+    LDA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load
+    CMP 9F_UNK ; If _ #$9F
+    BCC ALT_RTN ; <, goto.
+    LDA LEVEL_SCREEN_ON ; Load level.
+    CMP #$02 ; If _ #$02
+    BNE CLEAR_UNK ; !=, goto. Screen not 2.
+    LDY #$00 ; Flag clear write.
+    LDA 600_UNK_INDEX ; Load
+    CMP #$01 ; If _ #$01
+    BEQ Y_TO_IRQ_DELAY_MOD_FLAG_AND_SET_UP_UNK ; ==, goto. Clears.
+    BCS CLEAR_UNK ; >=, goto.
     LDA #$C0
-    STA **:$00A2
+    STA A2_UNK ; Set
     LDA #$20
-    STA **:$00A3
-    LDY #$80
-    STY 601_IRQ_INC_Y_FLAG
-    LDA 600_UNK
-    ASL A
-    TAY
-    LDA DATA_UNK_A,Y
-    STA 9E_UNK
-    LDA DATA_B_UNK,Y
-    STA 9F_UNK
-    INC 600_UNK
+    STA A3_UNK ; Set. ZP.
+    LDY #$80 ; Set flag.
+Y_TO_IRQ_DELAY_MOD_FLAG_AND_SET_UP_UNK: ; 06:0044, 0x00C044
+    STY 601_IRQ_FLAG_DELAY_MOD_+ ; Store flag.
+    LDA 600_UNK_INDEX ; Load
+    ASL A ; Shift.
+    TAY ; To Y index.
+    LDA DATA_UNK_A,Y ; Load data.
+    STA 9E_UNK ; Store.
+    LDA DATA_B_UNK,Y ; Load data.
+    STA 9F_UNK ; Store.
+    INC 600_UNK_INDEX ; ++
+CLEAR_UNK: ; 06:0059, 0x00C059
     LDA #$00
-    STA 43_PLAYER_UNK[2]
+    STA 43_PLAYER_UNK[2] ; Clear these.
     STA 45_UNK
-    JMP 06:0161
-    LDA LEVEL_SCREEN_ON
-    CMP #$07
-    BNE 06:00A1
-    JSR 06:0234
-    LDA 60C_UNK
+    JMP RTN_UNK ; Goto unk.
+ALT_RTN: ; 06:0062, 0x00C062
+    LDA LEVEL_SCREEN_ON ; Load screen.
+    CMP #$07 ; If _ #$07
+    BNE SCREEN_NOT_SEVEN ; !=, GOTO.
+    JSR RTN_UNK ; Adds stuff and sets up others.
+    LDA 60C_UNK_INDEX ; Load.
+    ASL A ; << 2, *4.
     ASL A
-    ASL A
-    TAY
-    LDA B4_ARR_UNK_NAMETABLE?[2]
-    CMP 06:01B8,Y
-    BCC 06:009E
-    LDA 60C_UNK
-    CMP #$04
-    BCS 06:008E
-    LDA 06:01BA,Y
-    STA B4_ARR_UNK_NAMETABLE?+1
+    TAY ; To Y index.
+    LDA NAMETABLE_FOCUS_VAL[2] ; Load
+    CMP DATA_UNK,Y ; If _ Val
+    BCC JMP_ELSEWHERE ; <, goto.
+    LDA 60C_UNK_INDEX ; Load
+    CMP #$04 ; If _ #$04
+    BCS SKIP_UNK ; >=, goto.
+    LDA DATA_FOCUS,Y ; Load from Y index.
+    STA NAMETABLE_FOCUS_VAL+1 ; Store to.
     LDA #$00
-    STA B1_SCROLL_X_COPY_IRQ_ZP+1
-    LDA 7C_UNK
-    AND #$80
-    STA 7C_UNK
-    LDA 06:01B9,Y
-    STA B4_ARR_UNK_NAMETABLE?[2]
+    STA B1_SCROLL_X_COPY_IRQ_ZP+1 ; Clear.
+    LDA 7C_UNK ; Load
+    AND #$80 ; Keep the top bit.
+    STA 7C_UNK ; Store back.
+SKIP_UNK: ; 06:008E, 0x00C08E
+    LDA DATA_UNK,Y ; Load data.
+    STA NAMETABLE_FOCUS_VAL[2] ; Store to focus.
     LDA #$00
-    STA B1_SCROLL_X_COPY_IRQ_ZP[2]
-    LDA 7B_UNK
-    AND #$80
-    STA 7B_UNK
-    RTS
-    JMP $80EA
-    LDX #$00
-    LDA 43_PLAYER_UNK[2],X
-    ORA 601_IRQ_INC_Y_FLAG
-    STA 43_PLAYER_UNK[2],X
-    LDA 47_TWO_PLAYERS_FLAG?
-    BEQ 06:00D0
-    LDA NUM_PLAYER_LIVES[2]
-    BMI 06:00B9
-    LDA NUM_PLAYER_LIVES+1
-    BMI 06:00D0
-    JSR $81EA
-    INX
-    LDA 43_PLAYER_UNK[2],X
-    ORA 601_IRQ_INC_Y_FLAG
-    STA 43_PLAYER_UNK[2],X
-    LDA NUM_PLAYER_LIVES[2]
-    BMI 06:00D0
-    JSR $81EA
-    DEX
-    LDA 43_PLAYER_UNK[2],X
-    CMP 45_UNK
-    BNE 06:00D0
-    INX
-    LDA 43_PLAYER_UNK[2],X
-    AND #$7F
-    BNE 06:00DD
-    INX
-    CPX #$02
-    BNE 06:00D0
-    BEQ 06:00EA
-    LDA 43_PLAYER_UNK[2],X
-    BMI 06:00E7
-    JSR $8221
-    JMP $80EA
-    JSR $82CC
-    LDA LEVEL_SCREEN_ON
-    ASL A
-    TAY
-    LDA $836F,Y
+    STA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Clear.
+    LDA 7B_UNK ; Load
+    AND #$80 ; Keep top bit.
+    STA 7B_UNK ; Store back.
+    RTS ; Leave.
+JMP_ELSEWHERE: ; 06:009E, 0x00C09E
+    JMP SKIP_UNK ; Goto.
+SCREEN_NOT_SEVEN: ; 06:00A1, 0x00C0A1
+    LDX #$00 ; Index.
+    LDA 43_PLAYER_UNK[2],X ; Load
+    ORA 601_IRQ_FLAG_DELAY_MOD_+ ; Combine with.
+    STA 43_PLAYER_UNK[2],X ; Store back.
+    LDA 47_TWO_PLAYERS_FLAG ; Load flag.
+    BEQ SINGLE_PLAYER_ONLY ; Not set, goto.
+    LDA NUM_PLAYER_LIVES[2] ; Load P1 Lives.
+    BMI P1_GAME_OVER_2P_GAME ; Not alive, but is 2 players.
+    LDA NUM_PLAYER_LIVES+1 ; Load P2 lives.
+    BMI SINGLE_PLAYER_ONLY ; Not alive, skip all.
+    JSR PLAYER_RTN_UNK
+P1_GAME_OVER_2P_GAME: ; 06:00B9, 0x00C0B9
+    INX ; Next index.
+    LDA 43_PLAYER_UNK[2],X ; Load from index.
+    ORA 601_IRQ_FLAG_DELAY_MOD_+ ; Set bits.
+    STA 43_PLAYER_UNK[2],X ; Store back.
+    LDA NUM_PLAYER_LIVES[2] ; Load P1 Lives.
+    BMI SINGLE_PLAYER_ONLY ; Game over.
+    JSR PLAYER_RTN_UNK ; Do..?
+    DEX ; Index--
+    LDA 43_PLAYER_UNK[2],X ; Load.
+    CMP 45_UNK ; If _ var
+    BNE SINGLE_PLAYER_ONLY ; !=, goto.
+    INX ; Index++
+SINGLE_PLAYER_ONLY: ; 06:00D0, 0x00C0D0
+    LDA 43_PLAYER_UNK[2],X ; Load val.
+    AND #$7F ; Keep bottom bits.
+    BNE ANY_SET_0x7F ; Any set, goto.
+    INX ; Index++
+    CPX #$02 ; If _ #$02
+    BNE SINGLE_PLAYER_ONLY ; !=, loop again.
+    BEQ SKIP_UNK ; Always taken.
+ANY_SET_0x7F: ; 06:00DD, 0x00C0DD
+    LDA 43_PLAYER_UNK[2],X ; Load val.
+    BMI ANY_SET_WITH_TOP_FLAG ; If top bit set, goto.
+    JSR 06:0221 ; Do..?
+    JMP SKIP_UNK ; Goto.
+ANY_SET_WITH_TOP_FLAG: ; 06:00E7, 0x00C0E7
+    JSR RTN_UNK
+SKIP_UNK: ; 06:00EA, 0x00C0EA
+    LDA LEVEL_SCREEN_ON ; Load screen.
+    ASL A ; << 1, *2
+    TAY ; To Y index.
+    LDA DATA_PTR_L,Y
     STA TMP_00
-    LDA $8370,Y
+    LDA DATA_PTR_H,Y
     STA TMP_01
-    LDA **:$061A
+    LDA 61A_UNK_INDEX ; Load
+    ASL A ; << 2, *4
     ASL A
-    ASL A
-    TAY
-    LDA [TMP_00],Y
-    CMP #$FF
-    BEQ 06:0161
-    CMP B4_ARR_UNK_NAMETABLE?[2]
-    BNE 06:0161
-    INY
-    LDA B1_SCROLL_X_COPY_IRQ_ZP[2]
-    CMP [TMP_00],Y
-    BCC 06:0161
-    INY
-    LDA [TMP_00],Y
-    BEQ 06:014F
-    CMP #$02
-    BEQ 06:012A
-    BCC 06:0146
-    CMP #$04
-    BEQ 06:012A
-    INY
+    TAY ; To Y index.
+    LDA [TMP_00],Y ; Load from pointer setup.
+    CMP #$FF ; If loaded _ #$FF
+    BEQ RTN_UNK ; ==, goto.
+    CMP NAMETABLE_FOCUS_VAL[2] ; If _ var
+    BNE RTN_UNK ; !=, goto.
+    INY ; Stream++
+    LDA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load
+    CMP [TMP_00],Y ; If fp_data _ var
+    BCC RTN_UNK ; <, goto.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load value.
+    BEQ SET_BG_GFX_BANKS ; == 0, goto.
+    CMP #$02 ; If _ #$02
+    BEQ FP_DATA_0x02 ; ==, goto.
+    BCC FP_DATA_0x01 ; <, goto. == 0x01.
+    CMP #$04 ; If _ #$04
+    BEQ FP_DATA_0x02 ; ==, goto.
+    INY ; Stream++
     LDA #$00
-    STA 7C_UNK
+    STA 7C_UNK ; Clear.
     LDA #$01
-    STA FLAG_IRQ_65F
-    BNE 06:015E
-    INY
-    LDA [TMP_00],Y
-    ASL A
-    TAY
-    LDA $836B,Y
+    STA FLAG_IRQ_65F_INDEX_UNK ; Set to 1.
+    BNE END_RTN_INC_61A ; Always taken.
+FP_DATA_0x02: ; 06:012A, 0x00C12A
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load data.
+    ASL A ; << 1, *2.
+    TAY ; To Y index.
+    LDA DATA_POS_A,Y ; Move in to place.
     STA 9A_UNK
-    LDA $836C,Y
+    LDA DATA_POS_B,Y
     STA 9B_UNK
-    LDA $836D,Y
+    LDA DATA_POS_C,Y
     STA 76_UNK
-    LDA $836E,Y
+    LDA DATA_POS_D,Y
     STA 77_UNK
-    JMP $815E
-    INY
-    LDA [TMP_00],Y
-    JSR LEVEL_RELATED_DATA_A_PASSED?
-    JMP $815E
-    INY
-    LDA [TMP_00],Y
-    ASL A
-    TAY
-    LDA $8357,Y
-    STA IRQ_BANK_VALUES[2]
-    LDA $8358,Y
-    STA IRQ_BANK_VALUES+1
-    INC **:$061A
-    LDA 601_IRQ_INC_Y_FLAG
-    BPL 06:017A
-    LDA DF_UNK
-    BNE 06:017A
-    LDA **:$00A5
-    AND #$3F
-    CMP #$20
-    BCC 06:017A
-    AND #$1F
-    STA **:$00A5
+    JMP END_RTN_INC_61A ; End of routine, next data.
+FP_DATA_0x01: ; 06:0146, 0x00C146
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load data.
+    JSR LEVEL_RELATED_DATA_A_PASSED? ; Do rtn with.
+    JMP END_RTN_INC_61A ; Goto.
+SET_BG_GFX_BANKS: ; 06:014F, 0x00C14F
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load data.
+    ASL A ; << 1, *2
+    TAY ; To Y index.
+    LDA DATA_UNK_A,Y ; Load data.
+    STA IRQ_BANK_VALUES_R[0/1][2] ; Store to.
+    LDA DATA_UNK_B,Y ; Load data.
+    STA IRQ_BANK_VALUES_R[0/1]+1 ; Store to.
+END_RTN_INC_61A: ; 06:015E, 0x00C15E
+    INC 61A_UNK_INDEX ; Next data index.
+RTN_UNK: ; 06:0161, 0x00C161
+    LDA 601_IRQ_FLAG_DELAY_MOD_+ ; Load
+    BPL PLAYER?_UNK ; If positive, goto.
+    LDA DF_UNK ; Load
+    BNE PLAYER?_UNK ; != 0, goto.
+    LDA A5_UNK ; Load
+    AND #$3F ; Keep 0011.1111
+    CMP #$20 ; If _ #$20
+    BCC PLAYER?_UNK ; <, goto.
+    AND #$1F ; Keep 0001.1111
+    STA A5_UNK ; Store here.
     LDA #$01
-    STA DF_UNK
-    LDY #$00
-    LDA PLAYER?_UNK[2],Y
-    BNE 06:01B2
-    LDA 7B_UNK,Y
-    BPL 06:01B2
-    LDA 7B_UNK,Y
-    AND #$3F
-    CMP #$20
-    BCC 06:01B2
-    LDA 7B_UNK,Y
-    AND #$9F
-    STA 7B_UNK,Y
-    LDA #$02
-    ORA 601_IRQ_INC_Y_FLAG
-    STA PLAYER?_UNK[2],Y
-    LDA IRQ_D8_UNK,Y
-    ASL A
-    TAX
-    LDA $81D8,X
-    STA 9D_UNK
-    STA BD_PLAYER?_UNK[2],Y
-    LDA $81D9,X
-    STA **:$00C0,Y
-    INY
-    CPY #$03
-    BNE 06:017C
+    STA DF_UNK ; Set to 1.
+PLAYER?_UNK: ; 06:017A, 0x00C17A
+    LDY #$00 ; Reset index.
+    LDA PLAYER?_UNK[2],Y ; Load val.
+    BNE SKIP_UNK ; != 0, goto.
+    LDA 7B_UNK,Y ; Load val.
+    BPL SKIP_UNK ; If positive, goto.
+    LDA 7B_UNK,Y ; Load val.
+    AND #$3F ; Keep 0011.1111
+    CMP #$20 ; If _ #$20
+    BCC SKIP_UNK ; <, goto.
+    LDA 7B_UNK,Y ; Load val.
+    AND #$9F ; Keep 1001.1111
+    STA 7B_UNK,Y ; Store back.
+    LDA #$02 ; Load
+    ORA 601_IRQ_FLAG_DELAY_MOD_+ ; Or with.
+    STA PLAYER?_UNK[2],Y ; Store to.
+    LDA IRQ_D8_PAIR_UNK,Y ; Load
+    ASL A ; << 1, *2
+    TAX ; To X index.
+    LDA PLAYER?_DATA_UNK_A,X ; Load
+    STA 9D_UNK ; Store to.
+    STA BD_PLAYER?_UNK[2],Y ; Store to.
+    LDA PLAYER?_DATA_UNK_B,X ; Load
+    STA C0_UNK,Y ; Store to.
+SKIP_UNK: ; 06:01B2, 0x00C1B2
+    INY ; Index++
+    CPY #$03 ; If _ #$03
+    BNE 06:017C ; !=, goto.
+RTS: ; 06:01B7, 0x00C1B7
     RTS
+DATA_UNK: ; 06:01B8, 0x00C1B8
     .db 08
+DATA_UNK: ; 06:01B9, 0x00C1B9
     .db 04
+DATA_FOCUS: ; 06:01BA, 0x00C1BA
     .db 02
     .db 00
     .db 10
@@ -243,7 +266,9 @@ DATA_B_UNK: ; 06:01D5, 0x00C1D5
     .db 7C
     .db 09
     .db 80
+PLAYER?_DATA_UNK_A: ; 06:01D8, 0x00C1D8
     .db 00
+PLAYER?_DATA_UNK_B: ; 06:01D9, 0x00C1D9
     .db 06
     .db 00
     .db 01
@@ -261,359 +286,221 @@ DATA_B_UNK: ; 06:01D5, 0x00C1D5
     .db 05
     .db 05
     .db 06
-    .db A0
-    .db 00
-    .db E0
-    .db 00
-    .db D0
-    .db 02
-    .db A0
-    .db 02
-    .db B5
-    .db 43
-    .db F0
-    .db 0D
-    .db 30
-    .db 0C
-    .db B9
-    .db 7E
-    .db 04
-    .db C9
-    .db 18
-    .db B0
-    .db 04
-    .db A9
-    .db 00
-    .db 95
-    .db 43
-    .db 60
-    .db C0
-    .db 00
-    .db D0
-    .db 06
-    .db A5
-    .db 60
-    .db D0
-    .db F3
-    .db F0
-    .db 04
-    .db A5
-    .db 61
-    .db D0
-    .db ED
-    .db B9
-    .db 7E
-    .db 04
-    .db C9
-    .db 18
-    .db 90
-    .db E6
-    .db B9
-    .db 6C
-    .db 04
-    .db C9
-    .db 58
-    .db 90
-    .db DF
-    .db 60
-    .db A9
-    .db F0
-    .db 85
-    .db B7
-    .db 4A
-    .db 85
-    .db B8
-    .db A9
-    .db 00
-    .db 85
-    .db BA
-    .db 85
-    .db BB
-    .db 85
-    .db C3
-    .db 85
-    .db C4
-    .db F0
-    .db 3B
-    .db A9
-    .db 04
-    .db 85
-    .db BA
-    .db AD
-    .db 0C
-    .db 06
-    .db C9
-    .db 06
-    .db F0
-    .db 24
-    .db C9
-    .db 05
-    .db D0
-    .db 1C
-    .db A5
-    .db B8
-    .db 38
-    .db E9
-    .db 04
-    .db 85
-    .db B8
-    .db A5
-    .db BB
-    .db E9
-    .db 00
-    .db 85
-    .db BB
-    .db D0
-    .db 15
-    .db A9
-    .db 06
-    .db 8D
-    .db 0C
-    .db 06
-    .db A9
-    .db 00
-    .db 85
-    .db BB
-    .db 85
-    .db B8
-    .db F0
-    .db 04
-    .db A9
-    .db 02
-    .db 85
-    .db BB
-    .db A9
-    .db 00
-    .db 85
-    .db B8
-    .db A9
-    .db 00
-    .db 85
-    .db C4
-    .db 85
-    .db C3
-    .db 85
-    .db B7
-    .db A2
-    .db 00
-    .db B5
-    .db 7B
-    .db 10
-    .db 1E
-    .db B5
-    .db AE
-    .db 18
-    .db 75
-    .db B7
-    .db 95
-    .db AE
-    .db 90
-    .db 02
-    .db F6
-    .db 7B
-    .db B5
-    .db B1
-    .db 75
-    .db BA
-    .db 95
-    .db B1
-    .db B5
-    .db B4
-    .db 75
-    .db C3
-    .db 95
-    .db B4
-    .db B5
-    .db 7B
-    .db 18
-    .db 75
-    .db BA
-    .db 95
-    .db 7B
-    .db E8
-    .db E0
-    .db 02
-    .db D0
-    .db D9
-    .db 60
-    .db 02
-    .db 04
-    .db 02
-    .db 04
-    .db 02
-    .db 04
-    .db 02
-    .db 04
-    .db 02
-    .db 04
-    .db 01
-    .db 04
-    .db 00
-    .db 00
-    .db 04
-    .db 00
-INIT_MANY?: ; 06:02A9, 0x00C2A9
-    LDA 7D_UNK
-    BPL RTS
-    LDA B0_UNK
-    CLC
-    ADC B9_UNK
-    STA B0_UNK
-    BCC DONT_MOD_HIGH
-    INC 7D_UNK ; Mod high.
-DONT_MOD_HIGH: ; 06:02B8, 0x00C2B8
-    LDA B3_UNK
-    ADC BC_UNK
-    STA B3_UNK
-    LDA B6_UNK
-    ADC C5_UNK
-    STA B6_UNK
-    LDA 7D_UNK
-    CLC
-    ADC BC_UNK
-    STA 7D_UNK
-RTS: ; 06:02CB, 0x00C2CB
+PLAYER_RTN_UNK: ; 06:01EA, 0x00C1EA
+    LDY #$00
+    CPX #$00
+    BNE 06:01F2
+    LDY #$02
+    LDA 43_PLAYER_UNK[2],X
+    BEQ 06:0203
+    BMI 06:0204
+    LDA OBJ_POS_X[18],Y
+    CMP #$18
+    BCS 06:0203
+    LDA #$00
+    STA 43_PLAYER_UNK[2],X
     RTS
-    .db A9
-    .db C0
-    .db 85
-    .db B7
-    .db 20
-    .db 6F
-    .db 82
-    .db A9
-    .db C0
-    .db 85
-    .db 83
-    .db A5
-    .db 80
-    .db 18
-    .db 65
-    .db 83
-    .db 85
-    .db 80
-    .db 90
-    .db 76
-    .db A5
-    .db 58
-    .db C9
-    .db B8
-    .db F0
-    .db 1D
-    .db E6
-    .db 58
-    .db A5
-    .db 58
-    .db C9
-    .db B8
-    .db D0
-    .db 15
-    .db A9
-    .db 20
-    .db 85
-    .db 49
-    .db A9
-    .db A0
-    .db 85
-    .db 48
-    .db A5
-    .db 81
-    .db 18
-    .db 69
-    .db 08
-    .db 38
-    .db E9
-    .db 05
-    .db 85
-    .db 81
-    .db 4C
-    .db 0E
-    .db 83
-    .db A5
-    .db 81
-    .db 29
-    .db 07
-    .db D0
-    .db 0F
-    .db AD
-    .db 08
-    .db 06
-    .db D0
-    .db 0F
-    .db A9
+    CPY #$00
+    BNE 06:020E
+    LDA 60_PLAYER_UNK[1]
+    BNE 06:01FF
+    BEQ 06:0212
+    LDA **:$0061
+    BNE 06:01FF
+    LDA OBJ_POS_X[18],Y
+    CMP #$18
+    BCC 06:01FF
+    LDA OBJ_POS_Y[18],Y
+    CMP #$58
+    BCC 06:01FF
+    RTS
+    LDA #$F0
+    STA B7_UNK_SPRITES? ; Set to 0xF0
+    LSR A ; >> 1, /2
+    STA B8_UNK ; Store to.
+    LDA #$00
+    STA BA_UNK_SPRITES? ; Clear these.
+    STA BB_UNK
+    STA C3_UNK
+    STA C4_UNK
+    BEQ RTN_UNK_INDEXED ; Always taken.
+RTN_UNK: ; 06:0234, 0x00C234
+    LDA #$04 ; Load
+    STA BA_UNK_SPRITES? ; Store.
+    LDA 60C_UNK_INDEX ; Load
+    CMP #$06 ; If _ #$06
+    BEQ CLEAR_UNK ; ==, goto. Unk val.
+    CMP #$05 ; If _ #$05
+    BNE SET_UNK_TWO ; !=, goto.
+    LDA B8_UNK ; Load. 60C == 5 here.
+    SEC ; Prep sub.
+    SBC #$04 ; -= 4
+    STA B8_UNK ; Store back.
+    LDA BB_UNK ; Load
+    SBC #$00 ; Carry subtract.
+    STA BB_UNK ; Store back.
+    BNE PAST_UNK ; If not zero, goto.
+    LDA #$06
+    STA 60C_UNK_INDEX ; Set
+    LDA #$00
+    STA BB_UNK ; Clear both.
+    STA B8_UNK
+    BEQ CLEAR_UNK ; Always taken. Mistake. Branch around clear better.
+SET_UNK_TWO: ; 06:025F, 0x00C25F
+    LDA #$02
+    STA BB_UNK ; Set var.
+CLEAR_UNK: ; 06:0263, 0x00C263
+    LDA #$00
+    STA B8_UNK ; Clear.
+PAST_UNK: ; 06:0267, 0x00C267
+    LDA #$00
+    STA C4_UNK ; Clear all these.
+    STA C3_UNK
+    STA B7_UNK_SPRITES?
+RTN_UNK_INDEXED: ; 06:026F, 0x00C26F
+    LDX #$00 ; Index.
+LOOP_RTN_UNK: ; 06:0271, 0x00C271
+    LDA 7B_UNK,X ; Load.
+    BPL NEXT_INDEX_CHECK ; If positive, skip.
+    LDA AE_ARR_UNK[2],X ; Load val.
+    CLC ; Prep add.
+    ADC B7_UNK_SPRITES?,X ; Add with val.
+    STA AE_ARR_UNK[2],X ; Store back.
+    BCC NO_OVERFLOW ; No overflow, goto.
+    INC 7B_UNK,X ; Inc high byte.
+NO_OVERFLOW: ; 06:0280, 0x00C280
+    LDA B1_SCROLL_X_COPY_IRQ_ZP[2],X ; Load
+    ADC BA_UNK_SPRITES?,X ; Add with.
+    STA B1_SCROLL_X_COPY_IRQ_ZP[2],X ; Store back.
+    LDA NAMETABLE_FOCUS_VAL[2],X ; Load
+    ADC C3_UNK,X ; Add with.
+    STA NAMETABLE_FOCUS_VAL[2],X ; Store back.
+    LDA 7B_UNK,X ; Load
+    CLC ; Prep add.
+    ADC BA_UNK_SPRITES?,X ; Add with.
+    STA 7B_UNK,X ; Store back.
+NEXT_INDEX_CHECK: ; 06:0293, 0x00C293
+    INX ; Next index.
+    CPX #$02 ; If _ #$02.
+    BNE LOOP_RTN_UNK ; !=, goto.
+    RTS
     .db 02
-    .db 8D
+    .db 04
     .db 02
-    .db 06
-    .db 8D
-    .db 08
-    .db 06
-    .db D0
-    .db 05
-    .db A9
-    .db 00
-    .db 8D
-    .db 08
-    .db 06
-    .db E6
-    .db A5
-    .db E6
-    .db 81
-    .db A5
-    .db 81
-    .db 29
-    .db 07
-    .db F0
-    .db 06
-    .db A9
-    .db 00
-    .db 85
-    .db 4A
-    .db F0
-    .db 29
-    .db A5
-    .db 4A
-    .db D0
-    .db 25
-    .db A9
+    .db 04
+    .db 02
+    .db 04
+    .db 02
+    .db 04
+    .db 02
+    .db 04
     .db 01
-    .db 85
-    .db 4A
-    .db A5
-    .db 48
-    .db 18
-    .db 69
-    .db 20
-    .db 85
-    .db 48
-    .db A5
-    .db 49
-    .db 69
+    .db 04
     .db 00
-    .db 85
-    .db 49
-    .db A5
-    .db 49
-    .db C9
-    .db 20
-    .db D0
-    .db 0E
-    .db A5
-    .db 48
-    .db C9
-    .db C0
-    .db D0
-    .db 08
-    .db A9
     .db 00
-    .db 85
-    .db 58
-    .db 85
-    .db 81
-    .db E6
-    .db 82
-    .db 60
+    .db 04
+    .db 00
+ADD_NAMETABLE_THINGS?: ; 06:02A9, 0x00C2A9
+    LDA IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Load IRQ var.
+    BPL RTS ; If positive, leave.
+    LDA B0_UNK ; Load
+    CLC ; Prep add.
+    ADC B9_UNK ; Add with.
+    STA B0_UNK ; Store back.
+    BCC DONT_MOD_HIGH ; No overflow, don't INC.
+    INC IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Mod high.
+DONT_MOD_HIGH: ; 06:02B8, 0x00C2B8
+    LDA B3_SCROLL_X_IRQ_J ; Load
+    ADC BC_UNK ; Add with. TODO: Why no carry clear?
+    STA B3_SCROLL_X_IRQ_J ; Store back.
+    LDA B6_NAMETABLE_FOCUS_UNK ; Load
+    ADC C5_UNK ; Add with.
+    STA B6_NAMETABLE_FOCUS_UNK ; Store back.
+    LDA IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Load 
+    CLC ; Prep add.
+    ADC BC_UNK ; Add with.
+    STA IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Store back.
+RTS: ; 06:02CB, 0x00C2CB
+    RTS ; Leave.
+RTN_UNK: ; 06:02CC, 0x00C2CC
+    LDA #$C0
+    STA B7_UNK_SPRITES? ; Set to.
+    JSR RTN_UNK_INDEXED ; Do.
+    LDA #$C0 ; Load
+    STA 83_UNK ; Set
+    LDA 80_UNK ; Load
+    CLC
+    ADC 83_UNK ; Add with.
+    STA 80_UNK ; Store back.
+    BCC RTS ; No overflow leave.
+    LDA 58_IRQ_UNK ; Load
+    CMP #$B8 ; If _ #$B8
+    BEQ SKIP_UNK ; ==, goto.
+    INC 58_IRQ_UNK ; ++
+    LDA 58_IRQ_UNK ; Load
+    CMP #$B8 ; If _ #$B8
+    BNE SKIP_UNK ; !=, goto.
+    LDA #$20
+    STA PPU_ADDR_IRQ+1 ; Set.
+    LDA #$A0
+    STA PPU_ADDR_IRQ[2] ; Set.
+    LDA 81_UNK ; Load
+    CLC ; Prep add.
+    ADC #$08 ; += 8.
+    SEC ; Prep sub.
+    SBC #$05 ; -= 5.
+    STA 81_UNK ; Store back.
+    JMP SET_602+608_TO_0x02 ; Goto.
+SKIP_UNK: ; 06:0303, 0x00C303
+    LDA 81_UNK ; Load
+    AND #$07 ; Keep bottom bits 0000.0111
+    BNE CLEAR_608 ; Any set, goto.
+    LDA 608_UNK ; Load
+    BNE 608_HAS_VAL ; If set, goto.
+SET_602+608_TO_0x02: ; 06:030E, 0x00C30E
+    LDA #$02
+    STA 602_COUNTER?_UNK ; Set vals.
+    STA 608_UNK
+    BNE 608_HAS_VAL ; Always taken.
+CLEAR_608: ; 06:0318, 0x00C318
+    LDA #$00
+    STA 608_UNK ; Clear.
+608_HAS_VAL: ; 06:031D, 0x00C31D
+    INC A5_UNK ; ++
+    INC 81_UNK ; ++
+    LDA 81_UNK ; Load val
+    AND #$07 ; Keep bits 0000.0111
+    BEQ BITS_NOT_SET ; None set, goto.
+    LDA #$00
+    STA 4A_UNK ; Clear.
+    BEQ RTS ; Always taken, leave.
+BITS_NOT_SET: ; 06:032D, 0x00C32D
+    LDA 4A_UNK ; Load var.
+    BNE RTS ; != 0, leave.
+    LDA #$01
+    STA 4A_UNK ; Set to 1, unk why.
+    LDA PPU_ADDR_IRQ[2] ; Load val
+    CLC ; Prep add.
+    ADC #$20 ; += 0x20
+    STA PPU_ADDR_IRQ[2] ; Store back.
+    LDA PPU_ADDR_IRQ+1 ; Load
+    ADC #$00 ; Roll high byte if needed.
+    STA PPU_ADDR_IRQ+1 ; Store back.
+    LDA PPU_ADDR_IRQ+1 ; Load val.
+    CMP #$20 ; If _ #$20
+    BNE RTS ; !=, goto.
+    LDA PPU_ADDR_IRQ[2] ; Load
+    CMP #$C0 ; If _ #$C0
+    BNE RTS ; !=, goto.
+    LDA #$00
+    STA 58_IRQ_UNK ; Clear.
+    STA 81_UNK ; Clear.
+    INC 82_UNK ; Inc.
+RTS: ; 06:0356, 0x00C356
+    RTS
+DATA_UNK_A: ; 06:0357, 0x00C357
     .db 14
+DATA_UNK_B: ; 06:0358, 0x00C358
     .db 16
     .db 18
     .db 1A
@@ -633,11 +520,17 @@ RTS: ; 06:02CB, 0x00C2CB
     .db 92
     .db 04
     .db 06
+DATA_POS_A: ; 06:036B, 0x00C36B
     .db 72
+DATA_POS_B: ; 06:036C, 0x00C36C
     .db AF
+DATA_POS_C: ; 06:036D, 0x00C36D
     .db CB
+DATA_POS_D: ; 06:036E, 0x00C36E
     .db AE
+DATA_PTR_L: ; 06:036F, 0x00C36F
     .db 87
+DATA_PTR_H: ; 06:0370, 0x00C370
     .db 83
     .db 87
     .db 83
@@ -775,248 +668,266 @@ RTN_LEVEL_GROUP_7_UNK_C: ; 06:03F3, 0x00C3F3
     RTS ; RTS if nonzero.
 VAL_ZERO: ; 06:03F8, 0x00C3F8
     LDA #$00
-    STA 98_UNK
-    LDY 98_UNK
-    LDA PLAYER?_UNK[2],Y
-    AND #$7F
-    BEQ 06:0415
-    CMP #$02
-    BEQ 06:0418
+    STA 98_UNK ; Clear, loop counter.
+LOOP_98_VAL: ; 06:03FC, 0x00C3FC
+    LDY 98_UNK ; Y from.
+    LDA PLAYER?_UNK[2],Y ; Load
+    AND #$7F ; Keep 0111.1111
+    BEQ JMP_98_LOOP_OR_RTS ; None set, goto.
+    CMP #$02 ; If _ #$02
+    BEQ ALT_RTN ; ==, goto.
     LDA #$00
-    STA PLAYER?_UNK[2],Y
+    STA PLAYER?_UNK[2],Y ; Clear these.
     STA 9D_UNK
     STA BD_PLAYER?_UNK[2],Y
     STA DF_UNK
-    JMP $84C4
-    LDX #$01
-    LDA B1_SCROLL_X_COPY_IRQ_ZP[2],Y
+JMP_98_LOOP_OR_RTS: ; 06:0415, 0x00C415
+    JMP 98_LOOP_OR_RTS ; Next.
+ALT_RTN: ; 06:0418, 0x00C418
+    LDX #$01 ; Val?
+    LDA B1_SCROLL_X_COPY_IRQ_ZP[2],Y ; Load
+    LSR A ; >> 5, /32
     LSR A
     LSR A
     LSR A
     LSR A
-    LSR A
-    CLC
-    ADC #$01
-    CMP #$08
-    BCC 06:042A
-    INX
-    AND #$07
-    STA 9C_UNK
-    STX 97_COPY_607
-    LDA PLAYER?_UNK[2],Y
-    BPL 06:0484
-    LDA DF_UNK
-    BEQ 06:0415
-    LDX #$00
-    LDA 81_UNK
-    LSR A
-    LSR A
-    LSR A
+    CLC ; Prep add
+    ADC #$01 ; += 1
+    CMP #$08 ; If _ #$08
+    BCC SCROLL_LT_8 ; <, goto.
+    INX ; Next index.
+SCROLL_LT_8: ; 06:042A, 0x00C42A
+    AND #$07 ; Keep 0000.0111
+    STA 9C_UNK ; Store to.
+    STX 97_COPY_607 ; X to. 1 or 2.
+    LDA PLAYER?_UNK[2],Y ; Load
+    BPL VAL_POSITIVE ; If positive, goto.
+    LDA DF_UNK ; Load
+    BEQ JMP_98_LOOP_OR_RTS ; == 0, goto.
+    LDX #$00 ; Val?
+    LDA 81_UNK ; Load
+    LSR A ; >> 5, /32
     LSR A
     LSR A
-    CLC
-    ADC BD_PLAYER?_UNK[2]
-    CLC
-    ADC #$01
+    LSR A
+    LSR A
+    CLC ; Prep add.
+    ADC BD_PLAYER?_UNK[2] ; += var
+    CLC ; Prep add.
+    ADC #$01 ; += 1
+    STA 9D_UNK ; Store to.
+LOOP_SUB: ; 06:044A, 0x00C44A
+    SEC ; Prep sub.
+    SBC #$06 ; -= 6
+    BCC SUB_LT_ZERO ; Result < 0, goto.
+    INX ; X++
+    CMP #$06 ; If _ #$06
+    BCS LOOP_SUB ; >=, goto.
     STA 9D_UNK
-    SEC
-    SBC #$06
-    BCC 06:0456
-    INX
-    CMP #$06
-    BCS 06:044A
-    STA 9D_UNK
-    STX TMP_00
+SUB_LT_ZERO: ; 06:0456, 0x00C456
+    STX TMP_00 ; Store subs done.
     LDA #$00
-    STA TMP_01
-    LDA **:$0082
-    CLC
-    ADC TMP_00
-    BEQ 06:046E
-    TAX
-    LDA TMP_01
-    CLC
-    ADC 99_UNK
-    STA TMP_01
-    DEX
-    BNE 06:0464
-    LDA B4_ARR_UNK_NAMETABLE?[2]
-    CLC
-    ADC 97_COPY_607
-    PHA
-    AND #$01
-    STA 607_UNK
-    PLA
-    CLC
-    ADC #$03
-    CLC
-    ADC TMP_01
-    TAY
-    JMP $849A
-    LDA BD_PLAYER?_UNK[2],Y
-    STA 9D_UNK
-    LDA B4_ARR_UNK_NAMETABLE?[2],Y
-    CLC
-    ADC 97_COPY_607
-    PHA
-    AND #$01
-    STA 607_UNK
-    PLA
-    CLC
-    ADC #$03
-    TAY
-    LDA [72_STREAM_PTR_UNK[2]],Y
-    ASL A
-    TAX
-    LDA DATA_UNK_A,X
-    STA 74_STREAM_UNK
-    LDA DATA_UNK_B,X
-    STA 75_UNK
-    JSR RTN_BG?
-    LDY 98_UNK
-    LDA BD_PLAYER?_UNK[2],Y
-    CLC
-    ADC #$01
-    STA BD_PLAYER?_UNK[2],Y
-    CMP **:$00C0,Y
-    BNE 06:04CF
-    LDY 98_UNK
-    LDA #$01
-    STA PLAYER?_UNK[2],Y
-    BNE 06:04CF
-    INC 98_UNK
-    LDA 98_UNK
-    CMP #$03
-    BEQ 06:04CF
-    JMP $83FC
-    RTS
+    STA TMP_01 ; Clear.
+    LDA 82_UNK ; Load
+    CLC ; Prep add.
+    ADC TMP_00 ; += var
+    BEQ RESULT_EQ_ZERO ; == 0, goto.
+    TAX ; Result to X index.
+LOOP_ADD: ; 06:0464, 0x00C464
+    LDA TMP_01 ; Load
+    CLC ; Prep add.
+    ADC 99_UNK ; += var
+    STA TMP_01 ; Store back.
+    DEX ; X--
+    BNE LOOP_ADD ; != 0, keep adding.
+RESULT_EQ_ZERO: ; 06:046E, 0x00C46E
+    LDA NAMETABLE_FOCUS_VAL[2] ; Load.
+    CLC ; Prep add.
+    ADC 97_COPY_607 ; += var.
+    PHA ; Save to stack.
+    AND #$01 ; Keep 0000.0001
+    STA 607_UNK ; Store to.
+    PLA ; Pull saved.
+    CLC ; Prep add.
+    ADC #$03 ; += 3
+    CLC ; Prep add.
+    ADC TMP_01 ; += var.
+    TAY ; To Y. Stream index.
+    JMP LOAD_STREAM ; Goto using Y as index.
+VAL_POSITIVE: ; 06:0484, 0x00C484
+    LDA BD_PLAYER?_UNK[2],Y ; Load
+    STA 9D_UNK ; Store to.
+    LDA NAMETABLE_FOCUS_VAL[2],Y ; Load
+    CLC ; Prep add.
+    ADC 97_COPY_607 ; += var
+    PHA ; Save val.
+    AND #$01 ; Keep 0000.0001
+    STA 607_UNK ; Store to.
+    PLA ; Pull val.
+    CLC ; Prep add.
+    ADC #$03 ; += 3
+    TAY ; To Y. Stream index.
+LOAD_STREAM: ; 06:049A, 0x00C49A
+    LDA [72_STREAM_PTR_UNK[2]],Y ; Load from stream.
+    ASL A ; << 1, *2.
+    TAX ; To X index.
+    LDA DATA_UNK_A,X ; Load data.
+    STA 74_STREAM_UNK_A ; Store to.
+    LDA DATA_UNK_B,X ; Load data.
+    STA 75_STREAM_UNK_B ; Store to.
+    JSR RTN_BG? ; Do routine.
+    LDY 98_UNK ; Load
+    LDA BD_PLAYER?_UNK[2],Y ; A from.
+    CLC ; Prep add.
+    ADC #$01 ; += 1
+    STA BD_PLAYER?_UNK[2],Y ; Store back.
+    CMP C0_UNK,Y ; If _ var
+    BNE RTS ; !=, goto.
+    LDY 98_UNK ; Y from. Not needed?
+    LDA #$01 ; Val.
+    STA PLAYER?_UNK[2],Y ; Store to.
+    BNE RTS ; Always taken, leave.
+98_LOOP_OR_RTS: ; 06:04C4, 0x00C4C4
+    INC 98_UNK ; ++
+    LDA 98_UNK ; Load
+    CMP #$03 ; If _ #$03
+    BEQ RTS ; ==, goto.
+    JMP LOOP_98_VAL ; Loop.
+RTS: ; 06:04CF, 0x00C4CF
+    RTS ; Leave.
 RTN_LEVEL_GROUP_6_UNK_B: ; 06:04D0, 0x00C4D0
     LDA PPU_UPDATE_BUF_INDEX ; Test index.
     BNE RTS ; Nonzero, goto.
-    LDY 602_UNK ; Y from
+    LDY 602_COUNTER?_UNK ; Y from
     DEY ; Y--
     BMI RTS ; If underflow, RTS.
-    BNE PART_B ; Has value, goto.
+    BNE VAL_COUNTDOWN_VALID ; Has value, goto.
     LDA #$00
-    STA 602_UNK ; Clear these.
+    STA 602_COUNTER?_UNK ; Clear these.
     STA 9D_UNK
 RTS: ; 06:04E3, 0x00C4E3
     RTS
-PART_B: ; 06:04E4, 0x00C4E4
-    LDA **:$0609
-    BNE 06:0535
+VAL_COUNTDOWN_VALID: ; 06:04E4, 0x00C4E4
+    LDA 609_UNK ; Load
+    BNE 06:0535 ; != 0, goto.
     LDA #$28
-    STA **:$0609
+    STA 609_UNK ; Set.
     LDA #$00
-    STA **:$0635
-    LDA B1_SCROLL_X_COPY_IRQ_ZP[2]
-    CLC
-    ADC #$08
-    STA TMP_00
-    LDA B4_ARR_UNK_NAMETABLE?[2]
-    ADC #$00
-    STA TMP_01
-    LDA TMP_00
+    STA 635_UNK_INDEX? ; Set.
+    LDA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load
+    CLC ; Prep add.
+    ADC #$08 ; += 8, goto.
+    STA TMP_00 ; Store to.
+    LDA NAMETABLE_FOCUS_VAL[2] ; Load
+    ADC #$00 ; Roll overflow.
+    STA TMP_01 ; Store to.
+    LDA TMP_00 ; Load
+    LSR A ; >> 3, /8
     LSR A
     LSR A
+    STA 603_unk ; Store to.
+    LSR A ; >> 2, /4, /32 total.
     LSR A
-    STA **:$0603
-    LSR A
-    LSR A
-    STA 9C_UNK
-    LDA 81_UNK
-    SEC
-    SBC #$00
-    LSR A
-    LSR A
-    LSR A
-    STA **:$0604
+    STA 9C_UNK ; Store to.
+    LDA 81_UNK ; Load
+    SEC ; Prep sub.
+    SBC #$00 ; Subtract nothing? lol.
+    LSR A ; >> 3, /8
     LSR A
     LSR A
-    STA 9D_UNK
-    LDX **:$0082
-    LDA #$00
-    CLC
-    ADC 99_UNK
-    DEX
-    BPL 06:051F
-    CLC
-    ADC TMP_01
-    CLC
-    ADC #$03
-    STA **:$0605
-    LDA TMP_01
-    AND #$01
-    STA 607_UNK
-    LDA PPU_ADDR_IRQ[2]
-    AND #$80
-    STA TMP_06
-    LDA PPU_ADDR_IRQ+1
-    AND #$03
-    ASL TMP_06
+    STA 604_UNK ; Store to.
+    LSR A ; >> 2, /4, /32 total.
+    LSR A
+    STA 9D_UNK ; Store to.
+    LDX 82_UNK ; X from.
+    LDA #$00 ; Clear A.
+LOOP_X+1_TIMES: ; 06:051F, 0x00C51F
+    CLC ; Prep add.
+    ADC 99_UNK ; Add.
+    DEX ; X--
+    BPL LOOP_X+1_TIMES ; Loop for each positive X val.
+    CLC ; Prep add.
+    ADC TMP_01 ; += val.
+    CLC ; Prep add.
+    ADC #$03 ; += val.
+    STA 605_UNK ; Store to.
+    LDA TMP_01 ; Load
+    AND #$01 ; Keep 0000.0001
+    STA 607_UNK ; Store to.
+    LDA PPU_ADDR_IRQ[2] ; Load
+    AND #$80 ; Keep 1000.0000
+    STA TMP_06 ; Store to.
+    LDA PPU_ADDR_IRQ+1 ; Load
+    AND #$03 ; Keep 0000.0011
+    ASL TMP_06 ; << var.
+    ASL A ; << 2, *4
     ASL A
-    ASL A
-    TAY
-    LDA $85BC,Y
-    STA TMP_06
-    LDA $85BD,Y
-    STA TMP_07
-    LDA **:$00A2
-    STA TMP_04
-    AND #$80
-    STA TMP_06
-    LDA **:$00A3
-    STA TMP_05
-    AND #$03
-    STA TMP_07
-    LDA 607_UNK
-    BEQ 06:0569
-    LDA TMP_05
-    ORA #$04
-    STA TMP_05
-    LDA TMP_07
-    LSR A
-    ROR TMP_06
-    LSR A
-    ROR TMP_06
-    LSR A
-    ROR TMP_06
-    LSR A
-    ROR TMP_06
-    LDA TMP_06
-    CLC
-    ADC #$C0
-    STA TMP_06
-    LDY #$23
-    LDA 607_UNK
-    BEQ 06:0587
-    LDY #$27
-    STY TMP_07
-    LDA **:$0603
+    TAY ; To Y index.
+    LDA DATA_ATTRIBUTE_L,Y ; Load
+    STA TMP_06 ; Store
+    LDA DATA_ATTRIBUTE_H,Y ; Load
+    STA TMP_07 ; Store.
+    LDA A2_UNK ; Load
+    STA TMP_04 ; Store to.
+    AND #$80 ; Keep 1000.0000
+    STA TMP_06 ; Store to.
+    LDA A3_UNK ; Load
+    STA TMP_05 ; Store to.
+    AND #$03 ; Keep 0000.0011
+    STA TMP_07 ; Store to.
+    LDA 607_UNK ; Load 
+    BEQ 607_EQ_ZERO ; == 0, goto.
+    LDA TMP_05 ; Load
+    ORA #$04 ; Set 0000.0100
+    STA TMP_05 ; Store back.
+607_EQ_ZERO: ; 06:0569, 0x00C569
+    LDA TMP_07 ; Load
+    LSR A ; >> 1
+    ROR TMP_06 ; Rotate carry to.
+    LSR A ; >> 1
+    ROR TMP_06 ; Rotate carry to.
+    LSR A ; >> 1
+    ROR TMP_06 ; Rotate carry to.
+    LSR A ; >> 1
+    ROR TMP_06 ; Rotate carry to.
+    LDA TMP_06 ; Load
+    CLC ; Prep add.
+    ADC #$C0 ; += 0xC0
+    STA TMP_06 ; Store to.
+    LDY #$23 ; Val? Nametable 1?
+    LDA 607_UNK ; Load var.
+    BEQ 607_EQ_ZERO ; == 0, goto.
+    LDY #$27 ; Nametable 2?
+607_EQ_ZERO: ; 06:0587, 0x00C587
+    STY TMP_07 ; Y to.
+    LDA 603_unk ; Load val.
     LDX #$04
-    JSR FORWARD_TMP[X]_BY_A
-    LDA 9C_UNK
+    JSR FORWARD_TMP[X]_BY_A ; Add A to TMP_04
+    LDA 9C_UNK ; Load
     LDX #$06
-    JSR FORWARD_TMP[X]_BY_A
-    JSR 1F:005E
-    LDA **:$0609
-    BNE 06:05BB
-    LDA **:$00A2
-    CLC
-    ADC #$20
-    STA **:$00A2
-    LDA **:$00A3
-    ADC #$00
-    STA **:$00A3
-    CMP #$23
-    BNE 06:05BB
-    LDA **:$00A2
-    CMP #$C0
-    BNE 06:05BB
+    JSR FORWARD_TMP[X]_BY_A ; Add A to TMP_06
+    JSR BG_UPDATE_RELATED? ; Do thingy.
+    LDA 609_UNK ; Load
+    BNE RTS ; If set, leave.
+    LDA A2_UNK ; Load
+    CLC ; Prep add.
+    ADC #$20 ; += 0x20
+    STA A2_UNK ; Store back.
+    LDA A3_UNK ; Load
+    ADC #$00 ; Overflow to.
+    STA A3_UNK ; Store back.
+    CMP #$23 ; If _ #$23
+    BNE RTS ; !=, goto.
+    LDA A2_UNK ; Load
+    CMP #$C0 ; If _ #$C0
+    BNE RTS ; !=, goto.
     LDA #$20
-    STA **:$00A3
-    RTS
+    STA A3_UNK ; Set to.
+RTS: ; 06:05BB, 0x00C5BB
+    RTS ; Leave.
+DATA_ATTRIBUTE_L: ; 06:05BC, 0x00C5BC
     .db C8
+DATA_ATTRIBUTE_H: ; 06:05BD, 0x00C5BD
     .db 23
     .db D0
     .db 23

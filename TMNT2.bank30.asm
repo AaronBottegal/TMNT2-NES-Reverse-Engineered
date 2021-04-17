@@ -2663,7 +2663,7 @@ SOUND_FORWARD_BANKED?: ; 1E:095C, 0x03C95C
     .db 90
 GAME_SCRIPT_SWITCHES: ; 1E:0A83, 0x03CA83
     INC IRQ/SCRIPT_RUN_COUNT? ; ++
-    LDA STATE_SWITCH_MENU ; Load switch state.
+    LDA STATE_SWITCH_INITIAL_MENUS ; Load switch state.
     JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch it up.
     LOW(SWITCH_18_RTN_FIRST_SCREEN) ; Initial screen.
     HIGH(SWITCH_18_RTN_FIRST_SCREEN)
@@ -2696,7 +2696,7 @@ SWITCH_18_RTN_FIRST_SCREEN: ; 1E:0A96, 0x03CA96
     BNE RTS ; If timer is ongoing, goto.
     LDA #$00
     STA SUBSTATE_SWITCH_MENU ; Init substate.
-    INC STATE_SWITCH_MENU ; State++
+    INC STATE_SWITCH_INITIAL_MENUS ; State++
 RTS: ; 1E:0AC3, 0x03CAC3
     RTS
 SWITCH_18_TITLE_SCREEN: ; 1E:0AC4, 0x03CAC4
@@ -2902,14 +2902,14 @@ SWITCH_18_SELECT_TURTLE: ; 1E:0BFA, 0x03CBFA
     BNE RTS ; If nonzero, goto.
     JMP INC_STATE_18 ; Next state.
 INC_STATE_18: ; 1E:0C0E, 0x03CC0E
-    INC STATE_SWITCH_MENU ; Next menu state.
+    INC STATE_SWITCH_INITIAL_MENUS ; Next menu state.
 CLEAR_18_SUBSTATE: ; 1E:0C10, 0x03CC10
     LDA #$00 ; Clear substate.
     STA SUBSTATE_SWITCH_MENU
 RTS: ; 1E:0C14, 0x03CC14
     RTS
 SWITCH_MENU_STATE_TO_A: ; 1E:0C15, 0x03CC15
-    STA STATE_SWITCH_MENU
+    STA STATE_SWITCH_INITIAL_MENUS
     JMP CLEAR_18_SUBSTATE
 SUB_40/41_TIMER_RET_FLAG: ; 1E:0C1A, 0x03CC1A
     LDA 40_TIMER?[2] ; Load val
@@ -2957,7 +2957,7 @@ INIT_3D0-3FF_LOOP: ; 1E:0C54, 0x03CC54
     LDX #$A8 ; Index
     LDA #$00 ; Val, load not needed, tsk tsk.
 CLEAR_6A8-6FF_LOOP: ; 1E:0C5E, 0x03CC5E
-    STA 600_UNK,X ; Init.
+    STA 600_UNK_INDEX,X ; Init.
     INX ; X++
     BNE CLEAR_6A8-6FF_LOOP ; Loop to end.
     LDX #$38 ; X=
@@ -2974,7 +2974,7 @@ CLEAR_ZP[X]-ZP[E0]_WITH_A_LOOP: ; 1E:0C6C, 0x03CC6C
     LDX #$00 ; X=
     LDA #$00 ; Yet again unneeded.
 CLEAR_600-6A6_LOOP: ; 1E:0C77, 0x03CC77
-    STA 600_UNK,X ; Init.
+    STA 600_UNK_INDEX,X ; Init.
     INX ; X++
     CPX #$A7 ; End?
     BNE CLEAR_600-6A6_LOOP ; No, loop.
@@ -3108,7 +3108,7 @@ FLAG_SET: ; 1E:0D3A, 0x03CD3A
     LDA PPU_DATA ; Get PPU data at. Two reads for buffered reads issue.
     LDA PPU_DATA
     AND #$0F ; Get lower bits.
-    ORA PPU_ADDR_UNK_B[2] ; Or with.
+    ORA PPU_ADDR_OR_A ; Or with.
     STA TMP_00 ; Store to.
     LDA PPU_STATUS ; Load status...
     PLA ; Pull addr.
@@ -3119,16 +3119,16 @@ FLAG_SET: ; 1E:0D3A, 0x03CD3A
     LDA TMP_00 ; Load.
     STA PPU_DATA ; Store back.
     LDA PPU_STATUS ; Reset latch.
-    LDA **:$0645 ; Load.
+    LDA PPU_ADDR_UNK_B+1 ; Load.
     PHA ; Save.
     STA PPU_ADDR ; To addr.
-    LDA PPU_ADDR_UNK_B+1 ; Load
+    LDA PPU_ADDR_UNK_B[2] ; Load
     PHA ; Save.
     STA PPU_ADDR ; Write addr.
-    LDA PPU_DATA ; Get PPU data at. Two reads for for buffered reads issue.
+    LDA PPU_DATA ; Get PPU data at. Two reads for buffered reads issue.
     LDA PPU_DATA
     AND #$F0 ; Get top bits.
-    ORA **:$0646 ; OR with...
+    ORA PPU_ADDR_OR_B ; OR with...
     STA TMP_00 ; Store to TMP.
     LDA PPU_STATUS ; Reset latch.
     PLA ; Pull addr.
@@ -3141,16 +3141,16 @@ FLAG_SET: ; 1E:0D3A, 0x03CD3A
     LDA FLAG_UPDATE_P2_HEALTH? ; Load
     BEQ FLAG_647_UNSET
     LDA PPU_STATUS ; Do same crap here, lol.
-    LDA **:$0649
+    LDA PPU_ADDR_UNK_C+1
     PHA
     STA PPU_ADDR
-    LDA **:$0648
+    LDA PPU_ADDR_UNK_C[2]
     PHA
     STA PPU_ADDR
     LDA PPU_DATA
     LDA PPU_DATA
     AND #$0F
-    ORA **:$064A
+    ORA PPU_ADDR_OR_C
     STA TMP_00
     LDA PPU_STATUS
     PLA
@@ -3161,16 +3161,16 @@ FLAG_SET: ; 1E:0D3A, 0x03CD3A
     LDA TMP_00
     STA PPU_DATA
     LDA PPU_STATUS
-    LDA **:$064C
+    LDA PPU_ADDR_UNK_D+1
     PHA
     STA PPU_ADDR
-    LDA **:$064B
+    LDA PPU_ADDR_UNK_D[2]
     PHA
     STA PPU_ADDR
     LDA PPU_DATA
     LDA PPU_DATA
     AND #$F0
-    ORA **:$064D
+    ORA PPU_ADDR_OR_D
     STA TMP_00
     LDA PPU_STATUS
     PLA
@@ -3641,7 +3641,7 @@ ATTRACT_RUN: ; 1E:1149, 0x03D149
     LDY #$00
     STY SUBSTATE_SWITCH_MENU ; Substate reset.
     INY
-    STY STATE_SWITCH_MENU ; Next menu switch.
+    STY STATE_SWITCH_INITIAL_MENUS ; Next menu switch.
     RTS
 SWITCH_18_RTN_CORE_GAMEPLAY: ; 1E:115F, 0x03D15F
     LDA 3C_SWITCH_CORE
@@ -3660,7 +3660,7 @@ CORE_STATE_SWITCH: ; 1E:1172, 0x03D172
     HIGH(SWITCH_3C_RTN_A)
     LOW(SWITCH_3C_RTN_B) ; Level select screen, cutscene.
     HIGH(SWITCH_3C_RTN_B)
-    LOW(SWITCH_3C_RTN_C) ; Turtle UI info?
+    LOW(SWITCH_3C_RTN_C) ; Turtle UI info.
     HIGH(SWITCH_3C_RTN_C)
     LOW(SWITCH_3C_RTN_D) ; Gameplay/level stuff?
     HIGH(SWITCH_3C_RTN_D)
@@ -3670,7 +3670,7 @@ CORE_STATE_SWITCH: ; 1E:1172, 0x03D172
     HIGH(SWITCH_3C_RTN_F)
     LOW(SWITCH_3C_RTN_G) ; Set up loads of gameplay stuff, turtle attrs, level sound.
     HIGH(SWITCH_3C_RTN_G)
-    LOW(SWITCH_3C_RTN_H) ; Game over screen?
+    LOW(SWITCH_3C_RTN_H) ; Game over portion.
     HIGH(SWITCH_3C_RTN_H)
     LOW(SWITCH_3C_RTN_I) ; Epilogue/credits.
     HIGH(SWITCH_3C_RTN_I)
@@ -3694,7 +3694,7 @@ SWITCH_3C_RTN_B: ; 1E:119E, 0x03D19E
     JSR ATTRACT_SETUP? ; Do rtn.
     JMP RTN_C_FINISHED ; Goto.
 FIRST_SCREENS_SWITCH: ; 1E:11AD, 0x03D1AD
-    LDA 4B_SWITCH_UNK ; Load switch val.
+    LDA 4B_SWITCH_GAME_OVER/FINISHED ; Load switch val.
     JSR SWITCH_CODE_PTRS_PAST_JSR ; Do code.
     LOW(4B_SWITCH_RTN_A) ; Level select?
     HIGH(4B_SWITCH_RTN_A)
@@ -3707,7 +3707,7 @@ FIRST_SCREENS_SWITCH: ; 1E:11AD, 0x03D1AD
     LDA 66D_LEVEL_SELECT_WHICH ; Load
     BNE RTS ; != 0, goto.
 INC_4B_STATE: ; 1E:11C0, 0x03D1C0
-    INC 4B_SWITCH_UNK ; Next state.
+    INC 4B_SWITCH_GAME_OVER/FINISHED ; Next state.
 RTS: ; 1E:11C2, 0x03D1C2
     RTS
 4B_SWITCH_RTN_B: ; 1E:11C3, 0x03D1C3
@@ -3727,14 +3727,14 @@ RTS: ; 1E:11C2, 0x03D1C2
     BNE RTS ; != 0, RTS.
 RTN_C_FINISHED: ; 1E:11E3, 0x03D1E3
     LDA #$00 ; Clear
-    STA 4B_SWITCH_UNK ; Switch
+    STA 4B_SWITCH_GAME_OVER/FINISHED ; Switch
     INC 3C_SWITCH_CORE ; ++
     JSR LEVEL_RELATED_DATA_A_FROM_42 ; Do from 42?
     LDA #$1F ; Why val?
     JSR LEVEL_RELATED_DATA_A_PASSED? ; Use in rtn.
     LDX #$04 ; 1P screen top value.
     LDA #$05 ; ??
-    LDY 47_TWO_PLAYERS_FLAG? ; Load
+    LDY 47_TWO_PLAYERS_FLAG ; Load
     BEQ NOT_2P_GAME ; Not set, 1P setup.
     LDX #$06 ; X is 2P screen top value.
     TXA ; A=6, ??
@@ -3769,7 +3769,7 @@ SKIP_PLAYER_LIVES: ; 1E:1230, 0x03D230
     LDX #$00 ; Data index.
 RTN_PLAYER_UI_TO_STATUS?: ; 1E:1234, 0x03D234
     JSR PLAYER_INFO_TO_SCREEN?
-    LDA 47_TWO_PLAYERS_FLAG? ; Load
+    LDA 47_TWO_PLAYERS_FLAG ; Load
     BEQ NOT_2P_GAME
     LDY #$01 ; Player
     LDX #$02 ; Data index.
@@ -3784,7 +3784,7 @@ SWITCH_3C_RTN_G: ; 1E:124A, 0x03D24A
     LDA LEVEL_SCREEN_ON ; Load val.
     CMP #$08 ; If _ #$08
     BNE NOT_SCREEN_8 ; !=, goto.
-    LDA 4B_SWITCH_UNK ; Load val.
+    LDA 4B_SWITCH_GAME_OVER/FINISHED ; Load val.
     BNE NOT_SCREEN_8 ; If set to anything, goto.
     JMP LEVEL_8_PLAYERS_NOT_ENABLED ; Cutscene at beginning.
 NOT_SCREEN_8: ; 1E:1257, 0x03D257
@@ -3793,7 +3793,7 @@ NOT_SCREEN_8: ; 1E:1257, 0x03D257
     LDA #$03
     STA 3C_SWITCH_CORE ; Switch to setup level.
     LDA #$00
-    STA 4B_SWITCH_UNK ; Clear.
+    STA 4B_SWITCH_GAME_OVER/FINISHED ; Clear.
     LDA LEVEL_SCREEN_ON ; Load screen.
     CMP #$01 ; If _ #$01
     BNE NOT_LEVEL_1 ; !=, goto.
@@ -3859,9 +3859,9 @@ SWITCH_3C_RTN_D: ; 1E:12C9, 0x03D2C9
     JSR BANK_PAIR_USE_A
     JSR PLAYER_LIFE_STEAL+? ; Test life steal and a bunch of related stuff.
     JSR BANK_SWITCH_BASED_ON_SCREEN/LEVEL ; Bank in 6/7 or E/F
-    JSR RTN_LEVEL_GROUP_6_UNK_A ; TODO: Mark E/F too.
-    JSR RTN_LEVEL_GROUP_6_UNK_B
-    JSR RTN_LEVEL_GROUP_7_UNK_C
+    JSR RTN_LEVEL_GROUP_6_UNK_A ; TODO: Mark E/F too. Nametable and player stuff?
+    JSR RTN_LEVEL_GROUP_6_UNK_B ; BG update queueing, it seems.
+    JSR RTN_LEVEL_GROUP_7_UNK_C ; More BG stuff?
     LDA #$24 ; Bank 4/5
     JSR BANK_PAIR_USE_A
     JSR RTN_UNK_A
@@ -3878,12 +3878,12 @@ SWITCH_3C_RTN_D: ; 1E:12C9, 0x03D2C9
     JSR BANKED_RTN_TURTLE?
     RTS ; Leave.
     LDA #$00
-    STA STATE_SWITCH_MENU
+    STA STATE_SWITCH_INITIAL_MENUS
     STA SUBSTATE_SWITCH_MENU
 RTS: ; 1E:1313, 0x03D313
     RTS
 SWITCH_3C_RTN_E: ; 1E:1314, 0x03D314
-    LDA 4B_SWITCH_UNK ; Load
+    LDA 4B_SWITCH_GAME_OVER/FINISHED ; Load
     CMP #$02 ; If _ #$02
     BEQ PLAYER_STEP_EQ_2 ; ==, goto.
     LDA #$00
@@ -3898,14 +3898,14 @@ SWITCH_3C_RTN_E: ; 1E:1314, 0x03D314
     ORA OBJ_STATE/SWITCH+2 ; Load P2.
     AND #$0F ; Keep 0000.1111
     BNE ANY_STATE_SET ; If either any bits set, goto.
-    INC 4B_SWITCH_UNK ; Otherwise, ++
+    INC 4B_SWITCH_GAME_OVER/FINISHED ; Otherwise, ++
 ANY_STATE_SET: ; 1E:1338, 0x03D338
     JMP BANKED_RTN_TURTLE? ; Do instead.
 PLAYER_STEP_EQ_2: ; 1E:133B, 0x03D33B
     LDA #$00
     STA 3DB_UNKNOWN ; Clear ?
     LDA #$00
-    STA 4B_SWITCH_UNK ; Reset.
+    STA 4B_SWITCH_GAME_OVER/FINISHED ; Reset.
     INC 3C_SWITCH_CORE ; Next switch.
     LDY LEVEL_SCREEN_ON ; Load level on.
     LDA PER_LEVEL_SOUND_DATA,Y ; Load..
@@ -3935,7 +3935,7 @@ SWITCH_3C_RTN_F: ; 1E:135C, 0x03D35C
     LDA #$01
     STA 3C_SWITCH_CORE ; Switch to cutscene handler.
     LDA #$02
-    STA 4B_SWITCH_UNK ; Players enabled?
+    STA 4B_SWITCH_GAME_OVER/FINISHED ; Players enabled?
     JSR SOUND_INIT_RTN? ; Sound cleaning.
     LDA LEVEL_SCREEN_ON ; Load
     CMP #$0C ; If _ #$0C, end of game.
@@ -3957,7 +3957,7 @@ SKIP_CLEAR: ; 1E:1382, 0x03D382
     LDA #$08
     STA 3C_SWITCH_CORE ; Epilogue switch.
     LDA #$00
-    STA 4B_SWITCH_UNK ; No players dead?
+    STA 4B_SWITCH_GAME_OVER/FINISHED ; No players dead?
     RTS ; Extra RTS, heh. Mistake. Oops.
 RTS_RTS: ; 1E:13A4, 0x03D3A4
     RTS
@@ -3968,7 +3968,7 @@ SWITCH_3C_RTN_H: ; 1E:13A5, 0x03D3A5
 SWITCH_3C_RTN_I: ; 1E:13AD, 0x03D3AD
     LDA #$32
     JSR BANK_PAIR_USE_A ; Bank in 12/13.
-    LDA 4B_SWITCH_UNK ; Use this as switch now? lol.
+    LDA 4B_SWITCH_GAME_OVER/FINISHED ; Use this as switch now? lol.
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LOW(4B_SWITCH_RTN_A) ; Another switch.
     HIGH(4B_SWITCH_RTN_A)
@@ -3980,7 +3980,7 @@ SWITCH_3C_RTN_I: ; 1E:13AD, 0x03D3AD
     LDA #$07
     STA 3C_SWITCH_CORE ; Switch core to state 7, game over?
     LDA #$00
-    STA 4B_SWITCH_UNK ; Clear vars.
+    STA 4B_SWITCH_GAME_OVER/FINISHED ; Clear vars.
     STA CONTINUES_LEFT
     RTS
 CUTSCENE_START_DOES_SOMETHING?: ; 1E:13C9, 0x03D3C9
@@ -4088,7 +4088,7 @@ RTN_TURTLE_COLORS_ASSIGN?: ; 1E:1468, 0x03D468
     LDA TURTLE_SELECT_POSITIONS[2] ; Load P1 selected.
     LDX #$11 ; Palette entry.
     JSR SUB_SET_COLORS_PLAYERS? ; Set a color?
-    LDY 47_TWO_PLAYERS_FLAG? ; Load flag.
+    LDY 47_TWO_PLAYERS_FLAG ; Load flag.
     BEQ NOT_2P_GAME ; Not set, goto. Abuse this RTS exactly the same.
     LDA TURTLE_SELECT_POSITIONS+1 ; Get P2 turtle.
     LDX #$15 ; Palette entry.
@@ -5712,10 +5712,10 @@ SOUND_FORWARD?: ; 1E:1B42, 0x03DB42
     LDY 28_BANK_CFG_INDEX? ; Get flag.
     BNE RTS ; != 0, goto.
     LDY #$01
-    STY 28_BANK_CFG_INDEX? ; Set
+    STY 28_BANK_CFG_INDEX? ; Set bank config for sound.
     JSR SOUND_FORWARD_BANKED?
     LDY #$00
-    STY 28_BANK_CFG_INDEX?
+    STY 28_BANK_CFG_INDEX? ; Set bank config for game.
 RTS: ; 1E:1B51, 0x03DB51
     RTS
 SND_BANKED_DISPATCH: ; 1E:1B52, 0x03DB52
@@ -5795,7 +5795,7 @@ RESTORE_UPPER/LOWER: ; 1E:1BCB, 0x03DBCB
 DISPATCH_CLEAR_SCREEN: ; 1E:1BEB, 0x03DBEB
     LDA $8000
     STA LOWER_BANK_SAVE_PAIRED? ; Save lower
-    LDA #$34 ; To bank 14.
+    LDA #$34 ; To bank 14/15.
     JSR BANK_PAIR_USE_A
     JSR CLEAR_SCREEN_SUB ; Clear screen.
     LDA LOWER_BANK_SAVE_PAIRED? ; Bank back.
@@ -5877,9 +5877,9 @@ UPDATE_??: ; 1E:1C97, 0x03DC97
     JSR UPDATE_??
     JMP RESTORE_BANK_PAIRED
 BANKED_RTN_TURTLE?: ; 1E:1CA2, 0x03DCA2
-    LDA #$34
+    LDA #$34 ; Bank 14/15
     JSR BANK_PAIRED
-    JSR 14:0289
+    JSR TURTLE_RTN?
     JMP RESTORE_BANK_PAIRED
 UPDATE_PLAYER_LIVES: ; 1E:1CAD, 0x03DCAD
     LDA #$34 ; Bank 14.
@@ -5923,7 +5923,7 @@ LOOP_MOVE: ; 1E:1CEE, 0x03DCEE
     BPL LOOP_MOVE ; Do 4x.
     RTS ; RTS
 BANK_R2-R5_FROM_60D: ; 1E:1CF7, 0x03DCF7
-    LDA IRQ_FLAG_R2-R5_EQ_7E ; Load.
+    LDA IRQ_FLAG_R2-R5_BANK_7E ; Load.
     BNE WRITE_R2-R5_0x7E ; If set, do B.
 WRITE_R2-R5_FROM_RAM: ; 1E:1CFB, 0x03DCFB
     LDA #$02 ; R2
@@ -5980,7 +5980,7 @@ DATA_UNK: ; 1E:1D58, 0x03DD58
     .db 09
     .db 0A
 IRQ_DATA_UNK_BA: ; 1E:1D64, 0x03DD64
-    .db 68
+    .db 68 ; Status bar.
 IRQ_DATA_UNK_BB: ; 1E:1D65, 0x03DD65
     .db 6A
     .db 00
@@ -6054,10 +6054,10 @@ BG_UPDATE_SWITCH?: ; 1E:1D97, 0x03DD97
     ASL A ; << 1, *2.
     TAY ; To Y index.
     LDA IRQ_DATA_UNK_BA,Y
-    STA IRQ_BANK_VALUES[2] ; Set value.
+    STA IRQ_BANK_VALUES_R[0/1][2] ; Set value.
     STA IRQ_GFX_DATA_BANK_R0 ; R0 bank.
     LDA IRQ_DATA_UNK_BB,Y ; Load A.
-    STA IRQ_BANK_VALUES+1 ; Set value.
+    STA IRQ_BANK_VALUES_R[0/1]+1 ; Set value.
     STA IRQ_GFX_DATA_BANK_R1 ; Set as R1, too.
     JSR BANKSWITCH_R0/R1 ; Commit values.
     LDY LEVEL_SCREEN_ON ; Load index.
@@ -6091,9 +6091,9 @@ BG_UPDATE_SWITCH?: ; 1E:1D97, 0x03DD97
 DATA_LOADED_ZERO: ; 1E:1E1A, 0x03DE1A
     TAX ; A to X.
     LDA DATA_UNK_A,X ; Move
-    STA IRQ_D8_UNK
+    STA IRQ_D8_PAIR_UNK
     LDA DATA_UNK_B,X ; Move
-    STA IRQ_D9_UNK
+    STA IRQ_D9_PAIR_UNK
     LDX #$01 ; X=..
     LDA LEVEL_SCREEN_ON ; A=
     CMP #$0A ; If A _ #$0A
@@ -6106,7 +6106,7 @@ OUTPUT_X_TO_636: ; 1E:1E33, 0x03DE33
 DONT_UPDATE_636_WITH_X: ; 1E:1E36, 0x03DE36
     INC 606_NMI_SWITCH_STATE_UNK ; ++
 606_SWITCH_RTN_B: ; 1E:1E39, 0x03DE39
-    LDA B4_ARR_UNK_NAMETABLE?[2] ; Load
+    LDA NAMETABLE_FOCUS_VAL[2] ; Load
     CLC
     ADC 607_UNK ; += val.
     CLC
@@ -6116,9 +6116,9 @@ DONT_UPDATE_636_WITH_X: ; 1E:1E36, 0x03DE36
     ASL A ; Loaded << 1, *2.
     TAX ; To X index.
     LDA DATA_UNK_A,X ; Move into pos.
-    STA 74_STREAM_UNK
+    STA 74_STREAM_UNK_A
     LDA DATA_UNK_B,X
-    STA 75_UNK
+    STA 75_STREAM_UNK_B
     INC 606_NMI_SWITCH_STATE_UNK ; ++
 606_SWITCH_RTN_C: ; 1E:1E54, 0x03DE54
     LDA 607_UNK ; Move
@@ -6181,7 +6181,7 @@ RTN_BG?: ; 1E:1E9D, 0x03DE9D
     LDA #$00
     STA TMP_00 ; Clear.
     LDX #$04 ; Do 4 loads.
-    LDA [74_STREAM_UNK],Y ; Load from stream.
+    LDA [74_STREAM_UNK_A],Y ; Load from stream.
     STA 61C_UNK
 X_LOOP: ; 1E:1EB1, 0x03DEB1
     ASL A ; << 1, *2.
@@ -6197,7 +6197,7 @@ X_LOOP: ; 1E:1EB1, 0x03DEB1
     STA TMP_03 ; To.
     STA TMP_0B ; To.
     LDY 98_UNK ; Y from.
-    LDA B4_ARR_UNK_NAMETABLE?[2],Y ; A from which.
+    LDA NAMETABLE_FOCUS_VAL[2],Y ; A from which.
     CLC ; Prep add.
     ADC 97_COPY_607 ; A +=
     AND #$01 ; Get bottom bit.
@@ -6331,10 +6331,10 @@ LOOP_RTN_UNK: ; 1E:1FB1, 0x03DFB1
     LDA [TMP_0A],Y ; Load from stream.
     STA TMP_09 ; To.
     BMI USA_VAL_1
-    LDA IRQ_BANK_VALUES[2] ; Load val 0.
+    LDA IRQ_BANK_VALUES_R[0/1][2] ; Load val 0.
     JMP SKIP_OTHER ; Always taken.
 USA_VAL_1: ; 1E:1FC2, 0x03DFC2
-    LDA IRQ_BANK_VALUES+1 ; Load val 1.
+    LDA IRQ_BANK_VALUES_R[0/1]+1 ; Load val 1.
 SKIP_OTHER: ; 1E:1FC4, 0x03DFC4
     CMP #$E0 ; If _ #$E0
     BCC LT_E0 ; <, goto.
