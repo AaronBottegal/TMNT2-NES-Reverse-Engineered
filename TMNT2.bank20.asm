@@ -192,20 +192,20 @@ ATTRACT_DPTRS_H: ; 14:00E0, 0x0280E0
     HIGH(ATTRACT_DATA_7)
 RTN_UNK_A: ; 14:00F7, 0x0280F7
     LDA PPU_UPDATE_BUF_INDEX
-    BNE 14:012B
+    BNE RTS ; If others queued, leave.
 RTN_UNK_C: ; 14:00FB, 0x0280FB
     TXA
     PHA
-    JSR $812C
-    LDA **:$03EF
+    JSR RTN_UNK_B
+    LDA 3EF_UNK
     LSR A
     PHA
     BCC 14:0114
     LDX #$00
-    JSR $8206
-    LDA **:$03EF
+    JSR UPDATE_??
+    LDA 3EF_UNK
     AND #$FE
-    STA **:$03EF
+    STA 3EF_UNK
     PLA
     LSR A
     LDA 47_TWO_PLAYERS_FLAG
@@ -213,33 +213,34 @@ RTN_UNK_C: ; 14:00FB, 0x0280FB
     BCC 14:0129
     LDX #$02
     JSR $8206
-    LDA **:$03EF
+    LDA 3EF_UNK
     AND #$FD
-    STA **:$03EF
+    STA 3EF_UNK
     PLA
     TAX
+RTS: ; 14:012B, 0x02812B
     RTS
 RTN_UNK_B: ; 14:012C, 0x02812C
     TXA
     PHA
-    LDA **:$03F6
+    LDA 3F6_UNK
     BEQ 14:0145
     LDX #$00
-    JSR $815F
+    JSR 14:015F
     LDA #$00
-    STA **:$03F6
-    LDA **:$03EF
+    STA 3F6_UNK
+    LDA 3EF_UNK
     ORA #$01
-    STA **:$03EF
-    LDA **:$03F7
+    STA 3EF_UNK
+    LDA 3F7_UNK
     BEQ 14:015C
     LDX #$03
-    JSR $815F
+    JSR 14:015F
     LDA #$00
-    STA **:$03F7
-    LDA **:$03EF
+    STA 3F7_UNK
+    LDA 3EF_UNK
     ORA #$02
-    STA **:$03EF
+    STA 3EF_UNK
     PLA
     TAX
     RTS
@@ -287,7 +288,7 @@ RTN_UNK_B: ; 14:012C, 0x02812C
     LDA **:$03F0,X
     PHA
     AND #$F0
-    STA ZP_11_UNK
+    STA TMP_11
     PLA
     AND #$0F
     CLC
@@ -298,15 +299,15 @@ RTN_UNK_B: ; 14:012C, 0x02812C
     SBC #$0A
     STA TMP_10
     CLC
-    LDA ZP_11_UNK
+    LDA TMP_11
     ADC #$10
     CMP #$A0
     BCC 14:01D7
     SBC #$A0
     INC **:$03F1,X
-    STA ZP_11_UNK
+    STA TMP_11
     LDA TMP_10
-    ORA ZP_11_UNK
+    ORA TMP_11
     STA **:$03F0,X
     LDA #$00
     STA TMP_10
@@ -317,11 +318,11 @@ RTN_UNK_B: ; 14:012C, 0x02812C
     BCC 14:0205
     DEY
     BPL 14:01B1
-    LDA **:$03EF,X
+    LDA 3EF_UNK,X
     AND #$F0
     BEQ 14:0205
     LDA #$09
-    STA **:$03EF,X
+    STA 3EF_UNK,X
     LDA #$99
     STA KONAMI_CODE_TRACKERS?+2,X
     STA KONAMI_CODE_TRACKERS?+1,X
@@ -332,7 +333,7 @@ UPDATE_??: ; 14:0206, 0x028206
     BEQ 14:020B
     INY
     LDA **:$03F0,Y
-    STA R_**:$0014
+    STA ZP_14_UNK
     LDA **:$03F1,Y
     STA R_**:$0015
     LDA **:$03F2,Y
@@ -368,7 +369,7 @@ UPDATE_??: ; 14:0206, 0x028206
     CLC
     ADC #$01
     STA PPU_UPDATE_BUFFER+6,X
-    LDA R_**:$0014
+    LDA ZP_14_UNK
     PHA
     LSR A
     LSR A
@@ -389,12 +390,13 @@ UPDATE_??: ; 14:0206, 0x028206
     LDY #$03
     LDA PPU_UPDATE_BUFFER+4,X
     CMP #$01
-    BNE 14:0284
+    BNE RTS
     LDA #$00
     STA PPU_UPDATE_BUFFER+4,X
     INX
     DEY
     BPL 14:0274
+RTS: ; 14:0284, 0x028284
     RTS
     .db 65
     .db 20
@@ -402,18 +404,18 @@ UPDATE_??: ; 14:0206, 0x028206
     .db 20
 TURTLE_RTN?: ; 14:0289, 0x028289
     LDA PPU_UPDATE_BUF_INDEX
-    BNE 14:0284
+    BNE RTS ; If updates queued, goto.
     LDX #$00
-    LDA **:$0662
+    LDA 662_UNK
     BEQ 14:029C
     LDA #$00
-    STA **:$0662
-    JSR $82A8
+    STA 662_UNK
+    JSR UPDATE_??
     LDX #$02
-    LDA **:$0663
-    BEQ 14:0284
+    LDA 663_UNK
+    BEQ RTS
     LDA #$00
-    STA **:$0663
+    STA 663_UNK
 UPDATE_??: ; 14:02A8, 0x0282A8
     TXA
     PHA
@@ -437,7 +439,7 @@ UPDATE_??: ; 14:02A8, 0x0282A8
     DEY
     TYA
     AND #$01
-    STA ZP_11_UNK
+    STA TMP_11
     TYA
     LSR A
     CMP #$07
@@ -447,9 +449,9 @@ UPDATE_??: ; 14:02A8, 0x0282A8
     LDY PPU_UPDATE_BUF_INDEX
     LDA #$04
     STA PPU_UPDATE_BUFFER[20],Y
-    LDA $832D,X
+    LDA 14:032D,X
     STA PPU_UPDATE_BUFFER+1,Y
-    LDA $832E,X
+    LDA 14:032E,X
     STA PPU_UPDATE_BUFFER+2,Y
     LDA #$06
     STA PPU_UPDATE_BUFFER+3,Y
@@ -465,7 +467,7 @@ UPDATE_??: ; 14:02A8, 0x0282A8
     INY
     DEX
     BNE 14:02FE
-    LDA ZP_11_UNK
+    LDA TMP_11
     BEQ 14:0315
     LDA #$4D
     STA PPU_UPDATE_BUFFER[20],Y

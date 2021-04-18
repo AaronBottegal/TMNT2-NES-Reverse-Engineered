@@ -14,7 +14,7 @@ RTN_LEVEL_GROUP_6_UNK_A: ; 06:0001, 0x00C001
 VAL_EQ_FIVE: ; 06:0019, 0x00C019
     LDA 8B_UNK ; Load
     BNE CLEAR_UNK ; If != 0, goto.
-    LDA NAMETABLE_FOCUS_VAL[2] ; LOad
+    LDA NAMETABLE_FOCUS_VAL?[2] ; LOad
     CMP 9E_UNK ; If _ var
     BCC ALT_RTN ; <, goto.
     LDA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load
@@ -57,14 +57,14 @@ ALT_RTN: ; 06:0062, 0x00C062
     ASL A ; << 2, *4.
     ASL A
     TAY ; To Y index.
-    LDA NAMETABLE_FOCUS_VAL[2] ; Load
+    LDA NAMETABLE_FOCUS_VAL?[2] ; Load
     CMP DATA_UNK,Y ; If _ Val
     BCC JMP_ELSEWHERE ; <, goto.
     LDA 60C_UNK_INDEX ; Load
     CMP #$04 ; If _ #$04
     BCS SKIP_UNK ; >=, goto.
     LDA DATA_FOCUS,Y ; Load from Y index.
-    STA NAMETABLE_FOCUS_VAL+1 ; Store to.
+    STA NAMETABLE_FOCUS_VAL?+1 ; Store to.
     LDA #$00
     STA B1_SCROLL_X_COPY_IRQ_ZP+1 ; Clear.
     LDA 7C_UNK ; Load
@@ -72,7 +72,7 @@ ALT_RTN: ; 06:0062, 0x00C062
     STA 7C_UNK ; Store back.
 SKIP_UNK: ; 06:008E, 0x00C08E
     LDA DATA_UNK,Y ; Load data.
-    STA NAMETABLE_FOCUS_VAL[2] ; Store to focus.
+    STA NAMETABLE_FOCUS_VAL?[2] ; Store to focus.
     LDA #$00
     STA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Clear.
     LDA 7B_UNK ; Load
@@ -136,7 +136,7 @@ SKIP_UNK: ; 06:00EA, 0x00C0EA
     LDA [TMP_00],Y ; Load from pointer setup.
     CMP #$FF ; If loaded _ #$FF
     BEQ RTN_UNK ; ==, goto.
-    CMP NAMETABLE_FOCUS_VAL[2] ; If _ var
+    CMP NAMETABLE_FOCUS_VAL?[2] ; If _ var
     BNE RTN_UNK ; !=, goto.
     INY ; Stream++
     LDA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load
@@ -372,9 +372,9 @@ NO_OVERFLOW: ; 06:0280, 0x00C280
     LDA B1_SCROLL_X_COPY_IRQ_ZP[2],X ; Load
     ADC BA_UNK_SPRITES?,X ; Add with.
     STA B1_SCROLL_X_COPY_IRQ_ZP[2],X ; Store back.
-    LDA NAMETABLE_FOCUS_VAL[2],X ; Load
+    LDA NAMETABLE_FOCUS_VAL?[2],X ; Load
     ADC C3_UNK,X ; Add with.
-    STA NAMETABLE_FOCUS_VAL[2],X ; Store back.
+    STA NAMETABLE_FOCUS_VAL?[2],X ; Store back.
     LDA 7B_UNK,X ; Load
     CLC ; Prep add.
     ADC BA_UNK_SPRITES?,X ; Add with.
@@ -741,7 +741,7 @@ LOOP_ADD: ; 06:0464, 0x00C464
     DEX ; X--
     BNE LOOP_ADD ; != 0, keep adding.
 RESULT_EQ_ZERO: ; 06:046E, 0x00C46E
-    LDA NAMETABLE_FOCUS_VAL[2] ; Load.
+    LDA NAMETABLE_FOCUS_VAL?[2] ; Load.
     CLC ; Prep add.
     ADC 97_COPY_607 ; += var.
     PHA ; Save to stack.
@@ -757,7 +757,7 @@ RESULT_EQ_ZERO: ; 06:046E, 0x00C46E
 VAL_POSITIVE: ; 06:0484, 0x00C484
     LDA BD_PLAYER?_UNK[2],Y ; Load
     STA 9D_UNK ; Store to.
-    LDA NAMETABLE_FOCUS_VAL[2],Y ; Load
+    LDA NAMETABLE_FOCUS_VAL?[2],Y ; Load
     CLC ; Prep add.
     ADC 97_COPY_607 ; += var
     PHA ; Save val.
@@ -818,7 +818,7 @@ VAL_COUNTDOWN_VALID: ; 06:04E4, 0x00C4E4
     CLC ; Prep add.
     ADC #$08 ; += 8, goto.
     STA TMP_00 ; Store to.
-    LDA NAMETABLE_FOCUS_VAL[2] ; Load
+    LDA NAMETABLE_FOCUS_VAL?[2] ; Load
     ADC #$00 ; Roll overflow.
     STA TMP_01 ; Store to.
     LDA TMP_00 ; Load

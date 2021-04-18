@@ -2203,194 +2203,189 @@
     .db AB
     .db C3
     .db 08
-    .db 20
-    .db 55
-    .db F3
-    .db 90
-    .db 7E
-    .db AD
-    .db 0C
-    .db 06
-    .db C9
-    .db 03
-    .db B0
-    .db 77
-    .db A4
-    .db 7E
-    .db B9
-    .db C8
-    .db A8
-    .db 8D
-    .db 0C
-    .db 06
-    .db C9
-    .db 03
-    .db F0
-    .db 6B
-    .db A5
-    .db 7E
-    .db 0A
-    .db A8
-    .db B9
-    .db CE
-    .db AF
-    .db 85
-    .db 00
-    .db B9
-    .db CF
-    .db AF
-    .db 85
-    .db 01
-    .db A0
-    .db FF
-    .db 4C
-    .db 0B
-    .db A9
-    .db 00
-    .db 00
-    .db 01
-    .db 01
-    .db 02
-    .db 02
-    .db 03
-RTN_UNK: ; 09:08CF, 0x0128CF
-    LDA LEVEL_SCREEN_ON
-    CMP #$07
-    BEQ 09:089D
+SCREEN_0x07: ; 09:089D, 0x01289D
+    JSR SUB_CHECK_OBJS-0x7-0x11_RET_CS_FINISHED ; Check objects.
+    BCC RTS ; Not finished.
+    LDA 60C_UNK_INDEX
+    CMP #$03
+    BCS RTS
+    LDY 7E_STREAM_UNK
+    LDA $A8C8,Y
+    STA 60C_UNK_INDEX
+    CMP #$03
+    BEQ RTS
+    LDA 7E_STREAM_UNK
     ASL A
     TAY
-    LDA 09:09D4,Y
-    STA TMP_10
-    LDA 09:09D5,Y
-    STA ZP_11_UNK
-    LDA 7E_UNK
-    ASL A
-    TAY
-    LDA [TMP_10],Y
+    LDA $AFCE,Y
     STA TMP_00
-    INY
-    LDA [TMP_10],Y
+    LDA $AFCF,Y
     STA TMP_01
-    LDY #$00
-    LDA [TMP_00],Y
-    BMI 09:0920
-    STA ZP_12_UNK
-    AND #$1F
-    CMP NAMETABLE_FOCUS_VAL[2]
-    BNE 09:092E
-    INY
-    LDA [TMP_00],Y
-    CMP B1_SCROLL_X_COPY_IRQ_ZP[2]
-    BEQ 09:0905
-    BCS 09:0920
-    LDA ZP_12_UNK
-    AND #$20
-    BNE 09:0921
-    LDX #$07
-    LDA ARR_OBJECT_ENABLED+MORE?[18],X
-    BEQ 09:0933
+    LDY #$FF
+    JMP $A90B
+    .db 00
+    .db 00
+    .db 01
+    .db 01
+    .db 02
+    .db 02
+    .db 03
+RTN_OBJECTS_SPAWN?: ; 09:08CF, 0x0128CF
+    LDA LEVEL_SCREEN_ON ; Load
+    CMP #$07 ; If _ #$07
+    BEQ SCREEN_0x07 ; ==, goto.
+    ASL A ; << 1, *2
+    TAY ; To Y index.
+    LDA DATA_PTR_UNK_L,Y ; Set up file.
+    STA TMP_10
+    LDA DATA_PTR_UNK_H,Y
+    STA TMP_11
+    LDA 7E_STREAM_UNK ; Load val.
+    ASL A ; << 1, *2
+    TAY ; To Y index.
+    LDA [TMP_10],Y ; Load from stream.
+    STA TMP_00 ; Store to.
+    INY ; Stream++
+    LDA [TMP_10],Y ; Load from stream.
+    STA TMP_01 ; Store to.
+    LDY #$00 ; Stream reset.
+    LDA [TMP_00],Y ; Load from other stream.
+    BMI RTS ; If negative, leave.
+    STA ZP_12_UNK ; Store val from stream.
+    AND #$1F ; Keep 0001.1111
+    CMP NAMETABLE_FOCUS_VAL?[2] ; If _ var
+    BNE COMPARE_LEAVE ; !=, goto.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load from stream.
+    CMP B1_SCROLL_X_COPY_IRQ_ZP[2] ; If A _ var
+    BEQ DONT_LEAVE ; ==, goto.
+    BCS RTS ; >=, leave.
+DONT_LEAVE: ; 09:0905, 0x012905
+    LDA ZP_12_UNK ; Load 
+    AND #$20 ; Keep 0010.0000
+    BNE OBJECT_4_START? ; Set, goto.
+    LDX #$07 ; Object.
+LOOP_OBJS_4: ; 09:090D, 0x01290D
+    LDA ARR_OBJECT_ENABLED+MORE?[18],X ; Load obj.
+    BEQ OBJECT_AVAILABLE_7 ; If available, goto.
+OBJ_7_PAIR_UNAVAILABLE: ; 09:0912, 0x012912
+    INX ; Obj += 2
     INX
-    INX
-    CPX #$11
-    BCC 09:090D
-    LDA ZP_12_UNK
-    AND #$40
-    BEQ 09:0920
-    INC 8B_UNK
+    CPX #$11 ; If _ #$11
+    BCC LOOP_OBJS_4 ; <, goto.
+    LDA ZP_12_UNK ; Load
+    AND #$40 ; Test 0100.0000
+    BEQ RTS ; Not set, leave.
+    INC 8B_UNK ; ++
+RTS: ; 09:0920, 0x012920
     RTS
-    LDX #$04
-    LDA ARR_OBJECT_ENABLED+MORE?[18],X
-    BEQ 09:0938
-    INX
-    CPX #$11
-    BCC 09:0923
+OBJECT_4_START?: ; 09:0921, 0x012921
+    LDX #$04 ; Object.
+LOOP_OBJS_7: ; 09:0923, 0x012923
+    LDA ARR_OBJECT_ENABLED+MORE?[18],X ; Load
+    BEQ OBJECT_AVAILABLE_4 ; Available, goto.
+    INX ; Obj++
+    CPX #$11 ; If obj _ #$11
+    BCC LOOP_OBJS_7 ; <, goto.
     RTS
-    BCS 09:0920
-    INC 7E_UNK
-    RTS
-    LDA ARR_OBJECT_ENABLED+MORE?+1,X
-    BNE 09:0912
-    LDA ZP_12_UNK
-    AND #$40
-    BEQ 09:0943
-    INC 8B_UNK
-    INC 5FA_UNK
-    INY
-    LDA [TMP_00],Y
-    STA ZP_13_UNK
-    AND #$40
-    BEQ 09:0951
-    JSR TEST_OBJ[7-19]_DISABLED/!8B_RET_CS_TRUE
-    BCC 09:0920
-    LDA ZP_13_UNK
-    AND #$30
-    BEQ 09:0987
+COMPARE_LEAVE: ; 09:092E, 0x01292E
+    BCS RTS ; >=, RTS no inc.
+    INC 7E_STREAM_UNK ; ++
+    RTS ; Leave.
+OBJECT_AVAILABLE_7: ; 09:0933, 0x012933
+    LDA ARR_OBJECT_ENABLED+MORE?+1,X ; Load next object.
+    BNE OBJ_7_PAIR_UNAVAILABLE ; Not available, re-enter.
+OBJECT_AVAILABLE_4: ; 09:0938, 0x012938
+    LDA ZP_12_UNK ; Load
+    AND #$40 ; Test bit.
+    BEQ DONT_INC_VARS ; Not set, goto.
+    INC 8B_UNK ; ++
+    INC 5FA_UNK ; ++
+DONT_INC_VARS: ; 09:0943, 0x012943
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load from stream.
+    STA ZP_13_UNK ; Store to.
+    AND #$40 ; Test 0100.0000
+    BEQ ZP_13_0x40_UNSET ; Bit not set, goto.
+    JSR TEST_OBJ[7-18]_DISABLED/!8B_RET_CS_TRUE ; Test 0x07-0x12
+    BCC RTS ; Not all done, leave.
+ZP_13_0x40_UNSET: ; 09:0951, 0x012951
+    LDA ZP_13_UNK ; Load
+    AND #$30 ; Test 0011.0000
+    BEQ ZP_13_0x30_UNSET ; None set, goto.
+    LSR A ; Shift to  index.
     LSR A
     LSR A
     LSR A
-    LSR A
-    STA **:$05F9
-    LDA ZP_13_UNK
-    BPL 09:096A
-    INC 70C_UNK
+    STA ZP_13_INDEX_VAL_UNK
+    LDA ZP_13_UNK ; Load
+    BPL ZP_13_POSITIVE ; If positive, goto.
+    INC 70C_UNK ; ++ var.
     LDA #$10
-    STA 5FB_TIMER_ALL_FINISHED?
-    LDA ZP_13_UNK
-    AND #$0F
-    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
-    INY
-    LDA [TMP_00],Y
-    STA R_**:$0014
+    STA 5FB_TIMER_ALL_FINISHED? ; Set.
+ZP_13_POSITIVE: ; 09:096A, 0x01296A
+    LDA ZP_13_UNK ; Load
+    AND #$0F ; Keep bottom nibble.
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X ; Store to object.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load from stream.
+    STA ZP_14_UNK ; Store to.
+    LSR A ; Shift upper nibble down.
     LSR A
     LSR A
     LSR A
-    LSR A
-    STA 5B0_ARR_UNK[18],X
-    INY
-    LDA [TMP_00],Y
-    STA 5D4_ARR_OBJ_TIMER?[18],X
-    LDA #$23
-    BNE 09:09B0
-    LDA ZP_13_UNK
-    BPL 09:0995
-    INC 70C_UNK
+    STA 5B0_ARR_UNK[18],X ; Store to object.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load from, stream.
+    STA 5D4_ARR_OBJ_TIMER?[18],X ; Store to object.
+    LDA #$23 ; Which state?
+    BNE SET_OBJECT_STATE/ENABLED ; Always taken.
+ZP_13_0x30_UNSET: ; 09:0987, 0x012987
+    LDA ZP_13_UNK ; Load
+    BPL ZP_13_POSITIVE ; If positive, goto.
+    INC 70C_UNK ; ++
     LDA #$03
-    STA 5FB_TIMER_ALL_FINISHED?
-    LDA ZP_13_UNK
-    AND #$40
-    BEQ 09:099C
-    INC 5F8_UNK
-    LDA ZP_13_UNK
-    AND #$0F
-    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
-    INY
-    LDA [TMP_00],Y
-    STA R_**:$0014
-    AND #$03
-    STA 556_ARR_UNK[18],X
-    INY
-    LDA [TMP_00],Y
-    STA ARR_OBJECT_ENABLED+MORE?[18],X
-    LDA R_**:$0014
-    AND #$08
+    STA 5FB_TIMER_ALL_FINISHED? ; Set.
+    LDA ZP_13_UNK ; Reload.
+ZP_13_POSITIVE: ; 09:0995, 0x012995
+    AND #$40 ; Test bit 0100.0000
+    BEQ ZP_13_0x40_UNSET ; Not set, goto.
+    INC 5F8_UNK ; Inc if set.
+ZP_13_0x40_UNSET: ; 09:099C, 0x01299C
+    LDA ZP_13_UNK ; Load
+    AND #$0F ; Get bottom nibble.
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X ; Store to object.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load from stream.
+    STA ZP_14_UNK ; Store to ZP_14
+    AND #$03 ; Keep 0000.0011
+    STA 556_ARR_UNK[18],X ; Store to object.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load from stream.
+SET_OBJECT_STATE/ENABLED: ; 09:09B0, 0x0129B0
+    STA ARR_OBJECT_ENABLED+MORE?[18],X ; Store to object.
+    LDA ZP_14_UNK ; Load
+    AND #$08 ; Keep 0000.1000
+    LSR A ; >> 3, /8
     LSR A
     LSR A
+    STA 712_FLAG?_UNK ; Store to.
+    LDA ZP_14_UNK ; Load
+    AND #$04 ; Keep 0000.0100
+    LSR A ; >> 2, /4
     LSR A
-    STA **:$0712
-    LDA R_**:$0014
-    AND #$04
-    LSR A
-    LSR A
-    STA **:$00DE
-    INY
-    LDA [TMP_00],Y
-    STA OBJ_POS_X[18],X
-    INY
-    LDA [TMP_00],Y
-    STA 4A2_OBJ_UNK_POS?[18],X
-    INC 7E_UNK
-    RTS
+    STA DE_FLAG?_UNK
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load from stream.
+    STA OBJ_POS_X[18],X ; Store to object.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load from stream.
+    STA 4A2_OBJ_UNK_POS?[18],X ; Store to obj. Y pos, guessing?
+    INC 7E_STREAM_UNK ; ++
+    RTS ; Leave.
+DATA_PTR_UNK_L: ; 09:09D4, 0x0129D4
     .db EC
+DATA_PTR_UNK_H: ; 09:09D5, 0x0129D5
     .db A9
     .db 22
     .db AA

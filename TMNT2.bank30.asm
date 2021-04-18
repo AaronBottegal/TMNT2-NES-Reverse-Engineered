@@ -3220,7 +3220,7 @@ PPU_FLAG_NOT_SET: ; 1E:0E31, 0x03CE31
     AND #$E0 ; Get bits 1110.0000
     STA TMP_07 ; Store here.
     LDA ARR_OBJECT_ENABLED+MORE?[18],X ; Load value.
-    STA ZP_11_UNK ; Store to.
+    STA TMP_11 ; Store to.
     LDY #$00 ; Clear val.
     STY ZP_0D_UNK
     STY ZP_0E_UNK
@@ -3506,7 +3506,7 @@ L_1E:1079: ; 1E:1079, 0x03D079
     STY R_**:$0015
     DEY
     STY ZP_13_UNK
-    STY R_**:$0014
+    STY ZP_14_UNK
     BEQ L_1E:10A8
     BMI L_1E:10A8
 L_1E:1087: ; 1E:1087, 0x03D087
@@ -3527,7 +3527,7 @@ L_1E:109F: ; 1E:109F, 0x03D09F
     INX
     CPX ZP_13_UNK
     BCC L_1E:1089
-    DEC R_**:$0014
+    DEC ZP_14_UNK
     BNE L_1E:1087
 L_1E:10A8: ; 1E:10A8, 0x03D0A8
     LDY #$00
@@ -3864,14 +3864,14 @@ SWITCH_3C_RTN_D: ; 1E:12C9, 0x03D2C9
     JSR RTN_LEVEL_GROUP_7_UNK_C ; More BG stuff?
     LDA #$24 ; Bank 4/5
     JSR BANK_PAIR_USE_A
-    JSR RTN_UNK_A
-    JSR RTN_UNK_B
+    JSR RTN_MAP_MOVABILITY_UPDATES?
+    JSR RTN_MAP_??? ; Same buffers as other, so map related still, too?
     LDA #$28 ; Bank 8/9
     JSR BANK_PAIR_USE_A
-    JSR RTN_UNK
-    LDA #$2A
+    JSR RTN_OBJECTS_SPAWN? ; Def objects of some type.
+    LDA #$2A ; Bank A/B
     JSR BANK_PAIR_USE_A
-    JSR OBJECTS_PROCESS_0x04-0x11_UNK
+    JSR OBJ[0x4-0x11]_RUN_STATE_HANDLERS ; Process objects.
     JSR WAIT_UPDATES_AND_???
     JSR RTN_ALL_OBJS_DISABLED?_UNK
     JSR BANKED_RTNS_UNK
@@ -5853,7 +5853,7 @@ BANKED_RTNS_UNK: ; 1E:1C67, 0x03DC67
     LDA #$34 ; Bank 13/15
     JSR BANK_PAIRED
     JSR RTN_UNK_A
-    JMP RESTORE_BANK_PAIRED
+    JMP RESTORE_BANK_PAIRED ; Goto, abuse RTS.
     PHA
     LDA #$34
     JSR BANK_PAIRED
@@ -5910,7 +5910,7 @@ BANKED_PLAYER_UI_INIT_FROM_A: ; 1E:1CC3, 0x03DCC3
     LDA 1E:1CEB,Y
     STA ZP_R2-R5_BANK_VALUES+3
     RTS
-    .db 22
+    .db 22 ; Removed earlier feature?
     .db 22
     .db 22
     .db 22
@@ -6106,7 +6106,7 @@ OUTPUT_X_TO_636: ; 1E:1E33, 0x03DE33
 DONT_UPDATE_636_WITH_X: ; 1E:1E36, 0x03DE36
     INC 606_NMI_SWITCH_STATE_UNK ; ++
 606_SWITCH_RTN_B: ; 1E:1E39, 0x03DE39
-    LDA NAMETABLE_FOCUS_VAL[2] ; Load
+    LDA NAMETABLE_FOCUS_VAL?[2] ; Load
     CLC
     ADC 607_UNK ; += val.
     CLC
@@ -6197,7 +6197,7 @@ X_LOOP: ; 1E:1EB1, 0x03DEB1
     STA TMP_03 ; To.
     STA TMP_0B ; To.
     LDY 98_UNK ; Y from.
-    LDA NAMETABLE_FOCUS_VAL[2],Y ; A from which.
+    LDA NAMETABLE_FOCUS_VAL?[2],Y ; A from which.
     CLC ; Prep add.
     ADC 97_COPY_607 ; A +=
     AND #$01 ; Get bottom bit.
