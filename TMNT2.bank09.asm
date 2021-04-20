@@ -2251,7 +2251,7 @@ RTN_OBJECTS_SPAWN?: ; 09:08CF, 0x0128CF
     LDY #$00 ; Stream reset.
     LDA [TMP_00],Y ; Load from other stream.
     BMI RTS ; If negative, leave.
-    STA ZP_12_UNK ; Store val from stream.
+    STA TMP_12 ; Store val from stream.
     AND #$1F ; Keep 0001.1111
     CMP NAMETABLE_FOCUS_VAL?[2] ; If _ var
     BNE COMPARE_LEAVE ; !=, goto.
@@ -2261,19 +2261,19 @@ RTN_OBJECTS_SPAWN?: ; 09:08CF, 0x0128CF
     BEQ DONT_LEAVE ; ==, goto.
     BCS RTS ; >=, leave.
 DONT_LEAVE: ; 09:0905, 0x012905
-    LDA ZP_12_UNK ; Load 
+    LDA TMP_12 ; Load 
     AND #$20 ; Keep 0010.0000
     BNE OBJECT_4_START? ; Set, goto.
     LDX #$07 ; Object.
 LOOP_OBJS_4: ; 09:090D, 0x01290D
-    LDA ARR_OBJECT_ENABLED+MORE?[18],X ; Load obj.
+    LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load obj.
     BEQ OBJECT_AVAILABLE_7 ; If available, goto.
 OBJ_7_PAIR_UNAVAILABLE: ; 09:0912, 0x012912
     INX ; Obj += 2
     INX
     CPX #$11 ; If _ #$11
     BCC LOOP_OBJS_4 ; <, goto.
-    LDA ZP_12_UNK ; Load
+    LDA TMP_12 ; Load
     AND #$40 ; Test 0100.0000
     BEQ RTS ; Not set, leave.
     INC 8B_UNK ; ++
@@ -2282,7 +2282,7 @@ RTS: ; 09:0920, 0x012920
 OBJECT_4_START?: ; 09:0921, 0x012921
     LDX #$04 ; Object.
 LOOP_OBJS_7: ; 09:0923, 0x012923
-    LDA ARR_OBJECT_ENABLED+MORE?[18],X ; Load
+    LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load
     BEQ OBJECT_AVAILABLE_4 ; Available, goto.
     INX ; Obj++
     CPX #$11 ; If obj _ #$11
@@ -2293,10 +2293,10 @@ COMPARE_LEAVE: ; 09:092E, 0x01292E
     INC 7E_STREAM_UNK ; ++
     RTS ; Leave.
 OBJECT_AVAILABLE_7: ; 09:0933, 0x012933
-    LDA ARR_OBJECT_ENABLED+MORE?+1,X ; Load next object.
+    LDA OBJ_ENABLED_STATE+MORE?+1,X ; Load next object.
     BNE OBJ_7_PAIR_UNAVAILABLE ; Not available, re-enter.
 OBJECT_AVAILABLE_4: ; 09:0938, 0x012938
-    LDA ZP_12_UNK ; Load
+    LDA TMP_12 ; Load
     AND #$40 ; Test bit.
     BEQ DONT_INC_VARS ; Not set, goto.
     INC 8B_UNK ; ++
@@ -2304,13 +2304,13 @@ OBJECT_AVAILABLE_4: ; 09:0938, 0x012938
 DONT_INC_VARS: ; 09:0943, 0x012943
     INY ; Stream++
     LDA [TMP_00],Y ; Load from stream.
-    STA ZP_13_UNK ; Store to.
+    STA TMP_13 ; Store to.
     AND #$40 ; Test 0100.0000
     BEQ ZP_13_0x40_UNSET ; Bit not set, goto.
     JSR TEST_OBJ[7-18]_DISABLED/!8B_RET_CS_TRUE ; Test 0x07-0x12
     BCC RTS ; Not all done, leave.
 ZP_13_0x40_UNSET: ; 09:0951, 0x012951
-    LDA ZP_13_UNK ; Load
+    LDA TMP_13 ; Load
     AND #$30 ; Test 0011.0000
     BEQ ZP_13_0x30_UNSET ; None set, goto.
     LSR A ; Shift to  index.
@@ -2318,59 +2318,59 @@ ZP_13_0x40_UNSET: ; 09:0951, 0x012951
     LSR A
     LSR A
     STA ZP_13_INDEX_VAL_UNK
-    LDA ZP_13_UNK ; Load
+    LDA TMP_13 ; Load
     BPL ZP_13_POSITIVE ; If positive, goto.
     INC 70C_UNK ; ++ var.
     LDA #$10
     STA 5FB_TIMER_ALL_FINISHED? ; Set.
 ZP_13_POSITIVE: ; 09:096A, 0x01296A
-    LDA ZP_13_UNK ; Load
+    LDA TMP_13 ; Load
     AND #$0F ; Keep bottom nibble.
     STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X ; Store to object.
     INY ; Stream++
     LDA [TMP_00],Y ; Load from stream.
-    STA ZP_14_UNK ; Store to.
+    STA TMP_14 ; Store to.
     LSR A ; Shift upper nibble down.
     LSR A
     LSR A
     LSR A
-    STA 5B0_ARR_UNK[18],X ; Store to object.
+    STA 5B0_OBJ_UNK[18],X ; Store to object.
     INY ; Stream++
     LDA [TMP_00],Y ; Load from, stream.
     STA 5D4_ARR_OBJ_TIMER?[18],X ; Store to object.
     LDA #$23 ; Which state?
     BNE SET_OBJECT_STATE/ENABLED ; Always taken.
 ZP_13_0x30_UNSET: ; 09:0987, 0x012987
-    LDA ZP_13_UNK ; Load
+    LDA TMP_13 ; Load
     BPL ZP_13_POSITIVE ; If positive, goto.
     INC 70C_UNK ; ++
     LDA #$03
     STA 5FB_TIMER_ALL_FINISHED? ; Set.
-    LDA ZP_13_UNK ; Reload.
+    LDA TMP_13 ; Reload.
 ZP_13_POSITIVE: ; 09:0995, 0x012995
     AND #$40 ; Test bit 0100.0000
     BEQ ZP_13_0x40_UNSET ; Not set, goto.
     INC 5F8_UNK ; Inc if set.
 ZP_13_0x40_UNSET: ; 09:099C, 0x01299C
-    LDA ZP_13_UNK ; Load
+    LDA TMP_13 ; Load
     AND #$0F ; Get bottom nibble.
     STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X ; Store to object.
     INY ; Stream++
     LDA [TMP_00],Y ; Load from stream.
-    STA ZP_14_UNK ; Store to ZP_14
+    STA TMP_14 ; Store to ZP_14
     AND #$03 ; Keep 0000.0011
-    STA 556_ARR_UNK[18],X ; Store to object.
+    STA 556_OBJ_UPDATE_FLAGS?[18],X ; Store to object.
     INY ; Stream++
     LDA [TMP_00],Y ; Load from stream.
 SET_OBJECT_STATE/ENABLED: ; 09:09B0, 0x0129B0
-    STA ARR_OBJECT_ENABLED+MORE?[18],X ; Store to object.
-    LDA ZP_14_UNK ; Load
+    STA OBJ_ENABLED_STATE+MORE?[18],X ; Store to object.
+    LDA TMP_14 ; Load
     AND #$08 ; Keep 0000.1000
     LSR A ; >> 3, /8
     LSR A
     LSR A
     STA 712_FLAG?_UNK ; Store to.
-    LDA ZP_14_UNK ; Load
+    LDA TMP_14 ; Load
     AND #$04 ; Keep 0000.0100
     LSR A ; >> 2, /4
     LSR A

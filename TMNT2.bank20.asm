@@ -190,307 +190,336 @@ ATTRACT_DPTRS_H: ; 14:00E0, 0x0280E0
     HIGH(ATTRACT_DATA_6)
     LOW(ATTRACT_DATA_7)
     HIGH(ATTRACT_DATA_7)
-RTN_UNK_A: ; 14:00F7, 0x0280F7
+RTN_UPDATE_SCORES_IF_UPDATE_QUEUE_EMPTY: ; 14:00F7, 0x0280F7
     LDA PPU_UPDATE_BUF_INDEX
     BNE RTS ; If others queued, leave.
-RTN_UNK_C: ; 14:00FB, 0x0280FB
-    TXA
-    PHA
-    JSR RTN_UNK_B
-    LDA 3EF_UNK
-    LSR A
-    PHA
-    BCC 14:0114
-    LDX #$00
-    JSR UPDATE_??
-    LDA 3EF_UNK
-    AND #$FE
-    STA 3EF_UNK
+RTN_UPDATE_SCORES_ALWAYS: ; 14:00FB, 0x0280FB
+    TXA ; X to A.
+    PHA ; Save to stack.
+    JSR RTN_ADD_TO_PLAYERS_SCORES
+    LDA 3EF_UNK ; Load
+    LSR A ; See if P1 updated.
+    PHA ; Save modified bits.
+    BCC P1_NOT_MODIFIED
+    LDX #$00 ; Player 1 index.
+    JSR CREATE_SCORE_UPDATE_PACKET_FOR_PLAYER ; Update.
+    LDA 3EF_UNK ; Load
+    AND #$FE ; Keep 1111.1110
+    STA 3EF_UNK ; Store back. Unset 0x02
+P1_NOT_MODIFIED: ; 14:0114, 0x028114
+    PLA ; Pull bits.
+    LSR A ; Shift P2 update.
+    LDA 47_TWO_PLAYERS_FLAG ; Load P2 flag.
+    BEQ RTS_XOBJ_RESTORE ; == 0. Not two players, leave.
+    BCC RTS_XOBJ_RESTORE ; Carry unset, P2 not updated, leave.
+    LDX #$02 ; Player 2 index.
+    JSR CREATE_SCORE_UPDATE_PACKET_FOR_PLAYER ; Update.
+    LDA 3EF_UNK ; Load
+    AND #$FD ; Keep 1111.1101
+    STA 3EF_UNK ; Store back. Unset 0x02
+RTS_XOBJ_RESTORE: ; 14:0129, 0x028129
     PLA
-    LSR A
-    LDA 47_TWO_PLAYERS_FLAG
-    BEQ 14:0129
-    BCC 14:0129
-    LDX #$02
-    JSR $8206
-    LDA 3EF_UNK
-    AND #$FD
-    STA 3EF_UNK
-    PLA
-    TAX
+    TAX ; Restore X.
 RTS: ; 14:012B, 0x02812B
-    RTS
-RTN_UNK_B: ; 14:012C, 0x02812C
-    TXA
-    PHA
-    LDA 3F6_UNK
-    BEQ 14:0145
-    LDX #$00
-    JSR 14:015F
+    RTS ; Leave.
+RTN_ADD_TO_PLAYERS_SCORES: ; 14:012C, 0x02812C
+    TXA ; X to A
+    PHA ; Save.
+    LDA 3F6_PLAYER_SCORE_ADD_VALUE[2] ; Load
+    BEQ 3F6_ZERO ; == 0, goto.
+    LDX #$00 ; P1 index.
+    JSR RTN_ADD_TO_SCORE ; Do.
     LDA #$00
-    STA 3F6_UNK
+    STA 3F6_PLAYER_SCORE_ADD_VALUE[2] ; Clear
     LDA 3EF_UNK
-    ORA #$01
+    ORA #$01 ; Set 0000.0001
     STA 3EF_UNK
-    LDA 3F7_UNK
-    BEQ 14:015C
-    LDX #$03
-    JSR 14:015F
+3F6_ZERO: ; 14:0145, 0x028145
+    LDA 3F6_PLAYER_SCORE_ADD_VALUE+1 ; Load
+    BEQ RTS_RESTORE_X ; == 0, goto.
+    LDX #$03 ; P2 index.
+    JSR RTN_ADD_TO_SCORE ; Do.
     LDA #$00
-    STA 3F7_UNK
-    LDA 3EF_UNK
-    ORA #$02
+    STA 3F6_PLAYER_SCORE_ADD_VALUE+1 ; Clear
+    LDA 3EF_UNK ; Load
+    ORA #$02 ; Set 0000.0010
     STA 3EF_UNK
+RTS_RESTORE_X: ; 14:015C, 0x02815C
     PLA
     TAX
     RTS
-    CMP #$0A
-    BCC 14:0165
-    LDA #$09
-    STA TMP_10
-    TXA
-    LSR A
-    TAY
-    CLC
-    LDA TMP_10
-    ADC **:$03EA,Y
-    STA **:$03EA,Y
-    CMP #$C8
-    BCC 14:019A
-    SBC #$C8
-    STA **:$03EA,Y
+RTN_ADD_TO_SCORE: ; 14:015F, 0x02815F
+    CMP #$0A ; If flag _ #$0A
+    BCC FLAG_LT_0x0A ; <, goto.
+    LDA #$09 ; Cap?
+FLAG_LT_0x0A: ; 14:0165, 0x028165
+    STA TMP_10 ; Store to.
+    TXA ; Obj to A?
+    LSR A ; >> 1, /2. Get player index 0/1.
+    TAY ; To Y index.
+    CLC ; Prep add.
+    LDA TMP_10 ; Load val
+    ADC 3EA_PLAYER?_UNK[2],Y ; += val
+    STA 3EA_PLAYER?_UNK[2],Y ; Store back.
+    CMP #$C8 ; If _ #$C8, (200 Decimal)
+    BCC NO_EXTRA_LIFE ; <, goto.
+    SBC #$C8 ; Subtract val.
+    STA 3EA_PLAYER?_UNK[2],Y ; Store back.
     LDA #$5D
-    JSR SND_BANKED_DISPATCH
-    CLC
-    LDA NUM_PLAYER_LIVES[2],Y
-    ADC #$01
-    CMP #$64
-    BCC 14:018D
-    LDA #$63
-    STA NUM_PLAYER_LIVES[2],Y
-    TXA
-    PHA
-    AND #$02
+    JSR SND_BANKED_DISPATCH ; Play sound.
+    CLC ; Prep add.
+    LDA NUM_PLAYER_LIVES[2],Y ; Load lives.
+    ADC #$01 ; += 1
+    CMP #$64 ; <= 0x64 (100 Decimal)
+    BCC LIVES_VALUE_IN_RANGE ; <, goto.
+    LDA #$63 ; Cap, 99.
+LIVES_VALUE_IN_RANGE: ; 14:018D, 0x02818D
+    STA NUM_PLAYER_LIVES[2],Y ; Store extra life.
+    TXA ; Player Obj [0|3] save.
+    PHA ; Save obj.
+    AND #$02 ; Turn to object expected (Val 0|2)
+    TAX ; To Xobj.
+    JSR PLAYER_LIVES_TO_BCD+DISPLAY_UPDATE ; Update lives for player.
+    PLA ; Restore X object. [0|3]
     TAX
-    JSR $8331
+NO_EXTRA_LIFE: ; 14:019A, 0x02819A
+    LDA SCORES_BCD_0000XX,X ; Load
+    CMP #$99 ; If _ 0x99
+    BNE SCORE_NOT_MAXED_INC ; !=, goto.
+    LDA SCORES_BCD_00XX00,X ; Load
+    CMP #$99 ; If _ 0x99
+    BNE SCORE_NOT_MAXED_INC ; !=, goto.
+    LDA SCORES_BCD_XX0000,X ; Load
+    CMP #$09 ; If _ #$09
+    BEQ RTS ; ==, goto. Score maxed. Don't try.
+SCORE_NOT_MAXED_INC: ; 14:01AF, 0x0281AF
+    LDY #$02 ; Spaces to check.
+MORE_OVERFLOWS: ; 14:01B1, 0x0281B1
+    LDA SCORES_BCD_0000XX,X ; Load P1/P2
+    PHA ; Save
+    AND #$F0 ; Isolate upper.
+    STA TMP_11 ; Store to TMP.
     PLA
-    TAX
-    LDA **:$03F0,X
-    CMP #$99
-    BNE 14:01AF
-    LDA **:$03F1,X
-    CMP #$99
-    BNE 14:01AF
-    LDA **:$03F2,X
-    CMP #$09
-    BEQ 14:0205
-    LDY #$02
-    LDA **:$03F0,X
-    PHA
-    AND #$F0
-    STA TMP_11
-    PLA
-    AND #$0F
+    AND #$0F ; Isolate lower.
     CLC
-    ADC TMP_10
-    STA TMP_10
-    CMP #$0A
-    BCC 14:01D9
-    SBC #$0A
-    STA TMP_10
-    CLC
-    LDA TMP_11
-    ADC #$10
-    CMP #$A0
-    BCC 14:01D7
-    SBC #$A0
-    INC **:$03F1,X
-    STA TMP_11
-    LDA TMP_10
-    ORA TMP_11
-    STA **:$03F0,X
+    ADC TMP_10 ; Add to.
+    STA TMP_10 ; Store back.
+    CMP #$0A ; If _ #$0A
+    BCC VALID_DECIMAL_RANGE ; <, goto. Valid decimal range.
+    SBC #$0A ; Correct.
+    STA TMP_10 ; Store back.
+    CLC ; Prep add.
+    LDA TMP_11 ; Load upper.
+    ADC #$10 ; Roll add to.
+    CMP #$A0 ; If _ #$A0
+    BCC 14:01D7 ; <, goto. Valid decimal range.
+    SBC #$A0 ; Correct.
+    INC SCORES_BCD_00XX00,X ; Inc next pos.
+    STA TMP_11 ; Store corrected back.
+VALID_DECIMAL_RANGE: ; 14:01D9, 0x0281D9
+    LDA TMP_10 ; Load lower.
+    ORA TMP_11 ; Combine with upper.
+    STA SCORES_BCD_0000XX,X ; Store back to pos.
     LDA #$00
-    STA TMP_10
-    INX
-    LDA **:$03F0,X
-    AND #$0F
-    CMP #$0A
-    BCC 14:0205
-    DEY
-    BPL 14:01B1
-    LDA 3EF_UNK,X
-    AND #$F0
-    BEQ 14:0205
+    STA TMP_10 ; Clear.
+    INX ; Next group.
+    LDA SCORES_BCD_0000XX,X ; Load next value.
+    AND #$0F ; Isolate lower.
+    CMP #$0A ; If _ #$0A
+    BCC RTS ; <, still valid. Leave.
+    DEY ; --, max loop count.
+    BPL MORE_OVERFLOWS ; If positive, keep looping.
+    LDA 3EF_UNK,X ; Loads  0000XX
+    AND #$F0 ; Keep 1111.0000
+    BEQ RTS ; Rolled to 0, leave.
     LDA #$09
-    STA 3EF_UNK,X
-    LDA #$99
-    STA KONAMI_CODE_TRACKERS?+2,X
+    STA 3EF_UNK,X ; Set score to 99999
+    LDA #$99 ; Val, unk.
+    STA KONAMI_CODE_TRACKERS?+2,X ; Set each. Writes to scores, not to trackers.
     STA KONAMI_CODE_TRACKERS?+1,X
+RTS: ; 14:0205, 0x028205
     RTS
-UPDATE_??: ; 14:0206, 0x028206
-    TXA
-    TAY
-    BEQ 14:020B
-    INY
-    LDA **:$03F0,Y
-    STA ZP_14_UNK
-    LDA **:$03F1,Y
-    STA R_**:$0015
-    LDA **:$03F2,Y
-    STA BCD_VAL_XY[2]
-    LDX PPU_UPDATE_BUF_INDEX
+CREATE_SCORE_UPDATE_PACKET_FOR_PLAYER: ; 14:0206, 0x028206
+    TXA ; Obj to A
+    TAY ; To Y.
+    BEQ P1_UPDATE ; Xobj was 0. Keep 0.
+    INY ; Turn P2 to Y index of 3.
+P1_UPDATE: ; 14:020B, 0x02820B
+    LDA SCORES_BCD_0000XX,Y ; Move player vals to TMP.
+    STA TMP_14
+    LDA SCORES_BCD_00XX00,Y
+    STA TMP_15
+    LDA SCORES_BCD_XX0000,Y
+    STA TMP_16
+    LDX PPU_UPDATE_BUF_INDEX ; Load index.
     LDA #$04
-    STA PPU_UPDATE_BUFFER[20],X
-    TYA
-    AND #$02
-    TAY
-    LDA $8285,Y
-    STA PPU_UPDATE_BUFFER+1,X
-    LDA $8286,Y
+    STA PPU_UPDATE_BUFFER[20],X ; Store type.
+    TYA ; Obj to A.
+    AND #$02 ; Turn to [0|2] for P1/P2
+    TAY ; Back to Y.
+    LDA SCORE_POS_L,Y
+    STA PPU_UPDATE_BUFFER+1,X ; Store score addr.
+    LDA SCORE_POS_H,Y
     STA PPU_UPDATE_BUFFER+2,X
     LDA #$05
-    STA PPU_UPDATE_BUFFER+3,X
-    LDA BCD_VAL_XY[2]
-    AND #$0F
+    STA PPU_UPDATE_BUFFER+3,X ; Store digits.
+    LDA TMP_16 ; Load 
+    AND #$0F ; Isolate bottom.
     CLC
-    ADC #$01
-    STA PPU_UPDATE_BUFFER+4,X
-    LDA R_**:$0015
-    PHA
-    LSR A
-    LSR A
-    LSR A
-    LSR A
-    CLC
-    ADC #$01
-    STA PPU_UPDATE_BUFFER+5,X
-    PLA
-    AND #$0F
-    CLC
-    ADC #$01
-    STA PPU_UPDATE_BUFFER+6,X
-    LDA ZP_14_UNK
-    PHA
-    LSR A
+    ADC #$01 ; Add tile offset for value.
+    STA PPU_UPDATE_BUFFER+4,X ; Store to buffer.
+    LDA TMP_15 ; Load score value.
+    PHA ; Save value.
+    LSR A ; Shift upper nibble lower.
     LSR A
     LSR A
     LSR A
     CLC
-    ADC #$01
-    STA PPU_UPDATE_BUFFER+7,X
-    PLA
-    AND #$0F
+    ADC #$01 ; Adjust tile.
+    STA PPU_UPDATE_BUFFER+5,X ; Store to buffer.
+    PLA ; Pull value.
+    AND #$0F ; Isolate bottom.
     CLC
-    ADC #$01
-    STA PPU_UPDATE_BUFFER+8,X
+    ADC #$01 ; Adjust tile.
+    STA PPU_UPDATE_BUFFER+6,X ; Store to buffer.
+    LDA TMP_14 ; Load score value.
+    PHA ; Save.
+    LSR A ; Shift upper nibble lower.
+    LSR A
+    LSR A
+    LSR A
     CLC
+    ADC #$01 ; Adjust tile.
+    STA PPU_UPDATE_BUFFER+7,X ; Store to buffer.
+    PLA ; Pull value.
+    AND #$0F ; Isolate lower nibble.
+    CLC
+    ADC #$01 ; Adjust tile.
+    STA PPU_UPDATE_BUFFER+8,X ; Store to buffer.
+    CLC ; Prep add.
     TXA
-    ADC #$09
-    STA PPU_UPDATE_BUF_INDEX
-    LDY #$03
-    LDA PPU_UPDATE_BUFFER+4,X
-    CMP #$01
-    BNE RTS
+    ADC #$09 ; Add update size.
+    STA PPU_UPDATE_BUF_INDEX ; Store to index.
+    LDY #$03 ; Loop count.
+LOOP_BLANK_LEADING_ZEROS: ; 14:0274, 0x028274
+    LDA PPU_UPDATE_BUFFER+4,X ; Load tile.
+    CMP #$01 ; If _ 1. Tile for '0'.
+    BNE RTS ; != 0, leave.
     LDA #$00
-    STA PPU_UPDATE_BUFFER+4,X
-    INX
-    DEY
-    BPL 14:0274
+    STA PPU_UPDATE_BUFFER+4,X ; Blank the tile, blanking leading zero's.
+    INX ; Tile++
+    DEY ; Loop--
+    BPL LOOP_BLANK_LEADING_ZEROS
 RTS: ; 14:0284, 0x028284
-    RTS
+    RTS ; Leave.
+SCORE_POS_L: ; 14:0285, 0x028285
     .db 65
-    .db 20
+SCORE_POS_H: ; 14:0286, 0x028286
+    .db 20 ; P1, $2065
     .db 73
-    .db 20
-TURTLE_RTN?: ; 14:0289, 0x028289
+    .db 20 ; P2, $2073
+UPDATE_HEALTH_BARS_IF_NO_OTHERS_QUEUED: ; 14:0289, 0x028289
     LDA PPU_UPDATE_BUF_INDEX
     BNE RTS ; If updates queued, goto.
-    LDX #$00
-    LDA 662_UNK
-    BEQ 14:029C
+    LDX #$00 ; P1 index.
+    LDA 662_PLAYER_UPDATE_UNK[2] ; Load
+    BEQ TRY_PLAYER_2 ; If == 0, goto.
     LDA #$00
-    STA 662_UNK
+    STA 662_PLAYER_UPDATE_UNK[2] ; Clear
     JSR UPDATE_??
-    LDX #$02
-    LDA 663_UNK
-    BEQ RTS
+TRY_PLAYER_2: ; 14:029C, 0x02829C
+    LDX #$02 ; P2 index.
+    LDA 662_PLAYER_UPDATE_UNK+1 ; P2 check.
+    BEQ RTS ; If == 0, goto. Leave.
     LDA #$00
-    STA 663_UNK
+    STA 662_PLAYER_UPDATE_UNK+1 ; Clear.
 UPDATE_??: ; 14:02A8, 0x0282A8
-    TXA
-    PHA
+    TXA ; Index to A.
+    PHA ; Save index.
     LDA #$05
-    STA ZP_13_UNK
-    LDY #$00
-    LDA OBJECT_DATA_EXTRA_A?[18],X
-    BEQ 14:02CD
+    STA TMP_13 ; Set. Update count?
+    LDY #$00 ; Index/counter?
+    LDA OBJECT_DATA_EXTRA_A?[18],X ; Load from object.
+    BEQ OBJ_DATA_EQ_0
     CMP #$05
-    BCS 14:02BB
-    LDA #$05
-    CMP #$3D
-    BCC 14:02C4
+    BCS OBJ_DATA_ABOVE_5
+    LDA #$05 ; Set to 5.
+OBJ_DATA_ABOVE_5: ; 14:02BB, 0x0282BB
+    CMP #$3D ; If _ #$3D
+    BCC OBJ_DATA_LT_3D ; <, goto.
     LDA #$3C
-    STA OBJECT_DATA_EXTRA_A?[18],X
-    SEC
-    INY
-    SBC #$05
-    BEQ 14:02CD
-    BCS 14:02C5
-    DEY
-    TYA
-    AND #$01
-    STA TMP_11
-    TYA
-    LSR A
-    CMP #$07
-    BCC 14:02DA
-    LDA #$06
-    STA TMP_10
-    LDY PPU_UPDATE_BUF_INDEX
+    STA OBJECT_DATA_EXTRA_A?[18],X ; Set to 3C.
+OBJ_DATA_LT_3D: ; 14:02C4, 0x0282C4
+    SEC ; Prep sub.
+SUB_NO_UNDERFLOW: ; 14:02C5, 0x0282C5
+    INY ; Y++
+    SBC #$05 ; Obj data -= 5
+    BEQ OBJ_DATA_EQ_0 ; == 0, goto.
+    BCS SUB_NO_UNDERFLOW ; No underflow, goto.
+    DEY ; Fix Y. Times subbed without underflow.
+OBJ_DATA_EQ_0: ; 14:02CD, 0x0282CD
+    TYA ; Times to A.
+    AND #$01 ; Keep 0000.0001
+    STA TMP_11 ; Store.
+    TYA ; Times to A again.
+    LSR A ; >> 1, /2.
+    CMP #$07 ; If _ #$07
+    BCC VAL_UNDER_7 ; <, goto.
+    LDA #$06 ; Cap value.
+VAL_UNDER_7: ; 14:02DA, 0x0282DA
+    STA TMP_10 ; Store.
+    LDY PPU_UPDATE_BUF_INDEX ; Load index.
     LDA #$04
-    STA PPU_UPDATE_BUFFER[20],Y
-    LDA 14:032D,X
-    STA PPU_UPDATE_BUFFER+1,Y
-    LDA 14:032E,X
+    STA PPU_UPDATE_BUFFER[20],Y ; Type.
+    LDA UPDATE_POS_L,X
+    STA PPU_UPDATE_BUFFER+1,Y ; Set addr.
+    LDA UPDATE_POS_H,X
     STA PPU_UPDATE_BUFFER+2,Y
     LDA #$06
-    STA PPU_UPDATE_BUFFER+3,Y
+    STA PPU_UPDATE_BUFFER+3,Y ; Size.
+    INY ; Move index.
     INY
     INY
     INY
-    INY
-    LDX TMP_10
-    BEQ 14:0307
-    LDA #$4C
-    STA PPU_UPDATE_BUFFER[20],Y
-    DEC ZP_13_UNK
-    INY
-    DEX
-    BNE 14:02FE
-    LDA TMP_11
-    BEQ 14:0315
-    LDA #$4D
-    STA PPU_UPDATE_BUFFER[20],Y
-    INY
-    DEC ZP_13_UNK
-    BMI 14:0323
-    LDA ZP_13_UNK
-    BMI 14:0323
-    LDA #$00
-    STA PPU_UPDATE_BUFFER[20],Y
-    INY
-    DEC ZP_13_UNK
-    BPL 14:031B
-    CLC
-    LDA PPU_UPDATE_BUF_INDEX
-    ADC #$0A
-    STA PPU_UPDATE_BUF_INDEX
+    LDX TMP_10 ; Load loop count.
+    BEQ SKIP_FULL ; If == 0, goto.
+    LDA #$4C ; Tile, full health tile with two bars.
+LOOP_WRITE_FULL: ; 14:02FE, 0x0282FE
+    STA PPU_UPDATE_BUFFER[20],Y ; Store tile.
+    DEC TMP_13 ; Total--
+    INY ; Buf++
+    DEX ; Loop--
+    BNE LOOP_WRITE_FULL ; != 0, continue loop.
+SKIP_FULL: ; 14:0307, 0x028307
+    LDA TMP_11 ; Load
+    BEQ SKIP_PARTIAL ; == 0, skip partial update.
+    LDA #$4D ; Tile, half health tile with one bar.
+    STA PPU_UPDATE_BUFFER[20],Y ; Store to buffer.
+    INY ; Buf++
+    DEC TMP_13 ; Total--
+    BMI UPDATE_FINISHED ; If < 0, goto.
+SKIP_PARTIAL: ; 14:0315, 0x028315
+    LDA TMP_13 ; Load total
+    BMI UPDATE_FINISHED ; If negative, goto.
+    LDA #$00 ; Clear tile.
+LOOP_MORE_BLANKS: ; 14:031B, 0x02831B
+    STA PPU_UPDATE_BUFFER[20],Y ; Clear tile.
+    INY ; Buf++
+    DEC TMP_13 ; Total--
+    BPL LOOP_MORE_BLANKS ; Loop total left. Clearing.
+UPDATE_FINISHED: ; 14:0323, 0x028323
+    CLC ; Prep add.
+    LDA PPU_UPDATE_BUF_INDEX ; Get index.
+    ADC #$0A ; Add size.
+    STA PPU_UPDATE_BUF_INDEX ; Store back.
     PLA
-    TAX
-    RTS
-    .db 89
+    TAX ; Restore X.
+    RTS ; Leave.
+UPDATE_POS_L: ; 14:032D, 0x02832D
+    .db 89 ; P1, $2089
+UPDATE_POS_H: ; 14:032E, 0x02832E
     .db 20
-    .db 97
+    .db 97 ; P2, $2097
     .db 20
 PLAYER_LIVES_TO_BCD+DISPLAY_UPDATE: ; 14:0331, 0x028331
     TXA ; Save X.
@@ -498,8 +527,8 @@ PLAYER_LIVES_TO_BCD+DISPLAY_UPDATE: ; 14:0331, 0x028331
     LSR A ; >> 1, /2.
     TAY ; To Y index.
     LDA #$00
-    STA BCD_VAL_XY[2] ; Clear.
-    STA BCD_VAL_XY+1
+    STA TMP_16 ; Clear.
+    STA **:$0017
     LDA NUM_PLAYER_LIVES[2],Y ; Load A.
     BMI CREATE_UPDATE_BUFFER
     CMP #$64 ; If _ #$64, 100 decimal.
@@ -509,14 +538,14 @@ PLAYER_LIVES_TO_BCD+DISPLAY_UPDATE: ; 14:0331, 0x028331
 LESS_THAN_ONE_HUNDRED: ; 14:0349, 0x028349
     SEC ; Set carry.
 MORE_TO_GO: ; 14:034A, 0x02834A
-    INC BCD_VAL_XY[2] ; ++ tens.
+    INC TMP_16 ; ++ tens.
     SBC #$0A ; -=10.
     BEQ VAL_EQ_ZERO ; == 0, goto.
     BCS MORE_TO_GO ; >= value subbed.
     ADC #$0A ; Underflow, add back.
-    DEC BCD_VAL_XY[2] ; -- tens.
+    DEC TMP_16 ; -- tens.
 VAL_EQ_ZERO: ; 14:0356, 0x028356
-    STA BCD_VAL_XY+1 ; Store lower.
+    STA **:$0017 ; Store lower.
 CREATE_UPDATE_BUFFER: ; 14:0358, 0x028358
     LDY PPU_UPDATE_BUF_INDEX ; Get index.
     LDA #$04
@@ -528,7 +557,7 @@ CREATE_UPDATE_BUFFER: ; 14:0358, 0x028358
     LDA #$02 ; Count.
     STA PPU_UPDATE_BUFFER+3,Y
     CLC ; Prep add.
-    LDA BCD_VAL_XY[2] ; Load high.
+    LDA TMP_16 ; Load high.
     ADC #$01 ; += 1
     CMP #$01 ; If _ #$01
     BNE DONT_BLANK ; !=, goto.
@@ -536,7 +565,7 @@ CREATE_UPDATE_BUFFER: ; 14:0358, 0x028358
 DONT_BLANK: ; 14:037B, 0x02837B
     STA PPU_UPDATE_BUFFER+4,Y ; Store to buf.
     CLC ; Prep add.
-    LDA BCD_VAL_XY+1 ; Load lower.
+    LDA **:$0017 ; Load lower.
     ADC #$01 ; += 1
     STA PPU_UPDATE_BUFFER+5,Y ; Store to buffer.
     CLC ; Prep add.

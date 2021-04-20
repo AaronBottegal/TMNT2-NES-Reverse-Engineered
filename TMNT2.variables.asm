@@ -65,11 +65,14 @@ ZP_0E_UNK:                                    .rs 1
 TMP_0F?:                                      .rs 1
 TMP_10:                                       .rs 1
 TMP_11:                                       .rs 1
-ZP_12_UNK:                                    .rs 1
-ZP_13_UNK:                                    .rs 1
-ZP_14_UNK:                                    .rs 1
-R_**:$0015:                                   .rs 1
-BCD_VAL_XY:                                   .rs 2
+TMP_12:                                       .rs 1
+TMP_13:                                       .rs 1
+TMP_14:                                       .rs 1
+TMP_15:                                       .rs 1
+TMP_16:                                       .rs 1
+
+
+          .rsset 0x0018
 STATE_SWITCH_INITIAL_MENUS:                   .rs 1
 SUBSTATE_SWITCH_MENU:                         .rs 1
 
@@ -183,9 +186,8 @@ IRQ_I_SECONDARY_KEEP_IF_POSITIVE:             .rs 1
 
           .rsset 0x0093
 93_PLAYER_UNK:                                .rs 2
-
-
-          .rsset 0x0097
+95_UNK:                                       .rs 1
+96_UNK:                                       .rs 1
 97_COPY_607:                                  .rs 1
 98_UNK:                                       .rs 1
 99_UNK:                                       .rs 1
@@ -312,22 +314,22 @@ TMP_CHOOSE_BANKS_RTN_UNK:                     .rs 1
           .rsset 0x03E7
 ATTRACT_UNK:                                  .rs 1
 ATTRACT_DATA_PTR?:                            .rs 2
-
-
-          .rsset 0x03EC
+3EA_PLAYER?_UNK:                              .rs 2
 KONAMI_CODE_TRACKERS?:                        .rs 3
 3EF_UNK:                                      .rs 1
+SCORES_BCD_0000XX:                            .rs 1
+SCORES_BCD_00XX00:                            .rs 1
+SCORES_BCD_XX0000:                            .rs 1
 
 
           .rsset 0x03F6
-3F6_UNK:                                      .rs 1
-3F7_UNK:                                      .rs 1
+3F6_PLAYER_SCORE_ADD_VALUE:                   .rs 2
 
 
           .rsset 0x0400
 OBJ_ANIMATION_FRAME_TO:                       .rs 18
-OBJ_STATE/SWITCH:                             .rs 18
-ARR_OBJECT_ENABLED+MORE?:                     .rs 18
+OBJ_SECONDARY_SWITCH?:                        .rs 18
+OBJ_ENABLED_STATE+MORE?:                      .rs 18
 OBJ_DIRECTION_RELATED?:                       .rs 18
 OBJ_ANIM_HOLD_TIMER?:                         .rs 18
 45A_OBJ_DATA_ENTRY?:                          .rs 18
@@ -337,19 +339,19 @@ OBJ_POS_X:                                    .rs 18
 4A2_OBJ_UNK_POS?:                             .rs 18
 4B4_OBJ_SPEED?:                               .rs 18
 4C6_OBJ_UNK_POS?:                             .rs 18
-4D8_ARR_UNK:                                  .rs 18
+4D8_OBJ_UNK:                                  .rs 18
 4EA_ARR_UNK:                                  .rs 18
 4FC_ARR_UNK:                                  .rs 18
 50E_ARR_UNK:                                  .rs 18
 520_ARR_UNK:                                  .rs 18
 532_OBJ_UNK_POS?:                             .rs 18
 544_OBJ_UNK_POS?:                             .rs 18
-556_ARR_UNK:                                  .rs 18
+556_OBJ_UPDATE_FLAGS?:                        .rs 18
 OBJECT_DATA_EXTRA_A?:                         .rs 18
 OBJECT_DATA_EXTRA_B?:                         .rs 18
-58C_ARR_UNK:                                  .rs 18
+OBJ_TERTIARY_SWITCH?:                         .rs 18
 59E_OBJ_UNK_TIMER?:                           .rs 18
-5B0_ARR_UNK:                                  .rs 18
+5B0_OBJ_UNK:                                  .rs 18
 5C2_OBJ_DATA_PTR_STREAM_INDEX:                .rs 18
 5D4_ARR_OBJ_TIMER?:                           .rs 18
 
@@ -445,8 +447,7 @@ IRQ_L_NAMETABLE_FOCUS:                        .rs 1
 FLAG_IRQ_65F_INDEX_UNK:                       .rs 1
 FLAG_IRQ_660:                                 .rs 1
 661_UNK_LEVEL_A_SETS:                         .rs 1
-662_UNK:                                      .rs 1
-663_UNK:                                      .rs 1
+662_PLAYER_UPDATE_UNK:                        .rs 2
 
 
           .rsset 0x066D
@@ -514,6 +515,10 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 
           .rsset 0x0712
 712_FLAG?_UNK:                                .rs 1
+
+
+          .rsset 0x0714
+714_UNK:                                      .rs 1
 
 
           .rsset 0x071C

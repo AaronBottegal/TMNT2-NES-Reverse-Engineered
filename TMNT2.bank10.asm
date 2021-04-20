@@ -1,50 +1,27 @@
     .db 2A
-    .db 20
-    .db 05
-    .db 82
-    .db 90
-    .db 26
-    .db A5
-    .db 02
-    .db D0
-    .db 22
-    .db A5
-    .db 47
-    .db F0
-    .db 0C
-    .db A4
-    .db 42
-    .db B9
-    .db 2F
-    .db 80
-    .db 18
-    .db 7D
-    .db B0
-    .db 05
-    .db 9D
-    .db B0
-    .db 05
-    .db AD
-    .db FA
-    .db 05
-    .db 9D
-    .db 5A
-    .db 04
-    .db A9
-    .db 00
-    .db 8D
-    .db FA
-    .db 05
-    .db 85
-    .db 95
-    .db 85
-    .db 96
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
+TERTIARY_RTN_A: ; 0A:0001, 0x014001
+    JSR OBJ_UNK_RET_CC_SUCCESS? ; Compare OBJX
+    BCC RTN_A_FINALIZE ; Ret CC, goto.
+    LDA TMP_02 ; Load State != Timer?
+    BNE RTN_A_FINALIZE ; If any, goto.
+    LDA 47_TWO_PLAYERS_FLAG ; Test 2P
+    BEQ NOT_2P
+    LDY LEVEL_SCREEN_ON ; Load level.
+    LDA LEVEL_DATA_2P_UNK,Y ; Load
+    CLC
+    ADC 5B0_OBJ_UNK[18],X ; Add to OBJ.
+    STA 5B0_OBJ_UNK[18],X ; Store back.
+NOT_2P: ; 0A:001A, 0x01401A
+    LDA 5FA_UNK ; Load
+    STA 45A_OBJ_DATA_ENTRY?[18],X ; Store to obj.
+    LDA #$00
+    STA 5FA_UNK ; Clear
+    STA 95_UNK
+    STA 96_UNK
+    INC OBJ_TERTIARY_SWITCH?[18],X ; Obj next.
+RTN_A_FINALIZE: ; 0A:002C, 0x01402C
+    JMP OBJECT_X_MOVE? ; Do rtn.
+LEVEL_DATA_2P_UNK: ; 0A:002F, 0x01402F
     .db 02
     .db 02
     .db 02
@@ -56,132 +33,74 @@
     .db 04
     .db 04
     .db 04
-    .db BD
-    .db 12
-    .db 04
-    .db 20
-    .db 98
-    .db CC
-    .db 42
-    .db 80
-    .db BD
-    .db 8C
-    .db 05
-    .db 20
-    .db 98
-    .db CC
-    .db 01
-    .db 80
-    .db 4E
-    .db 80
-    .db B8
-    .db 81
-    .db 18
-    .db A5
-    .db 95
-    .db 69
-    .db 01
-    .db 85
-    .db 95
-    .db A5
-    .db 96
-    .db 69
-    .db 00
-    .db 85
-    .db 96
-    .db BD
-    .db B0
-    .db 05
-    .db D0
-    .db 19
-    .db BD
-    .db 5A
-    .db 04
-    .db F0
-    .db 0E
-    .db 20
-    .db 39
-    .db 82
-    .db 90
-    .db 42
-    .db AD
-    .db FA
-    .db 05
-    .db D0
-    .db 04
-    .db A9
-    .db 00
-    .db 85
-    .db 8B
-    .db EE
-    .db 14
-    .db 07
-    .db 4C
-    .db D1
-    .db F4
-    .db 20
-    .db C1
-    .db 81
-    .db BD
-    .db D4
-    .db 05
-    .db C9
-    .db 30
-    .db B0
-    .db 2C
-    .db A5
-    .db 42
-    .db 0A
-    .db A8
-    .db B9
-    .db B7
-    .db 80
-    .db 85
-    .db 08
-    .db B9
-    .db B8
-    .db 80
-    .db 85
-    .db 09
-    .db BC
-    .db D4
-    .db 05
-    .db B1
-    .db 08
-    .db C5
-    .db 00
-    .db F0
-    .db 12
-    .db 90
-    .db 10
-    .db 20
-    .db 2C
-    .db F3
-    .db B0
-    .db 0B
-    .db A9
-    .db 30
-    .db 9D
-    .db 9E
-    .db 05
-    .db 20
-    .db 2C
-    .db 81
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db A5
-    .db 00
-    .db C9
-    .db 02
-    .db B0
-    .db F7
-    .db 90
-    .db E5
+SWITCH_RTN_0x23: ; 0A:003A, 0x01403A
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load from object.
+    JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch on.
+    LOW(SWITCH_RTN_A) ; Probs this one, lol.
+    HIGH(SWITCH_RTN_A)
+SWITCH_RTN_A: ; 0A:0042, 0x014042
+    LDA OBJ_TERTIARY_SWITCH?[18],X ; Load other from obj.
+    JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch on.
+    LOW(TERTIARY_RTN_A) ; Setup+move?
+    HIGH(TERTIARY_RTN_A)
+    LOW(TERTIARY_RTN_B) ; Object forward.
+    HIGH(TERTIARY_RTN_B)
+    LOW(TERTIARY_RTN_C) ; Timer to go back to switch 2.
+    HIGH(TERTIARY_RTN_C)
+TERTIARY_RTN_B: ; 0A:004E, 0x01404E
+    CLC ; Prep add.
+    LDA 95_UNK ; Load
+    ADC #$01 ; += 1
+    STA 95_UNK ; Store back.
+    LDA 96_UNK ; Load
+    ADC #$00 ; Overflow to.
+    STA 96_UNK ; Store back.
+    LDA 5B0_OBJ_UNK[18],X ; Load from obj.
+    BNE OBJ_UNK_NONZERO ; Nonzero, goto.
+    LDA 45A_OBJ_DATA_ENTRY?[18],X ; If val
+    BEQ OBJ_DATA_B_ZERO ; == 0, goto.
+    JSR FIND_SINGLE_YOBJ_NOT_SAME_AS_NEXT_TO_RET_CC_SUCCESS ; Do sub.
+    BCC RTS_MOVE ; Found, leave.
+    LDA 5FA_UNK ; Load
+    BNE OBJ_DATA_B_ZERO ; If set, don't clear 8B.
+    LDA #$00
+    STA 8B_UNK ; Clear.
+OBJ_DATA_B_ZERO: ; 0A:0073, 0x014073
+    INC 714_UNK ; ++ unk.
+    JMP INIT_OBJECT[X]_DATA? ; Abuse RTS. Clear object?
+OBJ_UNK_NONZERO: ; 0A:0079, 0x014079
+    JSR GET_OBJS_MATCH_X? ; Get val in TMP.
+    LDA 5D4_ARR_OBJ_TIMER?[18],X ; Load from X.
+    CMP #$30 ; If _ #$30
+    BCS VAL_GTE ; >=, goto.
+    LDA LEVEL_SCREEN_ON ; Load screen.
+    ASL A ; << 1, *2
+    TAY ; To Y index.
+    LDA SCREEN_DATA_PTR_L,Y ; Set up ptr.
+    STA TMP_08
+    LDA SCREEN_DATA_PTR_H,Y
+    STA TMP_09
+    LDY 5D4_ARR_OBJ_TIMER?[18],X ; Get index from OBJ.
+    LDA [TMP_08],Y ; Load from file.
+    CMP TMP_00 ; If _ count?
+    BEQ RTS_MOVE ; ==, goto.
+    BCC RTS_MOVE ; <, goto.
+    JSR RTN_GET_OBJ_PAIR_IN_T_RET_CC_SUCCESS
+    BCS RTS_MOVE ; Didn't get Yobj. Leave.
+    LDA #$30
+    STA 59E_OBJ_UNK_TIMER?[18],X ; Set timer.
+    JSR SETUP_OBJ_X? ; Do...
+    INC OBJ_TERTIARY_SWITCH?[18],X ; Next switch.
+RTS_MOVE: ; 0A:00AC, 0x0140AC
+    JMP OBJECT_X_MOVE? ; Abuse RTS. Move.
+VAL_GTE: ; 0A:00AF, 0x0140AF
+    LDA TMP_00
+    CMP #$02
+    BCS RTS_MOVE
+    BCC 0A:009C
+SCREEN_DATA_PTR_L: ; 0A:00B7, 0x0140B7
     .db CD
+SCREEN_DATA_PTR_H: ; 0A:00B8, 0x0140B8
     .db 80
     .db CD
     .db 80
@@ -298,125 +217,76 @@
     .db 01
     .db 00
     .db 02
-    .db BD
-    .db D4
-    .db 05
-    .db 99
-    .db 24
-    .db 04
-    .db C9
-    .db 30
-    .db B0
-    .db 05
-    .db A9
-    .db 01
-    .db 99
-    .db 25
-    .db 04
-    .db BD
-    .db C2
-    .db 05
-    .db 99
-    .db C2
-    .db 05
-    .db 86
-    .db 10
-    .db AE
-    .db F9
-    .db 05
-    .db CA
-    .db F0
-    .db 06
-    .db CA
-    .db 8A
-    .db 0A
-    .db 4C
-    .db 53
-    .db 81
-    .db A5
-    .db 23
-    .db 29
-    .db 02
-    .db AA
-    .db BD
-    .db 9E
-    .db 81
-    .db 99
-    .db 56
-    .db 05
-    .db BD
-    .db 9F
-    .db 81
-    .db 99
-    .db 7E
-    .db 04
-    .db A5
-    .db 42
-    .db 0A
-    .db AA
-    .db BD
-    .db A2
-    .db 81
-    .db 85
-    .db 11
-    .db A5
-    .db 42
-    .db C9
-    .db 08
-    .db D0
-    .db 0C
-    .db A5
-    .db B4
-    .db F0
-    .db 08
-    .db C9
-    .db 03
-    .db B0
-    .db 04
-    .db A9
-    .db BC
-    .db 85
-    .db 11
-    .db BD
-    .db A3
-    .db 81
-    .db 85
-    .db 12
-    .db A5
-    .db 23
-    .db C5
-    .db 11
-    .db 90
-    .db 08
-    .db C5
-    .db 12
-    .db 90
-    .db 06
-    .db A5
-    .db 12
-    .db D0
-    .db 02
-    .db A5
-    .db 11
-    .db 99
-    .db A2
-    .db 04
-    .db A6
-    .db 10
-    .db DE
-    .db B0
-    .db 05
+SETUP_OBJ_X?: ; 0A:012C, 0x01412C
+    LDA 5D4_ARR_OBJ_TIMER?[18],X ; Load from Xobj.
+    STA OBJ_ENABLED_STATE+MORE?[18],Y ; Store to Yobj.
+    CMP #$30 ; If _ #$30
+    BCS OVER_0x30 ; >=, goto.
+    LDA #$01
+    STA OBJ_ENABLED_STATE+MORE?+1,Y ; Set
+OVER_0x30: ; 0A:013B, 0x01413B
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X ; Copy from X to Y.
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],Y
+    STX TMP_10 ; Save Xobj working on.
+    LDX ZP_13_INDEX_VAL_UNK ; Load
+    DEX ; --
+    BEQ ZP_13--_EQ_ZERO ; == 0, goto.
+    DEX ; -- again.
+    TXA ; To A.
+    ASL A ; << 1, *2
+    JMP A_FROM_X ; Goto.
+ZP_13--_EQ_ZERO: ; 0A:014F, 0x01414F
+    LDA RANDOM_VALS?[2] ; Load
+    AND #$02 ; Keep 0000.0010
+A_FROM_X: ; 0A:0153, 0x014153
+    TAX ; A to X.
+    LDA DATA_UPDATE_FLAGS?,X ; Get data.
+    STA 556_OBJ_UPDATE_FLAGS?[18],Y ; Store to obj.
+    LDA DATA_POS_X,X
+    STA OBJ_POS_X[18],Y
+    LDA LEVEL_SCREEN_ON ; Get level.
+    ASL A ; << 1, *2
+    TAX ; To X index.
+    LDA DATA_TMP11_UNK,X ; Load.
+    STA TMP_11 ; To TMP.
+    LDA LEVEL_SCREEN_ON ; Get screen.
+    CMP #$08 ; If _ #$08
+    BNE SCREEN_NOT_8 ; !=, goto.
+    LDA NAMETABLE_FOCUS_VAL?[2] ; Load
+    BEQ SCREEN_NOT_8 ; If 0, skip.
+    CMP #$03 ; If _ #$03
+    BCS SCREEN_NOT_8 ; >=, goto.
+    LDA #$BC
+    STA TMP_11 ; Set to.
+SCREEN_NOT_8: ; 0A:017B, 0x01417B
+    LDA DATA_TMP12_UNK,X ; Get from level.
+    STA TMP_12 ; Store to TMP.
+    LDA RANDOM_VALS?[2] ; Load random.
+    CMP TMP_11 ; If _ TMP_11
+    BCC WRITE_TMP11_TO_POS ; <, goto.
+    CMP TMP_12 ; If _ TMP_12
+    BCC WRITE_A_TO_POS ; <, goto.
+    LDA TMP_12 ; Load
+    BNE WRITE_A_TO_POS ; If nonzero, write.
+WRITE_TMP11_TO_POS: ; 0A:018E, 0x01418E
+    LDA TMP_11 ; Load from.
+WRITE_A_TO_POS: ; 0A:0190, 0x014190
+    STA 4A2_OBJ_UNK_POS?[18],Y ; Set from A.
+    LDX TMP_10 ; Recover object working on.
+    DEC 5B0_OBJ_UNK[18],X ; --
+    JMP OBJECT_X_MOVE? ; Move it.
     .db 4C
     .db F1
     .db F3
-    .db 4C
-    .db F1
-    .db F3
+DATA_UPDATE_FLAGS?: ; 0A:019E, 0x01419E
     .db 01
+DATA_POS_X: ; 0A:019F, 0x01419F
     .db 10
     .db 02
     .db F0
+DATA_TMP11_UNK: ; 0A:01A2, 0x0141A2
     .db 90
+DATA_TMP12_UNK: ; 0A:01A3, 0x0141A3
     .db D0
     .db A0
     .db D0
@@ -438,66 +308,41 @@
     .db D8
     .db A0
     .db D8
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 03
-    .db DE
-    .db 8C
-    .db 05
-    .db 60
-    .db A9
-    .db 00
-    .db 85
-    .db 00
-    .db A0
-    .db 07
-    .db B9
-    .db 24
-    .db 04
-    .db DD
-    .db D4
-    .db 05
-    .db D0
-    .db 02
-    .db E6
-    .db 00
-    .db C8
-    .db C8
-    .db C0
-    .db 11
-    .db 90
-    .db F0
-    .db 60
-    .db A5
-    .db DE
-    .db D0
-    .db 05
-    .db AD
-    .db 12
-    .db 07
-    .db D0
-    .db 12
-    .db BC
-    .db 24
-    .db 04
-    .db 88
-    .db 88
-    .db 30
-    .db 0B
-    .db B9
-    .db F4
-    .db 81
-    .db A8
-    .db 20
-    .db 55
-    .db F6
-    .db A9
-    .db 00
-    .db 85
-    .db DE
-    .db 60
+TERTIARY_RTN_C: ; 0A:01B8, 0x0141B8
+    DEC 59E_OBJ_UNK_TIMER?[18],X ; --
+    BNE RTS ; != 0, leave.
+    DEC OBJ_TERTIARY_SWITCH?[18],X ; Back to switch 2.
+RTS: ; 0A:01C0, 0x0141C0
+    RTS
+GET_OBJS_MATCH_X?: ; 0A:01C1, 0x0141C1
+    LDA #$00
+    STA TMP_00 ; Clear.
+    LDY #$07 ; Obj start.
+LOOP_OBJS: ; 0A:01C7, 0x0141C7
+    LDA OBJ_ENABLED_STATE+MORE?[18],Y ; Get state.
+    CMP 5D4_ARR_OBJ_TIMER?[18],X ; If X.var _ Y.State
+    BNE STATE_NE_TIMER? ; !=, goto.
+    INC TMP_00 ; ++
+STATE_NE_TIMER?: ; 0A:01D1, 0x0141D1
+    INY ; Obj pair ++
+    INY
+    CPY #$11 ; If _ Obj[18]
+    BCC LOOP_OBJS ; <, loop.
+    RTS
+    LDA DE_FLAG?_UNK
+    BNE 0A:01E1
+    LDA 712_FLAG?_UNK
+    BNE 0A:01F3
+    LDY OBJ_ENABLED_STATE+MORE?[18],X
+    DEY
+    DEY
+    BMI 0A:01F3
+    LDA $81F4,Y
+    TAY
+    JSR 1F:1655
+    LDA #$00
+    STA DE_FLAG?_UNK
+    RTS
     .db 00
     .db 16
     .db 02
@@ -515,187 +360,103 @@
     .db 05
     .db 00
     .db 20
-    .db A0
-    .db 07
-    .db 86
-    .db 00
-    .db BD
-    .db D4
-    .db 05
-    .db 85
-    .db 01
-    .db BD
-    .db 24
-    .db 04
-    .db 85
-    .db 03
-    .db A9
-    .db 00
-    .db 85
-    .db 02
-    .db C4
-    .db 00
-    .db F0
-    .db 05
-    .db B9
-    .db 24
-    .db 04
-    .db D0
-    .db 07
-    .db C8
-    .db C8
-    .db C0
-    .db 11
-    .db 90
-    .db F1
-    .db 60
-    .db 10
-    .db 04
-    .db C9
-    .db B0
-    .db 90
-    .db F3
-    .db C5
-    .db 01
-    .db F0
-    .db EF
-    .db E6
-    .db 02
-    .db C5
-    .db 03
-    .db F0
-    .db E9
-    .db 18
-    .db 60
-    .db A0
-    .db 07
-    .db BD
-    .db 24
-    .db 04
-    .db 85
-    .db 00
-    .db B9
-    .db 24
-    .db 04
-    .db D0
-    .db 06
-    .db C8
-    .db C0
-    .db 11
-    .db 90
-    .db F6
-    .db 60
-    .db 30
-    .db F8
-    .db C5
-    .db 00
-    .db F0
-    .db F4
-    .db 18
-    .db 60
-    .db A9
-    .db 01
-    .db 9D
-    .db 56
-    .db 05
-    .db 99
-    .db 56
-    .db 05
-    .db A9
-    .db 18
-    .db 9D
-    .db 7E
-    .db 04
-    .db A9
-    .db 20
-    .db D0
-    .db 0F
-    .db A9
-    .db 02
-    .db 9D
-    .db 56
-    .db 05
-    .db 99
-    .db 56
-    .db 05
-    .db A9
-    .db E8
-    .db 9D
-    .db 7E
-    .db 04
-    .db A9
-    .db E0
-    .db 99
-    .db 7E
-    .db 04
-    .db A5
-    .db 42
-    .db C9
-    .db 02
-    .db B0
-    .db 11
-    .db A9
-    .db 98
-    .db 9D
-    .db 6C
-    .db 04
-    .db 9D
-    .db A2
-    .db 04
-    .db A9
-    .db C0
-    .db 99
-    .db 6C
-    .db 04
-    .db 99
-    .db A2
-    .db 04
-    .db 60
-    .db A9
-    .db B0
-    .db 9D
-    .db 6C
-    .db 04
-    .db 9D
-    .db A2
-    .db 04
-    .db A9
-    .db E0
-    .db 99
-    .db 6C
-    .db 04
-    .db 99
-    .db A2
-    .db 04
-    .db 60
-    .db 8A
-    .db 38
-    .db E9
-    .db 07
-    .db 4A
-    .db 85
-    .db 08
-    .db 0A
-    .db 18
-    .db 65
-    .db 08
-    .db A8
-    .db B9
-    .db BA
-    .db 82
-    .db 85
-    .db 08
-    .db B9
-    .db BB
-    .db 82
-    .db 85
-    .db 09
-    .db B9
-    .db BC
-    .db 82
-    .db 85
-    .db 0A
-    .db 60
+OBJ_UNK_RET_CC_SUCCESS?: ; 0A:0205, 0x014205
+    LDY #$07 ; Obj
+    STX TMP_00 ; Object handling.
+    LDA 5D4_ARR_OBJ_TIMER?[18],X ; Load
+    STA TMP_01 ; Store to.
+    LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load
+    STA TMP_03 ; Store to. Xobj state.
+    LDA #$00 ; Init val?
+    STA TMP_02 ; Clear.
+LOOP_OBJ_PAIRS: ; 0A:0217, 0x014217
+    CPY TMP_00 ; If YOBJ _ Handling
+    BEQ NEXT_YOBJ ; ==, goto.
+    LDA OBJ_ENABLED_STATE+MORE?[18],Y ; Load from Y object.
+    BNE OBJY_ENABLED_NONZERO ; If nonzero, goto.
+NEXT_YOBJ: ; 0A:0220, 0x014220
+    INY ; Y += 2
+    INY
+    CPY #$11 ; If _ OBJ[17]
+    BCC LOOP_OBJ_PAIRS ; <, loop.
+    RTS ; Leave, none found. Carry set.
+OBJY_ENABLED_NONZERO: ; 0A:0227, 0x014227
+    BPL STATE_POSITIVE ; If positive, goto.
+    CMP #$B0 ; If _ #$B0
+    BCC NEXT_YOBJ ; <, next object.
+STATE_POSITIVE: ; 0A:022D, 0x01422D
+    CMP TMP_01 ; If Y.State _ Timer
+    BEQ NEXT_YOBJ ; ==, skip.
+    INC TMP_02 ; var++, unk.
+    CMP TMP_03 ; If Y.State _ X.State
+    BEQ NEXT_YOBJ ; ==, skip.
+    CLC ; Set return. Success?
+    RTS ; Leave.
+FIND_SINGLE_YOBJ_NOT_SAME_AS_NEXT_TO_RET_CC_SUCCESS: ; 0A:0239, 0x014239
+    LDY #$07 ; Yobj
+    LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load from Xobj.
+    STA TMP_00 ; Store to TMP.
+LOOP_ALL_YOBJS: ; 0A:0240, 0x014240
+    LDA OBJ_ENABLED_STATE+MORE?[18],Y ; Load from Yobj.
+    BNE YOBJ_NONZERO ; If nonzero, goto.
+NEXT_YOBJ: ; 0A:0245, 0x014245
+    INY ; Obj++
+    CPY #$11 ; If Yobj _ OBJ[18]
+    BCC LOOP_ALL_YOBJS ; <, goto.
+    RTS
+YOBJ_NONZERO: ; 0A:024B, 0x01424B
+    BMI NEXT_YOBJ ; If negative, skip.
+    CMP TMP_00 ; If Yobj.State _ Xobj.State
+    BEQ NEXT_YOBJ ; ==, goto. Can't match.
+    CLC ; Clear carry, success.
+    RTS
+    LDA #$01
+    STA 556_OBJ_UPDATE_FLAGS?[18],X
+    STA 556_OBJ_UPDATE_FLAGS?[18],Y
+    LDA #$18
+    STA OBJ_POS_X[18],X
+    LDA #$20
+    BNE 0A:0273
+    LDA #$02
+    STA 556_OBJ_UPDATE_FLAGS?[18],X
+    STA 556_OBJ_UPDATE_FLAGS?[18],Y
+    LDA #$E8
+    STA OBJ_POS_X[18],X
+    LDA #$E0
+    STA OBJ_POS_X[18],Y
+    LDA LEVEL_SCREEN_ON
+    CMP #$02
+    BCS 0A:028D
+    LDA #$98
+    STA OBJ_POS_Y[18],X
+    STA 4A2_OBJ_UNK_POS?[18],X
+    LDA #$C0
+    STA OBJ_POS_Y[18],Y
+    STA 4A2_OBJ_UNK_POS?[18],Y
+    RTS
+    LDA #$B0
+    STA OBJ_POS_Y[18],X
+    STA 4A2_OBJ_UNK_POS?[18],X
+    LDA #$E0
+    STA OBJ_POS_Y[18],Y
+    STA 4A2_OBJ_UNK_POS?[18],Y
+    RTS
+    TXA
+    SEC
+    SBC #$07
+    LSR A
+    STA TMP_08
+    ASL A
+    CLC
+    ADC TMP_08
+    TAY
+    LDA $82BA,Y
+    STA TMP_08
+    LDA $82BB,Y
+    STA TMP_09
+    LDA $82BC,Y
+    STA TMP_0A
+    RTS
     .db 09
     .db 0B
     .db 0D
