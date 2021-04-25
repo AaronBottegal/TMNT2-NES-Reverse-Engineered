@@ -1476,6 +1476,7 @@
     .db CA
     .db EA
     .db 60
+OBJ_STATE_0x15_HANDLER: ; 0B:05C6, 0x0165C6
     .db 8E
     .db 00
     .db 07

@@ -2541,6 +2541,7 @@
     .db EB
     .db C3
     .db 08
+OBJ_STATE_0x32_HANDLER: ; 03:09EF, 0x0069EF
     .db BD
     .db 12
     .db 04
@@ -2614,6 +2615,7 @@
     .db F3
     .db FC
     .db AA
+OBJ_STATE_0x35_HANDLER: ; 03:0A38, 0x006A38
     .db BD
     .db 12
     .db 04
@@ -2721,6 +2723,7 @@
     .db F3
     .db 29
     .db AB
+OBJ_STATE_0x33_HANDLER: ; 03:0AA3, 0x006AA3
     .db BD
     .db 12
     .db 04
@@ -2741,6 +2744,7 @@
     .db AB
     .db D1
     .db F4
+OBJ_STATE_0x30_HANDLER: ; 03:0AB7, 0x006AB7
     .db A9
     .db 04
     .db 9D
@@ -4899,6 +4903,7 @@
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0x34_HANDLER: ; 03:1325, 0x007325
     .db BD
     .db 12
     .db 04

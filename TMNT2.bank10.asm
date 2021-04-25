@@ -6,7 +6,7 @@ TERTIARY_RTN_A: ; 0A:0001, 0x014001
     BNE RTN_A_FINALIZE ; If any, goto.
     LDA 47_TWO_PLAYERS_FLAG ; Test 2P
     BEQ NOT_2P
-    LDY LEVEL_SCREEN_ON ; Load level.
+    LDY LEVEL/SCREEN_ON ; Load level.
     LDA LEVEL_DATA_2P_UNK,Y ; Load
     CLC
     ADC 5B0_OBJ_UNK[18],X ; Add to OBJ.
@@ -33,7 +33,7 @@ LEVEL_DATA_2P_UNK: ; 0A:002F, 0x01402F
     .db 04
     .db 04
     .db 04
-SWITCH_RTN_0x23: ; 0A:003A, 0x01403A
+OBJ_STATE_0x23_HANDLER: ; 0A:003A, 0x01403A
     LDA OBJ_SECONDARY_SWITCH?[18],X ; Load from object.
     JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch on.
     LOW(SWITCH_RTN_A) ; Probs this one, lol.
@@ -73,7 +73,7 @@ OBJ_UNK_NONZERO: ; 0A:0079, 0x014079
     LDA 5D4_ARR_OBJ_TIMER?[18],X ; Load from X.
     CMP #$30 ; If _ #$30
     BCS VAL_GTE ; >=, goto.
-    LDA LEVEL_SCREEN_ON ; Load screen.
+    LDA LEVEL/SCREEN_ON ; Load screen.
     ASL A ; << 1, *2
     TAY ; To Y index.
     LDA SCREEN_DATA_PTR_L,Y ; Set up ptr.
@@ -244,12 +244,12 @@ A_FROM_X: ; 0A:0153, 0x014153
     STA 556_OBJ_UPDATE_FLAGS?[18],Y ; Store to obj.
     LDA DATA_POS_X,X
     STA OBJ_POS_X[18],Y
-    LDA LEVEL_SCREEN_ON ; Get level.
+    LDA LEVEL/SCREEN_ON ; Get level.
     ASL A ; << 1, *2
     TAX ; To X index.
     LDA DATA_TMP11_UNK,X ; Load.
     STA TMP_11 ; To TMP.
-    LDA LEVEL_SCREEN_ON ; Get screen.
+    LDA LEVEL/SCREEN_ON ; Get screen.
     CMP #$08 ; If _ #$08
     BNE SCREEN_NOT_8 ; !=, goto.
     LDA NAMETABLE_FOCUS_VAL?[2] ; Load
@@ -424,7 +424,7 @@ YOBJ_NONZERO: ; 0A:024B, 0x01424B
     STA OBJ_POS_X[18],X
     LDA #$E0
     STA OBJ_POS_X[18],Y
-    LDA LEVEL_SCREEN_ON
+    LDA LEVEL/SCREEN_ON
     CMP #$02
     BCS 0A:028D
     LDA #$98
@@ -513,6 +513,7 @@ YOBJ_NONZERO: ; 0A:024B, 0x01424B
     .db 02
     .db 02
     .db 02
+OBJ_STATE_0x24_HANDLER: ; 0A:02F2, 0x0142F2
     .db BD
     .db 12
     .db 04
@@ -550,6 +551,7 @@ YOBJ_NONZERO: ; 0A:024B, 0x01424B
     .db 4C
     .db 4A
     .db 87
+OBJ_STATE_0x25_HANDLER: ; 0A:0317, 0x014317
     .db BD
     .db 12
     .db 04
@@ -592,6 +594,7 @@ YOBJ_NONZERO: ; 0A:024B, 0x01424B
     .db 4C
     .db FC
     .db 86
+OBJ_STATE_0x26_HANDLER: ; 0A:0341, 0x014341
     .db BD
     .db 12
     .db 04
@@ -716,6 +719,7 @@ YOBJ_NONZERO: ; 0A:024B, 0x01424B
     .db 4C
     .db AC
     .db 83
+OBJ_STATE_0x01_HANDLER: ; 0A:03BD, 0x0143BD
     .db BD
     .db 55
     .db 05
@@ -890,6 +894,7 @@ YOBJ_NONZERO: ; 0A:024B, 0x01424B
     .db 59
     .db 58
     .db 59
+OBJ_STATE_0x02_HANDLER: ; 0A:046B, 0x01446B
     .db 8E
     .db 00
     .db 07

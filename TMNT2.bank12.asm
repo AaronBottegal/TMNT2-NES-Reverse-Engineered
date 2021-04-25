@@ -1,6 +1,8 @@
     .db 2C
+OBJ_STATE_0x50_HANDLER: ; 0C:0001, 0x018001
     .db 4C
     .db F1
+OBJ_STATE_0x6D_HANDLER: ; 0C:0003, 0x018003
     .db F3
     .db AD
     .db 0E
@@ -787,6 +789,7 @@
     .db 4A
     .db 04
     .db 60
+OBJ_STATE_0x51_HANDLER: ; 0C:0315, 0x018315
     .db 20
     .db 04
     .db 80
@@ -2801,6 +2804,7 @@
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0x52_HANDLER: ; 0C:0AF3, 0x018AF3
     .db BD
     .db 12
     .db 04
@@ -3038,6 +3042,7 @@
     .db 1F
     .db 1D
     .db 1E
+OBJ_STATE_0x53_HANDLER: ; 0C:0BE0, 0x018BE0
     .db 20
     .db 04
     .db 80
@@ -4471,6 +4476,7 @@
     .db 60
     .db 18
     .db 60
+OBJ_STATE_0x54_HANDLER: ; 0C:1179, 0x019179
     .db BD
     .db 12
     .db 04
@@ -4590,6 +4596,7 @@
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0x5D_HANDLER: ; 0C:11F0, 0x0191F0
     .db BD
     .db 8C
     .db 05
@@ -4640,6 +4647,7 @@
     .db 4C
     .db A2
     .db A2
+OBJ_STATE_0x55_HANDLER: ; 0C:1222, 0x019222
     .db 8E
     .db 00
     .db 07
@@ -4686,6 +4694,7 @@
     .db 4C
     .db 29
     .db AC
+OBJ_STATE_0x56_HANDLER: ; 0C:1250, 0x019250
     .db BD
     .db 55
     .db 05
@@ -6157,6 +6166,7 @@
     .db 28
     .db 00
     .db 28
+OBJ_STATE_0x57_HANDLER: ; 0C:180F, 0x01980F
     .db BD
     .db D5
     .db 05
@@ -7069,6 +7079,7 @@
     .db 57
     .db 59
     .db 59
+OBJ_STATE_0x58_HANDLER: ; 0C:1B9F, 0x019B9F
     .db BD
     .db 55
     .db 05
@@ -7312,6 +7323,7 @@
     .db 4C
     .db 52
     .db DB
+OBJ_STATE_0x59_HANDLER: ; 0C:1C92, 0x019C92
     .db BD
     .db 8C
     .db 05

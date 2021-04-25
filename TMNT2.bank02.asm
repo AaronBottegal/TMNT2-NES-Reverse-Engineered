@@ -1,472 +1,474 @@
     .db 22
-    .db D5
-    .db 81
-    .db DA
-    .db 81
-    .db E3
-    .db 81
-    .db 04
-    .db 82
-    .db 0D
-    .db 82
-    .db 6A
-    .db 82
-    .db C7
-    .db 82
-    .db 24
-    .db 83
-    .db 81
-    .db 83
-    .db 96
-    .db 83
-    .db AB
-    .db 83
-    .db EA
-    .db 83
-    .db D5
-    .db 83
-    .db C0
-    .db 83
-    .db FF
-    .db 83
-    .db 0C
-    .db 84
-    .db 19
-    .db 84
-    .db 26
-    .db 84
-    .db 2B
-    .db 84
-    .db 34
-    .db 84
-    .db 39
-    .db 84
-    .db 42
-    .db 84
-    .db 47
-    .db 84
-    .db 4C
-    .db 84
-    .db 5D
-    .db 84
-    .db 66
-    .db 84
-    .db A7
-    .db 84
-    .db E4
-    .db 84
-    .db 25
-    .db 85
-    .db 5A
-    .db 85
-    .db 8F
-    .db 85
-    .db C8
-    .db 85
-    .db F3
-    .db 8C
-    .db 30
-    .db 8D
-    .db 01
-    .db 86
-    .db 46
-    .db 86
-    .db 4B
-    .db 86
-    .db 50
-    .db 86
-    .db 8D
-    .db 86
-    .db C1
-    .db 8B
-    .db CE
-    .db 86
-    .db 03
-    .db 87
-    .db 6F
-    .db 8B
-    .db 3E
-    .db 8B
-    .db 0D
-    .db 8B
-    .db CC
-    .db 8A
-    .db AA
-    .db 8A
-    .db BB
-    .db 8A
-    .db 58
-    .db 8A
-    .db 81
-    .db 8A
-    .db D6
-    .db 89
-    .db 17
-    .db 8A
-    .db 24
-    .db 89
-    .db 7D
-    .db 89
-    .db 42
-    .db 88
-    .db B3
-    .db 88
-    .db 30
-    .db 87
-    .db B9
-    .db 87
-    .db B0
-    .db 8B
-    .db FE
-    .db 8B
-    .db 4F
-    .db 8C
-    .db 90
-    .db 8C
-    .db C1
-    .db 8C
-    .db E2
-    .db 8C
-    .db 6D
-    .db 8D
-    .db B2
-    .db 8D
-    .db F3
-    .db 8D
-    .db 38
-    .db 8E
-    .db 7D
-    .db 8E
-    .db BE
-    .db 8E
-    .db FF
-    .db 8E
-    .db 48
-    .db 8F
-    .db 89
-    .db 8F
-    .db D2
-    .db 8F
-    .db 1F
-    .db 90
-    .db 58
-    .db 90
-    .db 5D
-    .db 90
-    .db 62
-    .db 90
-    .db 67
-    .db 90
-    .db 70
-    .db 90
-    .db 79
-    .db 90
-    .db BA
-    .db 90
-    .db FB
-    .db 90
-    .db 44
-    .db 91
-    .db 8D
-    .db 91
-    .db D6
-    .db 91
-    .db 1B
-    .db 92
-    .db 64
-    .db 92
-    .db AD
-    .db 92
-    .db F6
-    .db 92
-    .db 3F
-    .db 93
-    .db 78
-    .db 93
-    .db AD
-    .db 93
-    .db E2
-    .db 93
-    .db EB
-    .db 93
-    .db F0
-    .db 93
-    .db F9
-    .db 93
-    .db 06
-    .db 94
-    .db 57
-    .db 94
-    .db A0
-    .db 94
-    .db F1
-    .db 94
-    .db 42
-    .db 95
-    .db 9F
-    .db 95
-    .db E4
-    .db 95
-    .db 35
-    .db 96
-    .db 46
-    .db 96
-    .db 5B
-    .db 96
-    .db 60
-    .db 96
-    .db 65
-    .db 96
-    .db 6E
-    .db 96
-    .db 73
-    .db 96
-    .db 78
-    .db 96
-    .db 81
-    .db 96
-    .db 8A
-    .db 96
-    .db DB
-    .db 96
-    .db E8
-    .db 96
-    .db 31
-    .db 97
-    .db 76
-    .db 97
-    .db C7
-    .db 97
-    .db 1C
-    .db 98
-    .db 6D
-    .db 98
-    .db AE
-    .db 98
-    .db EB
-    .db 98
-    .db 2C
-    .db 99
-    .db 75
-    .db 99
-    .db 86
-    .db 99
-    .db 9B
-    .db 99
-    .db A0
-    .db 99
-    .db A5
-    .db 99
-    .db AE
-    .db 99
-    .db BB
-    .db 99
-    .db C0
-    .db 99
-    .db D2
-    .db 99
-    .db 17
-    .db 9A
-    .db 54
-    .db 9A
-    .db 99
-    .db 9A
-    .db E2
-    .db 9A
-    .db 27
-    .db 9B
-    .db 6C
-    .db 9B
-    .db A9
-    .db 9B
-    .db FE
-    .db 9B
-    .db 43
-    .db 9C
-    .db 8C
-    .db 9C
-    .db 91
-    .db 9C
-    .db 9A
-    .db 9C
-    .db 9F
-    .db 9C
-    .db A8
-    .db 9C
-    .db B1
-    .db 9C
-    .db BE
-    .db 9C
-    .db CB
-    .db 9C
-    .db D8
-    .db 9C
-    .db E5
-    .db 9C
-    .db FA
-    .db 9C
-    .db 0B
-    .db 9D
-    .db 30
-    .db 9D
-    .db 35
-    .db 9D
-    .db 3E
-    .db 9D
-    .db 47
-    .db 9D
-    .db A4
-    .db 9D
-    .db 01
-    .db 9E
-    .db 5E
-    .db 9E
-    .db BB
-    .db 9E
-    .db CC
-    .db 9E
-    .db 05
-    .db 9F
-    .db 36
-    .db 9F
-    .db 6F
-    .db 9F
-    .db A8
-    .db 9F
-    .db D9
-    .db 9F
-    .db 12
-    .db A0
-    .db 4B
-    .db A0
-    .db 84
-    .db A0
-    .db 89
-    .db A0
-    .db 8E
-    .db A0
-    .db BB
-    .db A0
-    .db F8
-    .db A0
-    .db 35
-    .db A1
-    .db 6E
-    .db A1
-    .db A7
-    .db A1
-    .db CC
-    .db A1
-    .db F1
-    .db A1
-    .db F6
-    .db A1
-    .db 0F
-    .db A2
-    .db 24
-    .db A2
-    .db 39
-    .db A2
-    .db 4E
-    .db A2
-    .db 57
-    .db A2
-    .db 60
-    .db A2
-    .db 69
-    .db A2
-    .db 72
-    .db A2
-    .db 7B
-    .db A2
-    .db 96
-    .db A2
-    .db 8D
-    .db A2
-    .db 84
-    .db A2
-    .db 9F
-    .db A2
-    .db E8
-    .db A2
-    .db 25
-    .db A3
-    .db 66
-    .db A3
-    .db AF
-    .db A3
-    .db EC
-    .db A3
-    .db 2D
-    .db A4
-    .db 3A
-    .db A4
-    .db 4B
-    .db A4
-    .db 58
-    .db A4
-    .db 69
-    .db A4
-    .db BA
-    .db A4
-    .db 0B
-    .db A5
-    .db 58
-    .db A5
-    .db 9D
-    .db A5
-    .db DE
-    .db A5
-    .db 0F
-    .db A6
-    .db 20
-    .db A6
-    .db 31
-    .db A6
-    .db 42
-    .db A6
-    .db 5F
-    .db A6
-    .db 80
-    .db A6
-    .db A1
-    .db A6
-    .db A6
-    .db A6
-    .db AB
-    .db A6
-    .db E8
-    .db A6
-    .db 21
-    .db A7
-    .db 5E
-    .db A7
-    .db 9B
-    .db A7
-    .db DC
-    .db A7
-    .db FD
-    .db A7
-    .db 1E
-    .db A8
-    .db 57
-    .db A8
-    .db A0
-    .db A8
-    .db E5
-    .db A8
-    .db 1A
-    .db A9
-    .db 47
-    .db A9
-    .db 94
-    .db A9
-    .db C5
-    .db A9
-    .db CE
-    .db A9
-    .db C9
-    .db 99
+SPRITE_PAGE_2_DATA_PTRS_L: ; 02:0001, 0x004001
+    LOW(02:01D5)
+SPRITE_PAGE_2_DATA_PTRS_H: ; 02:0002, 0x004002
+    HIGH(02:01D5)
+    LOW(02:01DA)
+    HIGH(02:01DA)
+    LOW(02:01E3)
+    HIGH(02:01E3)
+    LOW(02:0204)
+    HIGH(02:0204)
+    LOW(02:020D)
+    HIGH(02:020D)
+    LOW(02:026A)
+    HIGH(02:026A)
+    LOW(02:02C7)
+    HIGH(02:02C7)
+    LOW(02:0324)
+    HIGH(02:0324)
+    LOW(02:0381)
+    HIGH(02:0381)
+    LOW(02:0396)
+    HIGH(02:0396)
+    LOW(02:03AB)
+    HIGH(02:03AB)
+    LOW(02:03EA)
+    HIGH(02:03EA)
+    LOW(02:03D5)
+    HIGH(02:03D5)
+    LOW(02:03C0)
+    HIGH(02:03C0)
+    LOW(02:03FF)
+    HIGH(02:03FF)
+    LOW(02:040C)
+    HIGH(02:040C)
+    LOW(02:0419)
+    HIGH(02:0419)
+    LOW(02:0426)
+    HIGH(02:0426)
+    LOW(02:042B)
+    HIGH(02:042B)
+    LOW(02:0434)
+    HIGH(02:0434)
+    LOW(02:0439)
+    HIGH(02:0439)
+    LOW(02:0442)
+    HIGH(02:0442)
+    LOW(02:0447)
+    HIGH(02:0447)
+    LOW(02:044C)
+    HIGH(02:044C)
+    LOW(02:045D)
+    HIGH(02:045D)
+    LOW(02:0466)
+    HIGH(02:0466)
+    LOW(02:04A7)
+    HIGH(02:04A7)
+    LOW(02:04E4)
+    HIGH(02:04E4)
+    LOW(02:0525)
+    HIGH(02:0525)
+    LOW(02:055A)
+    HIGH(02:055A)
+    LOW(02:058F)
+    HIGH(02:058F)
+    LOW(02:05C8)
+    HIGH(02:05C8)
+    LOW(02:0CF3)
+    HIGH(02:0CF3)
+    LOW(02:0D30)
+    HIGH(02:0D30)
+    LOW(02:0601)
+    HIGH(02:0601)
+    LOW(02:0646)
+    HIGH(02:0646)
+    LOW(02:064B)
+    HIGH(02:064B)
+    LOW(02:0650)
+    HIGH(02:0650)
+    LOW(02:068D)
+    HIGH(02:068D)
+    LOW(02:0BC1)
+    HIGH(02:0BC1)
+    LOW(02:06CE)
+    HIGH(02:06CE)
+    LOW(02:0703)
+    HIGH(02:0703)
+    LOW(02:0B6F)
+    HIGH(02:0B6F)
+    LOW(02:0B3E)
+    HIGH(02:0B3E)
+    LOW(02:0B0D)
+    HIGH(02:0B0D)
+    LOW(02:0ACC)
+    HIGH(02:0ACC)
+    LOW(02:0AAA)
+    HIGH(02:0AAA)
+    LOW(02:0ABB)
+    HIGH(02:0ABB)
+    LOW(02:0A58)
+    HIGH(02:0A58)
+    LOW(02:0A81)
+    HIGH(02:0A81)
+    LOW(02:09D6)
+    HIGH(02:09D6)
+    LOW(02:0A17)
+    HIGH(02:0A17)
+    LOW(02:0924)
+    HIGH(02:0924)
+    LOW(02:097D)
+    HIGH(02:097D)
+    LOW(02:0842)
+    HIGH(02:0842)
+    LOW(02:08B3)
+    HIGH(02:08B3)
+    LOW(02:0730)
+    HIGH(02:0730)
+    LOW(02:07B9)
+    HIGH(02:07B9)
+    LOW(02:0BB0)
+    HIGH(02:0BB0)
+    LOW(02:0BFE)
+    HIGH(02:0BFE)
+    LOW(02:0C4F)
+    HIGH(02:0C4F)
+    LOW(02:0C90)
+    HIGH(02:0C90)
+    LOW(02:0CC1)
+    HIGH(02:0CC1)
+    LOW(02:0CE2)
+    HIGH(02:0CE2)
+    LOW(02:0D6D)
+    HIGH(02:0D6D)
+    LOW(02:0DB2)
+    HIGH(02:0DB2)
+    LOW(02:0DF3)
+    HIGH(02:0DF3)
+    LOW(02:0E38)
+    HIGH(02:0E38)
+    LOW(02:0E7D)
+    HIGH(02:0E7D)
+    LOW(02:0EBE)
+    HIGH(02:0EBE)
+    LOW(02:0EFF)
+    HIGH(02:0EFF)
+    LOW(02:0F48)
+    HIGH(02:0F48)
+    LOW(02:0F89)
+    HIGH(02:0F89)
+    LOW(02:0FD2)
+    HIGH(02:0FD2)
+    LOW(02:101F)
+    HIGH(02:101F)
+    LOW(02:1058)
+    HIGH(02:1058)
+    LOW(02:105D)
+    HIGH(02:105D)
+    LOW(02:1062)
+    HIGH(02:1062)
+    LOW(02:1067)
+    HIGH(02:1067)
+    LOW(02:1070)
+    HIGH(02:1070)
+    LOW(02:1079)
+    HIGH(02:1079)
+    LOW(02:10BA)
+    HIGH(02:10BA)
+    LOW(02:10FB)
+    HIGH(02:10FB)
+    LOW(02:1144)
+    HIGH(02:1144)
+    LOW(02:118D)
+    HIGH(02:118D)
+    LOW(02:11D6)
+    HIGH(02:11D6)
+    LOW(02:121B)
+    HIGH(02:121B)
+    LOW(02:1264)
+    HIGH(02:1264)
+    LOW(02:12AD)
+    HIGH(02:12AD)
+    LOW(02:12F6)
+    HIGH(02:12F6)
+    LOW(02:133F)
+    HIGH(02:133F)
+    LOW(02:1378)
+    HIGH(02:1378)
+    LOW(02:13AD)
+    HIGH(02:13AD)
+    LOW(02:13E2)
+    HIGH(02:13E2)
+    LOW(02:13EB)
+    HIGH(02:13EB)
+    LOW(02:13F0)
+    HIGH(02:13F0)
+    LOW(02:13F9)
+    HIGH(02:13F9)
+    LOW(02:1406)
+    HIGH(02:1406)
+    LOW(02:1457)
+    HIGH(02:1457)
+    LOW(02:14A0)
+    HIGH(02:14A0)
+    LOW(02:14F1)
+    HIGH(02:14F1)
+    LOW(02:1542)
+    HIGH(02:1542)
+    LOW(02:159F)
+    HIGH(02:159F)
+    LOW(02:15E4)
+    HIGH(02:15E4)
+    LOW(02:1635)
+    HIGH(02:1635)
+    LOW(02:1646)
+    HIGH(02:1646)
+    LOW(02:165B)
+    HIGH(02:165B)
+    LOW(02:1660)
+    HIGH(02:1660)
+    LOW(02:1665)
+    HIGH(02:1665)
+    LOW(02:166E)
+    HIGH(02:166E)
+    LOW(02:1673)
+    HIGH(02:1673)
+    LOW(02:1678)
+    HIGH(02:1678)
+    LOW(02:1681)
+    HIGH(02:1681)
+    LOW(02:168A)
+    HIGH(02:168A)
+    LOW(02:16DB)
+    HIGH(02:16DB)
+    LOW(02:16E8)
+    HIGH(02:16E8)
+    LOW(02:1731)
+    HIGH(02:1731)
+    LOW(02:1776)
+    HIGH(02:1776)
+    LOW(02:17C7)
+    HIGH(02:17C7)
+    LOW(02:181C)
+    HIGH(02:181C)
+    LOW(02:186D)
+    HIGH(02:186D)
+    LOW(02:18AE)
+    HIGH(02:18AE)
+    LOW(02:18EB)
+    HIGH(02:18EB)
+    LOW(02:192C)
+    HIGH(02:192C)
+    LOW(02:1975)
+    HIGH(02:1975)
+    LOW(02:1986)
+    HIGH(02:1986)
+    LOW(02:199B)
+    HIGH(02:199B)
+    LOW(02:19A0)
+    HIGH(02:19A0)
+    LOW(02:19A5)
+    HIGH(02:19A5)
+    LOW(02:19AE)
+    HIGH(02:19AE)
+    LOW(02:19BB)
+    HIGH(02:19BB)
+    LOW(02:19C0)
+    HIGH(02:19C0)
+    LOW(02:19D2)
+    HIGH(02:19D2)
+    LOW(02:1A17)
+    HIGH(02:1A17)
+    LOW(02:1A54)
+    HIGH(02:1A54)
+    LOW(02:1A99)
+    HIGH(02:1A99)
+    LOW(02:1AE2)
+    HIGH(02:1AE2)
+    LOW(02:1B27)
+    HIGH(02:1B27)
+    LOW(02:1B6C)
+    HIGH(02:1B6C)
+    LOW(02:1BA9)
+    HIGH(02:1BA9)
+    LOW(02:1BFE)
+    HIGH(02:1BFE)
+    LOW(02:1C43)
+    HIGH(02:1C43)
+    LOW(02:1C8C)
+    HIGH(02:1C8C)
+    LOW(02:1C91)
+    HIGH(02:1C91)
+    LOW(02:1C9A)
+    HIGH(02:1C9A)
+    LOW(02:1C9F)
+    HIGH(02:1C9F)
+    LOW(02:1CA8)
+    HIGH(02:1CA8)
+    LOW(02:1CB1)
+    HIGH(02:1CB1)
+    LOW(02:1CBE)
+    HIGH(02:1CBE)
+    LOW(02:1CCB)
+    HIGH(02:1CCB)
+    LOW(02:1CD8)
+    HIGH(02:1CD8)
+    LOW(02:1CE5)
+    HIGH(02:1CE5)
+    LOW(02:1CFA)
+    HIGH(02:1CFA)
+    LOW(02:1D0B)
+    HIGH(02:1D0B)
+    LOW(02:1D30)
+    HIGH(02:1D30)
+    LOW(02:1D35)
+    HIGH(02:1D35)
+    LOW(02:1D3E)
+    HIGH(02:1D3E)
+    LOW(02:1D47)
+    HIGH(02:1D47)
+    LOW(02:1DA4)
+    HIGH(02:1DA4)
+    LOW(02:1E01)
+    HIGH(02:1E01)
+    LOW(02:1E5E)
+    HIGH(02:1E5E)
+    LOW(02:1EBB)
+    HIGH(02:1EBB)
+    LOW(02:1ECC)
+    HIGH(02:1ECC)
+    LOW(02:1F05)
+    HIGH(02:1F05)
+    LOW(02:1F36)
+    HIGH(02:1F36)
+    LOW(02:1F6F)
+    HIGH(02:1F6F)
+    LOW(02:1FA8)
+    HIGH(02:1FA8)
+    LOW(02:1FD9)
+    HIGH(02:1FD9)
+    LOW(03:0012)
+    HIGH(03:0012)
+    LOW(03:004B)
+    HIGH(03:004B)
+    LOW(03:0084)
+    HIGH(03:0084)
+    LOW(03:0089)
+    HIGH(03:0089)
+    LOW(03:008E)
+    HIGH(03:008E)
+    LOW(03:00BB)
+    HIGH(03:00BB)
+    LOW(03:00F8)
+    HIGH(03:00F8)
+    LOW(03:0135)
+    HIGH(03:0135)
+    LOW(03:016E)
+    HIGH(03:016E)
+    LOW(03:01A7)
+    HIGH(03:01A7)
+    LOW(03:01CC)
+    HIGH(03:01CC)
+    LOW(03:01F1)
+    HIGH(03:01F1)
+    LOW(03:01F6)
+    HIGH(03:01F6)
+    LOW(03:020F)
+    HIGH(03:020F)
+    LOW(03:0224)
+    HIGH(03:0224)
+    LOW(03:0239)
+    HIGH(03:0239)
+    LOW(03:024E)
+    HIGH(03:024E)
+    LOW(03:0257)
+    HIGH(03:0257)
+    LOW(03:0260)
+    HIGH(03:0260)
+    LOW(03:0269)
+    HIGH(03:0269)
+    LOW(03:0272)
+    HIGH(03:0272)
+    LOW(03:027B)
+    HIGH(03:027B)
+    LOW(03:0296)
+    HIGH(03:0296)
+    LOW(03:028D)
+    HIGH(03:028D)
+    LOW(03:0284)
+    HIGH(03:0284)
+    LOW(03:029F)
+    HIGH(03:029F)
+    LOW(03:02E8)
+    HIGH(03:02E8)
+    LOW(03:0325)
+    HIGH(03:0325)
+    LOW(03:0366)
+    HIGH(03:0366)
+    LOW(03:03AF)
+    HIGH(03:03AF)
+    LOW(03:03EC)
+    HIGH(03:03EC)
+    LOW(03:042D)
+    HIGH(03:042D)
+    LOW(03:043A)
+    HIGH(03:043A)
+    LOW(03:044B)
+    HIGH(03:044B)
+    LOW(03:0458)
+    HIGH(03:0458)
+    LOW(03:0469)
+    HIGH(03:0469)
+    LOW(03:04BA)
+    HIGH(03:04BA)
+    LOW(03:050B)
+    HIGH(03:050B)
+    LOW(03:0558)
+    HIGH(03:0558)
+    LOW(03:059D)
+    HIGH(03:059D)
+    LOW(03:05DE)
+    HIGH(03:05DE)
+    LOW(03:060F)
+    HIGH(03:060F)
+    LOW(03:0620)
+    HIGH(03:0620)
+    LOW(03:0631)
+    HIGH(03:0631)
+    LOW(03:0642)
+    HIGH(03:0642)
+    LOW(03:065F)
+    HIGH(03:065F)
+    LOW(03:0680)
+    HIGH(03:0680)
+    LOW(03:06A1)
+    HIGH(03:06A1)
+    LOW(03:06A6)
+    HIGH(03:06A6)
+    LOW(03:06AB)
+    HIGH(03:06AB)
+    LOW(03:06E8)
+    HIGH(03:06E8)
+    LOW(03:0721)
+    HIGH(03:0721)
+    LOW(03:075E)
+    HIGH(03:075E)
+    LOW(03:079B)
+    HIGH(03:079B)
+    LOW(03:07DC)
+    HIGH(03:07DC)
+    LOW(03:07FD)
+    HIGH(03:07FD)
+    LOW(03:081E)
+    HIGH(03:081E)
+    LOW(03:0857)
+    HIGH(03:0857)
+    LOW(03:08A0)
+    HIGH(03:08A0)
+    LOW(03:08E5)
+    HIGH(03:08E5)
+    LOW(03:091A)
+    HIGH(03:091A)
+    LOW(03:0947)
+    HIGH(03:0947)
+    LOW(03:0994)
+    HIGH(03:0994)
+    LOW(03:09C5)
+    HIGH(03:09C5)
+    LOW(03:09CE)
+    HIGH(03:09CE)
+    LOW(02:19C9)
+    HIGH(02:19C9)
     .db 01
     .db F8
     .db F5

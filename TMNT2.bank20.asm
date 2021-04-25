@@ -1,27 +1,27 @@
     .db 34
-ATTRACT_SETUP?: ; 14:0001, 0x028001
+ATTRACT_MODE_DATA_INIT: ; 14:0001, 0x028001
     LDY ATTRACT_LEVEL ; Load which scene.
-    LDA TURTLE_SELECTED_ATTRACT_SEED,Y
-    STA TURTLE_SELECT_POSITIONS[2] ; Set selected.
-    LDA DATA_42_ATTRACT_SEED,Y ; Load unk.
+    LDA TURTLE_SELECTED_ATTRACT_SEED,Y ; Get turtle for attract scene.
+    STA TURTLE_SELECTION[2] ; Seed data.
+    LDA ATTRACT_LEVEL_SEED,Y ; Load level.
     CMP #$FF ; Test end of data.
-    BNE DONT_RESET_SWITCH
+    BNE DONT_RESET_SWITCH ; !=, valid. Skip reset.
     LDA #$00
     STA ATTRACT_LEVEL ; Reset which.
-    JMP ATTRACT_SETUP? ; Redo rtn.
+    JMP ATTRACT_MODE_DATA_INIT ; Redo rtn with proper index.
 DONT_RESET_SWITCH: ; 14:0016, 0x028016
-    STA LEVEL_SCREEN_ON ; Set level.
-    ASL A ; << 1, *2
-    TAY
-    LDA ATTRACT_DPTRS_L,Y ; Move ptr. Controller input RLE data? Guessing.
-    STA ATTRACT_DATA_PTR?[2]
-    LDA ATTRACT_DPTRS_H,Y
-    STA ATTRACT_DATA_PTR?+1
+    STA LEVEL/SCREEN_ON ; Set level.
+    ASL A ; << 1, *2. To word index.
+    TAY ; To Y.
+    LDA ATTRACT_CONTROLLER_INPUT_SEED_DATA_L,Y ; Move ptr. Controller input data for attract mode.
+    STA ATTRACT_CTRL_DATA_PTR[2]
+    LDA ATTRACT_CONTROLLER_INPUT_SEED_DATA_H,Y
+    STA ATTRACT_CTRL_DATA_PTR+1
     LDA #$00
-    STA ATTRACT_UNK ; Clear.
-    JMP ISOLATE_P1_SEL/START_ONLY ; Isolate, abuse RTS.
-DATA_42_ATTRACT_SEED: ; 14:002E, 0x02802E
-    .db 00
+    STA ATTRACT_INJECT_TIMER ; Init timer.
+    JMP CTRL_ISOLATE_P1_SEL/START_ONLY ; Isolate, abuse RTS.
+ATTRACT_LEVEL_SEED: ; 14:002E, 0x02802E
+    .db 00 ; Level shown for attract step.
     .db 02
     .db 03
     .db 05
@@ -30,7 +30,7 @@ DATA_42_ATTRACT_SEED: ; 14:002E, 0x02802E
     .db 0B
     .db FF
 TURTLE_SELECTED_ATTRACT_SEED: ; 14:0036, 0x028036
-    .db 00
+    .db 00 ; Turtle for attract step.
     .db 01
     .db 02
     .db 01
@@ -41,119 +41,82 @@ TURTLE_SELECTED_ATTRACT_SEED: ; 14:0036, 0x028036
     .db 00
     .db 00
     .db 00
-    JSR ISOLATE_P1_SEL/START_ONLY
+ATTRACT_CTRL_ADVANCE: ; 14:0041, 0x028041
+    JSR CTRL_ISOLATE_P1_SEL/START_ONLY ; Isolate buttons for exiting attract.
     LDA 3C_SWITCH_CORE ; Load switch.
     CMP #$03 ; If _ #$03
-    BNE SWITCH_NOT_YET_3 ; !=, goto.
-    JSR 14:00AF ; If 3, do...?
-    LDA TMP_00
-    CMP #$FF
-    BEQ 14:0080
-    LDA ATTRACT_UNK
-    BEQ 14:0072
-    JSR 14:0087
-    DEC ATTRACT_UNK
-    BNE SWITCH_NOT_YET_3
-    CLC
+    BNE RTS ; !=, goto. Wait for setup to finish.
+    JSR GET_ATTRACT_CTRL_INJECT_DATA ; Setup TMP_00
+    LDA TMP_00 ; Load buttons value.
+    CMP #$FF ; If _ #$FF
+    BEQ CTRL_INJECT_0xFF ; ==, goto. Addr == $XXFF, finished.
+    LDA ATTRACT_INJECT_TIMER ; Load.
+    BEQ BUTTONS_TIMER_EXPIRED ; == 0, goto.
+    JSR INJECT_BUTTON_PRESSES ; Inject
+    DEC ATTRACT_INJECT_TIMER ; Count frame against.
+    BNE RTS ; != 0, not expired. RTS.
+MOVE_CTRL_DATA_PTR: ; 14:0060, 0x028060
+    CLC ; Prep add. Moves ptr 2 units.
     LDA #$02
-    ADC ATTRACT_DATA_PTR?[2]
-    STA ATTRACT_DATA_PTR?[2]
+    ADC ATTRACT_CTRL_DATA_PTR[2] ; Ptr += 2
+    STA ATTRACT_CTRL_DATA_PTR[2]
     LDA #$00
-    ADC ATTRACT_DATA_PTR?+1
-    STA ATTRACT_DATA_PTR?+1
-SWITCH_NOT_YET_3: ; 14:0071, 0x028071
+    ADC ATTRACT_CTRL_DATA_PTR+1
+    STA ATTRACT_CTRL_DATA_PTR+1
+RTS: ; 14:0071, 0x028071
+    RTS ; Leave.
+BUTTONS_TIMER_EXPIRED: ; 14:0072, 0x028072
+    JSR INJECT_BUTTON_PRESSES ; Inject butons.
+    LDA TMP_01 ; Load timer data for inject.
+    STA ATTRACT_INJECT_TIMER ; Store
+    DEC ATTRACT_INJECT_TIMER ; Count frame against.
+    BEQ MOVE_CTRL_DATA_PTR ; Expired, move ptr.
     RTS
-    .db 20
-    .db 87
-    .db 80
-    .db A5
-    .db 01
-    .db 8D
-    .db E7
-    .db 03
-    .db CE
-    .db E7
-    .db 03
-    .db F0
-    .db E1
-    .db 60
-    .db A9
-    .db 12
-    .db 85
-    .db 1D
-    .db E6
-    .db 3F
-    .db 60
-    .db A5
-    .db 42
-    .db C9
-    .db 07
-    .db B0
-    .db 13
-    .db A5
-    .db 00
-    .db 29
-    .db CF
-    .db 05
-    .db 3A
-    .db 85
-    .db 3A
-    .db A5
-    .db 00
-    .db 29
-    .db 30
-    .db 0A
-    .db 0A
-    .db 05
-    .db 38
-    .db 85
-    .db 38
-    .db 60
-    .db A5
-    .db 00
-    .db 29
-    .db CF
-    .db 48
-    .db 05
-    .db 3A
-    .db 85
-    .db 3A
-    .db 68
-    .db 05
-    .db 38
-    .db 85
-    .db 38
-    .db 60
-    .db A9
-    .db 34
-    .db 20
-    .db 07
-    .db DB
-    .db AD
-    .db E8
-    .db 03
-    .db 85
-    .db 06
-    .db AD
-    .db E9
-    .db 03
-    .db 85
-    .db 07
-    .db A0
-    .db 00
-    .db B1
-    .db 06
-    .db 85
-    .db 00
-    .db C8
-    .db B1
-    .db 06
-    .db 85
-    .db 01
-    .db 4C
-    .db 0F
-    .db DB
-ISOLATE_P1_SEL/START_ONLY: ; 14:00CC, 0x0280CC
+CTRL_INJECT_0xFF: ; 14:0080, 0x028080
+    LDA #$12
+    STA DISABLE_RENDERING_X_FRAMES ; Disable rendering.
+    INC 3F_ATTRACT_EXIT_FLAG ; Set to exit.
+    RTS
+INJECT_BUTTON_PRESSES: ; 14:0087, 0x028087
+    LDA LEVEL/SCREEN_ON ; Get screen.
+    CMP #$07 ; If _ #$07
+    BCS SCREEN_GTE_0x07 ; >=, goto.
+    LDA TMP_00 ; Load inject data.
+    AND #$CF ; Keep 1100.1111. CTRL A,B,U,D,L,R
+    ORA CTRL_PREV_A[2] ; Keep prev CTRL.
+    STA CTRL_PREV_A[2] ; Store to CTRL.
+    LDA TMP_00 ; Load lower.
+    AND #$30 ; Keep 0011.0000. Used as A/B new press injects.
+    ASL A
+    ASL A ; << 2, *4. Move to A/B position.
+    ORA CTRL_NEWLY_PRESSED_A[2] ; Set bits as newly pressed.
+    STA CTRL_NEWLY_PRESSED_A[2] ; Store with newly pressed.
+    RTS
+SCREEN_GTE_0x07: ; 14:00A0, 0x0280A0
+    LDA TMP_00 ; Load inject buttons.
+    AND #$CF ; Keep 1100.1111. CTRL A,B,U,D,L,R.
+    PHA ; Save
+    ORA CTRL_PREV_A[2] ; Keep previous.
+    STA CTRL_PREV_A[2] ; Update with injection.
+    PLA ; Pull.
+    ORA CTRL_NEWLY_PRESSED_A[2] ; Keep previous new.
+    STA CTRL_NEWLY_PRESSED_A[2] ; Update with injection as new presses, too.
+    RTS
+GET_ATTRACT_CTRL_INJECT_DATA: ; 14:00AF, 0x0280AF
+    LDA #$34 ; Bank 14/15, again.
+    JSR BANK_PAIRED
+    LDA ATTRACT_CTRL_DATA_PTR[2] ; Move pointer to TMP.
+    STA TMP_06
+    LDA ATTRACT_CTRL_DATA_PTR+1
+    STA TMP_07
+    LDY #$00 ; Stream index.
+    LDA [TMP_06],Y ; Load from PTR.
+    STA TMP_00 ; Store to, inject data.
+    INY ; Stream++
+    LDA [TMP_06],Y
+    STA TMP_01 ; Inject timer.
+    JMP RESTORE_BANK_PAIRED ; Abuse RTS.
+CTRL_ISOLATE_P1_SEL/START_ONLY: ; 14:00CC, 0x0280CC
     LDA CTRL_PREV_A[2] ; Get previous.
     AND #$30 ; Isolate SEL+START
     STA CTRL_PREV_A[2] ; Store back.
@@ -164,32 +127,32 @@ ISOLATE_P1_SEL/START_ONLY: ; 14:00CC, 0x0280CC
     STA CTRL_PREV_A+1 ; Clear P2, want no influence from.
     STA CTRL_NEWLY_PRESSED_A+1
     RTS
-ATTRACT_DPTRS_L: ; 14:00DF, 0x0280DF
-    LOW(ATTRACT_DATA_1)
-ATTRACT_DPTRS_H: ; 14:00E0, 0x0280E0
-    HIGH(ATTRACT_DATA_1)
-    LOW(ATTRACT_DATA_2)
-    HIGH(ATTRACT_DATA_2)
-    LOW(ATTRACT_DATA_2)
-    HIGH(ATTRACT_DATA_2)
-    LOW(ATTRACT_DATA_3)
-    HIGH(ATTRACT_DATA_3)
-    LOW(ATTRACT_DATA_4)
-    HIGH(ATTRACT_DATA_4)
-    LOW(ATTRACT_DATA_4)
-    HIGH(ATTRACT_DATA_4)
-    LOW(ATTRACT_DATA_5)
-    HIGH(ATTRACT_DATA_5)
-    LOW(ATTRACT_DATA_5)
-    HIGH(ATTRACT_DATA_5)
-    LOW(ATTRACT_DATA_6)
-    HIGH(ATTRACT_DATA_6)
-    LOW(ATTRACT_DATA_6)
-    HIGH(ATTRACT_DATA_6)
-    LOW(ATTRACT_DATA_6)
-    HIGH(ATTRACT_DATA_6)
-    LOW(ATTRACT_DATA_7)
-    HIGH(ATTRACT_DATA_7)
+ATTRACT_CONTROLLER_INPUT_SEED_DATA_L: ; 14:00DF, 0x0280DF
+    LOW(ATTRACT_CTRL_DATA_A)
+ATTRACT_CONTROLLER_INPUT_SEED_DATA_H: ; 14:00E0, 0x0280E0
+    HIGH(ATTRACT_CTRL_DATA_A)
+    LOW(ATTRACT_CTRL_DATA_B)
+    HIGH(ATTRACT_CTRL_DATA_B)
+    LOW(ATTRACT_CTRL_DATA_B)
+    HIGH(ATTRACT_CTRL_DATA_B)
+    LOW(ATTRACT_CTRL_DATA_C)
+    HIGH(ATTRACT_CTRL_DATA_C)
+    LOW(ATTRACT_CTRL_DATA_D)
+    HIGH(ATTRACT_CTRL_DATA_D)
+    LOW(ATTRACT_CTRL_DATA_D)
+    HIGH(ATTRACT_CTRL_DATA_D)
+    LOW(ATTRACT_CTRL_DATA_E)
+    HIGH(ATTRACT_CTRL_DATA_E)
+    LOW(ATTRACT_CTRL_DATA_E)
+    HIGH(ATTRACT_CTRL_DATA_E)
+    LOW(ATTRACT_CTRL_DATA_F)
+    HIGH(ATTRACT_CTRL_DATA_F)
+    LOW(ATTRACT_CTRL_DATA_F)
+    HIGH(ATTRACT_CTRL_DATA_F)
+    LOW(ATTRACT_CTRL_DATA_F)
+    HIGH(ATTRACT_CTRL_DATA_F)
+    LOW(ATTRACT_CTRL_DATA_G)
+    HIGH(ATTRACT_CTRL_DATA_G)
 RTN_UPDATE_SCORES_IF_UPDATE_QUEUE_EMPTY: ; 14:00F7, 0x0280F7
     LDA PPU_UPDATE_BUF_INDEX
     BNE RTS ; If others queued, leave.
@@ -426,20 +389,20 @@ UPDATE_HEALTH_BARS_IF_NO_OTHERS_QUEUED: ; 14:0289, 0x028289
     BEQ TRY_PLAYER_2 ; If == 0, goto.
     LDA #$00
     STA 662_PLAYER_UPDATE_UNK[2] ; Clear
-    JSR UPDATE_??
+    JSR CREATE_HEALTH_UPDATE_PACKER_FOR_PLAYER
 TRY_PLAYER_2: ; 14:029C, 0x02829C
     LDX #$02 ; P2 index.
     LDA 662_PLAYER_UPDATE_UNK+1 ; P2 check.
     BEQ RTS ; If == 0, goto. Leave.
     LDA #$00
     STA 662_PLAYER_UPDATE_UNK+1 ; Clear.
-UPDATE_??: ; 14:02A8, 0x0282A8
+CREATE_HEALTH_UPDATE_PACKER_FOR_PLAYER: ; 14:02A8, 0x0282A8
     TXA ; Index to A.
     PHA ; Save index.
     LDA #$05
     STA TMP_13 ; Set. Update count?
-    LDY #$00 ; Index/counter?
-    LDA OBJECT_DATA_EXTRA_A?[18],X ; Load from object.
+    LDY #$00 ; Counter. No full bars.
+    LDA OBJECT_DATA_HEALTH?[18],X ; Load from object.
     BEQ OBJ_DATA_EQ_0
     CMP #$05
     BCS OBJ_DATA_ABOVE_5
@@ -448,7 +411,7 @@ OBJ_DATA_ABOVE_5: ; 14:02BB, 0x0282BB
     CMP #$3D ; If _ #$3D
     BCC OBJ_DATA_LT_3D ; <, goto.
     LDA #$3C
-    STA OBJECT_DATA_EXTRA_A?[18],X ; Set to 3C.
+    STA OBJECT_DATA_HEALTH?[18],X ; Cap value.
 OBJ_DATA_LT_3D: ; 14:02C4, 0x0282C4
     SEC ; Prep sub.
 SUB_NO_UNDERFLOW: ; 14:02C5, 0x0282C5
@@ -456,7 +419,7 @@ SUB_NO_UNDERFLOW: ; 14:02C5, 0x0282C5
     SBC #$05 ; Obj data -= 5
     BEQ OBJ_DATA_EQ_0 ; == 0, goto.
     BCS SUB_NO_UNDERFLOW ; No underflow, goto.
-    DEY ; Fix Y. Times subbed without underflow.
+    DEY ; Fix Y. Times subbed without underflow. Full bars.
 OBJ_DATA_EQ_0: ; 14:02CD, 0x0282CD
     TYA ; Times to A.
     AND #$01 ; Keep 0000.0001
@@ -528,7 +491,7 @@ PLAYER_LIVES_TO_BCD+DISPLAY_UPDATE: ; 14:0331, 0x028331
     TAY ; To Y index.
     LDA #$00
     STA TMP_16 ; Clear.
-    STA **:$0017
+    STA TMP_17
     LDA NUM_PLAYER_LIVES[2],Y ; Load A.
     BMI CREATE_UPDATE_BUFFER
     CMP #$64 ; If _ #$64, 100 decimal.
@@ -545,7 +508,7 @@ MORE_TO_GO: ; 14:034A, 0x02834A
     ADC #$0A ; Underflow, add back.
     DEC TMP_16 ; -- tens.
 VAL_EQ_ZERO: ; 14:0356, 0x028356
-    STA **:$0017 ; Store lower.
+    STA TMP_17 ; Store lower.
 CREATE_UPDATE_BUFFER: ; 14:0358, 0x028358
     LDY PPU_UPDATE_BUF_INDEX ; Get index.
     LDA #$04
@@ -565,7 +528,7 @@ CREATE_UPDATE_BUFFER: ; 14:0358, 0x028358
 DONT_BLANK: ; 14:037B, 0x02837B
     STA PPU_UPDATE_BUFFER+4,Y ; Store to buf.
     CLC ; Prep add.
-    LDA **:$0017 ; Load lower.
+    LDA TMP_17 ; Load lower.
     ADC #$01 ; += 1
     STA PPU_UPDATE_BUFFER+5,Y ; Store to buffer.
     CLC ; Prep add.
@@ -604,7 +567,7 @@ RTN_TURTLE_NAME_TO_STATUS_BAR: ; 14:03A6, 0x0283A6
     TXA ; X passed to A.
     LSR A ; << 1, *2
     TAY ; To Y index.
-    LDA TURTLE_SELECT_POSITIONS[2],Y ; Load pos.
+    LDA TURTLE_SELECTION[2],Y ; Load pos.
     ASL A ; << 1, *2
     TAY ; To Y index.
     LDA TURTLE_NAMES_DATA_PTRS_L,Y
@@ -683,7 +646,7 @@ TURTLE_NAME_RAPH: ; 14:040B, 0x02840B
     .db 1A ; P
     .db 12 ; H
     .db 4A ; -
-MAKE_UPDATE_BUF_LIVES/STATUS?: ; 14:0414, 0x028414
+MAKE_UPDATE_BUF_UNK: ; 14:0414, 0x028414
     AND #$01 ; Get bottom bit.
     STA TMP_00 ; Player focus.
     TXA ; X to A.
@@ -780,9 +743,9 @@ DATA_D: ; 14:046D, 0x02846D
     JSR CLEAR_SCREEN_SUB ; File 0 decompress, clear screen?
     LDX #$02 ; Screen
     JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15
-    JSR INIT_STREAM+MISC_UNK
-    LDA #$05 ; Objects?
-    JSR UNK_STREAM_0x300_SETUP_BANK_1C/1D
+    JSR INITIAL_PALETTE_TO_CREATED_UPDATE
+    LDA #$05 ; File.
+    JSR PPU_UPDATE_PREMADE_FROM_1C/1D
     JSR WRITE_PPU_CTRL_COPY
     RTS
 CLEAR_SCREEN_SUB: ; 14:0491, 0x028491
@@ -3008,7 +2971,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 16
     .db 00
     .db FF
-ATTRACT_DATA_1: ; 14:0D74, 0x028D74
+ATTRACT_CTRL_DATA_A: ; 14:0D74, 0x028D74
     .db 01
     .db 72
     .db 00
@@ -3555,7 +3518,7 @@ ATTRACT_DATA_1: ; 14:0D74, 0x028D74
     .db 82
     .db FF
     .db FF
-ATTRACT_DATA_2: ; 14:0F96, 0x028F96
+ATTRACT_CTRL_DATA_B: ; 14:0F96, 0x028F96
     .db 01
     .db 5F
     .db 00
@@ -3838,7 +3801,7 @@ ATTRACT_DATA_2: ; 14:0F96, 0x028F96
     .db 5D
     .db FF
     .db FF
-ATTRACT_DATA_3: ; 14:10B0, 0x0290B0
+ATTRACT_CTRL_DATA_C: ; 14:10B0, 0x0290B0
     .db 01
     .db B4
     .db 00
@@ -4623,7 +4586,7 @@ ATTRACT_DATA_3: ; 14:10B0, 0x0290B0
     .db A9
     .db FF
     .db FF
-ATTRACT_DATA_4: ; 14:13C0, 0x0293C0
+ATTRACT_CTRL_DATA_D: ; 14:13C0, 0x0293C0
     .db 01
     .db 37
     .db A1
@@ -5000,7 +4963,7 @@ ATTRACT_DATA_4: ; 14:13C0, 0x0293C0
     .db A4
     .db FF
     .db FF
-ATTRACT_DATA_5: ; 14:1538, 0x029538
+ATTRACT_CTRL_DATA_E: ; 14:1538, 0x029538
     .db 00
     .db 76
     .db 01
@@ -5105,7 +5068,7 @@ ATTRACT_DATA_5: ; 14:1538, 0x029538
     .db F2
     .db FF
     .db FF
-ATTRACT_DATA_6: ; 14:15A0, 0x0295A0
+ATTRACT_CTRL_DATA_F: ; 14:15A0, 0x0295A0
     .db 01
     .db 37
     .db 05
@@ -5468,7 +5431,7 @@ ATTRACT_DATA_6: ; 14:15A0, 0x0295A0
     .db 50
     .db FF
     .db FF
-ATTRACT_DATA_7: ; 14:170A, 0x02970A
+ATTRACT_CTRL_DATA_G: ; 14:170A, 0x02970A
     .db 00
     .db FF
     .db 00

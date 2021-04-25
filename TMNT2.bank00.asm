@@ -1,4 +1,5 @@
     .db 20
+OBJ_STATE_0x80_HANDLER: ; 00:0001, 0x000001
     LDA OBJ_SECONDARY_SWITCH?[18],X
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LOW(SWITCH_RTN_A)
@@ -13,7 +14,7 @@ SWITCH_RTN_A: ; 00:000B, 0x00000B
     LDY #$16
     JSR 1F:1655
     LDA #$00
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     STA 45A_OBJ_DATA_ENTRY?[18],X
     INC OBJ_SECONDARY_SWITCH?[18],X
     JMP OBJECT_X_MOVE?
@@ -23,7 +24,7 @@ SWITCH_RTN_B: ; 00:0026, 0x000026
     BNE 00:007D
     LDA 45A_OBJ_DATA_ENTRY?[18],X
     BEQ 00:0038
-    LDA INF_LOOP_COUNTER_UNK
+    LDA INF_LOOP_COUNTER
     AND #$5F
     BNE 00:007A
     LDY #$07
@@ -60,6 +61,7 @@ SWITCH_RTN_B: ; 00:0026, 0x000026
     JMP 1F:14C7
     JSR OBJECT_X_MOVE?
     JMP L_1F:13CB
+OBJ_STATE_0x85_HANDLER: ; 00:008C, 0x00008C
     LDA OBJ_SECONDARY_SWITCH?[18],X
     BNE 00:00B4
     LDA #$A2
@@ -69,8 +71,8 @@ SWITCH_RTN_B: ; 00:0026, 0x000026
     LDY #$06
     JSR 1F:1655
     LDY #$0C
-    LDA OBJ_ANIMATION_FRAME_TO[18]
-    AND OBJ_ANIMATION_FRAME_TO+2
+    LDA OBJ_ANIMATION_DISPLAY[18]
+    AND OBJ_ANIMATION_DISPLAY+2
     BEQ 00:00AA
     LDY #$14
     TYA
@@ -81,9 +83,9 @@ SWITCH_RTN_B: ; 00:0026, 0x000026
     AND #$03
     BNE 00:0129
     LDY #$80
-    LDA OBJ_ANIMATION_FRAME_TO[18]
+    LDA OBJ_ANIMATION_DISPLAY[18]
     BEQ 00:00D2
-    LDA OBJ_ANIMATION_FRAME_TO+2
+    LDA OBJ_ANIMATION_DISPLAY+2
     BEQ 00:00D8
     LDY #$40
     INC 45A_OBJ_DATA_ENTRY?[18],X
@@ -126,10 +128,11 @@ SWITCH_RTN_B: ; 00:0026, 0x000026
     INC OBJ_ANIM_HOLD_TIMER?[18],X
     JSR OBJECT_X_MOVE?
     JMP 1F:14C7
+OBJ_STATE_0x84_HANDLER: ; 00:012F, 0x00012F
     LDA OBJ_SECONDARY_SWITCH?[18],X
     BNE 00:0141
     LDA #$47
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA 556_OBJ_UPDATE_FLAGS?[18],X
     ORA #$04
     STA 556_OBJ_UPDATE_FLAGS?[18],X
@@ -139,6 +142,7 @@ SWITCH_RTN_B: ; 00:0026, 0x000026
     AND #$03
     BNE 00:0163
     JMP OBJECT_X_MOVE?
+OBJ_STATE_0x82_HANDLER: ; 00:0151, 0x000151
     LDY **:$007F
     TXA
     PHA
@@ -151,12 +155,13 @@ SWITCH_RTN_B: ; 00:0026, 0x000026
     INC **:$007F
     JMP INIT_OBJECT[X]_DATA?
     RTS
+OBJ_STATE_0x81_HANDLER: ; 00:0167, 0x000167
     LDA OBJ_SECONDARY_SWITCH?[18],X
     BNE 00:01A1
     LDA #$2D
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$FF
-    STA OBJECT_DATA_EXTRA_A?[18],X
+    STA OBJECT_DATA_HEALTH?[18],X
     LDA #$87
     STA OBJECT_DATA_EXTRA_B?[18],X
     LDA #$80
@@ -227,7 +232,7 @@ SWITCH_RTN_A: ; 00:01D6, 0x0001D6
     STA 544_OBJ_UNK_POS?+1,X
     LDA #$00
     STA 4EA_ARR_UNK[18],X
-    LDA INF_LOOP_COUNTER_UNK
+    LDA INF_LOOP_COUNTER
     AND #$BF
     CLC
     ADC #$50
@@ -280,8 +285,9 @@ SWITCH_RTN_C: ; 00:024C, 0x00024C
     ADC #$01
     STA 4C6_OBJ_UNK_POS?+1,X
     RTS
+OBJ_STATE_0xA7_HANDLER: ; 00:026C, 0x00026C
     LDA #$04
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA OBJ_POS_Y+17,X
     STA OBJ_POS_X[18],X
     LDA 490_OBJ_UNK_SPEED?+17,X
@@ -296,6 +302,7 @@ SWITCH_RTN_C: ; 00:024C, 0x00024C
     LDA 544_OBJ_UNK_POS?+17,X
     STA 556_OBJ_UPDATE_FLAGS?[18],X
     RTS
+OBJ_STATE_0xB0_HANDLER: ; 00:0297, 0x000297
     LDA OBJ_TERTIARY_SWITCH?[18],X
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LDA 82_UNK
@@ -311,7 +318,7 @@ SWITCH_RTN_C: ; 00:024C, 0x00024C
     LDY #$09
     JSR 1F:1655
     LDA #$00
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$34
     JSR SND_BANKED_DISPATCH
     INC OBJ_TERTIARY_SWITCH?[18],X
@@ -326,7 +333,7 @@ SWITCH_RTN_C: ; 00:024C, 0x00024C
     LDA 87_UNK
     BNE 00:02E3
     LDA #$65
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$08
     STA 59E_OBJ_UNK_TIMER?[18],X
     INC OBJ_TERTIARY_SWITCH?[18],X
@@ -334,14 +341,14 @@ SWITCH_RTN_C: ; 00:024C, 0x00024C
     RTS
     DEC 59E_OBJ_UNK_TIMER?[18],X
     BNE 00:0305
-    INC OBJ_ANIMATION_FRAME_TO[18],X
-    LDA OBJ_ANIMATION_FRAME_TO[18],X
+    INC OBJ_ANIMATION_DISPLAY[18],X
+    LDA OBJ_ANIMATION_DISPLAY[18],X
     CMP #$68
     BCC 00:0300
     LDY #$00
     JSR 1F:1655
     LDA #$68
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     INC OBJ_TERTIARY_SWITCH?[18],X
     LDA #$08
     STA 59E_OBJ_UNK_TIMER?[18],X
@@ -353,7 +360,7 @@ SWITCH_RTN_C: ; 00:024C, 0x00024C
     LDA $831E,Y
     STA OBJ_ENABLED_STATE+MORE?[18],X
     LDA #$0E
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     JMP 1F:14E8
     .db 02
     .db 02
@@ -363,6 +370,7 @@ SWITCH_RTN_C: ; 00:024C, 0x00024C
     .db 02
     .db 02
     .db 02
+OBJ_STATE_0xB1_HANDLER: ; 00:0326, 0x000326
     LDA OBJ_SECONDARY_SWITCH?[18],X
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LOW(SWITCH_RTN_A)
@@ -444,6 +452,7 @@ SWITCH_RTN_C: ; 00:03CC, 0x0003CC
     LDA #$35
     JSR SND_BANKED_DISPATCH
     JMP OBJECT_X_MOVE?
+OBJ_STATE_0xBC_HANDLER: ; 00:03DC, 0x0003DC
     LDA OBJ_SECONDARY_SWITCH?[18],X
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LOW(SWITCH_RTN_A)
@@ -454,7 +463,7 @@ SWITCH_RTN_C: ; 00:03CC, 0x0003CC
     HIGH(SWITCH_RTN_C)
 SWITCH_RTN_A: ; 00:03E8, 0x0003E8
     LDA #$69
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$20
     STA OBJ_DIRECTION_RELATED?[18],X
     INC OBJ_SECONDARY_SWITCH?[18],X
@@ -483,18 +492,19 @@ SWITCH_RTN_C: ; 00:041A, 0x00041A
     CMP #$03
     BCC 00:0440
     LDA #$06
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$02
     STA OBJ_ENABLED_STATE+MORE?[18],X
     LDA #$06
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     JMP 1F:14E8
     LDY 45A_OBJ_DATA_ENTRY?[18],X
     LDA $844C,Y
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     JMP OBJECT_X_MOVE?
     ADC #$9E
     ???
+OBJ_STATE_0xB5_HANDLER: ; 00:044F, 0x00044F
     LDA OBJ_TERTIARY_SWITCH?[18],X
     JSR SWITCH_CODE_PTRS_PAST_JSR
     EOR **:$7384,X
@@ -514,7 +524,7 @@ SWITCH_RTN_C: ; 00:041A, 0x00041A
     LDA #$29
     STA ZP_R2-R5_BANK_VALUES+3
     LDA #$5E
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$3A
     JSR SND_BANKED_DISPATCH
     INC OBJ_TERTIARY_SWITCH?[18],X
@@ -522,7 +532,7 @@ SWITCH_RTN_C: ; 00:041A, 0x00041A
     LDY **:$007F
     TXA
     PHA
-    LDA LEVEL_SCREEN_ON
+    LDA LEVEL/SCREEN_ON
     ASL A
     TAX
     LDA 1F:18D6,X
@@ -542,8 +552,8 @@ SWITCH_RTN_C: ; 00:041A, 0x00041A
     JMP OBJECT_X_MOVE?
     DEC 59E_OBJ_UNK_TIMER?[18],X
     BNE 00:04EF
-    INC OBJ_ANIMATION_FRAME_TO[18],X
-    LDA OBJ_ANIMATION_FRAME_TO[18],X
+    INC OBJ_ANIMATION_DISPLAY[18],X
+    LDA OBJ_ANIMATION_DISPLAY[18],X
     CMP #$61
     BCS 00:04F2
     CMP #$60
@@ -564,6 +574,7 @@ SWITCH_RTN_C: ; 00:041A, 0x00041A
     STA 59E_OBJ_UNK_TIMER?[18],X
     JMP OBJECT_X_MOVE?
     JMP INIT_OBJECT[X]_DATA?
+OBJ_STATE_0xB3_HANDLER: ; 00:04F5, 0x0004F5
     LDA OBJ_TERTIARY_SWITCH?[18],X
     JSR SWITCH_CODE_PTRS_PAST_JSR
     LOW(SWITCH_RTN_A)
@@ -599,7 +610,7 @@ SWITCH_RTN_B: ; 00:0525, 0x000525
     LDA #$29
     STA ZP_R2-R5_BANK_VALUES+3
     LDA #$5A
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$3A
     JSR SND_BANKED_DISPATCH
     INC OBJ_TERTIARY_SWITCH?[18],X
@@ -622,8 +633,8 @@ SWITCH_RTN_C: ; 00:053D, 0x00053D
 SWITCH_RTN_D: ; 00:055A, 0x00055A
     DEC 59E_OBJ_UNK_TIMER?[18],X
     BNE 00:0594
-    INC OBJ_ANIMATION_FRAME_TO[18],X
-    LDA OBJ_ANIMATION_FRAME_TO[18],X
+    INC OBJ_ANIMATION_DISPLAY[18],X
+    LDA OBJ_ANIMATION_DISPLAY[18],X
     CMP #$5D
     BCS 00:0597
     CMP #$5C
@@ -644,10 +655,11 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     STA 59E_OBJ_UNK_TIMER?[18],X
     JMP OBJECT_X_MOVE?
     JMP INIT_OBJECT[X]_DATA?
+OBJ_STATE_0xB6_HANDLER: ; 00:059A, 0x00059A
     LDA OBJ_SECONDARY_SWITCH?[18],X
     BNE 00:05AF
     LDA #$5D
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$01
     STA 50E_ARR_UNK[18],X
     INC OBJ_SECONDARY_SWITCH?[18],X
@@ -660,13 +672,14 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     LDA #$02
     STA OBJ_ENABLED_STATE+MORE?[18],X
     LDA #$06
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     JMP 1F:14E8
     JMP OBJECT_X_MOVE?
+OBJ_STATE_0xB4_HANDLER: ; 00:05CB, 0x0005CB
     LDA OBJ_SECONDARY_SWITCH?[18],X
     BNE 00:05E0
     LDA #$59
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$FF
     STA 4EA_ARR_UNK[18],X
     INC OBJ_SECONDARY_SWITCH?[18],X
@@ -683,13 +696,14 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     LDA $8603,Y
     STA OBJ_ENABLED_STATE+MORE?[18],X
     LDA #$06
-    STA OBJ_ANIMATION_FRAME_TO[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
     JMP 1F:14E8
     JMP OBJECT_X_MOVE?
     .db 02
     .db 07
     .db 02
     .db 07
+OBJ_STATE_0xB8_HANDLER: ; 00:0607, 0x000607
     .db BD
     .db 8C
     .db 05
@@ -722,6 +736,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0xB7_HANDLER: ; 00:0627, 0x000627
     .db BD
     .db 8C
     .db 05
@@ -966,6 +981,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0xB9_HANDLER: ; 00:071B, 0x00071B
     .db BD
     .db 12
     .db 04
@@ -1041,6 +1057,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0xB2_HANDLER: ; 00:0766, 0x000766
     .db A4
     .db 7F
     .db 8A
@@ -1067,6 +1084,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0x83_HANDLER: ; 00:0780, 0x000780
     .db BD
     .db 12
     .db 04
@@ -1293,6 +1311,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0xBB_HANDLER: ; 00:0862, 0x000862
     .db A9
     .db 01
     .db 8D
@@ -1304,6 +1323,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 24
     .db 04
     .db 60
+OBJ_STATE_Ox86_HANDLER: ; 00:086D, 0x00086D
     .db BD
     .db 12
     .db 04
@@ -1571,6 +1591,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 48
     .db 04
     .db 60
+OBJ_STATE_0xA8_HANDLER: ; 00:0978, 0x000978
     .db FE
     .db 48
     .db 04
@@ -1611,6 +1632,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db CB
     .db F3
+OBJ_STATE_0x8E_HANDLER: ; 00:09A0, 0x0009A0
     .db A4
     .db 7F
     .db 8A
@@ -1633,6 +1655,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0x87_HANDLER: ; 00:09B6, 0x0009B6
     .db BD
     .db 12
     .db 04
@@ -1854,6 +1877,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0x9E_HANDLER: ; 00:0A93, 0x000A93
     .db A9
     .db A3
     .db 85
@@ -1866,6 +1890,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db D1
     .db F4
+OBJ_STATE_0x88_HANDLER: ; 00:0A9F, 0x000A9F
     .db BD
     .db 12
     .db 04
@@ -1929,6 +1954,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db CB
     .db F3
+OBJ_STATE_0x89_HANDLER: ; 00:0ADE, 0x000ADE
     .db BD
     .db 12
     .db 04
@@ -2336,6 +2362,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0x8A_HANDLER: ; 00:0C75, 0x000C75
     .db 20
     .db 11
     .db E8
@@ -2376,6 +2403,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db C5
     .db 01
     .db 00
+OBJ_STATE_0xBA_HANDLER: ; 00:0C9D, 0x000C9D
     .db BD
     .db 12
     .db 04
@@ -2450,6 +2478,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db D1
     .db F4
+OBJ_STATE_0x8D_HANDLER: ; 00:0CE7, 0x000CE7
     .db A9
     .db 01
     .db 85
@@ -2480,6 +2509,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0x8F_HANDLER: ; 00:0D05, 0x000D05
     .db A4
     .db 7F
     .db 8A
@@ -2512,6 +2542,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 52
     .db DB
     .db 60
+OBJ_STATE_0x90_HANDLER: ; 00:0D25, 0x000D25
     .db A9
     .db 01
     .db 85
@@ -2542,6 +2573,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0xC0_HANDLER: ; 00:0D43, 0x000D43
     .db BD
     .db 12
     .db 04
@@ -2586,6 +2618,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db E8
     .db F4
     .db 60
+OBJ_STATE_0x94_HANDLER: ; 00:0D6F, 0x000D6F
     .db A4
     .db DC
     .db A5
@@ -2623,6 +2656,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 00
     .db 02
     .db 03
+OBJ_STATE_0x93_HANDLER: ; 00:0D94, 0x000D94
     .db BD
     .db 12
     .db 04
@@ -2725,6 +2759,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0xA6_HANDLER: ; 00:0DFA, 0x000DFA
     .db 8A
     .db 48
     .db A9
@@ -2742,6 +2777,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0x99_HANDLER: ; 00:0E0B, 0x000E0B
     .db BD
     .db 12
     .db 04
@@ -2833,6 +2869,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0x9A_HANDLER: ; 00:0E66, 0x000E66
     .db BD
     .db 12
     .db 04
@@ -2923,6 +2960,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db D1
     .db F4
+OBJ_STATE_0x9B_HANDLER: ; 00:0EC0, 0x000EC0
     .db BD
     .db 12
     .db 04
@@ -3077,6 +3115,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db A0
     .db A0
     .db 00
+OBJ_STATE_0x9C_HANDLER: ; 00:0F5A, 0x000F5A
     .db 20
     .db 11
     .db E8
@@ -3275,6 +3314,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0x9D_HANDLER: ; 00:1020, 0x001020
     .db BD
     .db 12
     .db 04
@@ -3355,6 +3395,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0xA2_HANDLER: ; 00:1070, 0x001070
     .db BD
     .db 12
     .db 04
@@ -3605,6 +3646,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D4
     .db E4
     .db CC
+OBJ_STATE_0xA3_HANDLER: ; 00:116A, 0x00116A
     .db BD
     .db 12
     .db 04
@@ -3731,6 +3773,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db D1
     .db F4
+OBJ_STATE_0xA4_HANDLER: ; 00:11E8, 0x0011E8
     .db A9
     .db 01
     .db 85
@@ -3760,6 +3803,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0xA5_HANDLER: ; 00:1205, 0x001205
     .db 8A
     .db 48
     .db A9
@@ -3777,6 +3821,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0x9F_HANDLER: ; 00:1216, 0x001216
     .db BD
     .db 12
     .db 04
@@ -4062,6 +4107,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 60
     .db 7B
     .db 7D
+OBJ_STATE_0xA0_HANDLER: ; 00:1333, 0x001333
     .db BD
     .db 12
     .db 04
@@ -4271,6 +4317,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 60
     .db 18
     .db 60
+OBJ_STATE_0xA1_HANDLER: ; 00:1404, 0x001404
     .db BD
     .db 12
     .db 04
@@ -4418,6 +4465,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db B2
     .db 00
     .db 00
+OBJ_STATE_0xBD_HANDLER: ; 00:1497, 0x001497
     .db BD
     .db 12
     .db 04
@@ -4597,6 +4645,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0xBE_HANDLER: ; 00:154A, 0x00154A
     .db BD
     .db 12
     .db 04
@@ -4682,6 +4731,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 56
     .db 51
     .db 52
+OBJ_STATE_0x8C_HANDLER: ; 00:159F, 0x00159F
     .db BD
     .db 12
     .db 04
@@ -4794,6 +4844,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db D1
     .db F4
+OBJ_STATE_0x96_HANDLER: ; 00:160F, 0x00160F
     .db BD
     .db 12
     .db 04
@@ -5191,6 +5242,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 8C
     .db 05
     .db 60
+OBJ_STATE_0x97_HANDLER: ; 00:179C, 0x00179C
     .db BD
     .db 8C
     .db 05
@@ -5242,6 +5294,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 00
     .db 04
     .db 60
+OBJ_STATE_0x8B_HANDLER: ; 00:17CF, 0x0017CF
     .db BD
     .db 12
     .db 04
@@ -5310,6 +5363,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db 4C
     .db D1
     .db F4
+OBJ_STATE_0x92_HANDLER: ; 00:1813, 0x001813
     .db 8E
     .db 00
     .db 07
@@ -5850,6 +5904,7 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db A5
     .db 00
     .db 60
+OBJ_STATE_0x95_HANDLER: ; 00:1A2F, 0x001A2F
     .db 20
     .db BC
     .db F7
@@ -6008,416 +6063,416 @@ SWITCH_RTN_D: ; 00:055A, 0x00055A
     .db F6
     .db 18
     .db 60
-DATA_UNK_A: ; 00:1ACD, 0x001ACD
     .db 38
-DATA_UNK_B: ; 00:1ACE, 0x001ACE
     .db 60
-    .db 90
-    .db 9F
-    .db AD
-    .db 9F
-    .db C6
-    .db 9F
-    .db E3
-    .db 9F
-    .db 00
-    .db A0
-    .db 15
-    .db A0
-    .db 2A
-    .db A0
-    .db 3F
-    .db A0
-    .db 54
-    .db A0
-    .db 75
-    .db A0
-    .db 9E
-    .db A0
-    .db AB
-    .db A0
-    .db B8
-    .db A0
-    .db D9
-    .db A0
-    .db F6
-    .db A0
-    .db 1F
-    .db A1
-    .db 40
-    .db A1
-    .db 65
-    .db A1
-    .db 8A
-    .db A1
-    .db AF
-    .db A1
-    .db CC
-    .db A1
-    .db D5
-    .db A1
-    .db FE
-    .db A1
-    .db 27
-    .db A2
-    .db 4C
-    .db A2
-    .db 6D
-    .db A2
-    .db 96
-    .db A2
-    .db BF
-    .db A2
-    .db C8
-    .db A2
-    .db E5
-    .db A2
-    .db 0A
-    .db A3
-    .db 2B
-    .db A3
-    .db 4C
-    .db A3
-    .db 6D
-    .db A3
-    .db 8E
-    .db A3
-    .db AB
-    .db A3
-    .db B4
-    .db A3
-    .db DD
-    .db A3
-    .db 02
-    .db A4
-    .db 27
-    .db A4
-    .db 4C
-    .db A4
-    .db 75
-    .db A4
-    .db 9E
-    .db A4
-    .db C7
-    .db A4
-    .db E8
-    .db A4
-    .db 0D
-    .db A5
-    .db 32
-    .db A5
-    .db 57
-    .db A5
-    .db 74
-    .db A5
-    .db 7D
-    .db A5
-    .db A6
-    .db A5
-    .db CF
-    .db A5
-    .db F8
-    .db A5
-    .db 21
-    .db A6
-    .db 4A
-    .db A6
-    .db 6F
-    .db A6
-    .db 98
-    .db A6
-    .db B9
-    .db A6
-    .db DE
-    .db A6
-    .db 03
-    .db A7
-    .db 28
-    .db A7
-    .db 45
-    .db A7
-    .db 4E
-    .db A7
-    .db 77
-    .db A7
-    .db 98
-    .db A7
-    .db BD
-    .db A7
-    .db E6
-    .db A7
-    .db 0F
-    .db A8
-    .db 38
-    .db A8
-    .db 5D
-    .db A8
-    .db 82
-    .db A8
-    .db AB
-    .db A8
-    .db D4
-    .db A8
-    .db FD
-    .db A8
-    .db 26
-    .db A9
-    .db 37
-    .db A9
-    .db 48
-    .db A9
-    .db 69
-    .db A9
-    .db 8A
-    .db A9
-    .db AB
-    .db A9
-    .db CC
-    .db A9
-    .db D5
-    .db A9
-    .db DE
-    .db A9
-    .db FF
-    .db A9
-    .db 1C
-    .db AA
-    .db 21
-    .db AA
-    .db 52
-    .db AA
-    .db 5F
-    .db AA
-    .db 78
-    .db AA
-    .db 81
-    .db AA
-    .db AA
-    .db AA
-    .db D3
-    .db AA
-    .db FC
-    .db AA
-    .db 21
-    .db AB
-    .db 4A
-    .db AB
-    .db 73
-    .db AB
-    .db 84
-    .db AB
-    .db 99
-    .db AB
-    .db BE
-    .db AB
-    .db E3
-    .db AB
-    .db 08
-    .db AC
-    .db 31
-    .db AC
-    .db 5A
-    .db AC
-    .db 7B
-    .db AC
-    .db A0
-    .db AC
-    .db DC
-    .db 9C
-    .db F5
-    .db 9C
-    .db 0E
-    .db 9D
-    .db 2F
-    .db 9D
-    .db 4C
-    .db 9D
-    .db 7D
-    .db 9D
-    .db 9E
-    .db 9D
-    .db BF
-    .db 9D
-    .db 08
-    .db 9E
-    .db 69
-    .db 9E
-    .db C9
-    .db AC
-    .db D2
-    .db AC
-    .db DB
-    .db AC
-    .db 04
-    .db AD
-    .db 25
-    .db AD
-    .db 4A
-    .db AD
-    .db 6F
-    .db AD
-    .db 94
-    .db AD
-    .db B5
-    .db AD
-    .db D6
-    .db AD
-    .db F7
-    .db AD
-    .db 20
-    .db AE
-DATA_UNK_C: ; 00:1BCD, 0x001BCD
-    .db 41
-DATA_UNK_D: ; 00:1BCE, 0x001BCE
-    .db AE
-    .db 66
-    .db AE
-    .db 8B
-    .db AE
-    .db B4
-    .db AE
-    .db D5
-    .db AE
-    .db FA
-    .db AE
-    .db 1F
-    .db AF
-    .db 8A
-    .db 9E
-    .db AB
-    .db 9E
-    .db CC
-    .db 9E
-    .db 3C
-    .db AF
-    .db 59
-    .db AF
-    .db 76
-    .db AF
-    .db 8F
-    .db AF
-    .db AC
-    .db AF
-    .db C9
-    .db AF
-    .db E6
-    .db AF
-    .db 07
-    .db B0
-    .db 28
-    .db B0
-    .db ED
-    .db 9E
-    .db 0A
-    .db 9F
-    .db 27
-    .db 9F
-    .db 44
-    .db 9F
-    .db 61
-    .db 9F
-    .db 7E
-    .db 9F
-    .db 8B
-    .db 9F
-    .db 35
-    .db B0
-    .db 5E
-    .db B0
-    .db 87
-    .db B0
-    .db B0
-    .db B0
-    .db D5
-    .db B0
-    .db FA
-    .db B0
-    .db 1F
-    .db B1
-    .db 40
-    .db B1
-    .db 61
-    .db B1
-    .db 8A
-    .db B1
-    .db AF
-    .db B1
-    .db D4
-    .db B1
-    .db FD
-    .db B1
-    .db 22
-    .db B2
-    .db 47
-    .db B2
-    .db 5C
-    .db B2
-    .db 65
-    .db B2
-    .db 7A
-    .db B2
-    .db 93
-    .db B2
-    .db AC
-    .db B2
-    .db C9
-    .db B2
-    .db E6
-    .db B2
-    .db 07
-    .db B3
-    .db 20
-    .db B3
-    .db 39
-    .db B3
-    .db 56
-    .db B3
-    .db 73
-    .db B3
-    .db 90
-    .db B3
-    .db AD
-    .db B3
-    .db C2
-    .db B3
-    .db DF
-    .db B3
-    .db 70
-    .db 9C
-    .db 79
-    .db 9C
-    .db 86
-    .db 9C
-    .db 93
-    .db 9C
-    .db A0
-    .db 9C
-    .db B9
-    .db 9C
-    .db FC
-    .db B3
-    .db C6
-    .db 9C
-    .db D3
-    .db 9C
-    .db 11
-    .db B4
-    .db 2E
-    .db B4
-    .db 4B
-    .db B4
-    .db 64
-    .db B4
-    .db 7D
-    .db B4
-    .db 9A
-    .db B4
-    .db B7
-    .db B4
-    .db D4
-    .db B4
-    .db 63
-    .db 9C
+SPRITE_BANK_0_DATA_PTRS_A1_L: ; 00:1ACF, 0x001ACF
+    LOW(00:1F90)
+SPRITE_BANK_0_DATA_PTRS_A1_H: ; 00:1AD0, 0x001AD0
+    HIGH(00:1F90)
+    LOW(00:1FAD)
+    HIGH(00:1FAD)
+    LOW(00:1FC6)
+    HIGH(00:1FC6)
+    LOW(00:1FE3)
+    HIGH(00:1FE3)
+    LOW(01:0000)
+    HIGH(01:0000)
+    LOW(01:0015)
+    HIGH(01:0015)
+    LOW(01:002A)
+    HIGH(01:002A)
+    LOW(01:003F)
+    HIGH(01:003F)
+    LOW(01:0054)
+    HIGH(01:0054)
+    LOW(01:0075)
+    HIGH(01:0075)
+    LOW(01:009E)
+    HIGH(01:009E)
+    LOW(01:00AB)
+    HIGH(01:00AB)
+    LOW(01:00B8)
+    HIGH(01:00B8)
+    LOW(01:00D9)
+    HIGH(01:00D9)
+    LOW(01:00F6)
+    HIGH(01:00F6)
+    LOW(01:011F)
+    HIGH(01:011F)
+    LOW(01:0140)
+    HIGH(01:0140)
+    LOW(01:0165)
+    HIGH(01:0165)
+    LOW(01:018A)
+    HIGH(01:018A)
+    LOW(01:01AF)
+    HIGH(01:01AF)
+    LOW(01:01CC)
+    HIGH(01:01CC)
+    LOW(01:01D5)
+    HIGH(01:01D5)
+    LOW(01:01FE)
+    HIGH(01:01FE)
+    LOW(01:0227)
+    HIGH(01:0227)
+    LOW(01:024C)
+    HIGH(01:024C)
+    LOW(01:026D)
+    HIGH(01:026D)
+    LOW(01:0296)
+    HIGH(01:0296)
+    LOW(01:02BF)
+    HIGH(01:02BF)
+    LOW(01:02C8)
+    HIGH(01:02C8)
+    LOW(01:02E5)
+    HIGH(01:02E5)
+    LOW(01:030A)
+    HIGH(01:030A)
+    LOW(01:032B)
+    HIGH(01:032B)
+    LOW(01:034C)
+    HIGH(01:034C)
+    LOW(01:036D)
+    HIGH(01:036D)
+    LOW(01:038E)
+    HIGH(01:038E)
+    LOW(01:03AB)
+    HIGH(01:03AB)
+    LOW(01:03B4)
+    HIGH(01:03B4)
+    LOW(01:03DD)
+    HIGH(01:03DD)
+    LOW(01:0402)
+    HIGH(01:0402)
+    LOW(01:0427)
+    HIGH(01:0427)
+    LOW(01:044C)
+    HIGH(01:044C)
+    LOW(01:0475)
+    HIGH(01:0475)
+    LOW(01:049E)
+    HIGH(01:049E)
+    LOW(01:04C7)
+    HIGH(01:04C7)
+    LOW(01:04E8)
+    HIGH(01:04E8)
+    LOW(01:050D)
+    HIGH(01:050D)
+    LOW(01:0532)
+    HIGH(01:0532)
+    LOW(01:0557)
+    HIGH(01:0557)
+    LOW(01:0574)
+    HIGH(01:0574)
+    LOW(01:057D)
+    HIGH(01:057D)
+    LOW(01:05A6)
+    HIGH(01:05A6)
+    LOW(01:05CF)
+    HIGH(01:05CF)
+    LOW(01:05F8)
+    HIGH(01:05F8)
+    LOW(01:0621)
+    HIGH(01:0621)
+    LOW(01:064A)
+    HIGH(01:064A)
+    LOW(01:066F)
+    HIGH(01:066F)
+    LOW(01:0698)
+    HIGH(01:0698)
+    LOW(01:06B9)
+    HIGH(01:06B9)
+    LOW(01:06DE)
+    HIGH(01:06DE)
+    LOW(01:0703)
+    HIGH(01:0703)
+    LOW(01:0728)
+    HIGH(01:0728)
+    LOW(01:0745)
+    HIGH(01:0745)
+    LOW(01:074E)
+    HIGH(01:074E)
+    LOW(01:0777)
+    HIGH(01:0777)
+    LOW(01:0798)
+    HIGH(01:0798)
+    LOW(01:07BD)
+    HIGH(01:07BD)
+    LOW(01:07E6)
+    HIGH(01:07E6)
+    LOW(01:080F)
+    HIGH(01:080F)
+    LOW(01:0838)
+    HIGH(01:0838)
+    LOW(01:085D)
+    HIGH(01:085D)
+    LOW(01:0882)
+    HIGH(01:0882)
+    LOW(01:08AB)
+    HIGH(01:08AB)
+    LOW(01:08D4)
+    HIGH(01:08D4)
+    LOW(01:08FD)
+    HIGH(01:08FD)
+    LOW(01:0926)
+    HIGH(01:0926)
+    LOW(01:0937)
+    HIGH(01:0937)
+    LOW(01:0948)
+    HIGH(01:0948)
+    LOW(01:0969)
+    HIGH(01:0969)
+    LOW(01:098A)
+    HIGH(01:098A)
+    LOW(01:09AB)
+    HIGH(01:09AB)
+    LOW(01:09CC)
+    HIGH(01:09CC)
+    LOW(01:09D5)
+    HIGH(01:09D5)
+    LOW(01:09DE)
+    HIGH(01:09DE)
+    LOW(01:09FF)
+    HIGH(01:09FF)
+    LOW(01:0A1C)
+    HIGH(01:0A1C)
+    LOW(01:0A21)
+    HIGH(01:0A21)
+    LOW(01:0A52)
+    HIGH(01:0A52)
+    LOW(01:0A5F)
+    HIGH(01:0A5F)
+    LOW(01:0A78)
+    HIGH(01:0A78)
+    LOW(01:0A81)
+    HIGH(01:0A81)
+    LOW(01:0AAA)
+    HIGH(01:0AAA)
+    LOW(01:0AD3)
+    HIGH(01:0AD3)
+    LOW(01:0AFC)
+    HIGH(01:0AFC)
+    LOW(01:0B21)
+    HIGH(01:0B21)
+    LOW(01:0B4A)
+    HIGH(01:0B4A)
+    LOW(01:0B73)
+    HIGH(01:0B73)
+    LOW(01:0B84)
+    HIGH(01:0B84)
+    LOW(01:0B99)
+    HIGH(01:0B99)
+    LOW(01:0BBE)
+    HIGH(01:0BBE)
+    LOW(01:0BE3)
+    HIGH(01:0BE3)
+    LOW(01:0C08)
+    HIGH(01:0C08)
+    LOW(01:0C31)
+    HIGH(01:0C31)
+    LOW(01:0C5A)
+    HIGH(01:0C5A)
+    LOW(01:0C7B)
+    HIGH(01:0C7B)
+    LOW(01:0CA0)
+    HIGH(01:0CA0)
+    LOW(00:1CDC)
+    HIGH(00:1CDC)
+    LOW(00:1CF5)
+    HIGH(00:1CF5)
+    LOW(00:1D0E)
+    HIGH(00:1D0E)
+    LOW(00:1D2F)
+    HIGH(00:1D2F)
+    LOW(00:1D4C)
+    HIGH(00:1D4C)
+    LOW(00:1D7D)
+    HIGH(00:1D7D)
+    LOW(00:1D9E)
+    HIGH(00:1D9E)
+    LOW(00:1DBF)
+    HIGH(00:1DBF)
+    LOW(00:1E08)
+    HIGH(00:1E08)
+    LOW(00:1E69)
+    HIGH(00:1E69)
+    LOW(01:0CC9)
+    HIGH(01:0CC9)
+    LOW(01:0CD2)
+    HIGH(01:0CD2)
+    LOW(01:0CDB)
+    HIGH(01:0CDB)
+    LOW(01:0D04)
+    HIGH(01:0D04)
+    LOW(01:0D25)
+    HIGH(01:0D25)
+    LOW(01:0D4A)
+    HIGH(01:0D4A)
+    LOW(01:0D6F)
+    HIGH(01:0D6F)
+    LOW(01:0D94)
+    HIGH(01:0D94)
+    LOW(01:0DB5)
+    HIGH(01:0DB5)
+    LOW(01:0DD6)
+    HIGH(01:0DD6)
+    LOW(01:0DF7)
+    HIGH(01:0DF7)
+    LOW(01:0E20)
+    HIGH(01:0E20)
+SPRITE_BANK_0_DATA_PTRS_A2_L: ; 00:1BCD, 0x001BCD
+    LOW(01:0E41)
+SPRITE_BANK_0_DATA_PTRS_A2_H: ; 00:1BCE, 0x001BCE
+    HIGH(01:0E41)
+    LOW(01:0E66)
+    HIGH(01:0E66)
+    LOW(01:0E8B)
+    HIGH(01:0E8B)
+    LOW(01:0EB4)
+    HIGH(01:0EB4)
+    LOW(01:0ED5)
+    HIGH(01:0ED5)
+    LOW(01:0EFA)
+    HIGH(01:0EFA)
+    LOW(01:0F1F)
+    HIGH(01:0F1F)
+    LOW(00:1E8A)
+    HIGH(00:1E8A)
+    LOW(00:1EAB)
+    HIGH(00:1EAB)
+    LOW(00:1ECC)
+    HIGH(00:1ECC)
+    LOW(01:0F3C)
+    HIGH(01:0F3C)
+    LOW(01:0F59)
+    HIGH(01:0F59)
+    LOW(01:0F76)
+    HIGH(01:0F76)
+    LOW(01:0F8F)
+    HIGH(01:0F8F)
+    LOW(01:0FAC)
+    HIGH(01:0FAC)
+    LOW(01:0FC9)
+    HIGH(01:0FC9)
+    LOW(01:0FE6)
+    HIGH(01:0FE6)
+    LOW(01:1007)
+    HIGH(01:1007)
+    LOW(01:1028)
+    HIGH(01:1028)
+    LOW(00:1EED)
+    HIGH(00:1EED)
+    LOW(00:1F0A)
+    HIGH(00:1F0A)
+    LOW(00:1F27)
+    HIGH(00:1F27)
+    LOW(00:1F44)
+    HIGH(00:1F44)
+    LOW(00:1F61)
+    HIGH(00:1F61)
+    LOW(00:1F7E)
+    HIGH(00:1F7E)
+    LOW(00:1F8B)
+    HIGH(00:1F8B)
+    LOW(01:1035)
+    HIGH(01:1035)
+    LOW(01:105E)
+    HIGH(01:105E)
+    LOW(01:1087)
+    HIGH(01:1087)
+    LOW(01:10B0)
+    HIGH(01:10B0)
+    LOW(01:10D5)
+    HIGH(01:10D5)
+    LOW(01:10FA)
+    HIGH(01:10FA)
+    LOW(01:111F)
+    HIGH(01:111F)
+    LOW(01:1140)
+    HIGH(01:1140)
+    LOW(01:1161)
+    HIGH(01:1161)
+    LOW(01:118A)
+    HIGH(01:118A)
+    LOW(01:11AF)
+    HIGH(01:11AF)
+    LOW(01:11D4)
+    HIGH(01:11D4)
+    LOW(01:11FD)
+    HIGH(01:11FD)
+    LOW(01:1222)
+    HIGH(01:1222)
+    LOW(01:1247)
+    HIGH(01:1247)
+    LOW(01:125C)
+    HIGH(01:125C)
+    LOW(01:1265)
+    HIGH(01:1265)
+    LOW(01:127A)
+    HIGH(01:127A)
+    LOW(01:1293)
+    HIGH(01:1293)
+    LOW(01:12AC)
+    HIGH(01:12AC)
+    LOW(01:12C9)
+    HIGH(01:12C9)
+    LOW(01:12E6)
+    HIGH(01:12E6)
+    LOW(01:1307)
+    HIGH(01:1307)
+    LOW(01:1320)
+    HIGH(01:1320)
+    LOW(01:1339)
+    HIGH(01:1339)
+    LOW(01:1356)
+    HIGH(01:1356)
+    LOW(01:1373)
+    HIGH(01:1373)
+    LOW(01:1390)
+    HIGH(01:1390)
+    LOW(01:13AD)
+    HIGH(01:13AD)
+    LOW(01:13C2)
+    HIGH(01:13C2)
+    LOW(01:13DF)
+    HIGH(01:13DF)
+    LOW(00:1C70)
+    HIGH(00:1C70)
+    LOW(00:1C79)
+    HIGH(00:1C79)
+    LOW(00:1C86)
+    HIGH(00:1C86)
+    LOW(00:1C93)
+    HIGH(00:1C93)
+    LOW(00:1CA0)
+    HIGH(00:1CA0)
+    LOW(00:1CB9)
+    HIGH(00:1CB9)
+    LOW(01:13FC)
+    HIGH(01:13FC)
+    LOW(00:1CC6)
+    HIGH(00:1CC6)
+    LOW(00:1CD3)
+    HIGH(00:1CD3)
+    LOW(01:1411)
+    HIGH(01:1411)
+    LOW(01:142E)
+    HIGH(01:142E)
+    LOW(01:144B)
+    HIGH(01:144B)
+    LOW(01:1464)
+    HIGH(01:1464)
+    LOW(01:147D)
+    HIGH(01:147D)
+    LOW(01:149A)
+    HIGH(01:149A)
+    LOW(01:14B7)
+    HIGH(01:14B7)
+    LOW(01:14D4)
+    HIGH(01:14D4)
+    LOW(00:1C63)
+    HIGH(00:1C63)
     .db 03
     .db F0
     .db 31

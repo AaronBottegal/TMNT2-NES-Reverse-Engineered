@@ -5357,178 +5357,182 @@
     .db 00
     .db E0
     .db 35
+SPRITE_BANK_0_DATA_PTS_B_L: ; 01:14EF, 0x0034EF
     .db 00
+SPRITE_BANK_0_DATA_PTRS_B_H: ; 01:14F0, 0x0034F0
     .db 08
-    .db 37
-    .db B6
-    .db 74
-    .db B6
-    .db A9
-    .db B6
-    .db DE
-    .db B6
-    .db 17
-    .db B7
-    .db 48
-    .db B7
-    .db 81
-    .db B7
-    .db BA
-    .db B7
-    .db DB
-    .db B7
-    .db FC
-    .db B7
-    .db 21
-    .db B8
-    .db 3E
-    .db B8
-    .db 5B
-    .db B8
-    .db 7C
-    .db B8
-    .db 99
-    .db B8
-    .db BE
-    .db B8
-    .db DF
-    .db B8
-    .db F4
-    .db B8
-    .db 05
-    .db B9
-    .db 0E
-    .db B9
-    .db 2B
-    .db B9
-    .db 50
-    .db B9
-    .db 75
-    .db B9
-    .db 7E
-    .db B9
-    .db 97
-    .db B9
-    .db B0
-    .db B9
-    .db FF
-    .db B5
-    .db 04
-    .db B6
-    .db 0D
-    .db B6
-    .db 2E
-    .db B6
-    .db C9
-    .db B9
-    .db 42
-    .db BA
-    .db 47
-    .db BA
-    .db 50
-    .db BA
-    .db 59
-    .db BA
-    .db 5E
-    .db BA
-    .db 63
-    .db BA
-    .db 68
-    .db BA
-    .db 6D
-    .db BA
-    .db 72
-    .db BA
-    .db 77
-    .db BA
-    .db 7C
-    .db BA
-    .db 81
-    .db BA
-    .db 86
-    .db BA
-    .db 8B
-    .db BA
-    .db 90
-    .db BA
-    .db 95
-    .db BA
-    .db 9A
-    .db BA
-    .db 9F
-    .db BA
-    .db A4
-    .db BA
-    .db A9
-    .db BA
-    .db AE
-    .db BA
-    .db B3
-    .db BA
-    .db B8
-    .db BA
-    .db BD
-    .db BA
-    .db C2
-    .db BA
-    .db C7
-    .db BA
-    .db CC
-    .db BA
-    .db D1
-    .db BA
-    .db D6
-    .db BA
-    .db DB
-    .db BA
-    .db E0
-    .db BA
-    .db E5
-    .db BA
-    .db EA
-    .db BA
-    .db EF
-    .db BA
-    .db F4
-    .db BA
-    .db F9
-    .db BA
-    .db FE
-    .db BA
-    .db 03
-    .db BB
-    .db 08
-    .db BB
-    .db 0D
-    .db BB
-    .db 12
-    .db BB
-    .db 17
-    .db BB
-    .db 1C
-    .db BB
-    .db 21
-    .db BB
-    .db 26
-    .db BB
-    .db 9B
-    .db B5
-    .db C8
-    .db B5
-    .db E1
-    .db B5
-    .db EE
-    .db B5
-    .db 2B
-    .db BB
-    .db 5C
-    .db BB
-    .db 65
-    .db BB
-    .db 6E
-    .db BB
-    .db 77
-    .db BB
+SPRITE_PAGE_0_DATA_PTRS_L: ; 01:14F1, 0x0034F1
+    LOW(01:1637)
+SPRITE_PAGE_0_DATA_PTRS_H: ; 01:14F2, 0x0034F2
+    HIGH(01:1637)
+    LOW(01:1674)
+    HIGH(01:1674)
+    LOW(01:16A9)
+    HIGH(01:16A9)
+    LOW(01:16DE)
+    HIGH(01:16DE)
+    LOW(01:1717)
+    HIGH(01:1717)
+    LOW(01:1748)
+    HIGH(01:1748)
+    LOW(01:1781)
+    HIGH(01:1781)
+    LOW(01:17BA)
+    HIGH(01:17BA)
+    LOW(01:17DB)
+    HIGH(01:17DB)
+    LOW(01:17FC)
+    HIGH(01:17FC)
+    LOW(01:1821)
+    HIGH(01:1821)
+    LOW(01:183E)
+    HIGH(01:183E)
+    LOW(01:185B)
+    HIGH(01:185B)
+    LOW(01:187C)
+    HIGH(01:187C)
+    LOW(01:1899)
+    HIGH(01:1899)
+    LOW(01:18BE)
+    HIGH(01:18BE)
+    LOW(01:18DF)
+    HIGH(01:18DF)
+    LOW(01:18F4)
+    HIGH(01:18F4)
+    LOW(01:1905)
+    HIGH(01:1905)
+    LOW(01:190E)
+    HIGH(01:190E)
+    LOW(01:192B)
+    HIGH(01:192B)
+    LOW(01:1950)
+    HIGH(01:1950)
+    LOW(01:1975)
+    HIGH(01:1975)
+    LOW(01:197E)
+    HIGH(01:197E)
+    LOW(01:1997)
+    HIGH(01:1997)
+    LOW(01:19B0)
+    HIGH(01:19B0)
+    LOW(01:15FF)
+    HIGH(01:15FF)
+    LOW(01:1604)
+    HIGH(01:1604)
+    LOW(01:160D)
+    HIGH(01:160D)
+    LOW(01:162E)
+    HIGH(01:162E)
+    LOW(01:19C9)
+    HIGH(01:19C9)
+    LOW(01:1A42)
+    HIGH(01:1A42)
+    LOW(01:1A47)
+    HIGH(01:1A47)
+    LOW(01:1A50)
+    HIGH(01:1A50)
+    LOW(01:1A59)
+    HIGH(01:1A59)
+    LOW(01:1A5E)
+    HIGH(01:1A5E)
+    LOW(01:1A63)
+    HIGH(01:1A63)
+    LOW(01:1A68)
+    HIGH(01:1A68)
+    LOW(01:1A6D)
+    HIGH(01:1A6D)
+    LOW(01:1A72)
+    HIGH(01:1A72)
+    LOW(01:1A77)
+    HIGH(01:1A77)
+    LOW(01:1A7C)
+    HIGH(01:1A7C)
+    LOW(01:1A81)
+    HIGH(01:1A81)
+    LOW(01:1A86)
+    HIGH(01:1A86)
+    LOW(01:1A8B)
+    HIGH(01:1A8B)
+    LOW(01:1A90)
+    HIGH(01:1A90)
+    LOW(01:1A95)
+    HIGH(01:1A95)
+    LOW(01:1A9A)
+    HIGH(01:1A9A)
+    LOW(01:1A9F)
+    HIGH(01:1A9F)
+    LOW(01:1AA4)
+    HIGH(01:1AA4)
+    LOW(01:1AA9)
+    HIGH(01:1AA9)
+    LOW(01:1AAE)
+    HIGH(01:1AAE)
+    LOW(01:1AB3)
+    HIGH(01:1AB3)
+    LOW(01:1AB8)
+    HIGH(01:1AB8)
+    LOW(01:1ABD)
+    HIGH(01:1ABD)
+    LOW(01:1AC2)
+    HIGH(01:1AC2)
+    LOW(01:1AC7)
+    HIGH(01:1AC7)
+    LOW(01:1ACC)
+    HIGH(01:1ACC)
+    LOW(01:1AD1)
+    HIGH(01:1AD1)
+    LOW(01:1AD6)
+    HIGH(01:1AD6)
+    LOW(01:1ADB)
+    HIGH(01:1ADB)
+    LOW(01:1AE0)
+    HIGH(01:1AE0)
+    LOW(01:1AE5)
+    HIGH(01:1AE5)
+    LOW(01:1AEA)
+    HIGH(01:1AEA)
+    LOW(01:1AEF)
+    HIGH(01:1AEF)
+    LOW(01:1AF4)
+    HIGH(01:1AF4)
+    LOW(01:1AF9)
+    HIGH(01:1AF9)
+    LOW(01:1AFE)
+    HIGH(01:1AFE)
+    LOW(01:1B03)
+    HIGH(01:1B03)
+    LOW(01:1B08)
+    HIGH(01:1B08)
+    LOW(01:1B0D)
+    HIGH(01:1B0D)
+    LOW(01:1B12)
+    HIGH(01:1B12)
+    LOW(01:1B17)
+    HIGH(01:1B17)
+    LOW(01:1B1C)
+    HIGH(01:1B1C)
+    LOW(01:1B21)
+    HIGH(01:1B21)
+    LOW(01:1B26)
+    HIGH(01:1B26)
+    LOW(01:159B)
+    HIGH(01:159B)
+    LOW(01:15C8)
+    HIGH(01:15C8)
+    LOW(01:15E1)
+    HIGH(01:15E1)
+    LOW(01:15EE)
+    HIGH(01:15EE)
+    LOW(01:1B2B)
+    HIGH(01:1B2B)
+    LOW(01:1B5C)
+    HIGH(01:1B5C)
+    LOW(01:1B65)
+    HIGH(01:1B65)
+    LOW(01:1B6E)
+    HIGH(01:1B6E)
+    LOW(01:1B77)
+    HIGH(01:1B77)
     .db 0B
     .db 00
     .db 1B

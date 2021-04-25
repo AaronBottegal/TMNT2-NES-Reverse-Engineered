@@ -2231,7 +2231,7 @@ SCREEN_0x07: ; 09:089D, 0x01289D
     .db 02
     .db 03
 RTN_OBJECTS_SPAWN?: ; 09:08CF, 0x0128CF
-    LDA LEVEL_SCREEN_ON ; Load
+    LDA LEVEL/SCREEN_ON ; Load
     CMP #$07 ; If _ #$07
     BEQ SCREEN_0x07 ; ==, goto.
     ASL A ; << 1, *2
@@ -5421,6 +5421,7 @@ DATA_PTR_UNK_H: ; 09:09D5, 0x0129D5
     .db 10
     .db A0
     .db FF
+OBJ_STATE_0x36_HANDLER: ; 09:15B0, 0x0135B0
     .db AD
     .db FD
     .db 05
@@ -6687,6 +6688,7 @@ DATA_PTR_UNK_H: ; 09:09D5, 0x0129D5
     .db 80
     .db FF
     .db 80
+OBJ_STATE_0x3A_HANDLER: ; 09:1AA2, 0x013AA2
     .db BD
     .db 48
     .db 04
@@ -6788,6 +6790,7 @@ DATA_PTR_UNK_H: ; 09:09D5, 0x0129D5
     .db 00
     .db 04
     .db 60
+OBJ_STATE_0x37_HANDLER: ; 09:1B07, 0x013B07
     .db BD
     .db 12
     .db 04
@@ -6824,6 +6827,7 @@ DATA_PTR_UNK_H: ; 09:09D5, 0x0129D5
     .db 4C
     .db F1
     .db F3
+OBJ_STATE_0x38_HANDLER: ; 09:1B2B, 0x013B2B
     .db BD
     .db 12
     .db 04
@@ -6994,6 +6998,7 @@ DATA_PTR_UNK_H: ; 09:09D5, 0x0129D5
     .db 4C
     .db A4
     .db BB
+OBJ_STATE_0x39_HANDLER: ; 09:1BD5, 0x013BD5
     .db BD
     .db 12
     .db 04

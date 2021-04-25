@@ -1,11 +1,11 @@
     .db 24
 RTN_MAP_MOVABILITY_UPDATES?: ; 04:0001, 0x008001
-    LDA LEVEL_SCREEN_ON ; Load screen.
+    LDA LEVEL/SCREEN_ON ; Load screen.
     CMP #$0B ; If _ #$0B
     BEQ RTS ; ==, leave.
     CMP #$07 ; If _ #$07
     BEQ RTS ; ==, leave.
-    LDA LEVEL_SCREEN_ON ; Load on otherwise.
+    LDA LEVEL/SCREEN_ON ; Load on otherwise.
     ASL A ; << 1, *2
     TAY ; To Y index.
     LDA LEVEL_DATA_UNK_PTR_L,Y ; Move data.
@@ -526,7 +526,7 @@ ZERO_ALL_INDEX: ; 04:0241, 0x008241
     TAX
     RTS
 RTN_UNK: ; 04:0278, 0x008278
-    LDA LEVEL_SCREEN_ON ; Load val.
+    LDA LEVEL/SCREEN_ON ; Load val.
     CMP #$07 ; If _ #$07
     BEQ RTS ; ==, goto.
     LDA IRQ/SCRIPT_RUN_COUNT? ; Load count.
@@ -2615,9 +2615,9 @@ TIMER_EXPIRED: ; 04:0A5E, 0x008A5E
     BNE 04:0BAC
     INC 87_UNK
     LDA #$03
-    STA DA_UNK
+    STA DA_FLAG?_UNK
     LDA #$90
-    STA IRQ_I_SECONDARY_KEEP_IF_POSITIVE
+    STA FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE
     LDA #$06
     STA B6_NAMETABLE_FOCUS_UNK
     LDA #$E0
@@ -2657,7 +2657,7 @@ TIMER_EXPIRED: ; 04:0A5E, 0x008A5E
     STA B9_UNK
     STA BC_UNK
     LDA #$01
-    STA FLAG_IRQ_660
+    STA 660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK
     JMP 04:098C
     LDA 60A_SWITCH_WHICH?
     CLC

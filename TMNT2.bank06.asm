@@ -20,7 +20,7 @@ VAL_EQ_FIVE: ; 06:0019, 0x00C019
     LDA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load
     CMP 9F_UNK ; If _ #$9F
     BCC ALT_RTN ; <, goto.
-    LDA LEVEL_SCREEN_ON ; Load level.
+    LDA LEVEL/SCREEN_ON ; Load level.
     CMP #$02 ; If _ #$02
     BNE CLEAR_UNK ; !=, goto. Screen not 2.
     LDY #$00 ; Flag clear write.
@@ -49,7 +49,7 @@ CLEAR_UNK: ; 06:0059, 0x00C059
     STA 45_UNK
     JMP RTN_UNK ; Goto unk.
 ALT_RTN: ; 06:0062, 0x00C062
-    LDA LEVEL_SCREEN_ON ; Load screen.
+    LDA LEVEL/SCREEN_ON ; Load screen.
     CMP #$07 ; If _ #$07
     BNE SCREEN_NOT_SEVEN ; !=, GOTO.
     JSR RTN_UNK ; Adds stuff and sets up others.
@@ -122,7 +122,7 @@ ANY_SET_0x7F: ; 06:00DD, 0x00C0DD
 ANY_SET_WITH_TOP_FLAG: ; 06:00E7, 0x00C0E7
     JSR RTN_UNK
 SKIP_UNK: ; 06:00EA, 0x00C0EA
-    LDA LEVEL_SCREEN_ON ; Load screen.
+    LDA LEVEL/SCREEN_ON ; Load screen.
     ASL A ; << 1, *2
     TAY ; To Y index.
     LDA DATA_PTR_L,Y
@@ -154,7 +154,7 @@ SKIP_UNK: ; 06:00EA, 0x00C0EA
     LDA #$00
     STA 7C_UNK ; Clear.
     LDA #$01
-    STA FLAG_IRQ_65F_INDEX_UNK ; Set to 1.
+    STA IRQ_CONFIG_CHANGE_INDEX ; Set to 1.
     BNE END_RTN_INC_61A ; Always taken.
 FP_DATA_0x02: ; 06:012A, 0x00C12A
     INY ; Stream++
@@ -215,7 +215,7 @@ PLAYER?_UNK: ; 06:017A, 0x00C17A
     LDA #$02 ; Load
     ORA 601_IRQ_FLAG_DELAY_MOD_+ ; Or with.
     STA PLAYER?_UNK[2],Y ; Store to.
-    LDA IRQ_D8_PAIR_UNK,Y ; Load
+    LDA D8_IRQ_CONFIG_B,Y ; Load
     ASL A ; << 1, *2
     TAX ; To X index.
     LDA PLAYER?_DATA_UNK_A,X ; Load
@@ -401,14 +401,14 @@ NEXT_INDEX_CHECK: ; 06:0293, 0x00C293
     .db 04
     .db 00
 ADD_NAMETABLE_THINGS?: ; 06:02A9, 0x00C2A9
-    LDA IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Load IRQ var.
+    LDA FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Load IRQ var.
     BPL RTS ; If positive, leave.
     LDA B0_UNK ; Load
     CLC ; Prep add.
     ADC B9_UNK ; Add with.
     STA B0_UNK ; Store back.
     BCC DONT_MOD_HIGH ; No overflow, don't INC.
-    INC IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Mod high.
+    INC FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Mod high.
 DONT_MOD_HIGH: ; 06:02B8, 0x00C2B8
     LDA B3_SCROLL_X_IRQ_J ; Load
     ADC BC_UNK ; Add with. TODO: Why no carry clear?
@@ -416,10 +416,10 @@ DONT_MOD_HIGH: ; 06:02B8, 0x00C2B8
     LDA B6_NAMETABLE_FOCUS_UNK ; Load
     ADC C5_UNK ; Add with.
     STA B6_NAMETABLE_FOCUS_UNK ; Store back.
-    LDA IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Load 
+    LDA FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Load 
     CLC ; Prep add.
     ADC BC_UNK ; Add with.
-    STA IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Store back.
+    STA FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Store back.
 RTS: ; 06:02CB, 0x00C2CB
     RTS ; Leave.
 RTN_UNK: ; 06:02CC, 0x00C2CC

@@ -66,6 +66,7 @@
     .db 49
     .db 04
     .db 60
+OBJ_STATE_0x5C_HANDLER: ; 0D:0044, 0x01A044
     .db BC
     .db 12
     .db 04
@@ -378,6 +379,7 @@
     .db 13
     .db 14
     .db 15
+OBJ_STATE_0x5A_HANDLER: ; 0D:017C, 0x01A17C
     .db 8E
     .db 00
     .db 07
@@ -517,6 +519,7 @@
     .db F4
     .db CA
     .db 60
+OBJ_STATE_0x5B_HANDLER: ; 0D:0207, 0x01A207
     .db BC
     .db 9E
     .db 05
@@ -2150,6 +2153,7 @@
     .db 1C
     .db 00
     .db 1C
+OBJ_STATE_0x5E_HANDLER: ; 0D:0868, 0x01A868
     .db BD
     .db 9E
     .db 05
@@ -2881,6 +2885,7 @@
     .db 4C
     .db 1B
     .db AC
+OBJ_STATE_0x5F_HANDLER: ; 0D:0B43, 0x01AB43
     .db 20
     .db 7C
     .db F8
@@ -4340,6 +4345,7 @@
     .db 01
     .db 03
     .db 02
+OBJ_STATE_0x61_HANDLER: ; 0D:10F6, 0x01B0F6
     .db A9
     .db 00
     .db 9D
@@ -4571,6 +4577,7 @@
     .db 6C
     .db 6B
     .db 6B
+OBJ_STATE_0x60_HANDLER: ; 0D:11DD, 0x01B1DD
     .db A9
     .db 00
     .db 9D
@@ -4647,6 +4654,7 @@
     .db F8
     .db 05
     .db 60
+OBJ_STATE_0x62_HANDLER: ; 0D:1229, 0x01B229
     .db BD
     .db 9E
     .db 05
@@ -5437,6 +5445,7 @@
     .db 4C
     .db AE
     .db B3
+OBJ_STATE_0x63_HANDLER: ; 0D:153F, 0x01B53F
     .db 20
     .db 7C
     .db F8
@@ -5661,6 +5670,7 @@
     .db FC
     .db 00
     .db 04
+OBJ_STATE_0x64_HANDLER: ; 0D:161F, 0x01B61F
     .db A9
     .db 00
     .db 9D
@@ -5692,6 +5702,7 @@
     .db 83
     .db 84
     .db 83
+OBJ_STATE_0x65_HANDLER: ; 0D:163E, 0x01B63E
     .db A9
     .db 00
     .db 9D
@@ -5772,7 +5783,9 @@
     .db 75
     .db 76
     .db 75
+OBJ_STATE_0x6A_HANDLER: ; 0D:168E, 0x01B68E
     .db 60
+OBJ_STATE_0x6B_HANDLER: ; 0D:168F, 0x01B68F
     .db DE
     .db 48
     .db 04
@@ -5782,6 +5795,7 @@
     .db D1
     .db F4
     .db 60
+OBJ_STATE_0x67_HANDLER: ; 0D:1698, 0x01B698
     .db BD
     .db 9E
     .db 05
@@ -6882,6 +6896,7 @@
     .db 48
     .db 04
     .db 60
+OBJ_STATE_0x68_HANDLER: ; 0D:1AE4, 0x01BAE4
     .db BD
     .db 12
     .db 04
@@ -7302,6 +7317,7 @@
     .db 4C
     .db 86
     .db B8
+OBJ_STATE_0x69_HANDLER: ; 0D:1C88, 0x01BC88
     .db BD
     .db 8C
     .db 05

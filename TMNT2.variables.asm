@@ -60,9 +60,9 @@ TMP_09:                                       .rs 1
 TMP_0A:                                       .rs 1
 TMP_0B:                                       .rs 1
 TMP_0C:                                       .rs 1
-ZP_0D_UNK:                                    .rs 1
-ZP_0E_UNK:                                    .rs 1
-TMP_0F?:                                      .rs 1
+TMP_0D:                                       .rs 1
+TMP_0E:                                       .rs 1
+TMP_0F:                                       .rs 1
 TMP_10:                                       .rs 1
 TMP_11:                                       .rs 1
 TMP_12:                                       .rs 1
@@ -70,22 +70,20 @@ TMP_13:                                       .rs 1
 TMP_14:                                       .rs 1
 TMP_15:                                       .rs 1
 TMP_16:                                       .rs 1
-
-
-          .rsset 0x0018
+TMP_17:                                       .rs 1
 STATE_SWITCH_INITIAL_MENUS:                   .rs 1
-SUBSTATE_SWITCH_MENU:                         .rs 1
+SUBSTATE_SWITCH_MENUS:                        .rs 1
 
 
           .rsset 0x001B
 IRQ/SCRIPT_RUN_COUNT?:                        .rs 1
-FLAG_NMI_ALT_UNK:                             .rs 1
+FLAG_GAME_SCREEN_UNFINISHED:                  .rs 1
 DISABLE_RENDERING_X_FRAMES:                   .rs 1
 PPU_UPDATE_BUF_INDEX:                         .rs 1
 GAME_STARTED:                                 .rs 1
 TWO_PLAYERS_FLAG:                             .rs 1
 TITLE_PLAYERS_COUNT_CURSOR_0/1:               .rs 1
-INF_LOOP_COUNTER_UNK:                         .rs 1
+INF_LOOP_COUNTER:                             .rs 1
 RANDOM_VALS?:                                 .rs 2
 KONAMI_CODE_TRIGGERED_FLAG?:                  .rs 1
 
@@ -101,7 +99,7 @@ IRQ_BANK_VALUES_R[0/1]:                       .rs 2
 IRQ_GFX_DATA_BANK_R0:                         .rs 1
 IRQ_GFX_DATA_BANK_R1:                         .rs 1
 ZP_R2-R5_BANK_VALUES:                         .rs 4
-TURTLE_SELECT_POSITIONS:                      .rs 2
+TURTLE_SELECTION:                             .rs 2
 
 
           .rsset 0x0038
@@ -112,7 +110,7 @@ CTRL_PREV_A:                                  .rs 2
 3E_UNK:                                       .rs 1
 3F_ATTRACT_EXIT_FLAG:                         .rs 1
 40_TIMER?:                                    .rs 2
-LEVEL_SCREEN_ON:                              .rs 1
+LEVEL/SCREEN_ON:                              .rs 1
 43_PLAYER_UNK:                                .rs 2
 45_UNK:                                       .rs 1
 
@@ -121,7 +119,7 @@ LEVEL_SCREEN_ON:                              .rs 1
 47_TWO_PLAYERS_FLAG:                          .rs 1
 PPU_ADDR_IRQ:                                 .rs 2
 4A_UNK:                                       .rs 1
-4B_SWITCH_GAME_OVER/FINISHED:                 .rs 1
+4B_SWITCH_GAME_PREP/OVER:                     .rs 1
 4C_UNK:                                       .rs 1
 NUM_PLAYER_LIVES:                             .rs 2
 
@@ -132,7 +130,7 @@ IRQ_HANDLER_JMP:                              .rs 3
 
           .rsset 0x0056
 IRQ_56_OR'D:                                  .rs 1
-IRQ_LATCH_VALUE_COPY_57:                      .rs 1
+57_IRQ_LATCH_VAL_COPY:                        .rs 1
 58_IRQ_UNK:                                   .rs 1
 
 
@@ -143,7 +141,7 @@ IRQ_LATCH_VALUE_COPY_5A:                      .rs 1
           .rsset 0x005C
 IRQ_EXTENDED/HANDLER/SECONDARY:               .rs 1
 5D_IRQ_BANK?:                                 .rs 1
-IRQ_VAL_UNK:                                  .rs 1
+FLAG_IRQ_ENABLE:                              .rs 1
 
 
           .rsset 0x0060
@@ -162,7 +160,7 @@ PLAYER?_UNK:                                  .rs 2
           .rsset 0x007B
 7B_UNK:                                       .rs 1
 7C_UNK:                                       .rs 1
-IRQ_I_SECONDARY_KEEP_IF_POSITIVE:             .rs 1
+FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE:        .rs 1
 7E_STREAM_UNK:                                .rs 1
 
 
@@ -233,14 +231,13 @@ C0_UNK:                                       .rs 1
 C3_UNK:                                       .rs 1
 C4_UNK:                                       .rs 1
 C5_UNK:                                       .rs 1
-ARR_C6_UNK:                                   .rs 1
-R_**:$00C7:                                   .rs 1
+C6_SPR_ARR_UNK:                               .rs 2
 
 
           .rsset 0x00D8
-IRQ_D8_PAIR_UNK:                              .rs 1
-IRQ_D9_PAIR_UNK:                              .rs 1
-DA_UNK:                                       .rs 1
+D8_IRQ_CONFIG_B:                              .rs 1
+D9_IRQ_CONFIG_A:                              .rs 1
+DA_FLAG?_UNK:                                 .rs 1
 
 
           .rsset 0x00DC
@@ -264,7 +261,7 @@ CTRL_NEWLY_PRESSED_B:                         .rs 2
 CTRL_PREV_B:                                  .rs 2
 PPU_SCROLL_Y_COPY_IRQ:                        .rs 1
 PPU_SCROLL_X_COPY_IRQ:                        .rs 1
-PPU_MASK_RAM_COPY?:                           .rs 1
+PPU_MASK_RAM_COPY:                            .rs 1
 PPU_CTRL_RAM_COPY:                            .rs 1
 
 
@@ -312,8 +309,8 @@ TMP_CHOOSE_BANKS_RTN_UNK:                     .rs 1
 
 
           .rsset 0x03E7
-ATTRACT_UNK:                                  .rs 1
-ATTRACT_DATA_PTR?:                            .rs 2
+ATTRACT_INJECT_TIMER:                         .rs 1
+ATTRACT_CTRL_DATA_PTR:                        .rs 2
 3EA_PLAYER?_UNK:                              .rs 2
 KONAMI_CODE_TRACKERS?:                        .rs 3
 3EF_UNK:                                      .rs 1
@@ -327,7 +324,7 @@ SCORES_BCD_XX0000:                            .rs 1
 
 
           .rsset 0x0400
-OBJ_ANIMATION_FRAME_TO:                       .rs 18
+OBJ_ANIMATION_DISPLAY:                        .rs 18
 OBJ_SECONDARY_SWITCH?:                        .rs 18
 OBJ_ENABLED_STATE+MORE?:                      .rs 18
 OBJ_DIRECTION_RELATED?:                       .rs 18
@@ -347,7 +344,7 @@ OBJ_POS_X:                                    .rs 18
 532_OBJ_UNK_POS?:                             .rs 18
 544_OBJ_UNK_POS?:                             .rs 18
 556_OBJ_UPDATE_FLAGS?:                        .rs 18
-OBJECT_DATA_EXTRA_A?:                         .rs 18
+OBJECT_DATA_HEALTH?:                          .rs 18
 OBJECT_DATA_EXTRA_B?:                         .rs 18
 OBJ_TERTIARY_SWITCH?:                         .rs 18
 59E_OBJ_UNK_TIMER?:                           .rs 18
@@ -384,13 +381,13 @@ R2_TO_R5_BANK_DATA:                           .rs 4
 
           .rsset 0x0615
 STATE_TURTLE_SELECT:                          .rs 1
-PPU_FLAG_UNK:                                 .rs 1
+PPU_FLAG_UNK_MODIFY_LATCH_UNK:                .rs 1
 
 
           .rsset 0x0618
 PLAYER_ANIM_FRAME_SWAP?:                      .rs 2
 61A_UNK_INDEX:                                .rs 1
-61B_FLAG_UNK:                                 .rs 1
+61B_UPDATE_FROM_RAM/DEV_MISC:                 .rs 1
 61C_UNK:                                      .rs 1
 
 
@@ -414,17 +411,17 @@ TIMER_GAME_SCRIPT?:                           .rs 1
 
 
           .rsset 0x0640
-FLAG_UPDATE_P1_HEALTH?:                       .rs 1
+FLAG_WEIRD_UPDATES_A:                         .rs 1
 PPU_ADDR_UNK_A:                               .rs 2
 PPU_ADDR_OR_A:                                .rs 1
 PPU_ADDR_UNK_B:                               .rs 2
 PPU_ADDR_OR_B:                                .rs 1
-FLAG_UPDATE_P2_HEALTH?:                       .rs 1
+FLAG_WEIRD_UPDATES_B:                         .rs 1
 PPU_ADDR_UNK_C:                               .rs 2
 PPU_ADDR_OR_C:                                .rs 1
 PPU_ADDR_UNK_D:                               .rs 2
 PPU_ADDR_OR_D:                                .rs 1
-UPDATE_PPU_UNK:                               .rs 1
+FLAG?_PPU_UPDATE_WEIRD_CLEARS:                .rs 1
 
 
           .rsset 0x0654
@@ -444,8 +441,8 @@ IRQ_L_NAMETABLE_FOCUS:                        .rs 1
 
 
           .rsset 0x065F
-FLAG_IRQ_65F_INDEX_UNK:                       .rs 1
-FLAG_IRQ_660:                                 .rs 1
+IRQ_CONFIG_CHANGE_INDEX:                      .rs 1
+660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK:            .rs 1
 661_UNK_LEVEL_A_SETS:                         .rs 1
 662_PLAYER_UPDATE_UNK:                        .rs 2
 
@@ -497,7 +494,7 @@ PLAYER_UNK_69C:                               .rs 4
 
 
           .rsset 0x06D7
-ARR_6D7_UNK:                                  .rs 40
+ARR_RAM_CUSTOM_PACKET_61B_FLAG:               .rs 40
 
 
           .rsset 0x06D9
@@ -522,11 +519,11 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 
 
           .rsset 0x071C
-R_**:$071C:                                   .rs 1
+71C_ARR_UNK:                                  .rs 2 ; Unsure of size.
 
 
           .rsset 0x072E
-R_**:$072E:                                   .rs 1
+72E_ARR_UNK:                                  .rs 1
 
 
           .rsset 0x0740
