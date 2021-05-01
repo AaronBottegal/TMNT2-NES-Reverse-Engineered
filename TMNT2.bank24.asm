@@ -27,483 +27,542 @@ TRI_DISABLED: ; 18:0027, 0x030027
     STA APU_SQ1_SWEEP
     STA APU_SQ2_SWEEP
     RTS
-    STX **:$00E4
-    STY **:$00E5
-    STA **:$00F0
+    STX R_**:$00E4
+    STY R_**:$00E5
+    STA F0_UNK
     CMP #$78
-    BCC 18:0070
+    BCC L_18:0070
     CMP #$7D
-    BNE 18:006A
+    BNE L_18:006A
     LDA #$1E
     STA 1B4_SOUND_TRI_ZERO_FLAG
     LDA #$00
-    STA **:$010E
-    STA **:$010F
+    STA R_**:$010E
+    STA R_**:$010F
     LDA #$30
     STA APU_NSE_CTRL
-    LDA **:$00EF
+    LDA R_**:$00EF
     PHA
     LDA #$00
-    STA **:$00EF
+    STA R_**:$00EF
     JSR $8D91
     PLA
-    STA **:$00EF
-    LDA **:$00F0
+    STA R_**:$00EF
+    LDA F0_UNK
+L_18:006A: ; 18:006A, 0x03006A
     JSR $8582
     JMP $812E
+L_18:0070: ; 18:0070, 0x030070
     CMP #$60
-    BCC 18:0077
+    BCC L_18:0077
     JSR $8001
-    LDA **:$00F0
+L_18:0077: ; 18:0077, 0x030077
+    LDA F0_UNK
     ASL A
     TAY
-    LDA 1E:0993,Y
-    STA **:$00E8
-    LDA 1E:0994,Y
-    STA **:$00E9
+    LDA L_1E:0993,Y
+    STA R_**:$00E8
+    LDA L_1E:0994,Y
+    STA R_**:$00E9
     LDY #$00
-    LDA [**:$00E8],Y
-    STA **:$00EA
+    LDA [R_**:$00E8],Y
+    STA R_**:$00EA
     INY
-    LDA [**:$00E8],Y
+    LDA [R_**:$00E8],Y
     TAX
-    LDA **:$00F0
+    LDA F0_UNK
     CMP #$07
-    BCS 18:00B2
+    BCS L_18:00B2
     CMP #$05
-    BCS 18:00A2
+    BCS L_18:00A2
     CMP #$03
-    BCS 18:00B0
+    BCS L_18:00B0
     LDA #$02
     JMP $80B2
+L_18:00A2: ; 18:00A2, 0x0300A2
     LDA #$06
     CPX #$04
-    BNE 18:00B2
-    CMP **:$010F
-    BCS 18:00B2
+    BNE L_18:00B2
+    CMP R_**:$010F
+    BCS L_18:00B2
     JMP $80BD
+L_18:00B0: ; 18:00B0, 0x0300B0
     LDA #$06
+L_18:00B2: ; 18:00B2, 0x0300B2
     CMP #$4A
-    BNE 18:00B8
+    BNE L_18:00B8
     LDA #$28
+L_18:00B8: ; 18:00B8, 0x0300B8
     CMP 10A_ARR_UNK,X
-    BCS 18:00C2
+    BCS L_18:00C2
     INY
     INY
     JMP $8127
+L_18:00C2: ; 18:00C2, 0x0300C2
     INY
-    LDA [**:$00E8],Y
-    STA **:$0122,X
-    STA **:$00E6
+    LDA [R_**:$00E8],Y
+    STA R_**:$0122,X
+    STA R_**:$00E6
     INY
-    LDA [**:$00E8],Y
-    STA **:$0128,X
-    STA **:$00E7
+    LDA [R_**:$00E8],Y
+    STA R_**:$0128,X
+    STA R_**:$00E7
     LDA #$00
-    STA **:$011C,X
+    STA R_**:$011C,X
     LDA #$01
-    STA **:$0104,X
+    STA R_**:$0104,X
     CPX #$03
-    BEQ 18:010C
+    BEQ L_18:010C
     LDA #$F8
-    STA **:$0146,X
+    STA R_**:$0146,X
     CPX #$05
-    BEQ 18:010C
+    BEQ L_18:010C
     LDA #$00
-    STA **:$0163,X
-    STA **:$015E,X
-    STA **:$0177,X
+    STA R_**:$0163,X
+    STA R_**:$015E,X
+    STA R_**:$0177,X
     CPX #$04
-    BEQ 18:010C
-    STA **:$017F,X
+    BEQ L_18:010C
+    STA R_**:$017F,X
     CPX #$02
-    BEQ 18:010C
-    STA **:$01AA,X
+    BEQ L_18:010C
+    STA R_**:$01AA,X
     LDA #$01
-    STA **:$019E,X
+    STA R_**:$019E,X
     LDA #$80
-    STA **:$01AC,X
+    STA R_**:$01AC,X
+L_18:010C: ; 18:010C, 0x03010C
     STY ZL_E2_SOUND_UNK
     LDY #$00
-    LDA [**:$00E6],Y
+    LDA [R_**:$00E6],Y
     INY
     CMP #$10
-    BCC 18:011C
+    BCC L_18:011C
     CPX #$04
-    BEQ 18:011C
+    BEQ L_18:011C
     DEY
+L_18:011C: ; 18:011C, 0x03011C
     TYA
-    STA **:$0116,X
+    STA R_**:$0116,X
     LDY ZL_E2_SOUND_UNK
-    LDA **:$00F0
+    LDA F0_UNK
     STA 10A_ARR_UNK,X
-    DEC **:$00EA
-    BMI 18:012E
+    DEC R_**:$00EA
+    BMI L_18:012E
     JMP $808B
-    LDX **:$00E4
-    LDY **:$00E5
+L_18:012E: ; 18:012E, 0x03012E
+    LDX R_**:$00E4
+    LDY R_**:$00E5
     RTS
-    STA **:$015A
+    STA R_**:$015A
     CMP #$00
-    BEQ 18:013D
+    BEQ L_18:013D
     JMP $8024
-    LDA **:$010E
-    BEQ 18:0169
-    LDA **:$010B
+L_18:013D: ; 18:013D, 0x03013D
+    LDA R_**:$010E
+    BEQ L_18:0169
+    LDA R_**:$010B
     CMP #$5F
-    BCS 18:0153
+    BCS L_18:0153
     LDA #$30
     STA APU_SQ2_CTRL
     LDA #$00
-    STA **:$010B
+    STA R_**:$010B
+L_18:0153: ; 18:0153, 0x030153
     LDA 10A_ARR_UNK
-    BEQ 18:0169
+    BEQ L_18:0169
     LDA #$30
     STA APU_SQ1_CTRL
     LDA #$00
-    STA **:$010E
+    STA R_**:$010E
     LDX #$00
     LDY #$00
     JMP $8171
+L_18:0169: ; 18:0169, 0x030169
     RTS
+L_18:016A: ; 18:016A, 0x03016A
     LDA #$30
     STA APU_SQ1_CTRL,X
-    BNE 18:0183
-    LDA **:$0116,X
+    BNE L_18:0183
+    LDA R_**:$0116,X
     AND #$41
-    ORA **:$015A
-    BNE 18:016A
-    LDA **:$014C,X
+    ORA R_**:$015A
+    BNE L_18:016A
+    LDA R_**:$014C,X
     JSR $82D8
     LDX #$00
-    LDA **:$019A,X
+L_18:0183: ; 18:0183, 0x030183
+    LDA R_**:$019A,X
     STA APU_SQ1_LTIMER,Y
-    LDA **:$0146,X
+    LDA R_**:$0146,X
     ORA #$08
     STA APU_SQ1_LENGTH,Y
     RTS
     CMP #$01
-    BNE 18:0199
+    BNE L_18:0199
     JMP $8001
+L_18:0199: ; 18:0199, 0x030199
     CMP #$02
-    BNE 18:01A9
+    BNE L_18:01A9
     LDA 161_SND?_UNK
     CMP #$07
-    BNE 18:01A9
+    BNE L_18:01A9
     LDA #$00
-    STA **:$010D
+    STA R_**:$010D
+L_18:01A9: ; 18:01A9, 0x0301A9
     INC 161_SND?_UNK
     LDA #$0F
     CMP 161_SND?_UNK
-    BNE 18:01BE
+    BNE L_18:01BE
     LDA #$00
     STA 161_SND?_UNK
     INC 15B_SND?_UNK
     DEC 166_SND?_UNK
+L_18:01BE: ; 18:01BE, 0x0301BE
     RTS
     LDA 1B4_SOUND_TRI_ZERO_FLAG
-    BEQ 18:01C7
+    BEQ L_18:01C7
     DEC 1B4_SOUND_TRI_ZERO_FLAG
+L_18:01C7: ; 18:01C7, 0x0301C7
     LDA 3D_UNK
-    CMP **:$015A
-    BEQ 18:01D1
+    CMP R_**:$015A
+    BEQ L_18:01D1
     JSR $8133
+L_18:01D1: ; 18:01D1, 0x0301D1
     LDA 166_SND?_UNK
-    BEQ 18:01D9
+    BEQ L_18:01D9
     JMP $8192
+L_18:01D9: ; 18:01D9, 0x0301D9
     RTS
+L_18:01DA: ; 18:01DA, 0x0301DA
     RTS
-    LDX **:$00EE
-    LDA **:$015A
-    BEQ 18:01E9
+    LDX R_**:$00EE
+    LDA R_**:$015A
+    BEQ L_18:01E9
     LDA 10A_ARR_UNK,X
     CMP #$5F
-    BNE 18:01DA
-    DEC **:$0104,X
-    BNE 18:01FD
+    BNE L_18:01DA
+L_18:01E9: ; 18:01E9, 0x0301E9
+    DEC R_**:$0104,X
+    BNE L_18:01FD
     LDY #$00
-    LDA **:$0122,X
-    STA **:$00E0
-    LDA **:$0128,X
-    STA **:$00E1
+    LDA R_**:$0122,X
+    STA R_**:$00E0
+    LDA R_**:$0128,X
+    STA R_**:$00E1
     JMP $8506
+L_18:01FD: ; 18:01FD, 0x0301FD
     CPX #$02
-    BEQ 18:0276
-    BCS 18:01DA
-    LDA **:$0116,X
+    BEQ L_18:0276
+    BCS L_18:01DA
+    LDA R_**:$0116,X
     AND #$41
-    BNE 18:01DA
-    LDA **:$01AC,X
-    BMI 18:0233
-    LDA **:$0110,X
+    BNE L_18:01DA
+    LDA R_**:$01AC,X
+    BMI L_18:0233
+    LDA R_**:$0110,X
     STA ZL_E2_SOUND_UNK
-    LDA **:$01AC,X
+    LDA R_**:$01AC,X
     AND #$10
-    BEQ 18:0220
+    BEQ L_18:0220
     LDA ZL_E2_SOUND_UNK
     ASL A
     STA ZL_E2_SOUND_UNK
-    LDA **:$0104,X
+L_18:0220: ; 18:0220, 0x030220
+    LDA R_**:$0104,X
+L_18:0223: ; 18:0223, 0x030223
     SEC
     SBC ZL_E2_SOUND_UNK
-    BEQ 18:0266
-    BCS 18:0223
-    LDA **:$0116,X
+    BEQ L_18:0266
+    BCS L_18:0223
+    LDA R_**:$0116,X
     AND #$06
     CMP #$06
-    BEQ 18:0248
-    LDA **:$0163,X
+    BEQ L_18:0248
+L_18:0233: ; 18:0233, 0x030233
+    LDA R_**:$0163,X
     AND #$10
-    BEQ 18:0248
-    DEC **:$019E,X
-    BNE 18:0248
-    INC **:$019E,X
+    BEQ L_18:0248
+    DEC R_**:$019E,X
+    BNE L_18:0248
+    INC R_**:$019E,X
     JSR $843F
     JSR $889A
-    DEC **:$018A,X
-    BNE 18:01DA
-    INC **:$018A,X
+L_18:0248: ; 18:0248, 0x030248
+    DEC R_**:$018A,X
+    BNE L_18:01DA
+    INC R_**:$018A,X
     JSR $8369
-    LDA **:$0116,X
+    LDA R_**:$0116,X
     AND #$06
     TAY
     LDA $8DE5,Y
     STA ZL_E2_SOUND_UNK
     LDA $8DE6,Y
-    STA **:$00E3
+    STA R_**:$00E3
     JMP [ZL_E2_SOUND_UNK]
-    LDA **:$0182,X
-    STA **:$00EC
-    LDA **:$0185,X
-    STA **:$00ED
+L_18:0266: ; 18:0266, 0x030266
+    LDA R_**:$0182,X
+    STA R_**:$00EC
+    LDA R_**:$0185,X
+    STA R_**:$00ED
     JSR $88F0
     JMP $822A
-    INC **:$01B2
+L_18:0276: ; 18:0276, 0x030276
+    INC R_**:$01B2
     AND #$40
-    BNE 18:029B
-    LDA **:$01B2
+    BNE L_18:029B
+    LDA R_**:$01B2
     AND #$0F
-    BNE 18:029B
-    LDA **:$0152,X
-    BEQ 18:029B
+    BNE L_18:029B
+    LDA R_**:$0152,X
+    BEQ L_18:029B
     CMP #$80
-    BCS 18:029B
-    LDA **:$01B3
+    BCS L_18:029B
+    LDA R_**:$01B3
     SEC
     SBC #$40
-    BCC 18:029B
-    STA **:$01B3
+    BCC L_18:029B
+    STA R_**:$01B3
     STA APU_TRI_CTRL
+L_18:029B: ; 18:029B, 0x03029B
     RTS
-    LDA **:$0188,X
+    LDA R_**:$0188,X
     ASL A
     TAY
     LDA $8E49,Y
     STA ZL_E2_SOUND_UNK
     LDA $8E4A,Y
-    STA **:$00E3
-    LDA **:$018C,X
+    STA R_**:$00E3
+    LDA R_**:$018C,X
     TAY
     LDA [ZL_E2_SOUND_UNK],Y
     CMP #$FB
-    BCS 18:0314
+    BCS L_18:0314
     CMP #$10
-    BCC 18:02C0
+    BCC L_18:02C0
     LSR A
     LSR A
     LSR A
     LSR A
-    STA **:$018A,X
-    INC **:$018C,X
+    STA R_**:$018A,X
+L_18:02C0: ; 18:02C0, 0x0302C0
+    INC R_**:$018C,X
     LDA [ZL_E2_SOUND_UNK],Y
     AND #$0F
-    BEQ 18:02D5
+    BEQ L_18:02D5
     SEC
-    SBC **:$01B0,X
-    BCC 18:02D3
-    BEQ 18:02D3
-    BNE 18:02D5
+    SBC R_**:$01B0,X
+    BCC L_18:02D3
+    BEQ L_18:02D3
+    BNE L_18:02D5
+L_18:02D3: ; 18:02D3, 0x0302D3
     LDA #$01
-    STA **:$014C,X
-    ORA **:$014C,X
-    BEQ 18:02ED
+L_18:02D5: ; 18:02D5, 0x0302D5
+    STA R_**:$014C,X
+    ORA R_**:$014C,X
+    BEQ L_18:02ED
     SEC
-    SBC **:$015E,X
-    BCC 18:0306
-    BEQ 18:0306
+    SBC R_**:$015E,X
+    BCC L_18:0306
+    BEQ L_18:0306
     SEC
     SBC 15B_SND?_UNK
-    BCC 18:0306
-    BEQ 18:0306
+    BCC L_18:0306
+    BEQ L_18:0306
+L_18:02ED: ; 18:02ED, 0x0302ED
     STA ZL_E2_SOUND_UNK
-    LDA **:$0163,X
+    LDA R_**:$0163,X
     AND #$20
-    BNE 18:030A
+    BNE L_18:030A
     LDA ZL_E2_SOUND_UNK
-    ORA **:$0158,X
+    ORA R_**:$0158,X
     JSR $89D9
-    BCS 18:0303
+    BCS L_18:0303
     STA APU_SQ1_CTRL,X
-    LDX **:$00EE
+L_18:0303: ; 18:0303, 0x030303
+    LDX R_**:$00EE
     RTS
+L_18:0306: ; 18:0306, 0x030306
     LDA #$01
-    BNE 18:02ED
-    LDA **:$01AA,X
+    BNE L_18:02ED
+L_18:030A: ; 18:030A, 0x03030A
+    LDA R_**:$01AA,X
     AND #$F0
     ORA ZL_E2_SOUND_UNK
     JMP $82FB
+L_18:0314: ; 18:0314, 0x030314
     CMP #$FE
-    BEQ 18:0329
-    BCC 18:031D
+    BEQ L_18:0329
+    BCC L_18:031D
     JMP $8399
-    INC **:$018C,X
-    LDA **:$018C,X
-    STA **:$0190,X
+L_18:031D: ; 18:031D, 0x03031D
+    INC R_**:$018C,X
+    LDA R_**:$018C,X
+    STA R_**:$0190,X
     JMP $82AB
+L_18:0329: ; 18:0329, 0x030329
     INY
-    INC **:$018E,X
+    INC R_**:$018E,X
     LDA [ZL_E2_SOUND_UNK],Y
-    CMP **:$018E,X
-    BNE 18:0345
+    CMP R_**:$018E,X
+    BNE L_18:0345
     LDA #$00
-    STA **:$018E,X
-    STA **:$0190,X
-    INC **:$018C,X
-    INC **:$018C,X
+    STA R_**:$018E,X
+    STA R_**:$0190,X
+    INC R_**:$018C,X
+    INC R_**:$018C,X
     JMP $82AB
-    LDA **:$0190,X
-    STA **:$018C,X
+L_18:0345: ; 18:0345, 0x030345
+    LDA R_**:$0190,X
+    STA R_**:$018C,X
     JMP $82AB
-    DEC **:$018C,X
-    BMI 18:0399
-    DEC **:$014C,X
-    BMI 18:035E
-    LDA **:$014C,X
+    DEC R_**:$018C,X
+    BMI L_18:0399
+    DEC R_**:$014C,X
+    BMI L_18:035E
+    LDA R_**:$014C,X
     JMP $82D5
-    INC **:$014C,X
+L_18:035E: ; 18:035E, 0x03035E
+    INC R_**:$014C,X
     RTS
-    LDA **:$0116,X
+    LDA R_**:$0116,X
     AND #$02
-    BNE 18:03B8
-    LDA **:$0116,X
+    BNE L_18:03B8
+    LDA R_**:$0116,X
     AND #$06
     CMP #$06
-    BEQ 18:03AB
-    LDA **:$0104,X
-    CMP **:$0192,X
-    BCS 18:03AB
-    LDA **:$0116,X
+    BEQ L_18:03AB
+    LDA R_**:$0104,X
+    CMP R_**:$0192,X
+    BCS L_18:03AB
+    LDA R_**:$0116,X
     ORA #$06
-    STA **:$0116,X
-    LDA **:$01AA,X
+    STA R_**:$0116,X
+    LDA R_**:$01AA,X
     AND #$0C
-    BNE 18:03AC
-    LDA **:$01AA,X
+    BNE L_18:03AC
+    LDA R_**:$01AA,X
     AND #$02
-    BEQ 18:0398
-    LDA **:$0163,X
+    BEQ L_18:0398
+    LDA R_**:$0163,X
     ORA #$20
-    STA **:$0163,X
+    STA R_**:$0163,X
+L_18:0398: ; 18:0398, 0x030398
     RTS
-    LDA **:$0116,X
+L_18:0399: ; 18:0399, 0x030399
+    LDA R_**:$0116,X
     ORA #$04
     AND #$FD
-    STA **:$0116,X
-    LDA **:$018C,X
+    STA R_**:$0116,X
+    LDA R_**:$018C,X
     ORA #$80
-    STA **:$018C,X
+    STA R_**:$018C,X
+L_18:03AB: ; 18:03AB, 0x0303AB
     RTS
+L_18:03AC: ; 18:03AC, 0x0303AC
     LSR A
     LSR A
     STA ZL_E2_SOUND_UNK
     JSR $8389
     LDA ZL_E2_SOUND_UNK
     JMP $82D5
-    LDA **:$01AC,X
-    BMI 18:03E7
+L_18:03B8: ; 18:03B8, 0x0303B8
+    LDA R_**:$01AC,X
+    BMI L_18:03E7
     STY ZL_E2_SOUND_UNK
-    LDA **:$01AC,X
+    LDA R_**:$01AC,X
     AND #$0F
-    STA **:$00E4
-    LDA **:$01AE,X
+    STA R_**:$00E4
+    LDA R_**:$01AE,X
     SEC
     SBC #$01
     AND #$03
     SEC
-    SBC **:$00E4
+    SBC R_**:$00E4
     AND #$03
     CPX #$01
-    BNE 18:03D9
+    BNE L_18:03D9
     ORA #$04
+L_18:03D9: ; 18:03D9, 0x0303D9
     TAY
-    LDA **:$03C0,Y
-    STA **:$00EC
-    LDA **:$03C8,Y
-    STA **:$00ED
+    LDA R_**:$03C0,Y
+    STA R_**:$00EC
+    LDA R_**:$03C8,Y
+    STA R_**:$00ED
     JSR $88B4
-    LDA **:$01AA,X
+L_18:03E7: ; 18:03E7, 0x0303E7
+    LDA R_**:$01AA,X
     AND #$0C
-    BNE 18:03AB
-    LDA **:$0188,X
-    BMI 18:0418
-    LDA **:$018C,X
-    BMI 18:0418
-    DEC **:$0198,X
-    BEQ 18:0400
+    BNE L_18:03AB
+    LDA R_**:$0188,X
+    BMI L_18:0418
+    LDA R_**:$018C,X
+    BMI L_18:0418
+    DEC R_**:$0198,X
+    BEQ L_18:0400
     JMP $829C
-    INC **:$01B0,X
-    LDA **:$01B0,X
+L_18:0400: ; 18:0400, 0x030400
+    INC R_**:$01B0,X
+    LDA R_**:$01B0,X
     CMP #$10
-    BCC 18:040F
+    BCC L_18:040F
     LDA #$0F
-    STA **:$01B0,X
-    LDA **:$0196,X
-    STA **:$0198,X
+    STA R_**:$01B0,X
+L_18:040F: ; 18:040F, 0x03040F
+    LDA R_**:$0196,X
+    STA R_**:$0198,X
     JMP $829C
-    DEC **:$0198,X
-    BNE 18:03AB
-    LDA **:$0196,X
-    BNE 18:0424
+L_18:0418: ; 18:0418, 0x030418
+    DEC R_**:$0198,X
+    BNE L_18:03AB
+    LDA R_**:$0196,X
+    BNE L_18:0424
     LDA #$01
-    STA **:$0198,X
-    DEC **:$014C,X
-    BMI 18:043B
+L_18:0424: ; 18:0424, 0x030424
+    STA R_**:$0198,X
+    DEC R_**:$014C,X
+    BMI L_18:043B
     LDA #$01
-    CMP **:$014C,X
-    BEQ 18:0435
-    BCS 18:043B
-    LDA **:$014C,X
+    CMP R_**:$014C,X
+    BEQ L_18:0435
+    BCS L_18:043B
+L_18:0435: ; 18:0435, 0x030435
+    LDA R_**:$014C,X
     JMP $82D8
-    INC **:$014C,X
+L_18:043B: ; 18:043B, 0x03043B
+    INC R_**:$014C,X
     RTS
-    LDA **:$01A2,X
+    LDA R_**:$01A2,X
     ASL A
     TAY
     LDA $8E79,Y
     STA ZL_E2_SOUND_UNK
     LDA $8E7A,Y
-    STA **:$00E3
-    LDA **:$01A4,X
+    STA R_**:$00E3
+    LDA R_**:$01A4,X
     TAY
     LDA [ZL_E2_SOUND_UNK],Y
     CMP #$FB
-    BCS 18:04C9
+    BCS L_18:04C9
     CMP #$10
-    BCC 18:0463
+    BCC L_18:0463
     LSR A
     LSR A
     LSR A
     LSR A
-    STA **:$019E,X
-    INC **:$01A4,X
+    STA R_**:$019E,X
+L_18:0463: ; 18:0463, 0x030463
+    INC R_**:$01A4,X
     LDA [ZL_E2_SOUND_UNK],Y
     AND #$0F
     STA ZL_E2_SOUND_UNK
     CMP #$08
-    BCS 18:0477
+    BCS L_18:0477
     JSR $8485
     JSR $8499
     RTS
+L_18:0477: ; 18:0477, 0x030477
     LDA #$10
     SEC
     SBC ZL_E2_SOUND_UNK
@@ -511,80 +570,90 @@ TRI_DISABLED: ; 18:0027, 0x030027
     JSR $8485
     JSR $84AF
     RTS
-    LDA **:$01A0,X
+    LDA R_**:$01A0,X
     TAX
     LDA ZL_E2_SOUND_UNK
     DEX
-    BEQ 18:0494
+    BEQ L_18:0494
     CLC
     ADC ZL_E2_SOUND_UNK
     JMP $848B
-    LDX **:$00EE
+L_18:0494: ; 18:0494, 0x030494
+    LDX R_**:$00EE
     STA ZL_E2_SOUND_UNK
     RTS
     CLC
-    ADC **:$0182,X
-    STA **:$00EC
-    BCC 18:04A9
-    LDA **:$0185,X
-    STA **:$00ED
-    INC **:$00ED
+    ADC R_**:$0182,X
+    STA R_**:$00EC
+    BCC L_18:04A9
+    LDA R_**:$0185,X
+    STA R_**:$00ED
+    INC R_**:$00ED
     RTS
-    LDA **:$0185,X
-    STA **:$00ED
+L_18:04A9: ; 18:04A9, 0x0304A9
+    LDA R_**:$0185,X
+    STA R_**:$00ED
     RTS
-    LDA **:$0182,X
+    LDA R_**:$0182,X
     SEC
     SBC ZL_E2_SOUND_UNK
-    BCS 18:04C1
-    STA **:$00EC
-    LDA **:$0185,X
-    STA **:$00ED
-    DEC **:$00ED
+    BCS L_18:04C1
+    STA R_**:$00EC
+    LDA R_**:$0185,X
+    STA R_**:$00ED
+    DEC R_**:$00ED
     RTS
-    STA **:$00EC
-    LDA **:$0185,X
-    STA **:$00ED
+L_18:04C1: ; 18:04C1, 0x0304C1
+    STA R_**:$00EC
+    LDA R_**:$0185,X
+    STA R_**:$00ED
     RTS
+L_18:04C9: ; 18:04C9, 0x0304C9
     CMP #$FE
-    BEQ 18:04DB
-    BCS 18:0500
-    INC **:$01A4,X
-    LDA **:$01A4,X
-    STA **:$01A6,X
+    BEQ L_18:04DB
+    BCS L_18:0500
+    INC R_**:$01A4,X
+    LDA R_**:$01A4,X
+    STA R_**:$01A6,X
     JMP $843F
+L_18:04DB: ; 18:04DB, 0x0304DB
     INY
-    INC **:$01A8,X
+    INC R_**:$01A8,X
     LDA [ZL_E2_SOUND_UNK],Y
-    CMP **:$01A8,X
-    BNE 18:04F7
+    CMP R_**:$01A8,X
+    BNE L_18:04F7
     LDA #$00
-    STA **:$01A8,X
-    STA **:$01A6,X
-    INC **:$01A4,X
-    INC **:$01A4,X
+    STA R_**:$01A8,X
+    STA R_**:$01A6,X
+    INC R_**:$01A4,X
+    INC R_**:$01A4,X
     JMP $843F
-    LDA **:$01A6,X
-    STA **:$01A4,X
+L_18:04F7: ; 18:04F7, 0x0304F7
+    LDA R_**:$01A6,X
+    STA R_**:$01A4,X
     JMP $843F
+L_18:0500: ; 18:0500, 0x030500
     LDA #$FF
-    STA **:$019E,X
+    STA R_**:$019E,X
     RTS
-    LDA **:$0116,X
+    LDA R_**:$0116,X
     LSR A
-    BCC 18:0510
+    BCC L_18:0510
     JMP $85BF
     INY
+L_18:0510: ; 18:0510, 0x030510
     CPX #$03
-    BEQ 18:0540
-    LDA **:$0163,X
-    BPL 18:051C
+    BEQ L_18:0540
+    LDA R_**:$0163,X
+    BPL L_18:051C
     JMP $8AE0
-    LDA [**:$00E0],Y
+L_18:051C: ; 18:051C, 0x03051C
+    LDA [R_**:$00E0],Y
     AND #$F0
     CMP #$C0
-    BCS 18:0527
+    BCS L_18:0527
     JMP $87F6
+L_18:0527: ; 18:0527, 0x030527
     AND #$30
     LSR A
     LSR A
@@ -593,63 +662,69 @@ TRI_DISABLED: ; 18:0027, 0x030027
     LDA $8DF9,X
     STA ZL_E2_SOUND_UNK
     LDA $8DFA,X
-    STA **:$00E3
-    LDX **:$00EE
-    LDA [**:$00E0],Y
+    STA R_**:$00E3
+    LDX R_**:$00EE
+    LDA [R_**:$00E0],Y
     AND #$0F
     JMP [ZL_E2_SOUND_UNK]
-    LDA [**:$00E0],Y
+L_18:0540: ; 18:0540, 0x030540
+    LDA [R_**:$00E0],Y
     AND #$F0
     CMP #$F0
-    BNE 18:054F
-    LDA [**:$00E0],Y
+    BNE L_18:054F
+    LDA [R_**:$00E0],Y
     AND #$0F
     JMP $8C23
+L_18:054F: ; 18:054F, 0x03054F
     CMP #$D0
-    BEQ 18:0556
+    BEQ L_18:0556
     JMP $895B
-    LDA [**:$00E0],Y
+L_18:0556: ; 18:0556, 0x030556
+    LDA [R_**:$00E0],Y
     AND #$0F
-    STA **:$0110,X
+    STA R_**:$0110,X
     INY
     JMP $8540
-    LDA [**:$00E0],Y
+    LDA [R_**:$00E0],Y
     LSR A
     LSR A
     LSR A
     LSR A
     CMP #$0C
-    BNE 18:056C
+    BNE L_18:056C
     RTS
+L_18:056C: ; 18:056C, 0x03056C
     TAX
     LDA $85B2,X
-    LDX **:$00EE
+    LDX R_**:$00EE
     CMP #$78
-    BCS 18:0579
+    BCS L_18:0579
     JMP $803B
+L_18:0579: ; 18:0579, 0x030579
     STA ZL_E2_SOUND_UNK
     LDA 1B4_SOUND_TRI_ZERO_FLAG
-    BNE 18:05AF
+    BNE L_18:05AF
     LDA ZL_E2_SOUND_UNK
     SEC
     SBC #$78
     ASL A
     ASL A
     TAX
-    LDA 1E:0941,X
+    LDA L_1E:0941,X
     LDA #$0F
     STA APU_STATUS
-    LDA 1E:0940,X
+    LDA L_1E:0940,X
     AND #$7F
     STA APU_DMC_CTRL
-    LDA 1E:0941,X
+    LDA L_1E:0941,X
     STA APU_DMC_LOAD
-    LDA 1E:0942,X
+    LDA L_1E:0942,X
     STA APU_DMC_ADDR
-    LDA 1E:0943,X
+    LDA L_1E:0943,X
     STA APU_DMC_LENGTH
     LDA #$1F
     STA APU_STATUS
+L_18:05AF: ; 18:05AF, 0x0305AF
     LDX #$03
     RTS
     .db 01
@@ -2660,20 +2735,21 @@ TRI_CTRL_ZERO: ; 18:0D8B, 0x030D8B
     LDA #$00
     STA APU_TRI_CTRL
     RTS
-    LDX **:$00EF
+    LDX R_**:$00EF
     LDA #$30
     STA APU_SQ1_CTRL,X
     LDA #$7F
     STA APU_SQ1_SWEEP,X
-    LDA **:$011A
+    LDA R_**:$011A
     AND #$F9
-    STA **:$011A
-    STX **:$017B
+    STA R_**:$011A
+    STX R_**:$017B
     LDA 10A_ARR_UNK,X
-    BEQ 18:0DB2
-    LDY **:$00EF
+    BEQ L_18:0DB2
+    LDY R_**:$00EF
     JSR $8171
-    LDX **:$00EE
+L_18:0DB2: ; 18:0DB2, 0x030DB2
+    LDX R_**:$00EE
     RTS
     LDA #$30
     STA APU_NSE_CTRL
@@ -2681,24 +2757,24 @@ TRI_CTRL_ZERO: ; 18:0D8B, 0x030D8B
     INY
     TYA
     CLC
-    ADC **:$00E0
-    STA **:$0122,X
+    ADC R_**:$00E0
+    STA R_**:$0122,X
     LDA #$00
-    ADC **:$00E1
-    STA **:$0128,X
+    ADC R_**:$00E1
+    STA R_**:$0128,X
     RTS
     LDY #$00
-    LDA **:$0122,X
-    STA **:$00E0
-    LDA **:$0128,X
-    STA **:$00E1
+    LDA R_**:$0122,X
+    STA R_**:$00E0
+    LDA R_**:$0128,X
+    STA R_**:$00E1
     RTS
     INY
-    LDA [**:$00E0],Y
-    STA **:$0122,X
+    LDA [R_**:$00E0],Y
+    STA R_**:$0122,X
     INY
-    LDA [**:$00E0],Y
-    STA **:$0128,X
+    LDA [R_**:$00E0],Y
+    STA R_**:$0128,X
     RTS
     .db 9C
     .db 82

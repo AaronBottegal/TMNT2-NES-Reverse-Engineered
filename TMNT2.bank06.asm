@@ -117,7 +117,7 @@ SINGLE_PLAYER_ONLY: ; 06:00D0, 0x00C0D0
 ANY_SET_0x7F: ; 06:00DD, 0x00C0DD
     LDA 43_PLAYER_UNK[2],X ; Load val.
     BMI ANY_SET_WITH_TOP_FLAG ; If top bit set, goto.
-    JSR 06:0221 ; Do..?
+    JSR L_06:0221 ; Do..?
     JMP SKIP_UNK ; Goto.
 ANY_SET_WITH_TOP_FLAG: ; 06:00E7, 0x00C0E7
     JSR RTN_UNK
@@ -201,6 +201,7 @@ RTN_UNK: ; 06:0161, 0x00C161
     STA DF_UNK ; Set to 1.
 PLAYER?_UNK: ; 06:017A, 0x00C17A
     LDY #$00 ; Reset index.
+L_06:017C: ; 06:017C, 0x00C17C
     LDA PLAYER?_UNK[2],Y ; Load val.
     BNE SKIP_UNK ; != 0, goto.
     LDA 7B_UNK,Y ; Load val.
@@ -226,7 +227,7 @@ PLAYER?_UNK: ; 06:017A, 0x00C17A
 SKIP_UNK: ; 06:01B2, 0x00C1B2
     INY ; Index++
     CPY #$03 ; If _ #$03
-    BNE 06:017C ; !=, goto.
+    BNE L_06:017C ; !=, goto.
 RTS: ; 06:01B7, 0x00C1B7
     RTS
 DATA_UNK: ; 06:01B8, 0x00C1B8
@@ -289,31 +290,38 @@ PLAYER?_DATA_UNK_B: ; 06:01D9, 0x00C1D9
 PLAYER_RTN_UNK: ; 06:01EA, 0x00C1EA
     LDY #$00
     CPX #$00
-    BNE 06:01F2
+    BNE L_06:01F2
     LDY #$02
+L_06:01F2: ; 06:01F2, 0x00C1F2
     LDA 43_PLAYER_UNK[2],X
-    BEQ 06:0203
-    BMI 06:0204
+    BEQ L_06:0203
+    BMI L_06:0204
     LDA OBJ_POS_X[18],Y
     CMP #$18
-    BCS 06:0203
+    BCS L_06:0203
+L_06:01FF: ; 06:01FF, 0x00C1FF
     LDA #$00
     STA 43_PLAYER_UNK[2],X
+L_06:0203: ; 06:0203, 0x00C203
     RTS
+L_06:0204: ; 06:0204, 0x00C204
     CPY #$00
-    BNE 06:020E
+    BNE L_06:020E
     LDA 60_PLAYER_UNK[1]
-    BNE 06:01FF
-    BEQ 06:0212
-    LDA **:$0061
-    BNE 06:01FF
+    BNE L_06:01FF
+    BEQ L_06:0212
+L_06:020E: ; 06:020E, 0x00C20E
+    LDA R_**:$0061
+    BNE L_06:01FF
+L_06:0212: ; 06:0212, 0x00C212
     LDA OBJ_POS_X[18],Y
     CMP #$18
-    BCC 06:01FF
+    BCC L_06:01FF
     LDA OBJ_POS_Y[18],Y
     CMP #$58
-    BCC 06:01FF
+    BCC L_06:01FF
     RTS
+L_06:0221: ; 06:0221, 0x00C221
     LDA #$F0
     STA B7_UNK_SPRITES? ; Set to 0xF0
     LSR A ; >> 1, /2
@@ -809,7 +817,7 @@ RTS: ; 06:04E3, 0x00C4E3
     RTS
 VAL_COUNTDOWN_VALID: ; 06:04E4, 0x00C4E4
     LDA 609_UNK ; Load
-    BNE 06:0535 ; != 0, goto.
+    BNE L_06:0535 ; != 0, goto.
     LDA #$28
     STA 609_UNK ; Set.
     LDA #$00
@@ -854,6 +862,7 @@ LOOP_X+1_TIMES: ; 06:051F, 0x00C51F
     LDA TMP_01 ; Load
     AND #$01 ; Keep 0000.0001
     STA 607_UNK ; Store to.
+L_06:0535: ; 06:0535, 0x00C535
     LDA PPU_ADDR_IRQ[2] ; Load
     AND #$80 ; Keep 1000.0000
     STA TMP_06 ; Store to.

@@ -1,2429 +1,1211 @@
     .db 2C
 OBJ_STATE_0x50_HANDLER: ; 0C:0001, 0x018001
-    .db 4C
-    .db F1
-OBJ_STATE_0x6D_HANDLER: ; 0C:0003, 0x018003
-    .db F3
-    .db AD
-    .db 0E
-    .db 07
-    .db F0
-    .db 03
-    .db CE
-    .db 0E
-    .db 07
-    .db 18
-    .db AD
-    .db 08
-    .db 07
-    .db 69
-    .db 01
-    .db 8D
-    .db 08
-    .db 07
-    .db AD
-    .db 09
-    .db 07
-    .db 69
-    .db 00
-    .db 8D
-    .db 09
-    .db 07
-    .db C9
-    .db 08
-    .db 90
-    .db 05
-    .db A9
-    .db 00
-    .db 8D
-    .db 09
-    .db 07
-    .db 60
-    .db BD
-    .db 12
-    .db 04
-    .db F0
-    .db 3C
-    .db C9
-    .db 05
-    .db F0
-    .db 38
-    .db BD
-    .db 68
-    .db 05
-    .db C9
-    .db 20
-    .db B0
-    .db 31
-    .db 4A
-    .db 4A
-    .db 4A
-    .db A8
-    .db B9
-    .db 69
-    .db 80
-    .db 85
-    .db 00
-    .db EE
-    .db 04
-    .db 07
-    .db AD
-    .db 04
-    .db 07
-    .db C5
-    .db 00
-    .db 90
-    .db 13
-    .db A9
-    .db 00
-    .db 8D
-    .db 04
-    .db 07
-    .db EE
-    .db 05
-    .db 07
-    .db EE
-    .db 05
-    .db 07
-    .db AD
-    .db 05
-    .db 07
-    .db 29
-    .db 02
-    .db 8D
-    .db 05
-    .db 07
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 0D
-    .db 05
-    .db 07
-    .db 9D
-    .db 36
-    .db 04
-    .db 60
-    .db 01
-    .db 04
-    .db 08
-    .db 10
-    .db BD
-    .db 12
-    .db 04
-    .db F0
-    .db 2C
-    .db C9
-    .db 04
-    .db B0
-    .db 28
-    .db 20
-    .db 11
-    .db E8
-    .db C9
-    .db 00
-    .db F0
-    .db 21
-    .db C9
-    .db 02
-    .db F0
-    .db 1D
-    .db AD
-    .db 0E
-    .db 07
-    .db D0
-    .db 18
-    .db BD
-    .db 68
-    .db 05
-    .db D0
-    .db 04
-    .db A9
-    .db 05
-    .db D0
-    .db 07
-    .db A9
-    .db 2F
-    .db 20
-    .db 52
-    .db DB
-    .db A9
-    .db 04
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db 60
-    .db A5
-    .db 47
-    .db F0
-    .db 1E
-    .db AD
-    .db 00
-    .db 04
-    .db F0
-    .db 15
-    .db AD
-    .db 02
-    .db 04
-    .db F0
-    .db 14
-    .db A0
-    .db 00
-    .db 20
-    .db F5
-    .db F5
-    .db 85
-    .db 08
-    .db A0
-    .db 02
-    .db 20
-    .db F5
-    .db F5
-    .db C5
-    .db 08
-    .db B0
-    .db 04
-    .db A9
-    .db 02
-    .db D0
-    .db 02
-    .db A9
-    .db 00
-    .db 9D
-    .db B0
-    .db 05
-    .db 60
-    .db A9
-    .db 0C
-    .db 8D
-    .db 66
-    .db 01
-    .db A9
-    .db 10
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db FA
-    .db A9
-    .db 2E
-    .db 85
-    .db 31
-    .db A9
-    .db 2F
-    .db 85
-    .db 32
-    .db A0
-    .db 0A
-    .db A5
-    .db 42
-    .db C9
-    .db 01
-    .db F0
-    .db 02
-    .db A0
-    .db 12
-    .db 20
-    .db 55
-    .db F6
-    .db A9
-    .db 50
-    .db 9D
-    .db 25
-    .db 04
-    .db 9D
-    .db 26
-    .db 04
-    .db A5
-    .db FD
-    .db 9D
-    .db B0
-    .db 05
-    .db A5
-    .db FC
-    .db 9D
-    .db C2
-    .db 05
-    .db EE
-    .db 16
-    .db 06
-    .db A9
-    .db 2B
-    .db 9D
-    .db 01
-    .db 04
-    .db BD
-    .db A2
-    .db 04
-    .db 9D
-    .db A3
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db 9D
-    .db 6D
-    .db 04
-    .db 38
-    .db E9
-    .db 0C
-    .db 9D
-    .db A4
-    .db 04
-    .db 9D
-    .db 6E
-    .db 04
-    .db BD
-    .db 7E
-    .db 04
-    .db 9D
-    .db 7F
-    .db 04
-    .db 9D
-    .db 80
-    .db 04
-    .db BD
-    .db C6
-    .db 04
-    .db 9D
-    .db C7
-    .db 04
-    .db 9D
-    .db C8
-    .db 04
-    .db A9
-    .db 2F
-    .db 9D
-    .db 02
-    .db 04
-    .db 9D
-    .db D6
-    .db 05
-    .db E6
-    .db 8A
-    .db A9
-    .db 1C
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db FF
-    .db 9D
-    .db 10
-    .db 05
-    .db A9
-    .db 80
-    .db 9D
-    .db 22
-    .db 05
-    .db A9
-    .db 0C
-    .db 9D
-    .db A0
-    .db 05
-    .db 20
-    .db 28
-    .db DB
-    .db A9
-    .db 46
-    .db 20
-    .db 52
-    .db DB
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 0B
-    .db FE
-    .db 01
-    .db 04
-    .db A9
-    .db 0B
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db DE
-    .db A0
-    .db 05
-    .db D0
-    .db 05
-    .db A9
-    .db 18
-    .db 9D
-    .db A0
-    .db 05
-    .db 20
-    .db FB
-    .db 82
-    .db E8
-    .db E8
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 0B
-    .db FE
-    .db 01
-    .db 04
-    .db A9
-    .db 12
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db DE
-    .db A0
-    .db 05
-    .db D0
-    .db 05
-    .db A9
-    .db 12
-    .db 9D
-    .db A0
-    .db 05
-    .db 4C
-    .db 74
-    .db 81
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 06
-    .db FE
-    .db 01
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db DE
-    .db A0
-    .db 05
-    .db D0
-    .db 0D
-    .db A9
-    .db 31
-    .db 9D
-    .db 02
-    .db 04
-    .db 9D
-    .db D6
-    .db 05
-    .db A9
-    .db 18
-    .db 9D
-    .db A0
-    .db 05
-    .db 4C
-    .db 74
-    .db 81
-    .db DE
-    .db A0
-    .db 05
-    .db D0
-    .db 10
-    .db A9
-    .db 33
-    .db 9D
-    .db 02
-    .db 04
-    .db 9D
-    .db D6
-    .db 05
-    .db A9
-    .db 20
-    .db 9D
-    .db A0
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db 74
-    .db 81
-    .db DE
-    .db A0
-    .db 05
-    .db D0
-    .db 10
-    .db A9
-    .db 35
-    .db 9D
-    .db 02
-    .db 04
-    .db 9D
-    .db D6
-    .db 05
-    .db A9
-    .db 20
-    .db 9D
-    .db A0
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db 74
-    .db 81
-    .db DE
-    .db A0
-    .db 05
-    .db D0
-    .db 10
-    .db A9
-    .db 37
-    .db 9D
-    .db 02
-    .db 04
-    .db 9D
-    .db D6
-    .db 05
-    .db A9
-    .db 3A
-    .db 9D
-    .db A0
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db 74
-    .db 81
-    .db BD
-    .db A0
-    .db 05
-    .db C9
-    .db 38
-    .db D0
-    .db 10
-    .db DE
-    .db A0
-    .db 05
-    .db A9
-    .db 08
-    .db A4
-    .db 42
-    .db C0
-    .db 01
-    .db F0
-    .db 02
-    .db A9
-    .db 36
-    .db 4C
-    .db D4
-    .db EE
-    .db BD
-    .db A0
-    .db 05
-    .db C9
-    .db 1C
-    .db D0
-    .db 05
-    .db E8
-    .db 20
-    .db D1
-    .db F4
-    .db CA
-    .db DE
-    .db A0
-    .db 05
-    .db D0
-    .db 10
-    .db A9
-    .db 39
-    .db 9D
-    .db 02
-    .db 04
-    .db 9D
-    .db D6
-    .db 05
-    .db A9
-    .db 0C
-    .db 9D
-    .db A0
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db 74
-    .db 81
-    .db DE
-    .db A0
-    .db 05
-    .db D0
-    .db 08
-    .db A9
-    .db 03
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db 74
-    .db 81
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 51
-    .db E8
-    .db E8
-    .db 20
-    .db D1
-    .db F4
-    .db CA
-    .db CA
-    .db A9
-    .db 00
-    .db 8D
-    .db 16
-    .db 06
-    .db A9
-    .db 57
-    .db 85
-    .db 31
-    .db A9
-    .db 3C
-    .db 9D
-    .db 02
-    .db 04
-    .db BD
-    .db 7E
-    .db 04
-    .db 38
-    .db E9
-    .db 05
-    .db 9D
-    .db 80
-    .db 04
-    .db BD
-    .db A2
-    .db 04
-    .db 18
-    .db 69
-    .db BC
-    .db 9D
-    .db A4
-    .db 04
-    .db 9D
-    .db 6E
-    .db 04
-    .db A9
-    .db 50
-    .db 9D
-    .db 26
-    .db 04
-    .db 9D
-    .db 25
-    .db 04
-    .db A9
-    .db 3B
-    .db 9D
-    .db 01
-    .db 04
-    .db BD
-    .db 80
-    .db 04
-    .db 9D
-    .db 7F
-    .db 04
-    .db BD
-    .db 6E
-    .db 04
-    .db 18
-    .db 69
-    .db 42
-    .db 9D
-    .db 6D
-    .db 04
-    .db 9D
-    .db A3
-    .db 04
-    .db A9
-    .db 20
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db A9
-    .db 07
-    .db A4
-    .db 42
-    .db C0
-    .db 01
-    .db F0
-    .db 02
-    .db A9
-    .db 35
-    .db 4C
-    .db D4
-    .db EE
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 12
-    .db A9
-    .db 80
-    .db 9D
-    .db 22
-    .db 05
-    .db A9
-    .db 20
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 47
-    .db 20
-    .db 52
-    .db DB
-    .db FE
-    .db 8C
-    .db 05
-    .db E8
-    .db E8
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 28
-    .db FE
-    .db 5C
-    .db 04
-    .db BD
-    .db 5C
-    .db 04
-    .db 18
-    .db 69
-    .db 3C
-    .db C9
-    .db 41
-    .db B0
-    .db 0A
-    .db 9D
-    .db 02
-    .db 04
-    .db A9
-    .db 18
-    .db 9D
-    .db 9E
-    .db 05
-    .db D0
-    .db 11
-    .db E8
-    .db 20
-    .db D1
-    .db F4
-    .db E8
-    .db 20
-    .db D1
-    .db F4
-    .db CA
-    .db CA
-    .db A9
-    .db 00
-    .db 85
-    .db 8A
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db C6
-    .db 82
-    .db BD
-    .db 4A
-    .db 04
-    .db 29
-    .db 03
-    .db D0
-    .db 0F
-    .db FE
-    .db 5C
-    .db 04
-    .db BD
-    .db 5C
-    .db 04
-    .db 29
-    .db 01
-    .db 18
-    .db 7D
-    .db D6
-    .db 05
-    .db 9D
-    .db 02
-    .db 04
-    .db FE
-    .db 4A
-    .db 04
-    .db 60
+    JMP OBJECT_X_MOVE? ; Basically used as a leave.
+L_0C:0004: ; 0C:0004, 0x018004
+    LDA R_**:$070E
+    BEQ L_0C:000C
+    DEC R_**:$070E
+L_0C:000C: ; 0C:000C, 0x01800C
+    CLC
+    LDA R_**:$0708
+    ADC #$01
+    STA R_**:$0708
+    LDA R_**:$0709
+    ADC #$00
+    STA R_**:$0709
+    CMP #$08
+    BCC L_0C:0026
+    LDA #$00
+    STA R_**:$0709
+L_0C:0026: ; 0C:0026, 0x018026
+    RTS
+L_0C:0027: ; 0C:0027, 0x018027
+    LDA OBJ_SECONDARY_SWITCH?[18],X
+    BEQ L_0C:0068
+    CMP #$05
+    BEQ L_0C:0068
+    LDA OBJECT_DATA_HEALTH?[18],X
+    CMP #$20
+    BCS L_0C:0068
+    LSR A
+    LSR A
+    LSR A
+    TAY
+    LDA L_0C:0069,Y
+    STA TMP_00
+    INC R_**:$0704
+    LDA R_**:$0704
+    CMP TMP_00
+    BCC L_0C:005D
+    LDA #$00
+    STA R_**:$0704
+    INC R_**:$0705
+    INC R_**:$0705
+    LDA R_**:$0705
+    AND #$02
+    STA R_**:$0705
+L_0C:005D: ; 0C:005D, 0x01805D
+    LDA OBJ_DIRECTION_RELATED?[18],X
+    AND #$FC
+    ORA R_**:$0705
+    STA OBJ_DIRECTION_RELATED?[18],X
+L_0C:0068: ; 0C:0068, 0x018068
+    RTS
+L_0C:0069: ; 0C:0069, 0x018069
+    ORA [TMP_04,X]
+    PHP
+    BPL L_0C:002B
+    ???
+    ???
+    BEQ L_0C:009E
+    CMP #$04
+    BCS L_0C:009E
+    JSR L_1F:0811
+    CMP #$00
+    BEQ L_0C:009E
+    CMP #$02
+    BEQ L_0C:009E
+    LDA R_**:$070E
+    BNE L_0C:009E
+    LDA OBJECT_DATA_HEALTH?[18],X
+    BNE L_0C:008F
+    LDA #$05
+    BNE L_0C:0096
+L_0C:008F: ; 0C:008F, 0x01808F
+    LDA #$2F
+    JSR SND_BANKED_DISPATCH
+    LDA #$04
+L_0C:0096: ; 0C:0096, 0x018096
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+L_0C:009E: ; 0C:009E, 0x01809E
+    RTS
+L_0C:009F: ; 0C:009F, 0x01809F
+    LDA 47_TWO_PLAYERS_FLAG
+    BEQ L_0C:00C1
+    LDA OBJ_ANIMATION_DISPLAY[18]
+    BEQ L_0C:00BD
+    LDA OBJ_ANIMATION_DISPLAY+2
+    BEQ L_0C:00C1
+    LDY #$00
+    JSR L_1F:15F5
+    STA TMP_08
+    LDY #$02
+    JSR L_1F:15F5
+    CMP TMP_08
+    BCS L_0C:00C1
+L_0C:00BD: ; 0C:00BD, 0x0180BD
+    LDA #$02
+    BNE L_0C:00C3
+L_0C:00C1: ; 0C:00C1, 0x0180C1
+    LDA #$00
+L_0C:00C3: ; 0C:00C3, 0x0180C3
+    STA 5B0_OBJ_UNK[18],X
+    RTS
+STATE_0x51_ALTSWITCH_A: ; 0C:00C7, 0x0180C7
+    LDA #$0C
+    STA 166_SND?_UNK
+    LDA #$10
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:00D4: ; 0C:00D4, 0x0180D4
+    RTS
+STATE_0x51_ALTSWITCH_B: ; 0C:00D5, 0x0180D5
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:00D4
+    LDA #$2E
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$2F
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDY #$0A
+    LDA LEVEL/SCREEN_ON
+    CMP #$01
+    BEQ L_0C:00EC
+    LDY #$12
+L_0C:00EC: ; 0C:00EC, 0x0180EC
+    JSR L_1F:1655
+    LDA #$50
+    STA OBJ_ENABLED_STATE+MORE?+1,X
+    STA OBJ_ENABLED_STATE+MORE?+2,X
+    LDA PPU_SCROLL_X_COPY_IRQ
+    STA 5B0_OBJ_UNK[18],X
+    LDA PPU_SCROLL_Y_COPY_IRQ
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    INC PPU_FLAG_UNK_MODIFY_LATCH_UNK
+    LDA #$2B
+    STA OBJ_ANIMATION_DISPLAY+1,X
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    STA 4A2_OBJ_UNK_POS?+1,X
+    STA OBJ_POS_Y[18],X
+    STA OBJ_POS_Y+1,X
+    SEC
+    SBC #$0C
+    STA 4A2_OBJ_UNK_POS?+2,X
+    STA OBJ_POS_Y+2,X
+    LDA OBJ_POS_X[18],X
+    STA OBJ_POS_X+1,X
+    STA OBJ_POS_X+2,X
+    LDA 4C6_OBJ_UNK_POS?[18],X
+    STA 4C6_OBJ_UNK_POS?+1,X
+    STA 4C6_OBJ_UNK_POS?+2,X
+    LDA #$2F
+    STA OBJ_ANIMATION_DISPLAY+2,X
+    STA 5D4_ARR_OBJ_TIMER?+2,X
+    INC R_**:$008A
+    LDA #$1C
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$FF
+    STA 50E_ARR_UNK+2,X
+    LDA #$80
+    STA 520_ARR_UNK+2,X
+    LDA #$0C
+    STA 59E_OBJ_UNK_TIMER?+2,X
+    JSR SOUND_RESET/INIT_RTN?
+    LDA #$46
+    JSR SND_BANKED_DISPATCH
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+STATE_0x51_ALTSWITCH_C: ; 0C:015A, 0x01815A
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:016A
+    INC OBJ_ANIMATION_DISPLAY+1,X
+    LDA #$0B
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:016A: ; 0C:016A, 0x01816A
+    DEC 59E_OBJ_UNK_TIMER?+2,X
+    BNE L_0C:0174
+    LDA #$18
+    STA 59E_OBJ_UNK_TIMER?+2,X
+L_0C:0174: ; 0C:0174, 0x018174
+    JSR L_0C:02FB
+    INX
+    INX
+    JMP OBJECT_X_MOVE?
+STATE_0x51_ALTSWITCH_D: ; 0C:017C, 0x01817C
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:018C
+    INC OBJ_ANIMATION_DISPLAY+1,X
+    LDA #$12
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:018C: ; 0C:018C, 0x01818C
+    DEC 59E_OBJ_UNK_TIMER?+2,X
+    BNE L_0C:0196
+    LDA #$12
+    STA 59E_OBJ_UNK_TIMER?+2,X
+L_0C:0196: ; 0C:0196, 0x018196
+    JMP L_0C:0174
+STATE_0x51_ALTSWITCH_E: ; 0C:0199, 0x018199
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:01A4
+    INC OBJ_ANIMATION_DISPLAY+1,X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:01A4: ; 0C:01A4, 0x0181A4
+    DEC 59E_OBJ_UNK_TIMER?+2,X
+    BNE L_0C:01B6
+    LDA #$31
+    STA OBJ_ANIMATION_DISPLAY+2,X
+    STA 5D4_ARR_OBJ_TIMER?+2,X
+    LDA #$18
+    STA 59E_OBJ_UNK_TIMER?+2,X
+L_0C:01B6: ; 0C:01B6, 0x0181B6
+    JMP L_0C:0174
+STATE_0x51_ALTSWITCH_F: ; 0C:01B9, 0x0181B9
+    DEC 59E_OBJ_UNK_TIMER?+2,X
+    BNE L_0C:01CE
+    LDA #$33
+    STA OBJ_ANIMATION_DISPLAY+2,X
+    STA 5D4_ARR_OBJ_TIMER?+2,X
+    LDA #$20
+    STA 59E_OBJ_UNK_TIMER?+2,X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:01CE: ; 0C:01CE, 0x0181CE
+    JMP L_0C:0174
+STATE_0x51_ALTSWITCH_G: ; 0C:01D1, 0x0181D1
+    DEC 59E_OBJ_UNK_TIMER?+2,X
+    BNE L_0C:01E6
+    LDA #$35
+    STA OBJ_ANIMATION_DISPLAY+2,X
+    STA 5D4_ARR_OBJ_TIMER?+2,X
+    LDA #$20
+    STA 59E_OBJ_UNK_TIMER?+2,X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:01E6: ; 0C:01E6, 0x0181E6
+    JMP L_0C:0174
+STATE_0x51_ALTSWITCH_H: ; 0C:01E9, 0x0181E9
+    DEC 59E_OBJ_UNK_TIMER?+2,X
+    BNE L_0C:01FE
+    LDA #$37
+    STA OBJ_ANIMATION_DISPLAY+2,X
+    STA 5D4_ARR_OBJ_TIMER?+2,X
+    LDA #$3A
+    STA 59E_OBJ_UNK_TIMER?+2,X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:01FE: ; 0C:01FE, 0x0181FE
+    JMP L_0C:0174
+STATE_0x51_ALTSWITCH_I: ; 0C:0201, 0x018201
+    LDA 59E_OBJ_UNK_TIMER?+2,X
+    CMP #$38
+    BNE L_0C:0218
+    DEC 59E_OBJ_UNK_TIMER?+2,X
+    LDA #$08
+    LDY LEVEL/SCREEN_ON
+    CPY #$01
+    BEQ L_0C:0215
+    LDA #$36
+L_0C:0215: ; 0C:0215, 0x018215
+    JMP L_1F:0ED4
+L_0C:0218: ; 0C:0218, 0x018218
+    LDA 59E_OBJ_UNK_TIMER?+2,X
+    CMP #$1C
+    BNE L_0C:0224
+    INX
+    JSR INIT_OBJECT[X]_DATA
+    DEX
+L_0C:0224: ; 0C:0224, 0x018224
+    DEC 59E_OBJ_UNK_TIMER?+2,X
+    BNE L_0C:0239
+    LDA #$39
+    STA OBJ_ANIMATION_DISPLAY+2,X
+    STA 5D4_ARR_OBJ_TIMER?+2,X
+    LDA #$0C
+    STA 59E_OBJ_UNK_TIMER?+2,X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0239: ; 0C:0239, 0x018239
+    JMP L_0C:0174
+STATE_0x51_ALTSWITCH_J: ; 0C:023C, 0x01823C
+    DEC 59E_OBJ_UNK_TIMER?+2,X
+    BNE L_0C:0249
+    LDA #$03
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0249: ; 0C:0249, 0x018249
+    JMP L_0C:0174
+STATE_0x51_ALTSWITCH_K: ; 0C:024C, 0x01824C
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:02A2
+    INX
+    INX
+    JSR INIT_OBJECT[X]_DATA
+    DEX
+    DEX
+    LDA #$00
+    STA PPU_FLAG_UNK_MODIFY_LATCH_UNK
+    LDA #$57
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$3C
+    STA OBJ_ANIMATION_DISPLAY+2,X
+    LDA OBJ_POS_X[18],X
+    SEC
+    SBC #$05
+    STA OBJ_POS_X+2,X
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    CLC
+    ADC #$BC
+    STA 4A2_OBJ_UNK_POS?+2,X
+    STA OBJ_POS_Y+2,X
+    LDA #$50
+    STA OBJ_ENABLED_STATE+MORE?+2,X
+    STA OBJ_ENABLED_STATE+MORE?+1,X
+    LDA #$3B
+    STA OBJ_ANIMATION_DISPLAY+1,X
+    LDA OBJ_POS_X+2,X
+    STA OBJ_POS_X+1,X
+    LDA OBJ_POS_Y+2,X
+    CLC
+    ADC #$42
+    STA OBJ_POS_Y+1,X
+    STA 4A2_OBJ_UNK_POS?+1,X
+    LDA #$20
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:02A2: ; 0C:02A2, 0x0182A2
+    LDA #$07
+    LDY LEVEL/SCREEN_ON
+    CPY #$01
+    BEQ L_0C:02AC
+    LDA #$35
+L_0C:02AC: ; 0C:02AC, 0x0182AC
+    JMP L_1F:0ED4
+STATE_0x51_ALTSWITCH_L: ; 0C:02AF, 0x0182AF
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:02C6
+    LDA #$80
+    STA 520_ARR_UNK+2,X
+    LDA #$20
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$47
+    JSR SND_BANKED_DISPATCH
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:02C6: ; 0C:02C6, 0x0182C6
+    INX
+    INX
+    JMP OBJECT_X_MOVE?
+STATE_0x51_ALTSWITCH_M: ; 0C:02CB, 0x0182CB
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:02F8
+    INC 45A_OBJ_DATA_ENTRY?+2,X
+    LDA 45A_OBJ_DATA_ENTRY?+2,X
+    CLC
+    ADC #$3C
+    CMP #$41
+    BCS L_0C:02E7
+    STA OBJ_ANIMATION_DISPLAY+2,X
+    LDA #$18
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:02F8
+L_0C:02E7: ; 0C:02E7, 0x0182E7
+    INX
+    JSR INIT_OBJECT[X]_DATA
+    INX
+    JSR INIT_OBJECT[X]_DATA
+    DEX
+    DEX
+    LDA #$00
+    STA R_**:$008A
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:02F8: ; 0C:02F8, 0x0182F8
+    JMP L_0C:02C6
+L_0C:02FB: ; 0C:02FB, 0x0182FB
+    LDA OBJ_ANIM_HOLD_TIMER?+2,X
+    AND #$03
+    BNE L_0C:0311
+    INC 45A_OBJ_DATA_ENTRY?+2,X
+    LDA 45A_OBJ_DATA_ENTRY?+2,X
+    AND #$01
+    CLC
+    ADC 5D4_ARR_OBJ_TIMER?+2,X
+    STA OBJ_ANIMATION_DISPLAY+2,X
+L_0C:0311: ; 0C:0311, 0x018311
+    INC OBJ_ANIM_HOLD_TIMER?+2,X
+    RTS
 OBJ_STATE_0x51_HANDLER: ; 0C:0315, 0x018315
-    .db 20
+    JSR L_0C:0004
+    JSR L_0C:0027
+    JSR L_0C:006D
+    LDA OBJ_SECONDARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x51_ALT_SWITCH)
+    HIGH(STATE_0x51_ALT_SWITCH)
+    LOW(STATE_0x51_SUBSWITCH_B)
+    HIGH(STATE_0x51_SUBSWITCH_B)
+    LOW(STATE_0x51_SUBSWITCH_C)
+    HIGH(STATE_0x51_SUBSWITCH_C)
+    LOW(STATE_0x51_SUBSWITCH_D)
+    HIGH(STATE_0x51_SUBSWITCH_D)
+    LOW(STATE_0x51_SUBSWITCH_E)
+    HIGH(STATE_0x51_SUBSWITCH_E)
+    LOW(STATE_0x51_SUBSWITCH_F)
+    HIGH(STATE_0x51_SUBSWITCH_F)
+STATE_0x51_ALT_SWITCH: ; 0C:0330, 0x018330
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x51_ALTSWITCH_A)
+    HIGH(STATE_0x51_ALTSWITCH_A)
+    LOW(STATE_0x51_ALTSWITCH_B)
+    HIGH(STATE_0x51_ALTSWITCH_B)
+    LOW(STATE_0x51_ALTSWITCH_C)
+    HIGH(STATE_0x51_ALTSWITCH_C)
+    LOW(STATE_0x51_ALTSWITCH_D)
+    HIGH(STATE_0x51_ALTSWITCH_D)
+    LOW(STATE_0x51_ALTSWITCH_E)
+    HIGH(STATE_0x51_ALTSWITCH_E)
+    LOW(STATE_0x51_ALTSWITCH_F)
+    HIGH(STATE_0x51_ALTSWITCH_F)
+    LOW(STATE_0x51_ALTSWITCH_G)
+    HIGH(STATE_0x51_ALTSWITCH_G)
+    LOW(STATE_0x51_ALTSWITCH_H)
+    HIGH(STATE_0x51_ALTSWITCH_H)
+    LOW(STATE_0x51_ALTSWITCH_I)
+    HIGH(STATE_0x51_ALTSWITCH_I)
+    LOW(STATE_0x51_ALTSWITCH_J)
+    HIGH(STATE_0x51_ALTSWITCH_J)
+    LOW(STATE_0x51_ALTSWITCH_K)
+    HIGH(STATE_0x51_ALTSWITCH_K)
+    LOW(STATE_0x51_ALTSWITCH_L)
+    HIGH(STATE_0x51_ALTSWITCH_L)
+    LOW(STATE_0x51_ALTSWITCH_M)
+    HIGH(STATE_0x51_ALTSWITCH_M)
+    LOW(STATE_0x51_ALTSWITCH_N)
+    HIGH(STATE_0x51_ALTSWITCH_N)
+    LOW(STATE_0x51_ALTSWITCH_O)
+    HIGH(STATE_0x51_ALTSWITCH_O)
+L_0C:0354: ; 0C:0354, 0x018354
+    LDA #$4C
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$4D
+    STA ZP_R2-R5_BANK_VALUES+3
+    RTS
+STATE_0x51_ALTSWITCH_N: ; 0C:035D, 0x01835D
+    JSR L_0C:0354
+    LDY #$0B
+    JSR L_1F:1655
+    LDA #$40
+    LDY 47_TWO_PLAYERS_FLAG
+    BEQ L_0C:036D
+    LDA #$60
+L_0C:036D: ; 0C:036D, 0x01836D
+    STA OBJECT_DATA_HEALTH?[18],X
+    LDA #$03
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDY #$00
+    JSR L_0C:0B74
+    LDA #$A0
+    STA 520_ARR_UNK[18],X
+    LDA #$20
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$60
+    JMP SND_BANKED_DISPATCH
+STATE_0x51_ALTSWITCH_O: ; 0C:038C, 0x01838C
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0399
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0399: ; 0C:0399, 0x018399
+    LDY #$00
+    JSR L_0C:0B7C
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUBSWITCH_B: ; 0C:03A1, 0x0183A1
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    RTS
+STATE_0x51_SUBSWITCH_C: ; 0C:03A5, 0x0183A5
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x51_SUB_0x0E_SWITCH_A)
+    HIGH(STATE_0x51_SUB_0x0E_SWITCH_A)
+    LOW(STATE_0x51_SUB_0x0E_SWITCH_B)
+    HIGH(STATE_0x51_SUB_0x0E_SWITCH_B)
+    LOW(STATE_0x51_SUB_0x0E_SWITCH_C)
+    HIGH(STATE_0x51_SUB_0x0E_SWITCH_C)
+    LOW(STATE_0x51_SUB_0x0E_SWITCH_D)
+    HIGH(STATE_0x51_SUB_0x0E_SWITCH_D)
+STATE_0x51_SUB_0x0E_SWITCH_A: ; 0C:03B3, 0x0183B3
+    LDA #$18
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDY #$00
+    JSR L_0C:0B7C
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+STATE_0x51_SUB_0x0E_SWITCH_B: ; 0C:03C1, 0x0183C1
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:03CF
+    JSR L_1F:1622
+    STA 5B0_OBJ_UNK[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:03CF: ; 0C:03CF, 0x0183CF
+    RTS
+STATE_0x51_SUB_0x0E_SWITCH_C: ; 0C:03D0, 0x0183D0
+    LDA R_**:$0709
+    AND #$07
+    STA TMP_00
+    CMP #$02
+    BNE L_0C:03E0
+    LDA R_**:$0708
+    BPL L_0C:03F0
+L_0C:03E0: ; 0C:03E0, 0x0183E0
+    LDA TMP_00
+    CMP #$04
+    BNE L_0C:03FD
+    LDA INF_LOOP_COUNTER
+    AND #$40
+    BNE L_0C:03F4
+    LDA #$03
+    BNE L_0C:03F6
+L_0C:03F0: ; 0C:03F0, 0x0183F0
+    LDA #$0E
+    BNE L_0C:03F6
+L_0C:03F4: ; 0C:03F4, 0x0183F4
+    LDA #$0B
+L_0C:03F6: ; 0C:03F6, 0x0183F6
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    RTS
+L_0C:03FD: ; 0C:03FD, 0x0183FD
+    LDA R_**:$0708
+    CMP #$80
+    BNE L_0C:040D
+    LDA #$40
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+L_0C:040D: ; 0C:040D, 0x01840D
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:1546
+    JSR L_1F:154F
+    JSR L_1F:15E0
+    CMP #$0C
+    BCS L_0C:042D
+    JSR L_1F:15F5
+    CMP #$20
+    BCS L_0C:042D
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    RTS
+L_0C:042D: ; 0C:042D, 0x01842D
+    JSR L_1F:160A
+    JSR L_1F:15F5
+    CMP #$1C
+    BCC L_0C:0451
+    LDA #$00
+    STA 4EA_ARR_UNK[18],X
+    LDA #$90
+    STA 4FC_ARR_UNK[18],X
+    LDA TMP_12
+    BEQ L_0C:0470
+    LDA #$FF
+    STA 4EA_ARR_UNK[18],X
+    LDA #$70
+    STA 4FC_ARR_UNK[18],X
+    BNE L_0C:0470
+L_0C:0451: ; 0C:0451, 0x018451
+    JSR L_1F:15E0
+    CMP #$0A
+    BCC L_0C:0470
+    LDA #$00
+    STA 50E_ARR_UNK[18],X
+    LDA #$70
+    STA 520_ARR_UNK[18],X
+    LDA TMP_10
+    BEQ L_0C:0470
+    LDA #$FF
+    STA 50E_ARR_UNK[18],X
+    LDA #$90
+    STA 520_ARR_UNK[18],X
+L_0C:0470: ; 0C:0470, 0x018470
+    LDY #$00
+    JSR L_0C:0B7C
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUB_0x0E_SWITCH_D: ; 0C:0478, 0x018478
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0480
+    DEC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0480: ; 0C:0480, 0x018480
+    LDY #$00
+    JMP L_0C:0B74
+STATE_0x51_SUBSWITCH_D: ; 0C:0485, 0x018485
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_A)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_A)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_B)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_B)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_C)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_C)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_D)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_D)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_E)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_E)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_F)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_F)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_G)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_G)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_H)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_H)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_D)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_D)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_I)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_I)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_J)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_J)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_K)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_K)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_L)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_L)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_M)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_M)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_N)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_N)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_O)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_O)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_P)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_P)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_Q)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_Q)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_R)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_R)
+    LOW(STATE_0x51_SUB_0x0E+0x03_SWITCH_S)
+    HIGH(STATE_0x51_SUB_0x0E+0x03_SWITCH_S)
+STATE_0x51_SUB_0x0E+0x03_SWITCH_D: ; 0C:04B3, 0x0184B3
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    LDA #$4C
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$4E
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDA #$00
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    STA 45A_OBJ_DATA_ENTRY?[18],X
+    LDY #$02
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    BEQ L_0C:04D2
+    LDY #$00
+L_0C:04D2: ; 0C:04D2, 0x0184D2
+    JSR L_0C:0941
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+STATE_0x51_SUB_0x0E+0x03_SWITCH_E: ; 0C:04D9, 0x0184D9
+    LDY #$02
+    JMP L_0C:0941
+STATE_0x51_SUB_0x0E+0x03_SWITCH_I: ; 0C:04DE, 0x0184DE
+    LDY #$00
+    JMP L_0C:0941
+STATE_0x51_SUB_0x0E+0x03_SWITCH_F: ; 0C:04E3, 0x0184E3
+    LDA #$4F
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$4D
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDA #$8C
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDY #$06
+    JSR L_0C:0B74
+    LDA #$20
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$FF
+    STA R_**:$070E
+    RTS
+STATE_0x51_SUB_0x0E+0x03_SWITCH_G: ; 0C:0509, 0x018509
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0527
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    LDA TMP_12
+    ASL A
+    TAY
+    LDA L_0C:058A,Y
+    STA 4EA_ARR_UNK[18],X
+    LDA L_0C:058B,Y
+    STA 4FC_ARR_UNK[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0527: ; 0C:0527, 0x018527
+    JSR OBJECT_X_MOVE?
+    LDY #$06
+    JMP L_0C:0B7C
+STATE_0x51_SUB_0x0E+0x03_SWITCH_H: ; 0C:052F, 0x01852F
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:154F
+    JSR L_1F:15E0
+    CMP #$08
+    BCC L_0C:054E
+    LDA #$01
+    LDA TMP_10
+    ASL A
+    TAY
+    LDA L_0C:058E,Y
+    STA 50E_ARR_UNK[18],X
+    LDA L_0C:058F,Y
+    STA 520_ARR_UNK[18],X
+L_0C:054E: ; 0C:054E, 0x01854E
+    LDY #$06
+    JSR L_0C:0B7C
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    AND #$04
+    BEQ L_0C:055E
+    LDA #$20
+    BNE L_0C:0560
+L_0C:055E: ; 0C:055E, 0x01855E
+    LDA #$E0
+L_0C:0560: ; 0C:0560, 0x018560
+    CLC
+    ADC OBJ_POS_X[18],X
+    TAY
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    JSR RTN_SCREEN?_UNK
+    CMP #$01
+    BEQ L_0C:0584
+    LDA 4EA_ARR_UNK[18],X
+    BPL L_0C:057D
+    LDA OBJ_POS_X[18],X
+    CMP #$28
+    BCC L_0C:0584
+    BCS L_0C:0587
+L_0C:057D: ; 0C:057D, 0x01857D
+    LDA OBJ_POS_X[18],X
+    CMP #$D8
+    BCC L_0C:0587
+L_0C:0584: ; 0C:0584, 0x018584
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0587: ; 0C:0587, 0x018587
+    JMP OBJECT_X_MOVE?
+L_0C:058A: ; 0C:058A, 0x01858A
     .db 04
-    .db 80
-    .db 20
-    .db 27
-    .db 80
-    .db 20
-    .db 6D
-    .db 80
-    .db BD
-    .db 12
-    .db 04
-    .db 20
-    .db 98
-    .db CC
-    .db 30
-    .db 83
-    .db A1
-    .db 83
-    .db A5
-    .db 83
-    .db 85
-    .db 84
-    .db 99
-    .db 89
-    .db 56
-    .db 8A
-    .db BD
-    .db 8C
-    .db 05
-    .db 20
-    .db 98
-    .db CC
-    .db C7
-    .db 80
-    .db D5
-    .db 80
-    .db 5A
-    .db 81
-    .db 7C
-    .db 81
-    .db 99
-    .db 81
-    .db B9
-    .db 81
-    .db D1
-    .db 81
-    .db E9
-    .db 81
-    .db 01
-    .db 82
-    .db 3C
-    .db 82
-    .db 4C
-    .db 82
-    .db AF
-    .db 82
-    .db CB
-    .db 82
-    .db 5D
-    .db 83
-    .db 8C
-    .db 83
-    .db A9
-    .db 4C
-    .db 85
-    .db 31
-    .db A9
-    .db 4D
-    .db 85
-    .db 32
-    .db 60
-    .db 20
-    .db 54
-    .db 83
-    .db A0
-    .db 0B
-    .db 20
-    .db 55
-    .db F6
-    .db A9
-    .db 40
-    .db A4
-    .db 47
-    .db F0
-    .db 02
-    .db A9
-    .db 60
-    .db 9D
-    .db 68
-    .db 05
-    .db A9
-    .db 03
-    .db 9D
-    .db 7A
-    .db 05
-    .db A0
-    .db 00
-    .db 20
-    .db 74
-    .db 8B
-    .db A9
-    .db A0
-    .db 9D
-    .db 20
-    .db 05
-    .db A9
-    .db 20
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db A9
-    .db 60
-    .db 4C
-    .db 52
-    .db DB
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 08
-    .db FE
-    .db 12
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db A0
-    .db 00
-    .db 20
-    .db 7C
-    .db 8B
-    .db 4C
-    .db F1
-    .db F3
-    .db FE
-    .db 12
-    .db 04
-    .db 60
-    .db BD
-    .db 8C
-    .db 05
-    .db 20
-    .db 98
-    .db CC
-    .db B3
-    .db 83
-    .db C1
-    .db 83
-    .db D0
-    .db 83
-    .db 78
-    .db 84
-    .db A9
-    .db 18
-    .db 9D
-    .db 9E
-    .db 05
-    .db A0
-    .db 00
-    .db 20
-    .db 7C
-    .db 8B
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 09
-    .db 20
-    .db 22
-    .db F6
-    .db 9D
-    .db B0
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db AD
-    .db 09
-    .db 07
-    .db 29
-    .db 07
-    .db 85
-    .db 00
-    .db C9
-    .db 02
-    .db D0
-    .db 05
-    .db AD
-    .db 08
-    .db 07
-    .db 10
-    .db 10
-    .db A5
-    .db 00
-    .db C9
-    .db 04
-    .db D0
-    .db 17
-    .db A5
-    .db 22
-    .db 29
-    .db 40
-    .db D0
-    .db 08
-    .db A9
-    .db 03
-    .db D0
-    .db 06
-    .db A9
-    .db 0E
-    .db D0
-    .db 02
-    .db A9
-    .db 0B
-    .db 9D
-    .db 8C
-    .db 05
-    .db FE
-    .db 12
-    .db 04
-    .db 60
-    .db AD
-    .db 08
-    .db 07
-    .db C9
-    .db 80
-    .db D0
-    .db 09
-    .db A9
-    .db 40
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db 20
-    .db E0
-    .db F5
-    .db C9
-    .db 0C
-    .db B0
-    .db 10
-    .db 20
-    .db F5
-    .db F5
-    .db C9
-    .db 20
-    .db B0
-    .db 09
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db FE
-    .db 12
-    .db 04
-    .db 60
-    .db 20
-    .db 0A
-    .db F6
-    .db 20
-    .db F5
-    .db F5
-    .db C9
-    .db 1C
-    .db 90
-    .db 1A
-    .db A9
-    .db 00
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db 90
-    .db 9D
-    .db FC
-    .db 04
-    .db A5
-    .db 12
-    .db F0
-    .db 2B
-    .db A9
-    .db FF
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db 70
-    .db 9D
-    .db FC
-    .db 04
-    .db D0
-    .db 1F
-    .db 20
-    .db E0
-    .db F5
-    .db C9
-    .db 0A
-    .db 90
-    .db 18
-    .db A9
-    .db 00
-    .db 9D
-    .db 0E
-    .db 05
-    .db A9
-    .db 70
-    .db 9D
-    .db 20
-    .db 05
-    .db A5
-    .db 10
-    .db F0
-    .db 0A
-    .db A9
-    .db FF
-    .db 9D
-    .db 0E
-    .db 05
-    .db A9
-    .db 90
-    .db 9D
-    .db 20
-    .db 05
-    .db A0
-    .db 00
-    .db 20
-    .db 7C
-    .db 8B
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 03
-    .db DE
-    .db 8C
-    .db 05
-    .db A0
-    .db 00
-    .db 4C
-    .db 74
-    .db 8B
-    .db BD
-    .db 8C
-    .db 05
-    .db 20
-    .db 98
-    .db CC
-    .db F2
-    .db 88
-    .db 10
-    .db 89
-    .db 2A
-    .db 89
-    .db B3
-    .db 84
-    .db D9
-    .db 84
-    .db E3
-    .db 84
-    .db 09
-    .db 85
-    .db 2F
-    .db 85
-    .db B3
-    .db 84
-    .db DE
-    .db 84
-    .db 92
-    .db 85
-    .db B3
-    .db 85
-    .db D7
-    .db 85
-    .db 9C
-    .db 86
-    .db 51
-    .db 87
-    .db 75
-    .db 87
-    .db C7
-    .db 87
-    .db 23
-    .db 88
-    .db 7A
-    .db 88
-    .db F3
-    .db 86
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db A9
-    .db 4C
-    .db 85
-    .db 31
-    .db A9
-    .db 4E
-    .db 85
-    .db 32
-    .db A9
-    .db 00
-    .db 9D
-    .db 48
-    .db 04
-    .db 9D
-    .db 5A
-    .db 04
-    .db A0
-    .db 02
-    .db BD
-    .db 8C
-    .db 05
-    .db F0
-    .db 02
-    .db A0
-    .db 00
-    .db 20
-    .db 41
-    .db 89
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db A0
-    .db 02
-    .db 4C
-    .db 41
-    .db 89
-    .db A0
-    .db 00
-    .db 4C
-    .db 41
-    .db 89
-    .db A9
-    .db 4F
-    .db 85
-    .db 31
-    .db A9
-    .db 4D
-    .db 85
-    .db 32
-    .db A9
-    .db 8C
-    .db 9D
-    .db 7A
-    .db 05
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db A0
-    .db 06
-    .db 20
-    .db 74
-    .db 8B
-    .db A9
-    .db 20
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db A9
-    .db FF
-    .db 8D
-    .db 0E
-    .db 07
-    .db 60
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 19
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db A5
-    .db 12
-    .db 0A
-    .db A8
-    .db B9
-    .db 8A
-    .db 85
-    .db 9D
-    .db EA
-    .db 04
-    .db B9
-    .db 8B
-    .db 85
-    .db 9D
-    .db FC
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db 20
-    .db F1
-    .db F3
-    .db A0
-    .db 06
-    .db 4C
-    .db 7C
-    .db 8B
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 4F
-    .db F5
-    .db 20
-    .db E0
-    .db F5
-    .db C9
-    .db 08
-    .db 90
-    .db 12
-    .db A9
-    .db 01
-    .db A5
-    .db 10
-    .db 0A
-    .db A8
-    .db B9
-    .db 8E
-    .db 85
-    .db 9D
-    .db 0E
-    .db 05
-    .db B9
-    .db 8F
-    .db 85
-    .db 9D
-    .db 20
-    .db 05
-    .db A0
-    .db 06
-    .db 20
-    .db 7C
-    .db 8B
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db F0
-    .db 04
-    .db A9
-    .db 20
-    .db D0
-    .db 02
-    .db A9
-    .db E0
-    .db 18
-    .db 7D
-    .db 7E
-    .db 04
-    .db A8
-    .db BD
-    .db A2
-    .db 04
-    .db 20
-    .db AA
-    .db E7
-    .db C9
-    .db 01
-    .db F0
-    .db 15
-    .db BD
-    .db EA
-    .db 04
-    .db 10
-    .db 09
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db 28
-    .db 90
-    .db 09
-    .db B0
-    .db 0A
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db D8
-    .db 90
-    .db 03
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db 04
+L_0C:058B: ; 0C:058B, 0x01858B
     .db 00
     .db FC
     .db 00
+L_0C:058E: ; 0C:058E, 0x01858E
     .db 02
+L_0C:058F: ; 0C:058F, 0x01858F
     .db 80
     .db FD
     .db 80
-    .db 20
-    .db 54
-    .db 83
-    .db A9
-    .db 02
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 01
-    .db 9D
-    .db 8C
-    .db 05
-    .db A9
-    .db 08
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 00
-    .db 8D
-    .db 0E
-    .db 07
-    .db A9
-    .db 03
-    .db 9D
+STATE_0x51_SUB_0x0E+0x03_SWITCH_J: ; 0C:0592, 0x018592
+    JSR L_0C:0354
+    LDA #$02
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$01
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$08
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$00
+    STA R_**:$070E
+    LDA #$03
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDY #$00
+    JMP L_0C:0B74
+STATE_0x51_SUB_0x0E+0x03_SWITCH_K: ; 0C:05B3, 0x0185B3
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    JSR L_0C:0354
+    LDY #$00
+    JSR L_0C:0B74
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDA #$06
+    STA 5D4_ARR_OBJ_TIMER?[18],X
+    LDA #$08
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUB_0x0E+0x03_SWITCH_L: ; 0C:05D7, 0x0185D7
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    AND #$04
+    BNE L_0C:05F3
+    LDA OBJ_POS_X[18],X
+    CMP #$C0
+    BCS L_0C:0601
+    BNE L_0C:05FA
+L_0C:05F3: ; 0C:05F3, 0x0185F3
+    LDA OBJ_POS_X[18],X
+    CMP #$41
+    BCC L_0C:0601
+L_0C:05FA: ; 0C:05FA, 0x0185FA
+    JSR L_1F:15F5
+    CMP #$60
+    BCC L_0C:063B
+L_0C:0601: ; 0C:0601, 0x018601
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:063B
+    DEC 5D4_ARR_OBJ_TIMER?[18],X
+    BNE L_0C:061D
+    LDA #$01
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$02
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDY #$00
+    JMP L_0C:0B74
+L_0C:061D: ; 0C:061D, 0x01861D
+    LDA #$1E
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$00
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDY 5B0_OBJ_UNK[18],X
+    LDA OBJ_SECONDARY_SWITCH?[18],Y
+    AND #$01
+    BEQ L_0C:0638
+    LDA #$13
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    BNE L_0C:063B
+L_0C:0638: ; 0C:0638, 0x018638
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:063B: ; 0C:063B, 0x01863B
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:15F5
+    CMP #$80
+    BCS L_0C:0665
+    LDA TMP_12
+    BNE L_0C:0659
+    LDA OBJ_POS_X[18],X
+    CMP #$40
+    BEQ L_0C:0665
+    BCC L_0C:0665
+    LDA #$FE
+    STA 4EA_ARR_UNK[18],X
+    BNE L_0C:0665
+L_0C:0659: ; 0C:0659, 0x018659
+    LDA OBJ_POS_X[18],X
+    CMP #$C0
+    BCS L_0C:0665
+    LDA #$01
+    STA 4EA_ARR_UNK[18],X
+L_0C:0665: ; 0C:0665, 0x018665
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:15E0
+    CMP #$08
+    BCC L_0C:067F
+    LDA #$A0
+    LDY TMP_10
+    BEQ L_0C:067C
+    LDA #$FF
+    STA 50E_ARR_UNK[18],X
+    LDA #$06
+L_0C:067C: ; 0C:067C, 0x01867C
+    STA 520_ARR_UNK[18],X
+L_0C:067F: ; 0C:067F, 0x01867F
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    CMP #$0C
+    BEQ L_0C:0694
+    LDY #$02
+    CMP #$0D
+    BEQ L_0C:068E
+    LDY #$04
+L_0C:068E: ; 0C:068E, 0x01868E
+    JSR L_0C:0B74
+    JMP OBJECT_X_MOVE?
+L_0C:0694: ; 0C:0694, 0x018694
+    LDY #$08
+    JSR L_0C:0B7C
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUB_0x0E+0x03_SWITCH_M: ; 0C:069C, 0x01869C
+    JSR L_1F:1546
+    JSR L_1F:154F
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:06B0
+    LDA #$18
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    DEC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+L_0C:06B0: ; 0C:06B0, 0x0186B0
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    CMP #$0A
+    BCC L_0C:06E8
+    JSR L_0C:098A
+    BCS L_0C:06EB
+    LDA #$52
+    STA OBJ_ENABLED_STATE+MORE?[18],Y
+    JSR L_0C:08D6
+    LDA #$E4
+    STA 4C6_OBJ_UNK_POS?[18],Y
+    LDA 556_OBJ_UPDATE_FLAGS?[18],Y
+    AND #$04
+    BNE L_0C:06DF
+    LDA OBJ_POS_X[18],X
+    SEC
+    SBC #$1E
+    JMP L_0C:06E5
+L_0C:06DF: ; 0C:06DF, 0x0186DF
+    LDA OBJ_POS_X[18],X
+    CLC
+    ADC #$1E
+L_0C:06E5: ; 0C:06E5, 0x0186E5
+    STA OBJ_POS_X[18],Y
+L_0C:06E8: ; 0C:06E8, 0x0186E8
+    INC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+L_0C:06EB: ; 0C:06EB, 0x0186EB
+    JSR OBJECT_X_MOVE?
+    LDY #$02
+    JMP L_0C:0B7C
+STATE_0x51_SUB_0x0E+0x03_SWITCH_S: ; 0C:06F3, 0x0186F3
+    JSR L_1F:1546
+    JSR L_1F:154F
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0709
+    LDA #$18
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$0C
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+L_0C:0709: ; 0C:0709, 0x018709
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    CMP #$0A
+    BCC L_0C:0746
+    JSR L_0C:098A
+    BCS L_0C:0749
+    LDA #$52
+    STA OBJ_ENABLED_STATE+MORE?[18],Y
+    JSR L_0C:08D6
+    LDA #$B8
+    STA 4C6_OBJ_UNK_POS?[18],Y
+    LDA 556_OBJ_UPDATE_FLAGS?[18],Y
+    AND #$04
+    BNE L_0C:0738
+    LDA OBJ_POS_X[18],X
+    SEC
+    SBC #$18
+    JMP L_0C:073E
+L_0C:0738: ; 0C:0738, 0x018738
+    LDA OBJ_POS_X[18],X
+    CLC
+    ADC #$18
+L_0C:073E: ; 0C:073E, 0x01873E
+    STA OBJ_POS_X[18],Y
+    LDA #$01
+    STA 5B0_OBJ_UNK[18],Y
+L_0C:0746: ; 0C:0746, 0x018746
+    INC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+L_0C:0749: ; 0C:0749, 0x018749
+    JSR OBJECT_X_MOVE?
+    LDY #$04
+    JMP L_0C:0B7C
+STATE_0x51_SUB_0x0E+0x03_SWITCH_N: ; 0C:0751, 0x018751
+    JSR L_0C:0354
+    LDY #$02
+    JSR L_0C:0B74
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    LDA #$1E
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$00
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUB_0x0E+0x03_SWITCH_O: ; 0C:0775, 0x018775
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:078A
+    LDY #$04
+    JSR L_0C:0B74
+    LDA #$1E
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+L_0C:078A: ; 0C:078A, 0x01878A
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    CMP #$0A
+    BCC L_0C:07BC
+    JSR L_0C:098A
+    BCS L_0C:07BC
+    LDA #$52
+    STA OBJ_ENABLED_STATE+MORE?[18],Y
+    JSR L_0C:08D6
+    LDA #$E4
+    STA 4C6_OBJ_UNK_POS?[18],Y
+    LDA 556_OBJ_UPDATE_FLAGS?[18],Y
+    AND #$04
+    BNE L_0C:07B3
+    LDA OBJ_POS_X[18],X
+    SEC
+    SBC #$1E
+    JMP L_0C:07B9
+L_0C:07B3: ; 0C:07B3, 0x0187B3
+    LDA OBJ_POS_X[18],X
+    CLC
+    ADC #$1E
+L_0C:07B9: ; 0C:07B9, 0x0187B9
+    STA OBJ_POS_X[18],Y
+L_0C:07BC: ; 0C:07BC, 0x0187BC
+    INC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDY #$02
+    JSR L_0C:0B7C
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUB_0x0E+0x03_SWITCH_P: ; 0C:07C7, 0x0187C7
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:07E1
+    LDY #$04
+    JSR L_0C:0B74
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    EOR #$04
+    STA 556_OBJ_UPDATE_FLAGS?[18],X
+    LDA #$1E
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:07E1: ; 0C:07E1, 0x0187E1
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    CMP #$0A
+    BCC L_0C:0818
+    JSR L_0C:098A
+    BCS L_0C:0818
+    LDA #$52
+    STA OBJ_ENABLED_STATE+MORE?[18],Y
+    JSR L_0C:08D6
+    LDA #$B8
+    STA 4C6_OBJ_UNK_POS?[18],Y
+    LDA 556_OBJ_UPDATE_FLAGS?[18],Y
+    AND #$04
+    BNE L_0C:080A
+    LDA OBJ_POS_X[18],X
+    SEC
+    SBC #$18
+    JMP L_0C:0810
+L_0C:080A: ; 0C:080A, 0x01880A
+    LDA OBJ_POS_X[18],X
+    CLC
+    ADC #$18
+L_0C:0810: ; 0C:0810, 0x018810
+    STA OBJ_POS_X[18],Y
+    LDA #$01
+    STA 5B0_OBJ_UNK[18],Y
+L_0C:0818: ; 0C:0818, 0x018818
+    INC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDY #$04
+    JSR L_0C:0B7C
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUB_0x0E+0x03_SWITCH_Q: ; 0C:0823, 0x018823
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0838
+    LDY #$02
+    JSR L_0C:0B74
+    LDA #$1E
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+L_0C:0838: ; 0C:0838, 0x018838
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    CMP #$0A
+    BCC L_0C:086F
+    JSR L_0C:098A
+    BCS L_0C:086F
+    LDA #$52
+    STA OBJ_ENABLED_STATE+MORE?[18],Y
+    JSR L_0C:08D6
+    LDA #$B8
+    STA 4C6_OBJ_UNK_POS?[18],Y
+    LDA 556_OBJ_UPDATE_FLAGS?[18],Y
+    AND #$04
+    BNE L_0C:0861
+    LDA OBJ_POS_X[18],X
+    SEC
+    SBC #$18
+    JMP L_0C:0867
+L_0C:0861: ; 0C:0861, 0x018861
+    LDA OBJ_POS_X[18],X
+    CLC
+    ADC #$18
+L_0C:0867: ; 0C:0867, 0x018867
+    STA OBJ_POS_X[18],Y
+    LDA #$01
+    STA 5B0_OBJ_UNK[18],Y
+L_0C:086F: ; 0C:086F, 0x01886F
+    INC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDY #$04
+    JSR L_0C:0B7C
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUB_0x0E+0x03_SWITCH_R: ; 0C:087A, 0x01887A
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0899
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDA #$01
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$02
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$18
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDY #$00
+    JMP L_0C:0B74
+L_0C:0899: ; 0C:0899, 0x018899
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    CMP #$0A
+    BCC L_0C:08CB
+    JSR L_0C:098A
+    BCS L_0C:08CB
+    LDA #$52
+    STA OBJ_ENABLED_STATE+MORE?[18],Y
+    JSR L_0C:08D6
+    LDA #$E4
+    STA 4C6_OBJ_UNK_POS?[18],Y
+    LDA 556_OBJ_UPDATE_FLAGS?[18],Y
+    AND #$04
+    BNE L_0C:08C2
+    LDA OBJ_POS_X[18],X
+    SEC
+    SBC #$1E
+    JMP L_0C:08C8
+L_0C:08C2: ; 0C:08C2, 0x0188C2
+    LDA OBJ_POS_X[18],X
+    CLC
+    ADC #$1E
+L_0C:08C8: ; 0C:08C8, 0x0188C8
+    STA OBJ_POS_X[18],Y
+L_0C:08CB: ; 0C:08CB, 0x0188CB
+    INC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDY #$02
+    JSR L_0C:0B7C
+    JMP OBJECT_X_MOVE?
+L_0C:08D6: ; 0C:08D6, 0x0188D6
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    STA 4A2_OBJ_UNK_POS?[18],Y
+    LDA OBJ_POS_Y[18],X
+    STA OBJ_POS_Y[18],Y
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    STA 556_OBJ_UPDATE_FLAGS?[18],Y
+    LDA #$00
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDA #$0C
+    JMP SND_BANKED_DISPATCH
+STATE_0x51_SUB_0x0E+0x03_SWITCH_A: ; 0C:08F2, 0x0188F2
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    JSR L_0C:0354
+    LDA #$8D
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDA #$28
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$14
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUB_0x0E+0x03_SWITCH_B: ; 0C:0910, 0x018910
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0927
+    LDA #$03
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$10
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDY #$00
+    JSR L_0C:0B74
+L_0C:0927: ; 0C:0927, 0x018927
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUB_0x0E+0x03_SWITCH_C: ; 0C:092A, 0x01892A
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:093E
+    LDA #$02
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$01
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$01
+    STA OBJ_TERTIARY_SWITCH?[18],X
+L_0C:093E: ; 0C:093E, 0x01893E
+    JMP OBJECT_X_MOVE?
+L_0C:0941: ; 0C:0941, 0x018941
+    INC OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA OBJ_ANIM_HOLD_TIMER?[18],X
+    CMP #$08
+    BCC L_0C:0953
+    INC 45A_OBJ_DATA_ENTRY?[18],X
+    LDA #$00
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+L_0C:0953: ; 0C:0953, 0x018953
+    LDA L_0C:0976,Y
+    STA TMP_10
+    LDA L_0C:0977,Y
+    STA TMP_11
+    LDA 45A_OBJ_DATA_ENTRY?[18],X
+    ASL A
+    TAY
+    CPY #$08
+    BCC L_0C:096B
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    DEY
+    DEY
+L_0C:096B: ; 0C:096B, 0x01896B
+    LDA [TMP_10],Y
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    INY
+    LDA [TMP_10],Y
+    STA ZP_R2-R5_BANK_VALUES+3
+    RTS
+L_0C:0976: ; 0C:0976, 0x018976
     .db 7A
-    .db 05
-    .db A0
-    .db 00
-    .db 4C
-    .db 74
-    .db 8B
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db 20
-    .db 54
-    .db 83
-    .db A0
-    .db 00
-    .db 20
-    .db 74
-    .db 8B
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db A9
-    .db 06
-    .db 9D
-    .db D4
-    .db 05
-    .db A9
-    .db 08
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 09
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db C0
-    .db B0
-    .db 10
-    .db D0
-    .db 07
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db 41
-    .db 90
-    .db 07
-    .db 20
-    .db F5
-    .db F5
-    .db C9
-    .db 60
-    .db 90
-    .db 3A
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 35
-    .db DE
-    .db D4
-    .db 05
-    .db D0
-    .db 12
-    .db A9
-    .db 01
-    .db 9D
-    .db 8C
-    .db 05
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 02
-    .db 9D
-    .db 12
-    .db 04
-    .db A0
-    .db 00
-    .db 4C
-    .db 74
-    .db 8B
-    .db A9
-    .db 1E
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db C2
-    .db 05
-    .db BC
-    .db B0
-    .db 05
-    .db B9
-    .db 12
-    .db 04
-    .db 29
-    .db 01
-    .db F0
-    .db 07
-    .db A9
-    .db 13
-    .db 9D
-    .db 8C
-    .db 05
-    .db D0
-    .db 03
-    .db FE
-    .db 8C
-    .db 05
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db F5
-    .db F5
-    .db C9
-    .db 80
-    .db B0
-    .db 20
-    .db A5
-    .db 12
-    .db D0
-    .db 10
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db 40
-    .db F0
-    .db 15
-    .db 90
-    .db 13
-    .db A9
-    .db FE
-    .db 9D
-    .db EA
-    .db 04
-    .db D0
-    .db 0C
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db C0
-    .db B0
-    .db 05
-    .db A9
-    .db 01
-    .db 9D
-    .db EA
-    .db 04
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db E0
-    .db F5
-    .db C9
-    .db 08
-    .db 90
-    .db 10
-    .db A9
-    .db A0
-    .db A4
-    .db 10
-    .db F0
-    .db 07
-    .db A9
-    .db FF
-    .db 9D
-    .db 0E
-    .db 05
-    .db A9
-    .db 06
-    .db 9D
-    .db 20
-    .db 05
-    .db BD
-    .db 8C
-    .db 05
-    .db C9
-    .db 0C
-    .db F0
-    .db 0E
-    .db A0
-    .db 02
-    .db C9
-    .db 0D
-    .db F0
-    .db 02
-    .db A0
-    .db 04
-    .db 20
-    .db 74
-    .db 8B
-    .db 4C
-    .db F1
-    .db F3
-    .db A0
-    .db 08
-    .db 20
-    .db 7C
-    .db 8B
-    .db 4C
-    .db F1
-    .db F3
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 09
-    .db A9
-    .db 18
-    .db 9D
-    .db 9E
-    .db 05
-    .db DE
-    .db 8C
-    .db 05
-    .db 60
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db BD
-    .db C2
-    .db 05
-    .db C9
-    .db 0A
-    .db 90
-    .db 2B
-    .db 20
-    .db 8A
-    .db 89
-    .db B0
-    .db 29
-    .db A9
-    .db 52
-    .db 99
-    .db 24
-    .db 04
-    .db 20
-    .db D6
-    .db 88
-    .db A9
-    .db E4
-    .db 99
-    .db C6
-    .db 04
-    .db B9
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 09
-    .db BD
-    .db 7E
-    .db 04
-    .db 38
-    .db E9
-    .db 1E
-    .db 4C
-    .db E5
-    .db 86
-    .db BD
-    .db 7E
-    .db 04
-    .db 18
-    .db 69
-    .db 1E
-    .db 99
-    .db 7E
-    .db 04
-    .db FE
-    .db C2
-    .db 05
-    .db 20
-    .db F1
-    .db F3
-    .db A0
-    .db 02
-    .db 4C
-    .db 7C
-    .db 8B
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 0B
-    .db A9
-    .db 18
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 0C
-    .db 9D
-    .db 8C
-    .db 05
-    .db 60
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db BD
-    .db C2
-    .db 05
-    .db C9
-    .db 0A
-    .db 90
-    .db 30
-    .db 20
-    .db 8A
-    .db 89
-    .db B0
-    .db 2E
-    .db A9
-    .db 52
-    .db 99
-    .db 24
-    .db 04
-    .db 20
-    .db D6
-    .db 88
-    .db A9
-    .db B8
-    .db 99
-    .db C6
-    .db 04
-    .db B9
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 09
-    .db BD
-    .db 7E
-    .db 04
-    .db 38
-    .db E9
-    .db 18
-    .db 4C
-    .db 3E
-    .db 87
-    .db BD
-    .db 7E
-    .db 04
-    .db 18
-    .db 69
-    .db 18
-    .db 99
-    .db 7E
-    .db 04
-    .db A9
-    .db 01
-    .db 99
-    .db B0
-    .db 05
-    .db FE
-    .db C2
-    .db 05
-    .db 20
-    .db F1
-    .db F3
-    .db A0
-    .db 04
-    .db 4C
-    .db 7C
-    .db 8B
-    .db 20
-    .db 54
-    .db 83
-    .db A0
-    .db 02
-    .db 20
-    .db 74
-    .db 8B
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db A9
-    .db 1E
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db C2
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 10
-    .db A0
-    .db 04
-    .db 20
-    .db 74
-    .db 8B
-    .db A9
-    .db 1E
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db BD
-    .db C2
-    .db 05
-    .db C9
-    .db 0A
-    .db 90
-    .db 2B
-    .db 20
-    .db 8A
-    .db 89
-    .db B0
-    .db 26
-    .db A9
-    .db 52
-    .db 99
-    .db 24
-    .db 04
-    .db 20
-    .db D6
-    .db 88
-    .db A9
-    .db E4
-    .db 99
-    .db C6
-    .db 04
-    .db B9
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 09
-    .db BD
-    .db 7E
-    .db 04
-    .db 38
-    .db E9
-    .db 1E
-    .db 4C
-    .db B9
-    .db 87
-    .db BD
-    .db 7E
-    .db 04
-    .db 18
-    .db 69
-    .db 1E
-    .db 99
-    .db 7E
-    .db 04
-    .db FE
-    .db C2
-    .db 05
-    .db A0
-    .db 02
-    .db 20
-    .db 7C
-    .db 8B
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 15
-    .db A0
-    .db 04
-    .db 20
-    .db 74
-    .db 8B
-    .db BD
-    .db 56
-    .db 05
-    .db 49
-    .db 04
-    .db 9D
-    .db 56
-    .db 05
-    .db A9
-    .db 1E
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db BD
-    .db C2
-    .db 05
-    .db C9
-    .db 0A
-    .db 90
-    .db 30
-    .db 20
-    .db 8A
-    .db 89
-    .db B0
-    .db 2B
-    .db A9
-    .db 52
-    .db 99
-    .db 24
-    .db 04
-    .db 20
-    .db D6
-    .db 88
-    .db A9
-    .db B8
-    .db 99
-    .db C6
-    .db 04
-    .db B9
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 09
-    .db BD
-    .db 7E
-    .db 04
-    .db 38
-    .db E9
-    .db 18
-    .db 4C
-    .db 10
-    .db 88
-    .db BD
-    .db 7E
-    .db 04
-    .db 18
-    .db 69
-    .db 18
-    .db 99
-    .db 7E
-    .db 04
-    .db A9
-    .db 01
-    .db 99
-    .db B0
-    .db 05
-    .db FE
-    .db C2
-    .db 05
-    .db A0
-    .db 04
-    .db 20
-    .db 7C
-    .db 8B
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 10
-    .db A0
-    .db 02
-    .db 20
-    .db 74
-    .db 8B
-    .db A9
-    .db 1E
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db BD
-    .db C2
-    .db 05
-    .db C9
-    .db 0A
-    .db 90
-    .db 30
-    .db 20
-    .db 8A
-    .db 89
-    .db B0
-    .db 2B
-    .db A9
-    .db 52
-    .db 99
-    .db 24
-    .db 04
-    .db 20
-    .db D6
-    .db 88
-    .db A9
-    .db B8
-    .db 99
-    .db C6
-    .db 04
-    .db B9
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 09
-    .db BD
-    .db 7E
-    .db 04
-    .db 38
-    .db E9
-    .db 18
-    .db 4C
-    .db 67
-    .db 88
-    .db BD
-    .db 7E
-    .db 04
-    .db 18
-    .db 69
-    .db 18
-    .db 99
-    .db 7E
-    .db 04
-    .db A9
-    .db 01
-    .db 99
-    .db B0
-    .db 05
-    .db FE
-    .db C2
-    .db 05
-    .db A0
-    .db 04
-    .db 20
-    .db 7C
-    .db 8B
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 1A
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db A9
-    .db 01
-    .db 9D
-    .db 8C
-    .db 05
-    .db A9
-    .db 02
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 18
-    .db 9D
-    .db 9E
-    .db 05
-    .db A0
-    .db 00
-    .db 4C
-    .db 74
-    .db 8B
-    .db BD
-    .db C2
-    .db 05
-    .db C9
-    .db 0A
-    .db 90
-    .db 2B
-    .db 20
-    .db 8A
-    .db 89
-    .db B0
-    .db 26
-    .db A9
-    .db 52
-    .db 99
-    .db 24
-    .db 04
-    .db 20
-    .db D6
-    .db 88
-    .db A9
-    .db E4
-    .db 99
-    .db C6
-    .db 04
-    .db B9
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 09
-    .db BD
-    .db 7E
-    .db 04
-    .db 38
-    .db E9
-    .db 1E
-    .db 4C
-    .db C8
-    .db 88
-    .db BD
-    .db 7E
-    .db 04
-    .db 18
-    .db 69
-    .db 1E
-    .db 99
-    .db 7E
-    .db 04
-    .db FE
-    .db C2
-    .db 05
-    .db A0
-    .db 02
-    .db 20
-    .db 7C
-    .db 8B
-    .db 4C
-    .db F1
-    .db F3
-    .db BD
-    .db A2
-    .db 04
-    .db 99
-    .db A2
-    .db 04
-    .db BD
-    .db 6C
-    .db 04
-    .db 99
-    .db 6C
-    .db 04
-    .db BD
-    .db 56
-    .db 05
-    .db 99
-    .db 56
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db C2
-    .db 05
-    .db A9
-    .db 0C
-    .db 4C
-    .db 52
-    .db DB
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db 20
-    .db 54
-    .db 83
-    .db A9
-    .db 8D
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db 28
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 14
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 12
-    .db A9
-    .db 03
-    .db 9D
-    .db 7A
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db A9
-    .db 10
-    .db 9D
-    .db 9E
-    .db 05
-    .db A0
-    .db 00
-    .db 20
-    .db 74
-    .db 8B
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 0F
-    .db A9
-    .db 02
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 01
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 01
-    .db 9D
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db FE
-    .db 48
-    .db 04
-    .db BD
-    .db 48
-    .db 04
-    .db C9
-    .db 08
-    .db 90
-    .db 08
-    .db FE
-    .db 5A
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 48
-    .db 04
-    .db B9
-    .db 76
-    .db 89
-    .db 85
-    .db 10
-    .db B9
-    .db 77
-    .db 89
-    .db 85
-    .db 11
-    .db BD
-    .db 5A
-    .db 04
-    .db 0A
-    .db A8
-    .db C0
-    .db 08
-    .db 90
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 88
-    .db 88
-    .db B1
-    .db 10
-    .db 9D
-    .db 00
-    .db 04
-    .db C8
-    .db B1
-    .db 10
-    .db 85
-    .db 32
-    .db 60
-    .db 7A
+L_0C:0977: ; 0C:0977, 0x018977
     .db 89
     .db 82
     .db 89
@@ -2443,6 +1225,7 @@ OBJ_STATE_0x51_HANDLER: ; 0C:0315, 0x018315
     .db 4E
     .db 20
     .db 4E
+L_0C:098A: ; 0C:098A, 0x01898A
     .db A0
     .db 09
     .db B9
@@ -2458,551 +1241,268 @@ OBJ_STATE_0x51_HANDLER: ; 0C:0315, 0x018315
     .db 60
     .db 18
     .db 60
-    .db BD
-    .db 8C
-    .db 05
-    .db D0
-    .db 26
-    .db A9
-    .db 4C
-    .db 85
-    .db 31
-    .db A9
-    .db 4E
-    .db 85
-    .db 32
-    .db 20
-    .db 4F
-    .db F5
-    .db 20
-    .db 46
-    .db F5
-    .db A9
-    .db 29
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 9E
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db A9
-    .db 1C
-    .db 9D
-    .db D4
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db FE
-    .db 9E
-    .db 05
-    .db BD
-    .db 9E
-    .db 05
-    .db C9
-    .db 04
-    .db 90
-    .db 10
-    .db A9
-    .db 00
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db C2
-    .db 05
-    .db BD
-    .db C2
-    .db 05
-    .db 29
-    .db 03
-    .db 9D
-    .db C2
-    .db 05
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 18
-    .db 7D
-    .db C2
-    .db 05
-    .db 9D
-    .db 36
-    .db 04
-    .db DE
-    .db D4
-    .db 05
-    .db D0
-    .db 64
-    .db 20
-    .db 9F
-    .db 80
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db AD
-    .db 09
-    .db 07
-    .db C9
-    .db 03
-    .db F0
-    .db 0E
-    .db C9
-    .db 04
-    .db F0
-    .db 0A
-    .db A9
-    .db 03
-    .db 8D
-    .db 09
-    .db 07
-    .db A9
-    .db 00
-    .db 8D
-    .db 08
-    .db 07
-    .db A9
-    .db 03
-    .db 9D
-    .db 12
-    .db 04
-    .db 20
-    .db F5
-    .db F5
-    .db C9
-    .db 2C
-    .db 90
-    .db 0E
-    .db A9
-    .db 0B
-    .db 9D
-    .db 8C
-    .db 05
-    .db A9
-    .db 08
-    .db 8D
-    .db 0E
-    .db 07
-    .db A9
-    .db 03
-    .db D0
-    .db 16
-    .db A5
-    .db 23
-    .db C9
-    .db 40
-    .db 90
-    .db EC
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db A5
-    .db 1B
-    .db 30
-    .db 05
-    .db A9
-    .db 08
-    .db 8D
-    .db 0E
-    .db 07
-    .db A9
-    .db 8D
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 9E
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db 9D
-    .db D4
-    .db 05
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 9D
-    .db 36
-    .db 04
-    .db 4C
-    .db F1
-    .db F3
-    .db BD
-    .db 8C
-    .db 05
-    .db 20
-    .db 98
-    .db CC
-    .db 62
-    .db 8A
-    .db 98
-    .db 8A
-    .db C7
-    .db 8A
-    .db A9
-    .db 4F
-    .db 85
-    .db 31
-    .db A9
-    .db 4E
-    .db 85
-    .db 32
-    .db 20
-    .db 4F
-    .db F5
-    .db A9
-    .db 2A
-    .db 9D
-    .db 00
-    .db 04
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 04
-    .db A9
-    .db 02
-    .db D0
-    .db 02
-    .db A9
-    .db FE
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db FA
-    .db 9D
-    .db 32
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 20
-    .db F1
-    .db F3
-    .db EE
-    .db DB
-    .db 03
-    .db 20
-    .db 28
-    .db DB
-    .db A9
-    .db 58
-    .db 4C
-    .db 52
-    .db DB
-    .db A9
-    .db 80
-    .db A0
-    .db 00
-    .db 20
-    .db AC
-    .db F5
-    .db 20
-    .db BE
-    .db F5
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db 2C
-    .db 90
-    .db 04
-    .db C9
-    .db D4
-    .db 90
-    .db 03
-    .db 20
-    .db 46
-    .db F5
-    .db BD
-    .db C6
-    .db 04
-    .db 30
-    .db 0F
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 58
-    .db F5
-    .db 9D
-    .db D8
-    .db 04
-    .db 9D
-    .db C6
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db BD
-    .db 48
-    .db 04
-    .db 29
-    .db 03
-    .db D0
-    .db 0B
-    .db FE
-    .db 5A
-    .db 04
-    .db BD
-    .db 5A
-    .db 04
-    .db 29
-    .db 03
-    .db 9D
-    .db 5A
-    .db 04
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 18
-    .db 7D
-    .db 5A
-    .db 04
-    .db 9D
-    .db 36
-    .db 04
-    .db FE
-    .db 48
-    .db 04
-    .db BD
-    .db 48
-    .db 04
-    .db 10
-    .db 03
-    .db 4C
-    .db D1
-    .db F4
-    .db 4C
-    .db F1
-    .db F3
+STATE_0x51_SUBSWITCH_E: ; 0C:0999, 0x018999
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    BNE L_0C:09C4
+    LDA #$4C
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$4E
+    STA ZP_R2-R5_BANK_VALUES+3
+    JSR L_1F:154F
+    JSR L_1F:1546
+    LDA #$29
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$00
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDA #$1C
+    STA 5D4_ARR_OBJ_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+L_0C:09C4: ; 0C:09C4, 0x0189C4
+    INC 59E_OBJ_UNK_TIMER?[18],X
+    LDA 59E_OBJ_UNK_TIMER?[18],X
+    CMP #$04
+    BCC L_0C:09DE
+    LDA #$00
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    AND #$03
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+L_0C:09DE: ; 0C:09DE, 0x0189DE
+    LDA OBJ_DIRECTION_RELATED?[18],X
+    AND #$FC
+    CLC
+    ADC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    STA OBJ_DIRECTION_RELATED?[18],X
+    DEC 5D4_ARR_OBJ_TIMER?[18],X
+    BNE L_0C:0A53
+    JSR L_0C:009F
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    LDA R_**:$0709
+    CMP #$03
+    BEQ L_0C:0A0D
+    CMP #$04
+    BEQ L_0C:0A0D
+    LDA #$03
+    STA R_**:$0709
+    LDA #$00
+    STA R_**:$0708
+L_0C:0A0D: ; 0C:0A0D, 0x018A0D
+    LDA #$03
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    JSR L_1F:15F5
+    CMP #$2C
+    BCC L_0C:0A27
+L_0C:0A19: ; 0C:0A19, 0x018A19
+    LDA #$0B
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$08
+    STA R_**:$070E
+    LDA #$03
+    BNE L_0C:0A3D
+L_0C:0A27: ; 0C:0A27, 0x018A27
+    LDA RANDOM_VALS?[2]
+    CMP #$40
+    BCC L_0C:0A19
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDA IRQ/SCRIPT_RUN_COUNT?
+    BMI L_0C:0A3B
+    LDA #$08
+    STA R_**:$070E
+L_0C:0A3B: ; 0C:0A3B, 0x018A3B
+    LDA #$8D
+L_0C:0A3D: ; 0C:0A3D, 0x018A3D
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDA #$00
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    STA 5D4_ARR_OBJ_TIMER?[18],X
+    LDA OBJ_DIRECTION_RELATED?[18],X
+    AND #$FC
+    STA OBJ_DIRECTION_RELATED?[18],X
+L_0C:0A53: ; 0C:0A53, 0x018A53
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUBSWITCH_F: ; 0C:0A56, 0x018A56
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x51_SUB_0x0E_SWITCH_A)
+    HIGH(STATE_0x51_SUB_0x0E_SWITCH_A)
+    LOW(STATE_0x51_SUB_0x0E_SWITCH_B)
+    HIGH(STATE_0x51_SUB_0x0E_SWITCH_B)
+    LOW(STATE_0x51_SUB_0x0E_SWITCH_C)
+    HIGH(STATE_0x51_SUB_0x0E_SWITCH_C)
+STATE_0x51_SUB_0x0E_SWITCH_A: ; 0C:0A62, 0x018A62
+    LDA #$4F
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$4E
+    STA ZP_R2-R5_BANK_VALUES+3
+    JSR L_1F:154F
+    LDA #$2A
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    AND #$04
+    BNE L_0C:0A7D
+    LDA #$02
+    BNE L_0C:0A7F
+L_0C:0A7D: ; 0C:0A7D, 0x018A7D
+    LDA #$FE
+L_0C:0A7F: ; 0C:0A7F, 0x018A7F
+    STA 4EA_ARR_UNK[18],X
+    LDA #$FA
+    STA 532_OBJ_UNK_POS?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    JSR OBJECT_X_MOVE?
+    INC 3DB_UNKNOWN
+    JSR SOUND_RESET/INIT_RTN?
+    LDA #$58
+    JMP SND_BANKED_DISPATCH
+STATE_0x51_SUB_0x0E_SWITCH_B: ; 0C:0A98, 0x018A98
+    LDA #$80
+    LDY #$00
+    JSR L_1F:15AC
+    JSR L_1F:15BE
+    LDA OBJ_POS_X[18],X
+    CMP #$2C
+    BCC L_0C:0AAD
+    CMP #$D4
+    BCC L_0C:0AB0
+L_0C:0AAD: ; 0C:0AAD, 0x018AAD
+    JSR L_1F:1546
+L_0C:0AB0: ; 0C:0AB0, 0x018AB0
+    LDA 4C6_OBJ_UNK_POS?[18],X
+    BMI L_0C:0AC4
+    JSR L_1F:1546
+    JSR L_1F:1558
+    STA 4D8_OBJ_UNK[18],X
+    STA 4C6_OBJ_UNK_POS?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0AC4: ; 0C:0AC4, 0x018AC4
+    JMP OBJECT_X_MOVE?
+STATE_0x51_SUB_0x0E_SWITCH_C: ; 0C:0AC7, 0x018AC7
+    LDA OBJ_ANIM_HOLD_TIMER?[18],X
+    AND #$03
+    BNE L_0C:0AD9
+    INC 45A_OBJ_DATA_ENTRY?[18],X
+    LDA 45A_OBJ_DATA_ENTRY?[18],X
+    AND #$03
+    STA 45A_OBJ_DATA_ENTRY?[18],X
+L_0C:0AD9: ; 0C:0AD9, 0x018AD9
+    LDA OBJ_DIRECTION_RELATED?[18],X
+    AND #$FC
+    CLC
+    ADC 45A_OBJ_DATA_ENTRY?[18],X
+    STA OBJ_DIRECTION_RELATED?[18],X
+    INC OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA OBJ_ANIM_HOLD_TIMER?[18],X
+    BPL L_0C:0AF0
+    JMP INIT_OBJECT[X]_DATA
+L_0C:0AF0: ; 0C:0AF0, 0x018AF0
+    JMP OBJECT_X_MOVE?
 OBJ_STATE_0x52_HANDLER: ; 0C:0AF3, 0x018AF3
-    .db BD
-    .db 12
-    .db 04
-    .db 20
-    .db 98
-    .db CC
-    .db FD
-    .db 8A
-    .db 5C
-    .db 8B
-    .db A9
-    .db 24
-    .db 18
-    .db 7D
-    .db B0
-    .db 05
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db FF
-    .db 9D
-    .db 68
-    .db 05
-    .db A9
-    .db 96
-    .db 9D
-    .db 7A
-    .db 05
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 1D
-    .db BD
-    .db B0
-    .db 05
-    .db D0
-    .db 09
-    .db A9
-    .db FD
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db 00
-    .db F0
-    .db 2E
-    .db A9
-    .db FD
-    .db 9D
-    .db EA
-    .db 04
-    .db 9D
-    .db 0E
-    .db 05
-    .db A9
-    .db E1
-    .db 9D
-    .db 20
-    .db 05
-    .db D0
-    .db 1F
-    .db BD
-    .db B0
-    .db 05
-    .db D0
-    .db 09
-    .db A9
-    .db 03
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db 00
-    .db F0
-    .db 11
-    .db A9
-    .db FD
-    .db 9D
-    .db 0E
-    .db 05
-    .db A9
-    .db E1
-    .db 9D
-    .db 20
-    .db 05
-    .db A9
-    .db 02
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db 1F
-    .db 9D
-    .db FC
-    .db 04
-    .db FE
-    .db 12
-    .db 04
-    .db 4C
-    .db F1
-    .db F3
-    .db 20
-    .db 11
-    .db E8
-    .db 20
-    .db F1
-    .db F3
-    .db BD
-    .db 6C
-    .db 04
-    .db C9
-    .db 30
-    .db 90
-    .db 07
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 03
-    .db F0
-    .db 03
-    .db 4C
-    .db D1
-    .db F4
-    .db 60
-    .db A9
-    .db 00
-    .db 9D
-    .db 48
-    .db 04
-    .db 9D
-    .db 5A
-    .db 04
-    .db BD
-    .db 48
-    .db 04
-    .db D0
-    .db 33
-    .db B9
-    .db B8
-    .db 8B
-    .db 85
-    .db 00
-    .db B9
-    .db B9
-    .db 8B
-    .db 85
-    .db 01
-    .db FE
-    .db 5A
-    .db 04
-    .db A0
-    .db 00
-    .db B1
-    .db 00
-    .db DD
-    .db 5A
-    .db 04
-    .db B0
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 5A
-    .db 04
-    .db C8
-    .db B1
-    .db 00
-    .db 85
-    .db 02
-    .db C8
-    .db B1
-    .db 00
-    .db 85
-    .db 03
-    .db C8
-    .db B1
-    .db 00
-    .db 9D
-    .db 48
-    .db 04
-    .db BC
-    .db 5A
-    .db 04
-    .db B1
-    .db 02
-    .db 9D
-    .db 00
-    .db 04
-    .db DE
-    .db 48
-    .db 04
-    .db 60
+    LDA OBJ_SECONDARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x52_SUBSWITCH_A)
+    HIGH(STATE_0x52_SUBSWITCH_A)
+    LOW(STATE_0x52_SUBSWITCH_B)
+    HIGH(STATE_0x52_SUBSWITCH_B)
+STATE_0x52_SUBSWITCH_A: ; 0C:0AFD, 0x018AFD
+    LDA #$24
+    CLC
+    ADC 5B0_OBJ_UNK[18],X
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$FF
+    STA OBJECT_DATA_HEALTH?[18],X
+    LDA #$96
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    AND #$04
+    BNE L_0C:0B34
+    LDA 5B0_OBJ_UNK[18],X
+    BNE L_0C:0B25
+    LDA #$FD
+    STA 4EA_ARR_UNK[18],X
+    LDA #$00
+    BEQ L_0C:0B53
+L_0C:0B25: ; 0C:0B25, 0x018B25
+    LDA #$FD
+    STA 4EA_ARR_UNK[18],X
+    STA 50E_ARR_UNK[18],X
+    LDA #$E1
+    STA 520_ARR_UNK[18],X
+    BNE L_0C:0B53
+L_0C:0B34: ; 0C:0B34, 0x018B34
+    LDA 5B0_OBJ_UNK[18],X
+    BNE L_0C:0B42
+    LDA #$03
+    STA 4EA_ARR_UNK[18],X
+    LDA #$00
+    BEQ L_0C:0B53
+L_0C:0B42: ; 0C:0B42, 0x018B42
+    LDA #$FD
+    STA 50E_ARR_UNK[18],X
+    LDA #$E1
+    STA 520_ARR_UNK[18],X
+    LDA #$02
+    STA 4EA_ARR_UNK[18],X
+    LDA #$1F
+L_0C:0B53: ; 0C:0B53, 0x018B53
+    STA 4FC_ARR_UNK[18],X
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+STATE_0x52_SUBSWITCH_B: ; 0C:0B5C, 0x018B5C
+    JSR L_1F:0811
+    JSR OBJECT_X_MOVE?
+    LDA OBJ_POS_Y[18],X
+    CMP #$30
+    BCC L_0C:0B70
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    AND #$03
+    BEQ L_0C:0B73
+L_0C:0B70: ; 0C:0B70, 0x018B70
+    JMP INIT_OBJECT[X]_DATA
+L_0C:0B73: ; 0C:0B73, 0x018B73
+    RTS
+L_0C:0B74: ; 0C:0B74, 0x018B74
+    LDA #$00
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    STA 45A_OBJ_DATA_ENTRY?[18],X
+L_0C:0B7C: ; 0C:0B7C, 0x018B7C
+    LDA OBJ_ANIM_HOLD_TIMER?[18],X
+    BNE L_0C:0BB4
+    LDA L_0C:0BB8,Y
+    STA TMP_00
+    LDA L_0C:0BB9,Y
+    STA TMP_01
+    INC 45A_OBJ_DATA_ENTRY?[18],X
+    LDY #$00
+    LDA [TMP_00],Y
+    CMP 45A_OBJ_DATA_ENTRY?[18],X
+    BCS L_0C:0B9C
+    LDA #$00
+    STA 45A_OBJ_DATA_ENTRY?[18],X
+L_0C:0B9C: ; 0C:0B9C, 0x018B9C
+    INY
+    LDA [TMP_00],Y
+    STA TMP_02
+    INY
+    LDA [TMP_00],Y
+    STA TMP_03
+    INY
+    LDA [TMP_00],Y
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    LDY 45A_OBJ_DATA_ENTRY?[18],X
+    LDA [TMP_02],Y
+    STA OBJ_ANIMATION_DISPLAY[18],X
+L_0C:0BB4: ; 0C:0BB4, 0x018BB4
+    DEC OBJ_ANIM_HOLD_TIMER?[18],X
+    RTS
+L_0C:0BB8: ; 0C:0BB8, 0x018BB8
     .db C2
+L_0C:0BB9: ; 0C:0BB9, 0x018BB9
     .db 8B
     .db C6
     .db 8B
@@ -3043,471 +1543,232 @@ OBJ_STATE_0x52_HANDLER: ; 0C:0AF3, 0x018AF3
     .db 1D
     .db 1E
 OBJ_STATE_0x53_HANDLER: ; 0C:0BE0, 0x018BE0
-    .db 20
-    .db 04
-    .db 80
-    .db 20
-    .db 27
-    .db 80
-    .db 20
-    .db 6D
-    .db 80
-    .db BD
-    .db 12
-    .db 04
-    .db 20
-    .db 98
-    .db CC
-    .db FB
-    .db 8B
-    .db E4
-    .db 8C
-    .db E8
-    .db 8C
-    .db D3
-    .db 8D
-    .db AC
-    .db 8F
-    .db 5A
-    .db 90
-    .db BD
-    .db 8C
-    .db 05
-    .db 20
-    .db 98
-    .db CC
-    .db 0B
-    .db 8C
-    .db 4D
-    .db 8C
-    .db 7A
-    .db 8C
-    .db 9C
-    .db 8C
-    .db CF
-    .db 8C
-    .db A9
-    .db 5C
-    .db 85
-    .db 31
-    .db A9
-    .db 5D
-    .db 85
-    .db 32
-    .db A9
-    .db 00
-    .db 8D
-    .db 04
-    .db 07
-    .db 8D
-    .db 05
-    .db 07
-    .db A9
-    .db 50
-    .db A4
-    .db 47
-    .db F0
-    .db 02
-    .db A9
-    .db 70
-    .db 9D
-    .db 68
-    .db 05
-    .db A9
-    .db 03
-    .db 9D
-    .db 7A
-    .db 05
-    .db A0
-    .db 0C
-    .db 20
-    .db 55
-    .db F6
-    .db A9
-    .db 44
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db B0
-    .db 9D
-    .db C6
-    .db 04
-    .db BD
-    .db A2
-    .db 04
-    .db 18
-    .db 7D
-    .db C6
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db A9
-    .db 60
-    .db 20
-    .db 52
-    .db DB
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db A9
-    .db 30
-    .db A0
-    .db 00
-    .db 20
-    .db AC
-    .db F5
-    .db 20
-    .db BE
-    .db F5
-    .db C9
-    .db E0
-    .db 90
-    .db 1C
-    .db A9
-    .db 10
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db FC
-    .db 9D
-    .db 32
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 44
-    .db 05
-    .db A9
-    .db 45
-    .db 9D
-    .db 00
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db A9
-    .db 31
-    .db 20
-    .db 52
-    .db DB
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 1C
-    .db A9
-    .db 44
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db FE
-    .db 9D
-    .db 32
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 44
-    .db 05
-    .db A9
-    .db F0
-    .db 9D
-    .db 20
-    .db 05
-    .db A9
-    .db F0
-    .db 9D
-    .db FC
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db A9
-    .db 30
-    .db A0
-    .db 00
-    .db 20
-    .db AC
-    .db F5
-    .db 20
-    .db BE
-    .db F5
-    .db 30
-    .db 24
-    .db A9
-    .db 45
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 10
-    .db 9D
-    .db 9E
-    .db 05
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db 9D
-    .db 32
-    .db 05
-    .db 9D
-    .db 44
-    .db 05
-    .db 9D
-    .db C6
-    .db 04
-    .db 9D
-    .db D8
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db A9
-    .db 1C
-    .db 20
-    .db 52
-    .db DB
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 0D
-    .db A9
-    .db 44
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db FE
-    .db 12
-    .db 04
-    .db 4C
-    .db F1
-    .db F3
-    .db FE
-    .db 12
-    .db 04
-    .db 60
-    .db BD
-    .db 8C
-    .db 05
-    .db 20
-    .db 98
-    .db CC
-    .db F4
-    .db 8C
-    .db 08
-    .db 8D
-    .db C6
-    .db 8D
-    .db A9
-    .db 5C
-    .db 85
-    .db 31
-    .db A9
-    .db 5D
-    .db 85
-    .db 32
-    .db 20
-    .db 22
-    .db F6
-    .db A0
-    .db 00
-    .db 20
-    .db 0C
-    .db 91
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db AD
-    .db 09
-    .db 07
-    .db 29
-    .db 02
-    .db D0
-    .db 24
-    .db AD
-    .db 08
-    .db 07
-    .db C9
-    .db 10
-    .db B0
-    .db 1D
-    .db 20
-    .db F5
-    .db F5
-    .db C9
-    .db 20
-    .db B0
-    .db 07
-    .db 20
-    .db E0
-    .db F5
-    .db C9
-    .db 10
-    .db 90
-    .db 0B
-    .db A9
-    .db 03
-    .db 9D
-    .db 8C
-    .db 05
-    .db FE
-    .db 12
-    .db 04
-    .db 4C
-    .db F1
-    .db F3
-    .db A9
-    .db 00
-    .db F0
-    .db F3
-    .db 20
-    .db F5
-    .db F5
-    .db C9
-    .db 20
-    .db B0
-    .db 09
-    .db 20
-    .db E0
-    .db F5
-    .db C9
-    .db 0E
-    .db 90
-    .db EE
-    .db B0
-    .db 47
-    .db 20
-    .db E0
-    .db F5
-    .db C9
-    .db 08
-    .db 90
-    .db 23
-    .db A5
-    .db 12
-    .db 0A
-    .db 05
-    .db 10
-    .db 0A
-    .db 0A
-    .db A8
-    .db B9
-    .db AE
-    .db 8D
-    .db 9D
-    .db EA
-    .db 04
-    .db B9
-    .db AF
-    .db 8D
-    .db 9D
-    .db FC
-    .db 04
-    .db B9
-    .db B0
-    .db 8D
-    .db 9D
-    .db 0E
-    .db 05
-    .db B9
-    .db B1
-    .db 8D
-    .db 9D
-    .db 20
-    .db 05
-    .db 4C
-    .db A6
-    .db 8D
-    .db A5
-    .db 1B
-    .db 29
-    .db 3F
-    .db D0
-    .db 04
-    .db A9
-    .db 07
-    .db D0
-    .db AF
-    .db A5
-    .db 12
-    .db 0A
-    .db A8
-    .db B9
-    .db BE
-    .db 8D
-    .db 9D
-    .db EA
-    .db 04
-    .db B9
-    .db BF
-    .db 8D
-    .db 9D
-    .db FC
-    .db 04
-    .db 4C
-    .db A6
-    .db 8D
-    .db A5
-    .db 10
-    .db 0A
-    .db A8
-    .db B9
-    .db C2
-    .db 8D
-    .db 9D
-    .db 0E
-    .db 05
-    .db B9
-    .db C3
-    .db 8D
-    .db 9D
-    .db 20
-    .db 05
-    .db A0
-    .db 00
-    .db 20
-    .db 14
-    .db 91
-    .db 4C
-    .db F1
-    .db F3
+    JSR L_0C:0004
+    JSR L_0C:0027
+    JSR L_0C:006D
+    LDA OBJ_SECONDARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x53_SUBSWITCH_A)
+    HIGH(STATE_0x53_SUBSWITCH_A)
+    LOW(STATE_0x53_SUBSWITCH_B)
+    HIGH(STATE_0x53_SUBSWITCH_B)
+    LOW(STATE_0x53_SUBSWITCH_C)
+    HIGH(STATE_0x53_SUBSWITCH_C)
+    LOW(STATE_0x53_SUBSWITCH_D)
+    HIGH(STATE_0x53_SUBSWITCH_D)
+    LOW(STATE_0x53_SUBSWITCH_E)
+    HIGH(STATE_0x53_SUBSWITCH_E)
+    LOW(STATE_0x53_SUBSWITCH_F)
+    HIGH(STATE_0x53_SUBSWITCH_F)
+STATE_0x53_SUBSWITCH_A: ; 0C:0BFB, 0x018BFB
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    ???
+    STY MMC3_BANK_DATA
+    ???
+    STY MMC3_BANK_CFG
+    ???
+    STY APU_TRI_UNUSED
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$5D
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDA #$00
+    STA R_**:$0704
+    STA R_**:$0705
+    LDA #$50
+    LDY 47_TWO_PLAYERS_FLAG
+    BEQ L_0C:0C23
+    LDA #$70
+L_0C:0C23: ; 0C:0C23, 0x018C23
+    STA OBJECT_DATA_HEALTH?[18],X
+    LDA #$03
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDY #$0C
+    JSR L_1F:1655
+    LDA #$44
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$B0
+    STA 4C6_OBJ_UNK_POS?[18],X
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    CLC
+    ADC 4C6_OBJ_UNK_POS?[18],X
+    STA OBJ_POS_Y[18],X
+    LDA #$60
+    JSR SND_BANKED_DISPATCH
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+    LDA #$30
+    LDY #$00
+    JSR L_1F:15AC
+    JSR L_1F:15BE
+    CMP #$E0
+    BCC L_0C:0C77
+    LDA #$10
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$FC
+    STA 532_OBJ_UNK_POS?[18],X
+    LDA #$00
+    STA 544_OBJ_UNK_POS?[18],X
+    LDA #$45
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$31
+    JSR SND_BANKED_DISPATCH
+L_0C:0C77: ; 0C:0C77, 0x018C77
+    JMP OBJECT_X_MOVE?
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0C9B
+    LDA #$44
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$FE
+    STA 532_OBJ_UNK_POS?[18],X
+    LDA #$00
+    STA 544_OBJ_UNK_POS?[18],X
+    LDA #$F0
+    STA 520_ARR_UNK[18],X
+    LDA #$F0
+    STA 4FC_ARR_UNK[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0C9B: ; 0C:0C9B, 0x018C9B
+    RTS
+    LDA #$30
+    LDY #$00
+    JSR L_1F:15AC
+    JSR L_1F:15BE
+    BMI L_0C:0CCC
+    LDA #$45
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$10
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    JSR L_1F:1546
+    JSR L_1F:154F
+    STA 532_OBJ_UNK_POS?[18],X
+    STA 544_OBJ_UNK_POS?[18],X
+    STA 4C6_OBJ_UNK_POS?[18],X
+    STA 4D8_OBJ_UNK[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$1C
+    JSR SND_BANKED_DISPATCH
+L_0C:0CCC: ; 0C:0CCC, 0x018CCC
+    JMP OBJECT_X_MOVE?
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0CE1
+    LDA #$44
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    INC OBJ_SECONDARY_SWITCH?[18],X
+L_0C:0CE1: ; 0C:0CE1, 0x018CE1
+    JMP OBJECT_X_MOVE?
+STATE_0x53_SUBSWITCH_B: ; 0C:0CE4, 0x018CE4
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    RTS
+STATE_0x53_SUBSWITCH_C: ; 0C:0CE8, 0x018CE8
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x53_SUB_0x02_SWITCH_A)
+    HIGH(STATE_0x53_SUB_0x02_SWITCH_A)
+    LOW(STATE_0x53_SUB_0x02_SWITCH_B)
+    HIGH(STATE_0x53_SUB_0x02_SWITCH_B)
+    LOW(STATE_0x53_SUB_0x02_SWITCH_C)
+    HIGH(STATE_0x53_SUB_0x02_SWITCH_C)
+STATE_0x53_SUB_0x02_SWITCH_A: ; 0C:0CF4, 0x018CF4
+    LDA #$5C
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$5D
+    STA ZP_R2-R5_BANK_VALUES+3
+    JSR L_1F:1622
+    LDY #$00
+    JSR L_0C:110C
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+STATE_0x53_SUB_0x02_SWITCH_B: ; 0C:0D08, 0x018D08
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    LDA R_**:$0709
+    AND #$02
+    BNE L_0C:0D3F
+    LDA R_**:$0708
+    CMP #$10
+    BCS L_0C:0D3F
+    JSR L_1F:15F5
+    CMP #$20
+    BCS L_0C:0D30
+    JSR L_1F:15E0
+    CMP #$10
+    BCC L_0C:0D3B
+L_0C:0D30: ; 0C:0D30, 0x018D30
+    LDA #$03
+L_0C:0D32: ; 0C:0D32, 0x018D32
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+L_0C:0D3B: ; 0C:0D3B, 0x018D3B
+    LDA #$00
+    BEQ L_0C:0D32
+L_0C:0D3F: ; 0C:0D3F, 0x018D3F
+    JSR L_1F:15F5
+    CMP #$20
+    BCS L_0C:0D4F
+    JSR L_1F:15E0
+    CMP #$0E
+    BCC L_0C:0D3B
+    BCS L_0C:0D96
+L_0C:0D4F: ; 0C:0D4F, 0x018D4F
+    JSR L_1F:15E0
+    CMP #$08
+    BCC L_0C:0D79
+    LDA TMP_12
+    ASL A
+    ORA TMP_10
+    ASL A
+    ASL A
+    TAY
+    LDA L_0C:0DAE,Y
+    STA 4EA_ARR_UNK[18],X
+    LDA L_0C:0DAF,Y
+    STA 4FC_ARR_UNK[18],X
+    LDA L_0C:0DB0,Y
+    STA 50E_ARR_UNK[18],X
+    LDA L_0C:0DB1,Y
+    STA 520_ARR_UNK[18],X
+    JMP L_0C:0DA6
+L_0C:0D79: ; 0C:0D79, 0x018D79
+    LDA IRQ/SCRIPT_RUN_COUNT?
+    AND #$3F
+    BNE L_0C:0D83
+    LDA #$07
+    BNE L_0C:0D32
+L_0C:0D83: ; 0C:0D83, 0x018D83
+    LDA TMP_12
+    ASL A
+    TAY
+    LDA L_0C:0DBE,Y
+    STA 4EA_ARR_UNK[18],X
+    LDA L_0C:0DBF,Y
+    STA 4FC_ARR_UNK[18],X
+    JMP L_0C:0DA6
+L_0C:0D96: ; 0C:0D96, 0x018D96
+    LDA TMP_10
+    ASL A
+    TAY
+    LDA L_0C:0DC2,Y
+    STA 50E_ARR_UNK[18],X
+    LDA L_0C:0DC3,Y
+    STA 520_ARR_UNK[18],X
+L_0C:0DA6: ; 0C:0DA6, 0x018DA6
+    LDY #$00
+    JSR L_0C:1114
+    JMP OBJECT_X_MOVE?
+L_0C:0DAE: ; 0C:0DAE, 0x018DAE
     .db 01
+L_0C:0DAF: ; 0C:0DAF, 0x018DAF
     .db 00
+L_0C:0DB0: ; 0C:0DB0, 0x018DB0
     .db 00
+L_0C:0DB1: ; 0C:0DB1, 0x018DB1
     .db C0
     .db 01
     .db 00
@@ -3521,852 +1782,438 @@ OBJ_STATE_0x53_HANDLER: ; 0C:0BE0, 0x018BE0
     .db 00
     .db FF
     .db 40
+L_0C:0DBE: ; 0C:0DBE, 0x018DBE
     .db 01
+L_0C:0DBF: ; 0C:0DBF, 0x018DBF
     .db 00
     .db FF
     .db 00
+L_0C:0DC2: ; 0C:0DC2, 0x018DC2
     .db 00
+L_0C:0DC3: ; 0C:0DC3, 0x018DC3
     .db C0
     .db FF
     .db 40
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db BD
-    .db 8C
-    .db 05
-    .db 20
-    .db 98
-    .db CC
-    .db B4
-    .db 8E
-    .db D5
-    .db 8E
-    .db F5
-    .db 8E
-    .db EF
-    .db 8D
-    .db 1B
-    .db 8E
-    .db 41
-    .db 8E
-    .db 98
-    .db 8E
-    .db 0A
-    .db 8F
-    .db 33
-    .db 8F
-    .db 46
-    .db 8F
-    .db 9C
-    .db 8F
-    .db A9
-    .db 5F
-    .db 85
-    .db 31
-    .db A9
-    .db 5D
-    .db 85
-    .db 32
-    .db A9
-    .db 8C
-    .db 9D
-    .db 7A
-    .db 05
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db A0
-    .db 04
-    .db 20
-    .db 0C
-    .db 91
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db A9
-    .db 20
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db FF
-    .db 8D
-    .db 0E
-    .db 07
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 19
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db A5
-    .db 12
-    .db 0A
-    .db A8
-    .db B9
-    .db 90
-    .db 8E
-    .db 9D
-    .db EA
-    .db 04
-    .db B9
-    .db 91
-    .db 8E
-    .db 9D
-    .db FC
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db A0
-    .db 04
-    .db 20
-    .db 14
-    .db 91
-    .db 4C
-    .db F1
-    .db F3
-    .db 20
-    .db 4F
-    .db F5
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db E0
-    .db F5
-    .db C9
-    .db 08
-    .db 90
-    .db 10
-    .db A5
-    .db 10
-    .db 0A
-    .db A8
-    .db B9
-    .db 94
-    .db 8E
-    .db 9D
-    .db 0E
-    .db 05
-    .db B9
-    .db 95
-    .db 8E
-    .db 9D
-    .db 20
-    .db 05
-    .db A0
-    .db 04
-    .db 20
-    .db 14
-    .db 91
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db F0
-    .db 04
-    .db A9
-    .db 18
-    .db D0
-    .db 02
-    .db A9
-    .db E8
-    .db 18
-    .db 7D
-    .db 7E
-    .db 04
-    .db A8
-    .db BD
-    .db A2
-    .db 04
-    .db 20
-    .db AA
-    .db E7
-    .db C9
-    .db 01
-    .db F0
-    .db 0B
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db 24
-    .db 90
-    .db 04
-    .db C9
-    .db DC
-    .db 90
+STATE_0x53_SUB_0x02_SWITCH_C: ; 0C:0DC6, 0x018DC6
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0DD0
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0DD0: ; 0C:0DD0, 0x018DD0
+    JMP OBJECT_X_MOVE?
+STATE_0x53_SUBSWITCH_D: ; 0C:0DD3, 0x018DD3
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x53_SUB_0x03_SWITCH_A)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_A)
+    LOW(STATE_0x53_SUB_0x03_SWITCH_B)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_B)
+    LOW(STATE_0x53_SUB_0x03_SWITCH_C)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_C)
+    LOW(STATE_0x53_SUB_0x03_SWITCH_D)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_D)
+    LOW(STATE_0x53_SUB_0x03_SWITCH_E)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_E)
+    LOW(STATE_0x53_SUB_0x03_SWITCH_F)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_F)
+    LOW(STATE_0x53_SUB_0x03_SWITCH_G)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_G)
+    LOW(STATE_0x53_SUB_0x03_SWITCH_H)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_H)
+    LOW(STATE_0x53_SUB_0x03_SWITCH_I)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_I)
+    LOW(STATE_0x53_SUB_0x03_SWITCH_J)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_J)
+    LOW(STATE_0x53_SUB_0x03_SWITCH_K)
+    HIGH(STATE_0x53_SUB_0x03_SWITCH_K)
+STATE_0x53_SUB_0x03_SWITCH_D: ; 0C:0DEF, 0x018DEF
+    LDA #$5F
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$5D
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDA #$8C
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDY #$04
+    JSR L_0C:110C
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    LDA #$20
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$FF
+    STA R_**:$070E
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+STATE_0x53_SUB_0x03_SWITCH_E: ; 0C:0E1B, 0x018E1B
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0E39
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    LDA TMP_12
+    ASL A
+    TAY
+    LDA L_0C:0E90,Y
+    STA 4EA_ARR_UNK[18],X
+    LDA L_0C:0E91,Y
+    STA 4FC_ARR_UNK[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0E39: ; 0C:0E39, 0x018E39
+    LDY #$04
+    JSR L_0C:1114
+    JMP OBJECT_X_MOVE?
+STATE_0x53_SUB_0x03_SWITCH_F: ; 0C:0E41, 0x018E41
+    JSR L_1F:154F
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:15E0
+    CMP #$08
+    BCC L_0C:0E5E
+    LDA TMP_10
+    ASL A
+    TAY
+    LDA L_0C:0E94,Y
+    STA 50E_ARR_UNK[18],X
+    LDA L_0C:0E95,Y
+    STA 520_ARR_UNK[18],X
+L_0C:0E5E: ; 0C:0E5E, 0x018E5E
+    LDY #$04
+    JSR L_0C:1114
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    AND #$04
+    BEQ L_0C:0E6E
+    LDA #$18
+    BNE L_0C:0E70
+L_0C:0E6E: ; 0C:0E6E, 0x018E6E
+    LDA #$E8
+L_0C:0E70: ; 0C:0E70, 0x018E70
+    CLC
+    ADC OBJ_POS_X[18],X
+    TAY
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    JSR RTN_SCREEN?_UNK
+    CMP #$01
+    BEQ L_0C:0E8A
+    LDA OBJ_POS_X[18],X
+    CMP #$24
+    BCC L_0C:0E8A
+    CMP #$DC
+    BCC L_0C:0E8D
+L_0C:0E8A: ; 0C:0E8A, 0x018E8A
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0E8D: ; 0C:0E8D, 0x018E8D
+    JMP OBJECT_X_MOVE?
+L_0C:0E90: ; 0C:0E90, 0x018E90
     .db 03
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db 03
+L_0C:0E91: ; 0C:0E91, 0x018E91
     .db 00
     .db FD
     .db 00
+L_0C:0E94: ; 0C:0E94, 0x018E94
     .db 02
+L_0C:0E95: ; 0C:0E95, 0x018E95
     .db 00
     .db FE
     .db 00
-    .db A9
-    .db 03
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db 03
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db 02
-    .db 9D
-    .db 12
-    .db 04
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db 9D
-    .db 8C
-    .db 05
-    .db 8D
-    .db 0E
-    .db 07
-    .db 60
-    .db A9
-    .db 5E
-    .db 85
-    .db 31
-    .db A9
-    .db 5D
-    .db 85
-    .db 32
-    .db A9
-    .db 99
-    .db 9D
-    .db 7A
-    .db 05
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db A9
-    .db 46
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 08
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 1A
-    .db A9
-    .db 5C
-    .db 85
-    .db 31
-    .db A9
-    .db 5D
-    .db 85
-    .db 32
-    .db A9
-    .db 03
-    .db 9D
-    .db 7A
-    .db 05
-    .db A0
-    .db 00
-    .db 20
-    .db 0C
-    .db 91
-    .db A9
-    .db 10
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 0F
-    .db A9
-    .db 02
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 20
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 02
-    .db 9D
-    .db 8C
-    .db 05
-    .db 60
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db 20
-    .db 6A
-    .db 91
-    .db 90
-    .db 1B
-    .db A9
-    .db 5C
-    .db 85
-    .db 31
-    .db A9
-    .db 5D
-    .db 85
-    .db 32
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db A0
-    .db 02
-    .db 20
-    .db 0C
-    .db 91
-    .db A9
-    .db 08
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 0D
-    .db A9
-    .db 45
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 0E
-    .db 9D
-    .db D4
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db FE
-    .db C2
-    .db 05
-    .db BD
-    .db C2
-    .db 05
-    .db C9
-    .db 06
-    .db 90
-    .db 4B
-    .db A9
-    .db 00
-    .db 9D
-    .db C2
-    .db 05
-    .db A9
-    .db 2E
-    .db 20
-    .db 52
-    .db DB
-    .db BC
-    .db D4
-    .db 05
-    .db A9
-    .db 54
-    .db 99
-    .db 24
-    .db 04
-    .db BD
-    .db A2
-    .db 04
-    .db 99
-    .db A2
-    .db 04
-    .db A9
-    .db DE
-    .db 99
-    .db C6
-    .db 04
-    .db BD
-    .db 56
-    .db 05
-    .db 99
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db F0
-    .db 04
-    .db A9
-    .db 20
-    .db D0
-    .db 02
-    .db A9
-    .db E0
-    .db 18
-    .db 7D
-    .db 7E
-    .db 04
-    .db 99
-    .db 7E
-    .db 04
-    .db C8
-    .db C0
-    .db 12
-    .db 90
-    .db 0E
-    .db A9
-    .db 44
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 10
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db 98
-    .db 9D
-    .db D4
-    .db 05
-    .db 60
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 0A
-    .db A9
-    .db 02
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db 60
-    .db BD
-    .db 8C
-    .db 05
-    .db D0
-    .db 26
-    .db A9
-    .db 5E
-    .db 85
-    .db 31
-    .db A9
-    .db 5D
-    .db 85
-    .db 32
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db A9
-    .db 4A
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 9E
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db A9
-    .db 1E
-    .db 9D
-    .db D4
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
-    .db FE
-    .db 9E
-    .db 05
-    .db BD
-    .db 9E
-    .db 05
-    .db C9
-    .db 04
-    .db 90
-    .db 10
-    .db A9
-    .db 00
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db C2
-    .db 05
-    .db BD
-    .db C2
-    .db 05
-    .db 29
-    .db 03
-    .db 9D
-    .db C2
-    .db 05
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 18
-    .db 7D
-    .db C2
-    .db 05
-    .db 9D
-    .db 36
-    .db 04
-    .db DE
-    .db D4
-    .db 05
-    .db D0
-    .db 55
-    .db 20
-    .db 9F
-    .db 80
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db 0A
-    .db F6
-    .db A9
-    .db 03
-    .db 9D
-    .db 12
-    .db 04
-    .db 20
-    .db F5
-    .db F5
-    .db C9
-    .db 2C
-    .db 90
-    .db 0E
-    .db A9
-    .db 07
-    .db 9D
-    .db 8C
-    .db 05
-    .db A9
-    .db 08
-    .db 8D
-    .db 0E
-    .db 07
-    .db A9
-    .db 03
-    .db D0
-    .db 1C
-    .db A5
-    .db 1B
-    .db 29
-    .db 04
-    .db F0
-    .db 04
-    .db A9
-    .db 03
-    .db D0
-    .db 02
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db A5
-    .db 1B
-    .db C9
-    .db 88
-    .db 90
-    .db 05
-    .db A9
-    .db 08
-    .db 8D
-    .db 0E
-    .db 07
-    .db A9
-    .db 99
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 9E
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db 9D
-    .db D4
-    .db 05
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 9D
-    .db 36
-    .db 04
-    .db 4C
-    .db F1
-    .db F3
-    .db BD
-    .db 8C
-    .db 05
-    .db 20
-    .db 98
-    .db CC
-    .db 66
-    .db 90
-    .db A7
-    .db 90
-    .db E6
-    .db 90
-    .db A9
-    .db 5E
-    .db 85
-    .db 31
-    .db A9
-    .db 5D
-    .db 85
-    .db 32
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db A9
-    .db 4B
-    .db 9D
-    .db 00
-    .db 04
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 9D
-    .db 36
-    .db 04
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 04
-    .db A9
-    .db 02
-    .db D0
-    .db 02
-    .db A9
-    .db FE
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db FA
-    .db 9D
-    .db 32
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db EE
-    .db DB
-    .db 03
-    .db 20
-    .db 28
-    .db DB
-    .db A9
-    .db 58
-    .db 20
-    .db 52
-    .db DB
-    .db 4C
-    .db F1
-    .db F3
-    .db A9
-    .db 80
-    .db A0
-    .db 00
-    .db 20
-    .db AC
-    .db F5
-    .db 20
-    .db BE
-    .db F5
-    .db BD
-    .db C6
-    .db 04
-    .db 30
-    .db 15
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db 20
-    .db 58
-    .db F5
-    .db 9D
-    .db D8
-    .db 04
-    .db 9D
-    .db C6
-    .db 04
-    .db 9D
-    .db 48
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db BD
-    .db EA
-    .db 04
-    .db 10
-    .db 09
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db 31
-    .db B0
-    .db 0C
-    .db 90
-    .db 07
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db D0
-    .db 90
-    .db 03
-    .db 20
-    .db 46
-    .db F5
-    .db 4C
-    .db F1
-    .db F3
-    .db BD
-    .db 48
-    .db 04
-    .db 29
-    .db 03
-    .db D0
-    .db 03
-    .db FE
-    .db 5A
-    .db 04
-    .db BD
-    .db 5A
-    .db 04
-    .db 29
-    .db 01
-    .db A8
-    .db B9
-    .db 0A
-    .db 91
-    .db 9D
-    .db 00
-    .db 04
-    .db FE
-    .db 48
-    .db 04
-    .db BD
-    .db 48
-    .db 04
-    .db 10
-    .db 03
-    .db 4C
-    .db D1
-    .db F4
-    .db 4C
-    .db F1
-    .db F3
+STATE_0x53_SUB_0x03_SWITCH_G: ; 0C:0E98, 0x018E98
+    LDA #$03
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDA #$03
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDA #$02
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    JSR L_1F:1546
+    JSR L_1F:154F
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    STA R_**:$070E
+    RTS
+STATE_0x53_SUB_0x03_SWITCH_A: ; 0C:0EB4, 0x018EB4
+    LDA #$5E
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$5D
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDA #$99
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDA #$46
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$08
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+STATE_0x53_SUB_0x03_SWITCH_B: ; 0C:0ED5, 0x018ED5
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0EF4
+    LDA #$5C
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$5D
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDA #$03
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDY #$00
+    JSR L_0C:110C
+    LDA #$10
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0EF4: ; 0C:0EF4, 0x018EF4
+    RTS
+STATE_0x53_SUB_0x03_SWITCH_C: ; 0C:0EF5, 0x018EF5
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0F09
+    LDA #$02
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$20
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA #$02
+    STA OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0F09: ; 0C:0F09, 0x018F09
+    RTS
+STATE_0x53_SUB_0x03_SWITCH_H: ; 0C:0F0A, 0x018F0A
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    JSR L_0C:116A
+    BCC L_0C:0F30
+    LDA #$5C
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$5D
+    STA ZP_R2-R5_BANK_VALUES+3
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDY #$02
+    JSR L_0C:110C
+    LDA #$08
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0F30: ; 0C:0F30, 0x018F30
+    JMP OBJECT_X_MOVE?
+STATE_0x53_SUB_0x03_SWITCH_I: ; 0C:0F33, 0x018F33
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0F45
+    LDA #$45
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$0E
+    STA 5D4_ARR_OBJ_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0F45: ; 0C:0F45, 0x018F45
+    RTS
+STATE_0x53_SUB_0x03_SWITCH_J: ; 0C:0F46, 0x018F46
+    INC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    CMP #$06
+    BCC L_0C:0F9B
+    LDA #$00
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDA #$2E
+    JSR SND_BANKED_DISPATCH
+    LDY 5D4_ARR_OBJ_TIMER?[18],X
+    LDA #$54
+    STA OBJ_ENABLED_STATE+MORE?[18],Y
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    STA 4A2_OBJ_UNK_POS?[18],Y
+    LDA #$DE
+    STA 4C6_OBJ_UNK_POS?[18],Y
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    STA 556_OBJ_UPDATE_FLAGS?[18],Y
+    AND #$04
+    BEQ L_0C:0F7B
+    LDA #$20
+    BNE L_0C:0F7D
+L_0C:0F7B: ; 0C:0F7B, 0x018F7B
+    LDA #$E0
+L_0C:0F7D: ; 0C:0F7D, 0x018F7D
+    CLC
+    ADC OBJ_POS_X[18],X
+    STA OBJ_POS_X[18],Y
+    INY
+    CPY #$12
+    BCC L_0C:0F97
+    LDA #$44
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$10
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+L_0C:0F97: ; 0C:0F97, 0x018F97
+    TYA
+    STA 5D4_ARR_OBJ_TIMER?[18],X
+L_0C:0F9B: ; 0C:0F9B, 0x018F9B
+    RTS
+STATE_0x53_SUB_0x03_SWITCH_K: ; 0C:0F9C, 0x018F9C
+    DEC 59E_OBJ_UNK_TIMER?[18],X
+    BNE L_0C:0FAB
+    LDA #$02
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+L_0C:0FAB: ; 0C:0FAB, 0x018FAB
+    RTS
+STATE_0x53_SUBSWITCH_E: ; 0C:0FAC, 0x018FAC
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    BNE L_0C:0FD7
+    LDA #$5E
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$5D
+    STA ZP_R2-R5_BANK_VALUES+3
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDA #$4A
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$00
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDA #$1E
+    STA 5D4_ARR_OBJ_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+L_0C:0FD7: ; 0C:0FD7, 0x018FD7
+    INC 59E_OBJ_UNK_TIMER?[18],X
+    LDA 59E_OBJ_UNK_TIMER?[18],X
+    CMP #$04
+    BCC L_0C:0FF1
+    LDA #$00
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    INC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    LDA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    AND #$03
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+L_0C:0FF1: ; 0C:0FF1, 0x018FF1
+    LDA OBJ_DIRECTION_RELATED?[18],X
+    AND #$FC
+    CLC
+    ADC 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    STA OBJ_DIRECTION_RELATED?[18],X
+    DEC 5D4_ARR_OBJ_TIMER?[18],X
+    BNE L_0C:1057
+    JSR L_0C:009F
+    LDY 5B0_OBJ_UNK[18],X
+    JSR L_1F:160A
+    LDA #$03
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    JSR L_1F:15F5
+    CMP #$2C
+    BCC L_0C:1025
+    LDA #$07
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$08
+    STA R_**:$070E
+    LDA #$03
+    BNE L_0C:1041
+L_0C:1025: ; 0C:1025, 0x019025
+    LDA IRQ/SCRIPT_RUN_COUNT?
+    AND #$04
+    BEQ L_0C:102F
+    LDA #$03
+    BNE L_0C:1031
+L_0C:102F: ; 0C:102F, 0x01902F
+    LDA #$00
+L_0C:1031: ; 0C:1031, 0x019031
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDA IRQ/SCRIPT_RUN_COUNT?
+    CMP #$88
+    BCC L_0C:103F
+    LDA #$08
+    STA R_**:$070E
+L_0C:103F: ; 0C:103F, 0x01903F
+    LDA #$99
+L_0C:1041: ; 0C:1041, 0x019041
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDA #$00
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    STA 5C2_OBJ_DATA_PTR_STREAM_INDEX[18],X
+    STA 5D4_ARR_OBJ_TIMER?[18],X
+    LDA OBJ_DIRECTION_RELATED?[18],X
+    AND #$FC
+    STA OBJ_DIRECTION_RELATED?[18],X
+L_0C:1057: ; 0C:1057, 0x019057
+    JMP OBJECT_X_MOVE?
+STATE_0x53_SUBSWITCH_F: ; 0C:105A, 0x01905A
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x53_SUB_0x0E_SWITCH_A)
+    HIGH(STATE_0x53_SUB_0x0E_SWITCH_A)
+    LOW(STATE_0x53_SUB_0x0E_SWITCH_B)
+    HIGH(STATE_0x53_SUB_0x0E_SWITCH_B)
+    LOW(STATE_0x53_SUB_0x0E_SWITCH_C)
+    HIGH(STATE_0x53_SUB_0x0E_SWITCH_C)
+STATE_0x53_SUB_0x0E_SWITCH_A: ; 0C:1066, 0x019066
+    LDA #$5E
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$5D
+    STA ZP_R2-R5_BANK_VALUES+3
+    JSR L_1F:1546
+    JSR L_1F:154F
+    LDA #$4B
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA OBJ_DIRECTION_RELATED?[18],X
+    AND #$FC
+    STA OBJ_DIRECTION_RELATED?[18],X
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    AND #$04
+    BNE L_0C:108C
+    LDA #$02
+    BNE L_0C:108E
+L_0C:108C: ; 0C:108C, 0x01908C
+    LDA #$FE
+L_0C:108E: ; 0C:108E, 0x01908E
+    STA 4EA_ARR_UNK[18],X
+    LDA #$FA
+    STA 532_OBJ_UNK_POS?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    INC 3DB_UNKNOWN
+    JSR SOUND_RESET/INIT_RTN?
+    LDA #$58
+    JSR SND_BANKED_DISPATCH
+    JMP OBJECT_X_MOVE?
+STATE_0x53_SUB_0x0E_SWITCH_B: ; 0C:10A7, 0x0190A7
+    LDA #$80
+    LDY #$00
+    JSR L_1F:15AC
+    JSR L_1F:15BE
+    LDA 4C6_OBJ_UNK_POS?[18],X
+    BMI L_0C:10CB
+    JSR L_1F:1546
+    JSR L_1F:154F
+    JSR L_1F:1558
+    STA 4D8_OBJ_UNK[18],X
+    STA 4C6_OBJ_UNK_POS?[18],X
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:10CB: ; 0C:10CB, 0x0190CB
+    LDA 4EA_ARR_UNK[18],X
+    BPL L_0C:10D9
+    LDA OBJ_POS_X[18],X
+    CMP #$31
+    BCS L_0C:10E3
+    BCC L_0C:10E0
+L_0C:10D9: ; 0C:10D9, 0x0190D9
+    LDA OBJ_POS_X[18],X
+    CMP #$D0
+    BCC L_0C:10E3
+L_0C:10E0: ; 0C:10E0, 0x0190E0
+    JSR L_1F:1546
+L_0C:10E3: ; 0C:10E3, 0x0190E3
+    JMP OBJECT_X_MOVE?
+STATE_0x53_SUB_0x0E_SWITCH_C: ; 0C:10E6, 0x0190E6
+    LDA OBJ_ANIM_HOLD_TIMER?[18],X
+    AND #$03
+    BNE L_0C:10F0
+    INC 45A_OBJ_DATA_ENTRY?[18],X
+L_0C:10F0: ; 0C:10F0, 0x0190F0
+    LDA 45A_OBJ_DATA_ENTRY?[18],X
+    AND #$01
+    TAY
+    LDA L_0C:110A,Y
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    INC OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA OBJ_ANIM_HOLD_TIMER?[18],X
+    BPL L_0C:1107
+    JMP INIT_OBJECT[X]_DATA
+L_0C:1107: ; 0C:1107, 0x019107
+    JMP OBJECT_X_MOVE?
+L_0C:110A: ; 0C:110A, 0x01910A
     .db 4B
     .db 00
+L_0C:110C: ; 0C:110C, 0x01910C
     .db A9
     .db 00
     .db 9D
@@ -4375,6 +2222,7 @@ OBJ_STATE_0x53_HANDLER: ; 0C:0BE0, 0x018BE0
     .db 9D
     .db 5A
     .db 04
+L_0C:1114: ; 0C:1114, 0x019114
     .db BD
     .db 48
     .db 04
@@ -4461,6 +2309,7 @@ OBJ_STATE_0x53_HANDLER: ; 0C:0BE0, 0x018BE0
     .db 49
     .db 47
     .db 48
+L_0C:116A: ; 0C:116A, 0x01916A
     .db A0
     .db 0D
     .db B9
@@ -4477,304 +2326,183 @@ OBJ_STATE_0x53_HANDLER: ; 0C:0BE0, 0x018BE0
     .db 18
     .db 60
 OBJ_STATE_0x54_HANDLER: ; 0C:1179, 0x019179
-    .db BD
-    .db 12
-    .db 04
-    .db 20
-    .db 98
-    .db CC
-    .db 83
-    .db 91
-    .db AD
-    .db 91
-    .db A9
-    .db 4C
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db FF
-    .db 9D
-    .db 68
-    .db 05
-    .db A9
-    .db 96
-    .db 9D
-    .db 7A
-    .db 05
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 04
-    .db A9
-    .db FD
-    .db D0
-    .db 02
-    .db A9
-    .db 02
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db 80
-    .db 9D
-    .db FC
-    .db 04
-    .db FE
-    .db 12
-    .db 04
-    .db 4C
-    .db F1
-    .db F3
-    .db 20
-    .db 11
-    .db E8
-    .db FE
-    .db 9E
-    .db 05
-    .db BD
-    .db 9E
-    .db 05
-    .db C9
-    .db 08
-    .db 90
-    .db 28
-    .db FE
-    .db B0
-    .db 05
-    .db BD
-    .db B0
-    .db 05
-    .db C9
-    .db 05
-    .db 90
-    .db 05
-    .db A9
-    .db 04
-    .db 9D
-    .db B0
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 9E
-    .db 05
-    .db BD
-    .db B0
-    .db 05
-    .db 18
-    .db 69
-    .db 4C
-    .db 9D
-    .db 00
-    .db 04
-    .db 38
-    .db E9
-    .db 4D
-    .db 30
-    .db 06
-    .db 18
-    .db 69
-    .db 9A
-    .db 9D
-    .db 7A
-    .db 05
-    .db 20
-    .db F1
-    .db F3
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 03
-    .db F0
-    .db 03
-    .db 4C
-    .db D1
-    .db F4
-    .db 60
+    LDA OBJ_SECONDARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x54_SWITCH_A)
+    HIGH(STATE_0x54_SWITCH_A)
+    LOW(STATE_0x54_SWITCH_B)
+    HIGH(STATE_0x54_SWITCH_B)
+STATE_0x54_SWITCH_A: ; 0C:1183, 0x019183
+    LDA #$4C
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$FF
+    STA OBJECT_DATA_HEALTH?[18],X
+    LDA #$96
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    AND #$04
+    BNE L_0C:119D
+    LDA #$FD
+    BNE L_0C:119F
+L_0C:119D: ; 0C:119D, 0x01919D
+    LDA #$02
+L_0C:119F: ; 0C:119F, 0x01919F
+    STA 4EA_ARR_UNK[18],X
+    LDA #$80
+    STA 4FC_ARR_UNK[18],X
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+STATE_0x54_SWITCH_B: ; 0C:11AD, 0x0191AD
+    JSR L_1F:0811
+    INC 59E_OBJ_UNK_TIMER?[18],X
+    LDA 59E_OBJ_UNK_TIMER?[18],X
+    CMP #$08
+    BCC L_0C:11E2
+    INC 5B0_OBJ_UNK[18],X
+    LDA 5B0_OBJ_UNK[18],X
+    CMP #$05
+    BCC L_0C:11C9
+    LDA #$04
+    STA 5B0_OBJ_UNK[18],X
+L_0C:11C9: ; 0C:11C9, 0x0191C9
+    LDA #$00
+    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA 5B0_OBJ_UNK[18],X
+    CLC
+    ADC #$4C
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    SEC
+    SBC #$4D
+    BMI L_0C:11E2
+    CLC
+    ADC #$9A
+    STA OBJECT_DATA_EXTRA_B?[18],X
+L_0C:11E2: ; 0C:11E2, 0x0191E2
+    JSR OBJECT_X_MOVE?
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X
+    AND #$03
+    BEQ L_0C:11EF
+    JMP INIT_OBJECT[X]_DATA
+L_0C:11EF: ; 0C:11EF, 0x0191EF
+    RTS
 OBJ_STATE_0x5D_HANDLER: ; 0C:11F0, 0x0191F0
-    .db BD
-    .db 8C
-    .db 05
-    .db 20
-    .db 98
-    .db CC
-    .db C7
-    .db 80
-    .db D5
-    .db 80
-    .db 5A
-    .db 81
-    .db 7C
-    .db 81
-    .db 99
-    .db 81
-    .db B9
-    .db 81
-    .db D1
-    .db 81
-    .db E9
-    .db 81
-    .db 01
-    .db 82
-    .db 3C
-    .db 82
-    .db 4C
-    .db 82
-    .db AF
-    .db 82
-    .db CB
-    .db 82
-    .db 12
-    .db 92
-    .db A0
-    .db 0F
-    .db 20
-    .db 55
-    .db F6
-    .db 20
-    .db D1
-    .db F4
-    .db A9
-    .db 70
-    .db 20
-    .db 52
-    .db DB
-    .db 4C
-    .db A2
-    .db A2
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(STATE_0x51_ALTSWITCH_A) ; Uses other state switches.
+    HIGH(STATE_0x51_ALTSWITCH_A)
+    LOW(STATE_0x51_ALTSWITCH_B)
+    HIGH(STATE_0x51_ALTSWITCH_B)
+    LOW(STATE_0x51_ALTSWITCH_C)
+    HIGH(STATE_0x51_ALTSWITCH_C)
+    LOW(STATE_0x51_ALTSWITCH_D)
+    HIGH(STATE_0x51_ALTSWITCH_D)
+    LOW(STATE_0x51_ALTSWITCH_E)
+    HIGH(STATE_0x51_ALTSWITCH_E)
+    LOW(STATE_0x51_ALTSWITCH_F)
+    HIGH(STATE_0x51_ALTSWITCH_F)
+    LOW(STATE_0x51_ALTSWITCH_G)
+    HIGH(STATE_0x51_ALTSWITCH_G)
+    LOW(STATE_0x51_ALTSWITCH_H)
+    HIGH(STATE_0x51_ALTSWITCH_H)
+    LOW(STATE_0x51_ALTSWITCH_I)
+    HIGH(STATE_0x51_ALTSWITCH_I)
+    LOW(STATE_0x51_ALTSWITCH_J)
+    HIGH(STATE_0x51_ALTSWITCH_J)
+    LOW(STATE_0x51_ALTSWITCH_K)
+    HIGH(STATE_0x51_ALTSWITCH_K)
+    LOW(STATE_0x51_ALTSWITCH_L)
+    HIGH(STATE_0x51_ALTSWITCH_L)
+    LOW(STATE_0x51_ALTSWITCH_M)
+    HIGH(STATE_0x51_ALTSWITCH_M)
+    LOW(STATE_0x5D_UNIQUE_SWITCH)
+    HIGH(STATE_0x5D_UNIQUE_SWITCH)
+STATE_0x5D_UNIQUE_SWITCH: ; 0C:1212, 0x019212
+    LDY #$0F
+    JSR L_1F:1655
+    JSR INIT_OBJECT[X]_DATA
+    LDA #$70
+    JSR SND_BANKED_DISPATCH
+    JMP L_0D:02A2
 OBJ_STATE_0x55_HANDLER: ; 0C:1222, 0x019222
-    .db 8E
-    .db 00
-    .db 07
-    .db A9
-    .db 07
-    .db 9D
-    .db 7A
-    .db 05
-    .db 20
-    .db 68
-    .db 92
-    .db BD
-    .db 7A
-    .db 05
-    .db F0
-    .db 13
-    .db BD
-    .db 12
-    .db 04
-    .db C9
-    .db 04
-    .db B0
-    .db 0C
-    .db AD
-    .db 03
-    .db 07
-    .db 4A
-    .db B0
-    .db 06
-    .db 20
-    .db 11
-    .db E8
-    .db 4A
-    .db B0
-    .db 03
-    .db 4C
-    .db BE
-    .db B0
-    .db A9
-    .db 2C
-    .db 20
-    .db 52
-    .db DB
-    .db 4C
-    .db 29
-    .db AC
+    STX OBJ_HANDLER_FOCUS_SCRATCHPAD
+    LDA #$07
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    JSR L_0C:1268
+    LDA OBJECT_DATA_EXTRA_B?[18],X
+    BEQ L_0C:1245
+    LDA OBJ_SECONDARY_SWITCH?[18],X
+    CMP #$04
+    BCS L_0C:1245
+    LDA ARR_SPRITE_OBJ_TIMER?+1
+    LSR A
+    BCS L_0C:1245
+    JSR L_1F:0811
+    LSR A
+    BCS L_0C:1248
+L_0C:1245: ; 0C:1245, 0x019245
+    JMP L_0D:10BE
+L_0C:1248: ; 0C:1248, 0x019248
+    LDA #$2C
+    JSR SND_BANKED_DISPATCH
+    JMP L_0D:0C29
 OBJ_STATE_0x56_HANDLER: ; 0C:1250, 0x019250
-    .db BD
-    .db 55
-    .db 05
-    .db 9D
-    .db 56
-    .db 05
-    .db BD
-    .db 7D
-    .db 04
-    .db 9D
-    .db 7E
-    .db 04
-    .db BD
-    .db A1
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db A9
-    .db A2
-    .db 9D
-    .db 00
-    .db 04
-    .db 60
-    .db BD
-    .db 12
-    .db 04
-    .db 0A
-    .db A8
-    .db B9
-    .db 88
-    .db 92
-    .db 85
-    .db 00
-    .db B9
-    .db 89
-    .db 92
-    .db 85
-    .db 01
-    .db BD
-    .db 8C
-    .db 05
-    .db 0A
-    .db A8
-    .db B1
-    .db 00
-    .db 85
-    .db 02
-    .db C8
-    .db B1
-    .db 00
-    .db 85
-    .db 03
-    .db 6C
-    .db 02
-    .db 00
-    .db 94
-    .db 92
-    .db 96
-    .db 92
-    .db 98
-    .db 92
-    .db 9E
-    .db 92
-    .db 9E
-    .db 92
-    .db A0
-    .db 92
+    LDA 544_OBJ_UNK_POS?+17,X
+    STA 556_OBJ_UPDATE_FLAGS?[18],X
+    LDA OBJ_POS_Y+17,X
+    STA OBJ_POS_X[18],X
+    LDA 490_OBJ_UNK_SPEED?+17,X
+    STA OBJ_POS_Y[18],X
+    LDA #$A2
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    RTS
+L_0C:1268: ; 0C:1268, 0x019268
+    LDA OBJ_SECONDARY_SWITCH?[18],X
+    ASL A
+    TAY
+    LDA PTRS_UNK_L,Y
+    STA TMP_00
+    LDA PTRS_UNK_H,Y
+    STA TMP_01
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    ASL A
+    TAY
+    LDA [TMP_00],Y
+    STA TMP_02
+    INY
+    LDA [TMP_00],Y
+    STA TMP_03
+    JMP [TMP_02]
+PTRS_UNK_L: ; 0C:1288, 0x019288
+    LOW(UNUSED_A?) ; These could be unused/old.
+PTRS_UNK_H: ; 0C:1289, 0x019289
+    HIGH(UNUSED_A?)
+    LOW(UNUSED_B)
+    HIGH(UNUSED_B)
+    LOW(UNUSED_C)
+    HIGH(UNUSED_C)
+    LOW(UNUSED_D)
+    HIGH(UNUSED_D)
+    LOW(UNUSED_D)
+    HIGH(UNUSED_D)
+    LOW(UNUSED_E)
+    HIGH(UNUSED_E)
+UNUSED_A?: ; 0C:1294, 0x019294
     .db B0
     .db 92
+UNUSED_B: ; 0C:1296, 0x019296
     .db 29
     .db 93
+UNUSED_C: ; 0C:1298, 0x019298
     .db F2
     .db 93
     .db F8
     .db 93
     .db C3
     .db 95
+UNUSED_D: ; 0C:129E, 0x01929E
     .db A6
     .db 92
+UNUSED_E: ; 0C:12A0, 0x0192A0
     .db 93
     .db AD
     .db EA
@@ -6167,102 +3895,67 @@ OBJ_STATE_0x56_HANDLER: ; 0C:1250, 0x019250
     .db 00
     .db 28
 OBJ_STATE_0x57_HANDLER: ; 0C:180F, 0x01980F
-    .db BD
-    .db D5
-    .db 05
-    .db F0
-    .db 03
-    .db DE
-    .db D5
-    .db 05
-    .db A9
-    .db 05
-    .db 9D
-    .db 7A
-    .db 05
-    .db 20
-    .db 3D
-    .db 98
-    .db BD
-    .db D5
-    .db 05
-    .db D0
-    .db 16
-    .db BD
-    .db 7A
-    .db 05
-    .db F0
-    .db 11
-    .db 20
-    .db 11
-    .db E8
-    .db A8
-    .db F0
-    .db 0B
-    .db 4A
-    .db 90
-    .db 08
-    .db A9
-    .db 2F
-    .db 20
-    .db 52
-    .db DB
-    .db 4C
-    .db 4E
-    .db 9E
-    .db 4C
-    .db BE
-    .db B0
-    .db BD
-    .db 12
-    .db 04
-    .db 0A
-    .db A8
-    .db B9
-    .db 5D
-    .db 98
-    .db 85
-    .db 00
-    .db B9
-    .db 5E
-    .db 98
-    .db 85
-    .db 01
-    .db BD
-    .db 8C
-    .db 05
-    .db 0A
-    .db A8
-    .db B1
-    .db 00
-    .db 85
-    .db 02
-    .db C8
-    .db B1
-    .db 00
-    .db 85
-    .db 03
-    .db 6C
-    .db 02
-    .db 00
-    .db 69
-    .db 98
-    .db 6B
-    .db 98
-    .db 6F
-    .db 98
-    .db 77
-    .db 98
-    .db 7B
-    .db 98
-    .db 7D
-    .db 98
+    LDA 5D4_ARR_OBJ_TIMER?+1,X
+    BEQ L_0C:1817
+    DEC 5D4_ARR_OBJ_TIMER?+1,X
+L_0C:1817: ; 0C:1817, 0x019817
+    LDA #$05
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    JSR L_0C:183D
+    LDA 5D4_ARR_OBJ_TIMER?+1,X
+    BNE L_0C:183A
+    LDA OBJECT_DATA_EXTRA_B?[18],X
+    BEQ L_0C:183A
+    JSR L_1F:0811
+    TAY
+    BEQ L_0C:183A
+    LSR A
+    BCC L_0C:183A
+    LDA #$2F
+    JSR SND_BANKED_DISPATCH
+    JMP L_0C:1E4E
+L_0C:183A: ; 0C:183A, 0x01983A
+    JMP L_0D:10BE
+L_0C:183D: ; 0C:183D, 0x01983D
+    LDA OBJ_SECONDARY_SWITCH?[18],X
+    ASL A
+    TAY
+    LDA UNK_PTRS2_L,Y
+    STA TMP_00
+    LDA UNK_PTRS2_H,Y
+    STA TMP_01
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    ASL A
+    TAY
+    LDA [TMP_00],Y
+    STA TMP_02
+    INY
+    LDA [TMP_00],Y
+    STA TMP_03
+    JMP [TMP_02]
+UNK_PTRS2_L: ; 0C:185D, 0x01985D
+    LOW(UNK2_A)
+UNK_PTRS2_H: ; 0C:185E, 0x01985E
+    HIGH(UNK2_A)
+    LOW(UNK2_B)
+    HIGH(UNK2_B)
+    LOW(UNK2_C)
+    HIGH(UNK2_C)
+    LOW(UNK2_D)
+    HIGH(UNK2_D)
+    LOW(UNK2_E)
+    HIGH(UNK2_E)
+    LOW(UNK2_F)
+    HIGH(UNK2_F)
+UNK2_A: ; 0C:1869, 0x019869
     .db 83
     .db 98
+UNK2_B: ; 0C:186B, 0x01986B
     .db D4
     .db 98
     .db 0D
     .db 99
+UNK2_C: ; 0C:186F, 0x01986F
     .db 75
     .db 99
     .db 30
@@ -6271,12 +3964,15 @@ OBJ_STATE_0x57_HANDLER: ; 0C:180F, 0x01980F
     .db 99
     .db E9
     .db 99
+UNK2_D: ; 0C:1877, 0x019877
     .db 8C
     .db 9A
     .db 39
     .db 9A
+UNK2_E: ; 0C:187B, 0x01987B
     .db D5
     .db 9E
+UNK2_F: ; 0C:187D, 0x01987D
     .db 57
     .db 9F
     .db C4
@@ -7080,79 +4776,39 @@ OBJ_STATE_0x57_HANDLER: ; 0C:180F, 0x01980F
     .db 59
     .db 59
 OBJ_STATE_0x58_HANDLER: ; 0C:1B9F, 0x019B9F
-    .db BD
-    .db 55
-    .db 05
-    .db 9D
-    .db 56
-    .db 05
-    .db BD
-    .db 7D
-    .db 04
-    .db 9D
-    .db 7E
-    .db 04
-    .db BD
-    .db A1
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db BD
-    .db 11
-    .db 04
-    .db C9
-    .db 02
-    .db A9
-    .db 00
-    .db 90
-    .db 02
-    .db A9
-    .db 61
-    .db 9D
-    .db 00
-    .db 04
-    .db 60
-    .db BC
-    .db D4
-    .db 05
-    .db 38
-    .db BD
-    .db A2
-    .db 04
-    .db F9
-    .db A2
-    .db 04
-    .db A0
-    .db 00
-    .db C9
-    .db 03
-    .db 90
-    .db 0B
-    .db C9
-    .db FE
-    .db B0
-    .db 07
-    .db A0
-    .db 02
-    .db 0A
-    .db 90
-    .db 02
-    .db A0
-    .db 04
-    .db B9
-    .db F0
-    .db 9B
-    .db 9D
-    .db 20
-    .db 05
-    .db B9
-    .db F1
-    .db 9B
-    .db 9D
-    .db 0E
-    .db 05
-    .db 60
+    LDA 544_OBJ_UNK_POS?+17,X
+    STA 556_OBJ_UPDATE_FLAGS?[18],X
+    LDA OBJ_POS_Y+17,X
+    STA OBJ_POS_X[18],X
+    LDA 490_OBJ_UNK_SPEED?+17,X
+    STA OBJ_POS_Y[18],X
+    LDA OBJ_ANIMATION_DISPLAY+17,X
+    CMP #$02
+    LDA #$00
+    BCC L_0C:1BBC
+    LDA #$61
+L_0C:1BBC: ; 0C:1BBC, 0x019BBC
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    RTS
+    LDY 5D4_ARR_OBJ_TIMER?[18],X
+    SEC
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    SBC 4A2_OBJ_UNK_POS?[18],Y
+    LDY #$00
+    CMP #$03
+    BCC L_0C:1BDB
+    CMP #$FE
+    BCS L_0C:1BDB
+    LDY #$02
+    ASL A
+    BCC L_0C:1BDB
+    LDY #$04
+L_0C:1BDB: ; 0C:1BDB, 0x019BDB
+    LDA L_0C:1BF0,Y
+    STA 520_ARR_UNK[18],X
+    LDA L_0C:1BF1,Y
+    STA 50E_ARR_UNK[18],X
+    RTS
     .db 00
     .db 00
     .db 00
@@ -7161,7 +4817,9 @@ OBJ_STATE_0x58_HANDLER: ; 0C:1B9F, 0x019B9F
     .db 04
     .db 00
     .db 00
+L_0C:1BF0: ; 0C:1BF0, 0x019BF0
     .db 00
+L_0C:1BF1: ; 0C:1BF1, 0x019BF1
     .db 00
     .db A0
     .db FF
@@ -7324,259 +4982,121 @@ OBJ_STATE_0x58_HANDLER: ; 0C:1B9F, 0x019B9F
     .db 52
     .db DB
 OBJ_STATE_0x59_HANDLER: ; 0C:1C92, 0x019C92
-    .db BD
-    .db 8C
-    .db 05
-    .db D0
-    .db 45
-    .db 20
-    .db 63
-    .db F8
-    .db B0
-    .db 32
-    .db 20
-    .db 7C
-    .db F8
-    .db B0
-    .db 40
-    .db BD
-    .db C6
-    .db 04
-    .db 7D
-    .db A2
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db A9
-    .db 93
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db FF
-    .db 9D
-    .db 68
-    .db 05
-    .db 20
-    .db 11
-    .db E8
-    .db 4A
-    .db 4A
-    .db B0
-    .db 13
-    .db DE
-    .db 48
-    .db 04
-    .db 10
-    .db 0D
-    .db A9
-    .db 05
-    .db 9D
-    .db 48
-    .db 04
-    .db BD
-    .db 00
-    .db 04
-    .db 49
-    .db 01
-    .db 9D
-    .db 00
-    .db 04
-    .db 60
-    .db A9
-    .db 05
-    .db 9D
-    .db 48
-    .db 04
-    .db A9
-    .db 60
-    .db 9D
-    .db 00
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db DE
-    .db 48
-    .db 04
-    .db 10
-    .db FA
-    .db 4C
-    .db D1
-    .db F4
-    .db BD
-    .db 7D
-    .db 04
-    .db 9D
-    .db 7E
-    .db 04
-    .db BD
-    .db A1
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db 60
-    .db 8E
-    .db 00
-    .db 07
-    .db BD
-    .db 7E
-    .db 04
-    .db 85
-    .db 08
-    .db BD
-    .db 6C
-    .db 04
-    .db 85
-    .db 09
-    .db BC
-    .db D4
-    .db 05
-    .db B9
-    .db 7E
-    .db 04
-    .db 85
-    .db 0A
-    .db B9
-    .db 6C
-    .db 04
-    .db 85
-    .db 0B
-    .db 20
-    .db 96
-    .db 9D
-    .db BD
-    .db 36
-    .db 04
-    .db 0A
-    .db 0A
-    .db A9
-    .db 00
-    .db 90
-    .db 02
-    .db A9
-    .db 04
-    .db 85
-    .db 07
-    .db BD
-    .db A2
-    .db 04
-    .db 85
-    .db 06
-    .db 20
-    .db 8F
-    .db F6
-    .db 90
-    .db 65
-    .db 20
-    .db 2D
-    .db 9D
-    .db 20
-    .db 8F
-    .db F6
-    .db 90
-    .db 5D
-    .db A4
-    .db 07
-    .db 18
-    .db B9
-    .db 8E
-    .db 9D
-    .db 65
-    .db 08
-    .db 9D
-    .db 7E
-    .db 04
-    .db 18
-    .db B9
-    .db 8F
-    .db 9D
-    .db AC
-    .db 00
-    .db 07
-    .db 79
-    .db C6
-    .db 04
-    .db 9D
-    .db C6
-    .db 04
-    .db 18
-    .db 65
-    .db 06
-    .db 9D
-    .db 6C
-    .db 04
-    .db A5
-    .db 06
-    .db 9D
-    .db A2
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 56
-    .db 05
-    .db 9D
-    .db 36
-    .db 04
-    .db 9D
-    .db 0E
-    .db 05
-    .db 9D
-    .db 20
-    .db 05
-    .db A5
-    .db 0C
-    .db 9D
-    .db FC
-    .db 04
-    .db A5
-    .db 0D
-    .db 9D
-    .db EA
-    .db 04
-    .db A5
-    .db 0E
-    .db 9D
-    .db 44
-    .db 05
-    .db A5
-    .db 0F
-    .db 9D
-    .db 32
-    .db 05
-    .db A9
-    .db 59
-    .db 9D
-    .db 24
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db A9
-    .db 5E
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 06
-    .db 9D
-    .db 48
-    .db 04
-    .db E6
-    .db 07
-    .db E6
-    .db 07
-    .db AE
-    .db 00
-    .db 07
-    .db 60
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    BNE L_0C:1CDC
+    JSR NO_OVERFLOW
+    BCS L_0C:1CCE
+    JSR FUNKY_ADD/ROT_RTN
+    BCS L_0C:1CE1
+    LDA 4C6_OBJ_UNK_POS?[18],X
+    ADC 4A2_OBJ_UNK_POS?[18],X
+    STA OBJ_POS_Y[18],X
+    LDA #$93
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDA #$FF
+    STA OBJECT_DATA_HEALTH?[18],X
+    JSR L_1F:0811
+    LSR A
+    LSR A
+    BCS L_0C:1CCE
+    DEC OBJ_ANIM_HOLD_TIMER?[18],X
+    BPL L_0C:1CCD
+    LDA #$05
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA OBJ_ANIMATION_DISPLAY[18],X
+    EOR #$01
+    STA OBJ_ANIMATION_DISPLAY[18],X
+L_0C:1CCD: ; 0C:1CCD, 0x019CCD
+    RTS
+L_0C:1CCE: ; 0C:1CCE, 0x019CCE
+    LDA #$05
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA #$60
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    INC OBJ_TERTIARY_SWITCH?[18],X
+L_0C:1CDB: ; 0C:1CDB, 0x019CDB
+    RTS
+L_0C:1CDC: ; 0C:1CDC, 0x019CDC
+    DEC OBJ_ANIM_HOLD_TIMER?[18],X
+    BPL L_0C:1CDB
+L_0C:1CE1: ; 0C:1CE1, 0x019CE1
+    JMP INIT_OBJECT[X]_DATA
+    LDA OBJ_POS_Y+17,X
+    STA OBJ_POS_X[18],X
+    LDA 490_OBJ_UNK_SPEED?+17,X
+    STA OBJ_POS_Y[18],X
+    RTS
+    STX OBJ_HANDLER_FOCUS_SCRATCHPAD
+    LDA OBJ_POS_X[18],X
+    STA TMP_08
+    LDA OBJ_POS_Y[18],X
+    STA TMP_09
+    LDY 5D4_ARR_OBJ_TIMER?[18],X
+    LDA OBJ_POS_X[18],Y
+    STA TMP_0A
+    LDA OBJ_POS_Y[18],Y
+    STA TMP_0B
+    JSR L_0C:1D96
+    LDA OBJ_DIRECTION_RELATED?[18],X
+    ASL A
+    ASL A
+    LDA #$00
+    BCC L_0C:1D19
+    LDA #$04
+L_0C:1D19: ; 0C:1D19, 0x019D19
+    STA TMP_07
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    STA TMP_06
+    JSR L_1F:168F
+    BCC L_0C:1D8A
+    JSR L_0C:1D2D
+    JSR L_1F:168F
+    BCC L_0C:1D8A
+L_0C:1D2D: ; 0C:1D2D, 0x019D2D
+    LDY TMP_07
+    CLC
+    LDA L_0C:1D8E,Y
+    ADC TMP_08
+    STA OBJ_POS_X[18],X
+    CLC
+    LDA L_0C:1D8F,Y
+    LDY OBJ_HANDLER_FOCUS_SCRATCHPAD
+    ADC 4C6_OBJ_UNK_POS?[18],Y
+    STA 4C6_OBJ_UNK_POS?[18],X
+    CLC
+    ADC TMP_06
+    STA OBJ_POS_Y[18],X
+    LDA TMP_06
+    STA 4A2_OBJ_UNK_POS?[18],X
+    LDA #$00
+    STA 556_OBJ_UPDATE_FLAGS?[18],X
+    STA OBJ_DIRECTION_RELATED?[18],X
+    STA 50E_ARR_UNK[18],X
+    STA 520_ARR_UNK[18],X
+    LDA TMP_0C
+    STA 4FC_ARR_UNK[18],X
+    LDA TMP_0D
+    STA 4EA_ARR_UNK[18],X
+    LDA TMP_0E
+    STA 544_OBJ_UNK_POS?[18],X
+    LDA TMP_0F
+    STA 532_OBJ_UNK_POS?[18],X
+    LDA #$59
+    STA OBJ_ENABLED_STATE+MORE?[18],X
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$5E
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$06
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    INC TMP_07
+    INC TMP_07
+L_0C:1D8A: ; 0C:1D8A, 0x019D8A
+    LDX OBJ_HANDLER_FOCUS_SCRATCHPAD
+    RTS
+L_0C:1D8E: ; 0C:1D8E, 0x019D8E
     .db E4
+L_0C:1D8F: ; 0C:1D8F, 0x019D8F
     .db 00
     .db 1C
     .db 0A
@@ -7584,6 +5104,7 @@ OBJ_STATE_0x59_HANDLER: ; 0C:1C92, 0x019C92
     .db 0A
     .db 1C
     .db 00
+L_0C:1D96: ; 0C:1D96, 0x019D96
     .db 38
     .db A5
     .db 08
@@ -7768,6 +5289,7 @@ OBJ_STATE_0x59_HANDLER: ; 0C:1C92, 0x019C92
     .db 00
     .db 00
     .db 03
+L_0C:1E4E: ; 0C:1E4E, 0x019E4E
     .db 20
     .db 41
     .db F8

@@ -7427,6 +7427,7 @@ SPRITE_PAGE_2_DATA_PTRS_H: ; 02:0002, 0x004002
     .db B1
     .db 03
     .db FC
+SWITCH_0x32_SUB_0x02_SWITCH_H: ; 02:1D03, 0x005D03
     .db F8
     .db B3
     .db 03

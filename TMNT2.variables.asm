@@ -146,6 +146,7 @@ FLAG_IRQ_ENABLE:                              .rs 1
 
           .rsset 0x0060
 60_PLAYER_UNK:                                .rs 1
+R_**:$0061:                                   .rs 1
 
 
           .rsset 0x0072
@@ -162,9 +163,7 @@ PLAYER?_UNK:                                  .rs 2
 7C_UNK:                                       .rs 1
 FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE:        .rs 1
 7E_STREAM_UNK:                                .rs 1
-
-
-          .rsset 0x0080
+7F_UNK:                                       .rs 1
 80_UNK:                                       .rs 1
 81_UNK:                                       .rs 1
 82_UNK:                                       .rs 1
@@ -175,11 +174,14 @@ FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE:        .rs 1
 88_UNK_SWITCH?:                               .rs 1
 
 
-          .rsset 0x008B
+          .rsset 0x008A
+R_**:$008A:                                   .rs 1
 8B_UNK:                                       .rs 1
 8C_UNK:                                       .rs 1
 8D_UNK:                                       .rs 1
 8E_UNK:                                       .rs 1
+8F_ARR_UNK:                                   .rs 2
+R_**:$0091:                                   .rs 1
 
 
           .rsset 0x0093
@@ -204,6 +206,10 @@ A3_UNK:                                       .rs 1
 A5_UNK:                                       .rs 1
 IRQ_FLAG_R2-R5_BANK_7E:                       .rs 1
 A7_IRQ_REPLACE_SECONDARY_INDEX:               .rs 1
+
+
+          .rsset 0x00A9
+A9_UNK:                                       .rs 1
 
 
           .rsset 0x00AD
@@ -234,23 +240,38 @@ C5_UNK:                                       .rs 1
 C6_SPR_ARR_UNK:                               .rs 2
 
 
+          .rsset 0x00C9
+R_**:$00C9:                                   .rs 1
+
+
           .rsset 0x00D8
 D8_IRQ_CONFIG_B:                              .rs 1
 D9_IRQ_CONFIG_A:                              .rs 1
 DA_FLAG?_UNK:                                 .rs 1
-
-
-          .rsset 0x00DC
+R_**:$00DB:                                   .rs 1
 DC_UNK:                                       .rs 1
-
-
-          .rsset 0x00DE
+R_**:$00DD:                                   .rs 1
 DE_FLAG?_UNK:                                 .rs 1
 DF_UNK:                                       .rs 1
-
-
-          .rsset 0x00E2
+R_**:$00E0:                                   .rs 1
+R_**:$00E1:                                   .rs 1
 ZL_E2_SOUND_UNK:                              .rs 1
+R_**:$00E3:                                   .rs 1
+R_**:$00E4:                                   .rs 1
+R_**:$00E5:                                   .rs 1
+R_**:$00E6:                                   .rs 1
+R_**:$00E7:                                   .rs 1
+R_**:$00E8:                                   .rs 1
+R_**:$00E9:                                   .rs 1
+R_**:$00EA:                                   .rs 1
+
+
+          .rsset 0x00EC
+R_**:$00EC:                                   .rs 1
+R_**:$00ED:                                   .rs 1
+R_**:$00EE:                                   .rs 1
+R_**:$00EF:                                   .rs 1
+F0_UNK:                                       .rs 1
 
 
           .rsset 0x00F5
@@ -263,31 +284,200 @@ PPU_SCROLL_Y_COPY_IRQ:                        .rs 1
 PPU_SCROLL_X_COPY_IRQ:                        .rs 1
 PPU_MASK_RAM_COPY:                            .rs 1
 PPU_CTRL_RAM_COPY:                            .rs 1
+R_**:$0100:                                   .rs 1
+
+
+          .rsset 0x0104
+R_**:$0104:                                   .rs 1
 
 
           .rsset 0x010A
 10A_ARR_UNK:                                  .rs 1
+R_**:$010B:                                   .rs 1
 
 
-          .rsset 0x015B
+          .rsset 0x010D
+R_**:$010D:                                   .rs 1
+R_**:$010E:                                   .rs 1
+R_**:$010F:                                   .rs 1
+R_**:$0110:                                   .rs 1
+
+
+          .rsset 0x0116
+R_**:$0116:                                   .rs 1
+
+
+          .rsset 0x011A
+R_**:$011A:                                   .rs 1
+
+
+          .rsset 0x011C
+R_**:$011C:                                   .rs 1
+
+
+          .rsset 0x0122
+R_**:$0122:                                   .rs 1
+
+
+          .rsset 0x0128
+R_**:$0128:                                   .rs 1
+
+
+          .rsset 0x0146
+R_**:$0146:                                   .rs 1
+
+
+          .rsset 0x014C
+R_**:$014C:                                   .rs 1
+
+
+          .rsset 0x0152
+R_**:$0152:                                   .rs 1
+
+
+          .rsset 0x0158
+R_**:$0158:                                   .rs 1
+
+
+          .rsset 0x015A
+R_**:$015A:                                   .rs 1
 15B_SND?_UNK:                                 .rs 1
+
+
+          .rsset 0x015E
+R_**:$015E:                                   .rs 1
 
 
           .rsset 0x0161
 161_SND?_UNK:                                 .rs 1
 
 
+          .rsset 0x0163
+R_**:$0163:                                   .rs 1
+
+
           .rsset 0x0166
 166_SND?_UNK:                                 .rs 1
 
 
-          .rsset 0x01B4
+          .rsset 0x0177
+R_**:$0177:                                   .rs 1
+
+
+          .rsset 0x017B
+R_**:$017B:                                   .rs 1
+
+
+          .rsset 0x017F
+R_**:$017F:                                   .rs 1
+
+
+          .rsset 0x0182
+R_**:$0182:                                   .rs 1
+
+
+          .rsset 0x0185
+R_**:$0185:                                   .rs 1
+
+
+          .rsset 0x0188
+R_**:$0188:                                   .rs 1
+
+
+          .rsset 0x018A
+R_**:$018A:                                   .rs 1
+
+
+          .rsset 0x018C
+R_**:$018C:                                   .rs 1
+
+
+          .rsset 0x018E
+R_**:$018E:                                   .rs 1
+
+
+          .rsset 0x0190
+R_**:$0190:                                   .rs 1
+
+
+          .rsset 0x0192
+R_**:$0192:                                   .rs 1
+
+
+          .rsset 0x0196
+R_**:$0196:                                   .rs 1
+
+
+          .rsset 0x0198
+R_**:$0198:                                   .rs 1
+
+
+          .rsset 0x019A
+R_**:$019A:                                   .rs 1
+
+
+          .rsset 0x019E
+R_**:$019E:                                   .rs 1
+
+
+          .rsset 0x01A0
+R_**:$01A0:                                   .rs 1
+
+
+          .rsset 0x01A2
+R_**:$01A2:                                   .rs 1
+
+
+          .rsset 0x01A4
+R_**:$01A4:                                   .rs 1
+
+
+          .rsset 0x01A6
+R_**:$01A6:                                   .rs 1
+
+
+          .rsset 0x01A8
+R_**:$01A8:                                   .rs 1
+
+
+          .rsset 0x01AA
+R_**:$01AA:                                   .rs 1
+
+
+          .rsset 0x01AC
+R_**:$01AC:                                   .rs 1
+
+
+          .rsset 0x01AE
+R_**:$01AE:                                   .rs 1
+
+
+          .rsset 0x01B0
+R_**:$01B0:                                   .rs 1
+
+
+          .rsset 0x01B2
+R_**:$01B2:                                   .rs 1
+R_**:$01B3:                                   .rs 1
 1B4_SOUND_TRI_ZERO_FLAG:                      .rs 1
 
 
           .rsset 0x0200
 SPRITE_PAGE:                                  .rs 256
 PPU_UPDATE_BUFFER:                            .rs 20
+R_**:$0314:                                   .rs 1
+R_**:$0315:                                   .rs 1
+R_**:$0316:                                   .rs 1
+R_**:$0317:                                   .rs 1
+R_**:$0318:                                   .rs 1
+
+
+          .rsset 0x03C0
+R_**:$03C0:                                   .rs 1
+
+
+          .rsset 0x03C8
+R_**:$03C8:                                   .rs 1
 
 
           .rsset 0x03D3
@@ -353,11 +543,21 @@ OBJ_TERTIARY_SWITCH?:                         .rs 18
 5D4_ARR_OBJ_TIMER?:                           .rs 18
 
 
+          .rsset 0x05EE
+R_**:$05EE:                                   .rs 1
+R_**:$05EF:                                   .rs 1
+R_**:$05F0:                                   .rs 1
+R_**:$05F1:                                   .rs 1
+
+
           .rsset 0x05F8
 5F8_UNK:                                      .rs 1
 ZP_13_INDEX_VAL_UNK:                          .rs 1
 5FA_UNK:                                      .rs 1
 5FB_TIMER_ALL_FINISHED?:                      .rs 1
+R_**:$05FC:                                   .rs 1
+R_**:$05FD:                                   .rs 1
+R_**:$05FE:                                   .rs 1
 
 
           .rsset 0x0600
@@ -493,7 +693,8 @@ PLAYER_UNK_69C:                               .rs 4
 6A8_COPIED_TO_PLAYERS_UNK:                    .rs 2
 
 
-          .rsset 0x06D7
+          .rsset 0x06D6
+R_**:$06D6:                                   .rs 1
 ARR_RAM_CUSTOM_PACKET_61B_FLAG:               .rs 40
 
 
@@ -501,13 +702,26 @@ ARR_RAM_CUSTOM_PACKET_61B_FLAG:               .rs 40
 PPU_PALETTE_BUF?:                             .rs 32
 
 
-          .rsset 0x0701
+          .rsset 0x0700
+OBJ_HANDLER_FOCUS_SCRATCHPAD:                 .rs 1
 701_TSELECT_CONFIRMED/TIMER:                  .rs 1
 ARR_SPRITE_OBJ_TIMER?:                        .rs 2
+R_**:$0704:                                   .rs 1
+R_**:$0705:                                   .rs 1
+R_**:$0706:                                   .rs 1
+R_**:$0707:                                   .rs 1
+R_**:$0708:                                   .rs 1
+R_**:$0709:                                   .rs 1
 
 
           .rsset 0x070C
 70C_UNK:                                      .rs 1
+
+
+          .rsset 0x070E
+R_**:$070E:                                   .rs 1
+R_**:$070F:                                   .rs 1
+R_**:$0710:                                   .rs 1
 
 
           .rsset 0x0712
@@ -516,6 +730,11 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 
           .rsset 0x0714
 714_UNK:                                      .rs 1
+R_**:$0715:                                   .rs 1
+R_**:$0716:                                   .rs 1
+R_**:$0717:                                   .rs 1
+R_**:$0718:                                   .rs 1
+R_**:$0719:                                   .rs 1
 
 
           .rsset 0x071C
@@ -528,3 +747,36 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 
           .rsset 0x0740
 740_UNK:                                      .rs 1
+
+
+          .rsset 0x074F
+R_**:$074F:                                   .rs 1
+R_**:$0750:                                   .rs 1
+
+
+          .rsset 0x075F
+R_**:$075F:                                   .rs 1
+
+
+          .rsset 0x0770
+R_**:$0770:                                   .rs 1
+
+
+          .rsset 0x0780
+R_**:$0780:                                   .rs 1
+
+
+          .rsset 0x6C22
+R_**:$6C22:                                   .rs 1
+
+
+          .rsset 0x6F6E
+R_**:$6F6E:                                   .rs 1
+
+
+          .rsset 0x7384
+R_**:$7384:                                   .rs 1
+
+
+          .rsset 0x7CA5
+R_**:$7CA5:                                   .rs 1

@@ -275,9 +275,10 @@ MORE_OVERFLOWS: ; 14:01B1, 0x0281B1
     LDA TMP_11 ; Load upper.
     ADC #$10 ; Roll add to.
     CMP #$A0 ; If _ #$A0
-    BCC 14:01D7 ; <, goto. Valid decimal range.
+    BCC L_14:01D7 ; <, goto. Valid decimal range.
     SBC #$A0 ; Correct.
     INC SCORES_BCD_00XX00,X ; Inc next pos.
+L_14:01D7: ; 14:01D7, 0x0281D7
     STA TMP_11 ; Store corrected back.
 VALID_DECIMAL_RANGE: ; 14:01D9, 0x0281D9
     LDA TMP_10 ; Load lower.
@@ -739,7 +740,7 @@ DATA_D: ; 14:046D, 0x02846D
     .db 01
     .db 45
 14:047A_TITLE_SCRN_SETUP?: ; 14:047A, 0x02847A
-    JSR SOUND_INIT_RTN? ; Sound
+    JSR SOUND_RESET/INIT_RTN? ; Sound
     JSR CLEAR_SCREEN_SUB ; File 0 decompress, clear screen?
     LDX #$02 ; Screen
     JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15
