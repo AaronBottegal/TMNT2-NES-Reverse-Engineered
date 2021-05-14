@@ -3765,7 +3765,7 @@ RTS: ; 1E:11C2, 0x03D1C2
     JSR LEVEL_RELATED_DATA_A_PASSED? ; Use in rtn.
     LDX #$04 ; 1P screen top value.
     LDA #$05 ; ??
-    LDY 47_TWO_PLAYERS_FLAG ; Load
+    LDY TWO_PLAYERS_FLAG ; Load
     BEQ NOT_2P_GAME ; Not set, 1P setup.
     LDX #$06 ; X is 2P screen top value.
     TXA ; A=6, ??
@@ -3800,7 +3800,7 @@ SKIP_PLAYER_LIVES: ; 1E:1230, 0x03D230
     LDX #$00 ; Data index.
 RTN_PLAYER_UI_TO_STATUS?: ; 1E:1234, 0x03D234
     JSR ALL_PLAYER_INFO_TO_SCREEN
-    LDA 47_TWO_PLAYERS_FLAG ; Load
+    LDA TWO_PLAYERS_FLAG ; Load
     BEQ NOT_2P_GAME
     LDY #$01 ; Player index.
     LDX #$02 ; Data index.
@@ -4047,11 +4047,11 @@ MOVE_LOOP: ; 1E:13EF, 0x03D3EF
 RTS: ; 1E:13FC, 0x03D3FC
     RTS
 UPDATE_BUF_FILL_EXTRAS: ; 1E:13FD, 0x03D3FD
-    LDA 61B_UPDATE_FROM_RAM/DEV_MISC ; Load val.
+    LDA 61B_UPDATE_FROM_RAM/PALETTE/DEV_MISC ; Load val.
     BEQ RTS ; If not set, leave.
     LDA PPU_UPDATE_BUF_INDEX ; Load index.
     BNE RTS ; != 0, goto.
-    STA 61B_UPDATE_FROM_RAM/DEV_MISC ; Clear.
+    STA 61B_UPDATE_FROM_RAM/PALETTE/DEV_MISC ; Clear.
 MOVE_DONE: ; 1E:1409, 0x03D409
     LDA #$05 ; RAM pointer file, custom update fixed.
     JMP PPU_UPDATE_PREMADE_FROM_1C/1D ; Upload.
@@ -4092,7 +4092,7 @@ MOVE_DATA_UNTIL_INDEX_TARGET: ; 1E:143E, 0x03D43E
     BNE MOVE_DATA_UNTIL_INDEX_TARGET ; Not done, continue.
 RTS_FLAG_61B_SET: ; 1E:1449, 0x03D449
     LDA #$01 ; Set flag.
-    STA 61B_UPDATE_FROM_RAM/DEV_MISC ; Update from RAM true.
+    STA 61B_UPDATE_FROM_RAM/PALETTE/DEV_MISC ; Update from RAM true.
     RTS ; Leave.
 DATA_INDEX_TARGET_COMMON: ; 1E:144F, 0x03D44F
     .db 20 ; 0x00
@@ -4102,24 +4102,24 @@ DATA_INDEX_X_INITIAL_COMMON: ; 1E:1450, 0x03D450
     .db 00
     .db 10 ; 0x02
     .db 10
-    .db 0A ; 0x03
-    .db 0A
-    .db A8 ; 0x04
-    .db A2
-    .db 1C ; 0x05, B9 a part of? Not used? Idk.
-L_1E:145A: ; 1E:145A, 0x03D45A
-    LDA L_1E:1842,Y
+UPDATE_PALETTE[0x1C]_WITH_A_ENTRY: ; 1E:1455, 0x03D455
+    ASL A ; << 2, *4. Slot size.
+    ASL A
+    TAY ; A to Y index.
+    LDX #$1C ; Index.
+LOOP_PALETTE_CHANGE: ; 1E:145A, 0x03D45A
+    LDA PALETTE_DATA,Y
     STA PPU_PALETTE_BUF?[32],X
     INY
     INX
-    CPX #$20
-    BNE L_1E:145A
-    BEQ RTS_FLAG_61B_SET
+    CPX #$20 ; Compare to end.
+    BNE LOOP_PALETTE_CHANGE
+    BEQ RTS_FLAG_61B_SET ; Always taken.
 RTN_TURTLE_COLORS_ASSIGN?: ; 1E:1468, 0x03D468
     LDA TURTLE_SELECTION[2] ; Load P1 selected.
     LDX #$11 ; Palette entry.
     JSR SUB_SET_COLORS_PLAYERS? ; Set a color?
-    LDY 47_TWO_PLAYERS_FLAG ; Load flag.
+    LDY TWO_PLAYERS_FLAG ; Load flag.
     BEQ NOT_2P_GAME ; Not set, goto. Abuse this RTS exactly the same.
     LDA TURTLE_SELECTION+1 ; Get P2 turtle.
     LDX #$15 ; Palette entry.
@@ -5136,16 +5136,16 @@ SCREEN_DATA_BV: ; 1E:183D, 0x03D83D
     .db 16
     .db 28
     .db 20
-L_1E:1842: ; 1E:1842, 0x03D842
-    .db 0F
+PALETTE_DATA: ; 1E:1842, 0x03D842
+    .db 0F ; 0x00
     .db 08
     .db 14
     .db 20
-    .db 0F
+    .db 0F ; 0x01
     .db 0C
     .db 20
     .db 2C
-    .db 0F
+    .db 0F ; 0x02
     .db 08
     .db 16
     .db 20

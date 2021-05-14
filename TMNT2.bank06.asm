@@ -86,7 +86,7 @@ SCREEN_NOT_SEVEN: ; 06:00A1, 0x00C0A1
     LDA 43_PLAYER_UNK[2],X ; Load
     ORA 601_IRQ_FLAG_DELAY_MOD_+ ; Combine with.
     STA 43_PLAYER_UNK[2],X ; Store back.
-    LDA 47_TWO_PLAYERS_FLAG ; Load flag.
+    LDA TWO_PLAYERS_FLAG ; Load flag.
     BEQ SINGLE_PLAYER_ONLY ; Not set, goto.
     LDA NUM_PLAYER_LIVES[2] ; Load P1 Lives.
     BMI P1_GAME_OVER_2P_GAME ; Not alive, but is 2 players.

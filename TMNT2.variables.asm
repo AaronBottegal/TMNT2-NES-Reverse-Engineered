@@ -116,7 +116,7 @@ LEVEL/SCREEN_ON:                              .rs 1
 
 
           .rsset 0x0047
-47_TWO_PLAYERS_FLAG:                          .rs 1
+TWO_PLAYERS_FLAG:                             .rs 1
 PPU_ADDR_IRQ:                                 .rs 2
 4A_UNK:                                       .rs 1
 4B_SWITCH_GAME_PREP/OVER:                     .rs 1
@@ -251,7 +251,7 @@ DA_FLAG?_UNK:                                 .rs 1
 R_**:$00DB:                                   .rs 1
 DC_UNK:                                       .rs 1
 R_**:$00DD:                                   .rs 1
-DE_FLAG?_UNK:                                 .rs 1
+DE_FLAG_PALETTE_UNK:                          .rs 1
 DF_UNK:                                       .rs 1
 R_**:$00E0:                                   .rs 1
 R_**:$00E1:                                   .rs 1
@@ -525,7 +525,7 @@ OBJ_POS_X:                                    .rs 18
 490_OBJ_UNK_SPEED?:                           .rs 18
 4A2_OBJ_UNK_POS?:                             .rs 18
 4B4_OBJ_SPEED?:                               .rs 18
-4C6_OBJ_UNK_POS?:                             .rs 18
+4C6_OBJ_UNK:                                  .rs 18
 4D8_OBJ_UNK:                                  .rs 18
 4EA_ARR_UNK:                                  .rs 18
 4FC_ARR_UNK:                                  .rs 18
@@ -539,7 +539,7 @@ OBJECT_DATA_EXTRA_B?:                         .rs 18
 OBJ_TERTIARY_SWITCH?:                         .rs 18
 59E_OBJ_UNK_TIMER?:                           .rs 18
 5B0_OBJ_UNK:                                  .rs 18
-5C2_OBJ_DATA_PTR_STREAM_INDEX:                .rs 18
+5C2_OBJ_DATA_PTR/MISC_INDEX:                  .rs 18
 5D4_ARR_OBJ_TIMER?:                           .rs 18
 
 
@@ -587,7 +587,7 @@ PPU_FLAG_UNK_MODIFY_LATCH_UNK:                .rs 1
           .rsset 0x0618
 PLAYER_ANIM_FRAME_SWAP?:                      .rs 2
 61A_UNK_INDEX:                                .rs 1
-61B_UPDATE_FROM_RAM/DEV_MISC:                 .rs 1
+61B_UPDATE_FROM_RAM/PALETTE/DEV_MISC:         .rs 1
 61C_UNK:                                      .rs 1
 
 
@@ -706,7 +706,7 @@ PPU_PALETTE_BUF?:                             .rs 32
 OBJ_HANDLER_FOCUS_SCRATCHPAD:                 .rs 1
 701_TSELECT_CONFIRMED/TIMER:                  .rs 1
 ARR_SPRITE_OBJ_TIMER?:                        .rs 2
-R_**:$0704:                                   .rs 1
+704_UNK:                                      .rs 1
 R_**:$0705:                                   .rs 1
 R_**:$0706:                                   .rs 1
 R_**:$0707:                                   .rs 1
@@ -725,16 +725,16 @@ R_**:$0710:                                   .rs 1
 
 
           .rsset 0x0712
-712_FLAG?_UNK:                                .rs 1
+712_FLAG_PALETTE_UNK:                         .rs 1
 
 
           .rsset 0x0714
 714_UNK:                                      .rs 1
-R_**:$0715:                                   .rs 1
-R_**:$0716:                                   .rs 1
-R_**:$0717:                                   .rs 1
-R_**:$0718:                                   .rs 1
-R_**:$0719:                                   .rs 1
+A/B_WHICH_RESULT:                             .rs 1
+716_UNK:                                      .rs 1
+717_OBJ_INDEX_A_UNK:                          .rs 1
+718_OBJ_INDEX_B_UNK:                          .rs 1
+719_OBJ_CMP_UNK:                              .rs 1
 
 
           .rsset 0x071C

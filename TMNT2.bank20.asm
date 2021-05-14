@@ -172,7 +172,7 @@ RTN_UPDATE_SCORES_ALWAYS: ; 14:00FB, 0x0280FB
 P1_NOT_MODIFIED: ; 14:0114, 0x028114
     PLA ; Pull bits.
     LSR A ; Shift P2 update.
-    LDA 47_TWO_PLAYERS_FLAG ; Load P2 flag.
+    LDA TWO_PLAYERS_FLAG ; Load P2 flag.
     BEQ RTS_XOBJ_RESTORE ; == 0. Not two players, leave.
     BCC RTS_XOBJ_RESTORE ; Carry unset, P2 not updated, leave.
     LDX #$02 ; Player 2 index.
@@ -550,7 +550,7 @@ RTN_NAME_TURTLES: ; 14:0393, 0x028393
     PHA
     LDX #$00 ; P1 index.
     JSR RTN_TURTLE_NAME_TO_STATUS_BAR
-    LDA 47_TWO_PLAYERS_FLAG
+    LDA TWO_PLAYERS_FLAG
     BEQ NOT_TWO_PLAYERS
     LDX #$02 ; P2 index.
     JSR RTN_TURTLE_NAME_TO_STATUS_BAR
