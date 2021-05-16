@@ -181,10 +181,7 @@ R_**:$008A:                                   .rs 1
 8D_UNK:                                       .rs 1
 8E_UNK:                                       .rs 1
 8F_ARR_UNK:                                   .rs 2
-R_**:$0091:                                   .rs 1
-
-
-          .rsset 0x0093
+PLAYERS_UNK:                                  .rs 2
 93_PLAYER_UNK:                                .rs 2
 95_UNK:                                       .rs 1
 96_UNK:                                       .rs 1
@@ -206,10 +203,8 @@ A3_UNK:                                       .rs 1
 A5_UNK:                                       .rs 1
 IRQ_FLAG_R2-R5_BANK_7E:                       .rs 1
 A7_IRQ_REPLACE_SECONDARY_INDEX:               .rs 1
-
-
-          .rsset 0x00A9
-A9_UNK:                                       .rs 1
+FILE_PLAYER_OBJ_USE_B:                        .rs 2
+FILE_PLAYER_OBJ_USE_A:                        .rs 2
 
 
           .rsset 0x00AD
@@ -495,7 +490,7 @@ PALETTE_SWAP_QUEUEING_IN_PROGRESS:            .rs 1
           .rsset 0x03E3
 LOW_BANK_DATA:                                .rs 1
 UPPER_BANK_DATA:                              .rs 1
-TMP_CHOOSE_BANKS_RTN_UNK:                     .rs 1
+SOUND_VALUE:                                  .rs 1
 
 
           .rsset 0x03E7
@@ -537,10 +532,10 @@ OBJ_POS_X:                                    .rs 18
 OBJECT_DATA_HEALTH?:                          .rs 18
 OBJECT_DATA_EXTRA_B?:                         .rs 18
 OBJ_TERTIARY_SWITCH?:                         .rs 18
-59E_OBJ_UNK_TIMER?:                           .rs 18
+59E_OBJ_UNK:                                  .rs 18
 5B0_OBJ_UNK:                                  .rs 18
 5C2_OBJ_DATA_PTR/MISC_INDEX:                  .rs 18
-5D4_ARR_OBJ_TIMER?:                           .rs 18
+5D4_EXTRA_TIMER/OBJ:                          .rs 18
 
 
           .rsset 0x05EE
@@ -694,7 +689,7 @@ PLAYER_UNK_69C:                               .rs 4
 
 
           .rsset 0x06D6
-R_**:$06D6:                                   .rs 1
+6D6_OBJ_UNK:                                  .rs 1
 ARR_RAM_CUSTOM_PACKET_61B_FLAG:               .rs 40
 
 
@@ -708,7 +703,7 @@ OBJ_HANDLER_FOCUS_SCRATCHPAD:                 .rs 1
 ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 704_UNK:                                      .rs 1
 R_**:$0705:                                   .rs 1
-R_**:$0706:                                   .rs 1
+706_UNK:                                      .rs 1
 R_**:$0707:                                   .rs 1
 R_**:$0708:                                   .rs 1
 R_**:$0709:                                   .rs 1
@@ -719,7 +714,7 @@ R_**:$0709:                                   .rs 1
 
 
           .rsset 0x070E
-R_**:$070E:                                   .rs 1
+70E_OBJ_UNK:                                  .rs 1
 R_**:$070F:                                   .rs 1
 R_**:$0710:                                   .rs 1
 

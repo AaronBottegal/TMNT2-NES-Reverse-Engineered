@@ -297,7 +297,9 @@ BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
     .db 2E
     .db 2E
     .db 2E ; Guessing this is the end as the data past looks like ptrs.
+FILE_PTRS_POSITIVE_L: ; 1F:01EF, 0x03E1EF
     .db 1F
+FILE_PTRS_POSITIVE_H: ; 1F:01F0, 0x03E1F0
     .db E2
     .db 24
     .db E2
@@ -465,7 +467,9 @@ BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
     .db 00
     .db 40
     .db 0E
+DATA_PTRS_NEGATIVE_L: ; 1F:0297, 0x03E297
     .db 25
+DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db E3
     .db 2C
     .db E3
@@ -1104,7 +1108,9 @@ BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
     .db 0E
     .db C6
     .db 46
+DPTRS_UNK_L: ; 1F:0516, 0x03E516
     .db 22
+DPTRS_UNK_H: ; 1F:0517, 0x03E517
     .db E5
     .db 22
     .db E5
@@ -1734,207 +1740,240 @@ RTS_A_TO_8C: ; 1F:080A, 0x03E80A
     RTS ; Leave.
     LDA #$00
     BEQ RTS_A_TO_8C ; RTS, store 0.
-L_1F:0811: ; 1F:0811, 0x03E811
-    STX TMP_08
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X
-    AND #$03
-    BEQ 1F:0823
+OBJ_RTN_UNK_RET_VAL_UNK: ; 1F:0811, 0x03E811
+    STX TMP_08 ; TMP_XOBJ
+    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load obj update flags.
+    AND #$03 ; Keep 0000.0011
+    BEQ CONTINUE_A ; If not set, goto next.
     LDA #$00
-    STA TMP_0C
+    STA TMP_0C ; Clearf these.
     STA TMP_0D
-    LDX TMP_08
-    RTS
-    LDY #$02
-    STY TMP_0B
-    LDX #$04
-    STX TMP_09
-    LDA OBJ_ANIMATION_DISPLAY[18],X
-    BEQ 1F:0835
-    JSR 1F:086E
-    BNE 1F:086B
-    INC TMP_0B
-    INC TMP_09
+    LDX TMP_08 ; Load X again even though it isn't needed.
+    RTS ; Leave.
+CONTINUE_A: ; 1F:0823, 0x03E823
+    LDY #$02 ; Val? OBJ#?
+    STY TMP_0B ; Seed TMP.
+    LDX #$04 ; Val? OBJ#?
+    STX TMP_09 ; Seed TMP.
+LOOP_PLAYER_OBJS: ; 1F:082B, 0x03E82B
+    LDA OBJ_ANIMATION_DISPLAY[18],X ; Load anim.
+    BEQ ANIM_MOD_SKIP
+    JSR POS_RTN_UNK ; Do.
+    BNE RTS_XOBJ_RESTORE ; If return nonzero, leave with restore.
+ANIM_MOD_SKIP: ; 1F:0835, 0x03E835
+    INC TMP_0B ; Shift focus to other set, doing both players and their pairs.
+    INC TMP_09 ; Shift
     LDY TMP_0B
     LDX TMP_09
-    CPX #$07
-    BCC 1F:082B
-    LDY #$00
-    LDX #$00
-    LDA NUM_PLAYER_LIVES[2]
-    BPL 1F:084D
+    CPX #$07 ; If TMP_09 OBJ# _ 7
+    BCC LOOP_PLAYER_OBJS ; <, goto. 4 .. 6
+    LDY #$00 ; P1 Index
+    LDX #$00 ; P1 Data
+    LDA NUM_PLAYER_LIVES[2] ; Load lives.
+    BPL P1_HAS_LIVES ; Positive.
     LDA #$00
-    BEQ 1F:0850
-    JSR 1F:086E
-    STA TMP_0C
-    LDA TWO_PLAYERS_FLAG
-    BEQ 1F:0865
-    LDY #$01
-    LDX #$02
-    LDA NUM_PLAYER_LIVES+1
-    BPL 1F:0862
+    BEQ SKIP_P1_RTN ; Clear if negative.
+P1_HAS_LIVES: ; 1F:084D, 0x03E84D
+    JSR POS_RTN_UNK ; Do.
+SKIP_P1_RTN: ; 1F:0850, 0x03E850
+    STA TMP_0C ; Store result.
+    LDA TWO_PLAYERS_FLAG ; Load
+    BEQ SINGLE_PLAYER_ONLY ; Zero, goto.
+    LDY #$01 ; P2 index.
+    LDX #$02 ; P2 Data.
+    LDA NUM_PLAYER_LIVES+1 ; Load P2 lives.
+    BPL P2_HAS_LIVES ; Has lives.
     LDA #$00
-    BEQ 1F:0865
-    JSR 1F:086E
-    STA TMP_0D
-    LDA TMP_0C
-    ORA TMP_0D
-    LDX TMP_08
-    RTS
-    STY TMP_0B
-    STX TMP_09
-    LDX TMP_08
-    LDA OBJECT_DATA_EXTRA_B?[18],X
-    BPL 1F:088B
-    ASL A
+    BEQ SINGLE_PLAYER_ONLY
+P2_HAS_LIVES: ; 1F:0862, 0x03E862
+    JSR POS_RTN_UNK
+SINGLE_PLAYER_ONLY: ; 1F:0865, 0x03E865
+    STA TMP_0D ; Store result.
+    LDA TMP_0C ; Load P1 result.
+    ORA TMP_0D ; Combine with P2 result.
+RTS_XOBJ_RESTORE: ; 1F:086B, 0x03E86B
+    LDX TMP_08 ; Restore Xobj.
+    RTS ; Leave with A return.
+POS_RTN_UNK: ; 1F:086E, 0x03E86E
+    STY TMP_0B ; Y to. Lower OBJ #.
+    STX TMP_09 ; X to. Higher OBJ #.
+    LDX TMP_08 ; X from original RTN.
+    LDA OBJECT_DATA_EXTRA_B?[18],X ; Load
+    BPL EXTRA_POSITIVE ; If positive, goto.
+    ASL A ; << 1, *2. Word index.
     TAY
-    LDA 1F:0297,Y
-    STA **:$00AA
-    LDA 1F:0298,Y
-    STA **:$00AB
-    LDY #$05
-    LDA [**:$00AA],Y
-    BMI 1F:0897
-    ASL A
-    TAY
-    LDA 1F:01EF,Y
-    STA **:$00A8
-    LDA 1F:01F0,Y
-    STA A9_UNK
-    LDX TMP_09
-    CPX #$04
-    BCS 1F:08A4
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$02
-    BEQ 1F:08B5
-    LDY TMP_08
+    LDA DATA_PTRS_NEGATIVE_L,Y ; Set up file for ptr.
+    STA FILE_PLAYER_OBJ_USE_A[2]
+    LDA DATA_PTRS_NEGATIVE_H,Y
+    STA FILE_PLAYER_OBJ_USE_A+1
+    LDY #$05 ; Index file.
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Load from.
+    BMI NEGATIVE_INDEX_FILE[5]_NEGATIVE ; If negative, don't load other.
+EXTRA_POSITIVE: ; 1F:088B, 0x03E88B
+    ASL A ; << 1, *2. Word index.
+    TAY ; To Y index.
+    LDA FILE_PTRS_POSITIVE_L,Y ; Set up file for ptr.
+    STA FILE_PLAYER_OBJ_USE_B[2]
+    LDA FILE_PTRS_POSITIVE_H,Y
+    STA FILE_PLAYER_OBJ_USE_B+1
+NEGATIVE_INDEX_FILE[5]_NEGATIVE: ; 1F:0897, 0x03E897
+    LDX TMP_09 ; X from TMP, higher.
+    CPX #$04 ; If _ #$04
+    BCS HIGHER_GTE_4 ; >=, goto.
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load secondary
+    AND #$02 ; Keep 0000.0010
+    BEQ GOTO_RTN_WAY_OUT ; == 0, goto.
+HIGHER_GTE_4: ; 1F:08A4, 0x03E8A4
+    LDY TMP_08 ; Y from TMP. XOBJ original from OBJ handler.
     LDA OBJ_POS_X[18],X
-    CMP OBJ_POS_X[18],Y
-    BCC 1F:08B8
-    LDA OBJ_DIRECTION_RELATED?[18],X
-    AND #$40
-    BNE 1F:08BF
-    JMP 1F:0AD0
-    LDA OBJ_DIRECTION_RELATED?[18],X
-    AND #$40
-    BNE 1F:08B5
-    LDX TMP_08
-    LDA OBJECT_DATA_EXTRA_B?[18],X
-    BPL 1F:08E9
-    LDY #$05
-    LDA [**:$00AA],Y
-    BPL 1F:08E9
-    LDY #$00
-    LDA [**:$00AA],Y
+    CMP OBJ_POS_X[18],Y ; If XHigher.Xpos _ XOriginal.Xpos
+    BCC SKIP_UNK_B ; <, goto.
+    LDA OBJ_DIRECTION_RELATED?[18],X ; Load dir
+    AND #$40 ; Keep only 0100.0000
+    BNE CONTINUE_B ; If set, goto.
+GOTO_RTN_WAY_OUT: ; 1F:08B5, 0x03E8B5
+    JMP RTN_UNK ; Goto.
+SKIP_UNK_B: ; 1F:08B8, 0x03E8B8
+    LDA OBJ_DIRECTION_RELATED?[18],X ; Load
+    AND #$40 ; Test bit 0x40
+    BNE GOTO_RTN_WAY_OUT ; If set, goto.
+CONTINUE_B: ; 1F:08BF, 0x03E8BF
+    LDX TMP_08 ; Get original Xobj.
+    LDA OBJECT_DATA_EXTRA_B?[18],X ; Load from
+    BPL FILE_B_USE ; If positive, alternate file.
+    LDY #$05 ; File index.
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Load from file A.
+    BPL FILE_B_USE ; If positive, alternate file.
+    LDY #$00 ; Set index.
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Move data.
     STA TMP_00
     INY
-    LDA [**:$00AA],Y
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y
     STA TMP_01
     INY
-    LDA [**:$00AA],Y
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y
     STA TMP_02
     INY
-    LDA [**:$00AA],Y
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y
     STA TMP_03
     INY
-    LDA [**:$00AA],Y
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y
     STA TMP_0A
-    JMP 1F:0903
-    LDY #$00
-    LDA [**:$00A8],Y
+    JMP CONTINUE_C ; Skip alt.
+FILE_B_USE: ; 1F:08E9, 0x03E8E9
+    LDY #$00 ; Set index.
+    LDA [FILE_PLAYER_OBJ_USE_B[2]],Y ; Move data.
     STA TMP_00
     INY
-    LDA [**:$00A8],Y
+    LDA [FILE_PLAYER_OBJ_USE_B[2]],Y
     STA TMP_01
     INY
-    LDA [**:$00A8],Y
+    LDA [FILE_PLAYER_OBJ_USE_B[2]],Y
     STA TMP_02
     INY
-    LDA [**:$00A8],Y
+    LDA [FILE_PLAYER_OBJ_USE_B[2]],Y
     STA TMP_03
     INY
-    LDA [**:$00A8],Y
+    LDA [FILE_PLAYER_OBJ_USE_B[2]],Y
     STA TMP_0A
-    CLC
-    LDA 4C6_OBJ_UNK[18],X
-    ADC TMP_02
-    BMI 1F:090D
-    LDA #$FF
-    STA TMP_02
-    LDA 4C6_OBJ_UNK[18],X
-    SEC
-    SBC TMP_03
-    BMI 1F:0919
-    LDA #$80
-    STA TMP_03
-    LDA OBJ_DIRECTION_RELATED?[18],X
-    AND #$40
-    BEQ 1F:092C
-    LDA TMP_00
-    PHA
-    LDA TMP_01
-    STA TMP_00
-    PLA
-    STA TMP_01
-    LDA TMP_00
-    CLC
-    ADC OBJ_POS_X[18],X
-    BCC 1F:0936
-    LDA #$FC
-    STA TMP_00
-    LDA OBJ_POS_X[18],X
-    SEC
-    SBC TMP_01
-    BCS 1F:0942
-    LDA #$04
-    STA TMP_01
-    LDA 4A2_OBJ_UNK_POS?[18],X
-    STA TMP_07
-    JSR 1F:0C3E
-    BCS 1F:0951
-    JMP 1F:0AD0
-    LDY TMP_08
-    CPX #$04
-    BCC 1F:095A
-    JMP 1F:0AB4
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$04
-    BEQ 1F:0964
-    LDA #$00
+CONTINUE_C: ; 1F:0903, 0x03E903
+    CLC ; Prep add
+    LDA 4C6_OBJ_UNK[18],X ; Load OBJ.
+    ADC TMP_02 ; Add with from file.
+    BMI ADD_F[2]_NEGATIVE ; If negative, goto.
+    LDA #$FF ; Seed val.
+ADD_F[2]_NEGATIVE: ; 1F:090D, 0x03E90D
+    STA TMP_02 ; Store to TMP.
+    LDA 4C6_OBJ_UNK[18],X ; Load from obj.
+    SEC ; Prep sub.
+    SBC TMP_03 ; Subtract with from file.
+    BMI SUB_F[3]_NEGATIVE
+    LDA #$80 ; Seed val.
+SUB_F[3]_NEGATIVE: ; 1F:0919, 0x03E919
+    STA TMP_03 ; Store back.
+    LDA OBJ_DIRECTION_RELATED?[18],X ; Load
+    AND #$40 ; Test 0100.0000
+    BEQ SKIP_SWAP
+    LDA TMP_00 ; Load F[0]. This swaps TMP_00 and TMP_01
+    PHA ; Save
+    LDA TMP_01 ; Load F[1]
+    STA TMP_00 ; Store.
+    PLA ; Restore
+    STA TMP_01 ; Store.
+SKIP_SWAP: ; 1F:092C, 0x03E92C
+    LDA TMP_00 ; Load
+    CLC ; Prep add
+    ADC OBJ_POS_X[18],X ; Add with
+    BCC ADD_NO_OVERFLOW
+    LDA #$FC ; Overflow val.
+ADD_NO_OVERFLOW: ; 1F:0936, 0x03E936
+    STA TMP_00 ; Store to.
+    LDA OBJ_POS_X[18],X ; Load
+    SEC ; Prep sub.
+    SBC TMP_01 ; Sub with.
+    BCS SUB_NO_UNDERFLOW
+    LDA #$04 ; Seed
+SUB_NO_UNDERFLOW: ; 1F:0942, 0x03E942
+    STA TMP_01 ; Store.
+    LDA 4A2_OBJ_UNK_POS?[18],X ; Load
+    STA TMP_07 ; Store to TMP.
+    JSR SUB_UNK_HIT_DETECT_CC_TRUE_CS_FALSE?
+    BCS CS_RET ; CS ret, goto.
+SWITCH_NEGATIVE: ; 1F:094E, 0x03E94E
+    JMP RTN_UNK ; Do instead.
+CS_RET: ; 1F:0951, 0x03E951
+    LDY TMP_08 ; Y from.
+    CPX #$04 ; If Xobj _ #$04
+    BCC XOBJ_LT_0x04 ; <, goto.
+    JMP HEALTH_AND_SCORE ; Goto if not.
+XOBJ_LT_0x04: ; 1F:095A, 0x03E95A
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load switch.
+    AND #$04 ; Test bit 0x04
+    BEQ BIT_0x04_NOT_SET
+    LDA #$00 ; Return 0x00.
     RTS
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$08
-    BNE 1F:0974
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$0B
-    CMP #$03
-    BNE 1F:0980
-    LDA OBJ_SECONDARY_SWITCH?[18],Y
-    CMP #$03
-    BNE 1F:0980
-    LDA OBJECT_DATA_EXTRA_B?[18],Y
-    BMI 1F:094E
-    LDA OBJECT_DATA_EXTRA_B?[18],Y
-    CMP #$8B
-    BEQ 1F:0998
-    CMP #$AF
-    BEQ 1F:098E
-    JMP 1F:0A7A
-    STA TMP_0E
+BIT_0x04_NOT_SET: ; 1F:0964, 0x03E964
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load 
+    AND #$08 ; Test bit 0x80
+    BNE BIT_0x80_SET ; If set, goto.
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load
+    AND #$0B ; Keep 0000.1011
+    CMP #$03 ; If _ #$03
+    BNE SWITCH_&0x0B_NE_0x03 ; !=, goto.
+BIT_0x80_SET: ; 1F:0974, 0x03E974
+    LDA OBJ_SECONDARY_SWITCH?[18],Y ; Load
+    CMP #$03 ; If _ #$03
+    BNE SWITCH_&0x0B_NE_0x03 ; !=, goto.
+    LDA OBJECT_DATA_EXTRA_B?[18],Y ; Load
+    BMI SWITCH_NEGATIVE ; If negative, goto.
+SWITCH_&0x0B_NE_0x03: ; 1F:0980, 0x03E980
+    LDA OBJECT_DATA_EXTRA_B?[18],Y ; Load
+    CMP #$8B ; If _ #$8B
+    BEQ EQ_8B ; ==, goto.
+    CMP #$AF ; If _ #$AF
+    BEQ EQ_AF ; ==, goto.
+    JMP RTN_UNK
+EQ_AF: ; 1F:098E, 0x03E98E
+    STA TMP_0E ; Store to TMP.
     LDA #$19
-    JSR SND_BANKED_DISPATCH
-    JMP 1F:099F
-    STA TMP_0E
+    JSR SND_BANKED_DISPATCH ; Play sound.
+    JMP RTN_UNK
+EQ_8B: ; 1F:0998, 0x03E998
+    STA TMP_0E ; Store to TMP.
     LDA #$2C
-    JSR SND_BANKED_DISPATCH
-    LDX #$04
-    LDA OBJ_ANIMATION_DISPLAY[18],X
-    BEQ 1F:09B0
-    INX
-    CPX #$07
-    BCC 1F:09A1
-    LDX TMP_09
-    JMP 1F:0A7A
-    LDA OBJ_ANIMATION_DISPLAY[18],Y
+    JSR SND_BANKED_DISPATCH ; Play sound.
+RTN_UNK: ; 1F:099F, 0x03E99F
+    LDX #$04 ; Obj #
+LOOP_OBJS: ; 1F:09A1, 0x03E9A1
+    LDA OBJ_ANIMATION_DISPLAY[18],X ; Get disp.
+    BEQ COPY_FROM_YOBJ_TO_XOBJ ; == 0, goto.
+    INX ; Obj++
+    CPX #$07 ; If _ #$07
+    BCC LOOP_OBJS ; <, goto.
+    LDX TMP_09 ; Xobj from.
+    JMP RTN_UNK ; Do instead.
+COPY_FROM_YOBJ_TO_XOBJ: ; 1F:09B0, 0x03E9B0
+    LDA OBJ_ANIMATION_DISPLAY[18],Y ; Copy ObjY to ObjX
     STA OBJ_ANIMATION_DISPLAY[18],X
     LDA OBJ_SECONDARY_SWITCH?[18],Y
     STA OBJ_SECONDARY_SWITCH?[18],X
@@ -1977,336 +2016,376 @@ L_1F:0811: ; 1F:0811, 0x03E811
     LDA OBJECT_DATA_HEALTH?[18],Y
     STA OBJECT_DATA_HEALTH?[18],X
     LDA #$00
-    STA OBJECT_DATA_EXTRA_B?[18],X
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Clear this.
     LDA OBJ_TERTIARY_SWITCH?[18],Y
     STA OBJ_TERTIARY_SWITCH?[18],X
-    LDA 59E_OBJ_UNK_TIMER?[18],Y
-    STA 59E_OBJ_UNK_TIMER?[18],X
+    LDA 59E_OBJ_UNK[18],Y
+    STA 59E_OBJ_UNK[18],X
     LDA 5B0_OBJ_UNK[18],Y
     STA 5B0_OBJ_UNK[18],X
     LDA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],Y
     STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
-    LDA 5D4_ARR_OBJ_TIMER?[18],Y
-    STA 5D4_ARR_OBJ_TIMER?[18],X
+    LDA 5D4_EXTRA_TIMER/OBJ[18],Y
+    STA 5D4_EXTRA_TIMER/OBJ[18],X
+    LDA #$00 ; Load
+    SEC ; Prep sub.
+    SBC 4FC_ARR_UNK[18],Y ; Sub from Y.
+    STA 4FC_ARR_UNK[18],X ; To X.
     LDA #$00
-    SEC
-    SBC 4FC_ARR_UNK[18],Y
-    STA 4FC_ARR_UNK[18],X
-    LDA #$00
-    SBC 4EA_ARR_UNK[18],Y
-    STA 4EA_ARR_UNK[18],X
-    LDA TMP_0E
-    CMP #$8B
-    BEQ 1F:0A6C
+    SBC 4EA_ARR_UNK[18],Y ; Sub from Y.
+    STA 4EA_ARR_UNK[18],X ; To X.
+    LDA TMP_0E ; Load
+    CMP #$8B ; If _ #$8B
+    BEQ VAL_USE_0x04 ; ==, goto.
     LDA #$05
-    BNE 1F:0A6E
+    BNE ALT_VAL ; Always taken.
+VAL_USE_0x04: ; 1F:0A6C, 0x03EA6C
     LDA #$04
+ALT_VAL: ; 1F:0A6E, 0x03EA6E
+    DEX ; X-=2
     DEX
-    DEX
-    STA TURTLE_SELECTION[2],X
-    TYA
-    TAX
-    JSR INIT_OBJECT[X]_DATA_FULL
-    LDA #$00
-    RTS
-    LDA R_**:$070E
-    BNE 1F:0AD0
-    LDA OBJ_SECONDARY_SWITCH?[18],Y
-    CMP #$04
-    BEQ 1F:0AD0
-    LDA OBJECT_DATA_HEALTH?[18],Y
-    CMP #$FF
-    BEQ 1F:0AD0
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$01
-    BEQ 1F:0AA3
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$08
-    BEQ 1F:0A9F
-    LDA #$04
-    BNE 1F:0AA5
-    LDA #$03
-    BNE 1F:0AA5
-    LDA #$02
-    STA TMP_0E
-    LDA R_**:$06D6
-    BNE 1F:0AB4
-    LDA OBJECT_DATA_HEALTH?[18],Y
-    SEC
-    SBC TMP_0E
-    BCS 1F:0AB6
-    LDA #$00
-    STA OBJECT_DATA_HEALTH?[18],Y
-    BNE 1F:0ACD
-    CPX #$03
-    BCS 1F:0ACD
-    TYA
-    PHA
+    STA TURTLE_SELECTION[2],X ; Store val to.
+    TYA ; Y to A
+    TAX ; A to X.
+    JSR INIT_OBJECT[X]_DATA_FULL ; Init Xobj.
+    LDA #$00 ; Return 0x00.
+    RTS ; Leave.
+RTN_UNK: ; 1F:0A7A, 0x03EA7A
+    LDA 70E_OBJ_UNK ; Load
+    BNE RTN_UNK ; If != 0, goto.
+    LDA OBJ_SECONDARY_SWITCH?[18],Y ; Load
+    CMP #$04 ; If _ #$04
+    BEQ RTN_UNK ; ==, goto.
+    LDA OBJECT_DATA_HEALTH?[18],Y ; Load
+    CMP #$FF ; If _ #$FF
+    BEQ RTN_UNK ; ==, goto.
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load
+    AND #$01 ; Keep 0x01
+    BEQ BIT_0x01_CLEAR ; Bit 0x01 clear, goto.
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load
+    AND #$08 ; Keep 0x08
+    BEQ BIT_0x08_CLEAR ; Clear, goto.
+    LDA #$04 ; Val
+    BNE VAL_PICKED ; Always taken.
+BIT_0x08_CLEAR: ; 1F:0A9F, 0x03EA9F
+    LDA #$03 ; Val
+    BNE VAL_PICKED
+BIT_0x01_CLEAR: ; 1F:0AA3, 0x03EAA3
+    LDA #$02 ; Val
+VAL_PICKED: ; 1F:0AA5, 0x03EAA5
+    STA TMP_0E ; Store damage.
+    LDA 6D6_OBJ_UNK ; Load
+    BNE HEALTH_AND_SCORE ; != 0, goto.
+    LDA OBJECT_DATA_HEALTH?[18],Y ; Load Yobj
+    SEC ; Prep sub.
+    SBC TMP_0E ; Subtract from.
+    BCS HEALTH_STORE
+HEALTH_AND_SCORE: ; 1F:0AB4, 0x03EAB4
+    LDA #$00 ; Min val.
+HEALTH_STORE: ; 1F:0AB6, 0x03EAB6
+    STA OBJECT_DATA_HEALTH?[18],Y ; Store health.
+    BNE RTS_RET_0x01 ; Never taken?
+    CPX #$03 ; If Xobj _ #$03
+    BCS RTS_RET_0x01 ; >=, goto.
+    TYA ; Yobj to A
+    PHA ; Save
     LDY TMP_0B
     LDA #$01
-    STA 3F6_PLAYER_SCORE_ADD_VALUE[2],Y
-    JSR L_1E:1C72
-    PLA
+    STA 3F6_PLAYER_SCORE_ADD_VALUE[2],Y ; Set to 0x01.
+    JSR UPDATE_PLAY_SCORE_AND_DISPLAY ; Update score.
+    PLA ; Restore Yobj.
     TAY
-    LDA #$01
+RTS_RET_0x01: ; 1F:0ACD, 0x03EACD
+    LDA #$01 ; Return true.
     RTS
-    CPX #$04
-    BCS 1F:0B49
-    LDX TMP_08
-    LDA OBJECT_DATA_EXTRA_B?[18],X
-    BPL 1F:0B49
-    LDY #$00
-    LDA [**:$00AA],Y
-    STA TMP_00
-    INY
-    LDA [**:$00AA],Y
-    STA TMP_01
-    LDA OBJ_DIRECTION_RELATED?[18],X
-    AND #$40
-    BEQ 1F:0AF7
-    LDA TMP_00
+RTN_UNK: ; 1F:0AD0, 0x03EAD0
+    CPX #$04 ; If Xobj _ #$04
+    BCS RTS_ZERO ; >=, goto.
+    LDX TMP_08 ; Load original object.
+    LDA OBJECT_DATA_EXTRA_B?[18],X ; Load from obj.
+    BPL RTS_ZERO ; If positive, leave.
+    LDY #$00 ; File index.
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Load from file.
+    STA TMP_00 ; Store to.
+    INY ; Stream++
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Load
+    STA TMP_01 ; Store to.
+    LDA OBJ_DIRECTION_RELATED?[18],X ; Load
+    AND #$40 ; Test bit 0x40
+    BEQ DIR_BIT_CLEAR ; Clear, goto.
+    LDA TMP_00 ; Swap TMP_00 and TMP_01
     PHA
     LDA TMP_01
     STA TMP_00
     PLA
     STA TMP_01
-    LDA TMP_00
-    CLC
-    ADC OBJ_POS_X[18],X
-    BCC 1F:0B01
-    LDA #$FC
-    STA TMP_00
-    LDA OBJ_POS_X[18],X
-    SEC
-    SBC TMP_01
-    BCS 1F:0B0D
-    LDA #$04
-    STA TMP_01
-    INY
-    LDA [**:$00AA],Y
-    CLC
-    ADC 4C6_OBJ_UNK[18],X
-    BMI 1F:0B1A
-    LDA #$FF
-    STA TMP_02
-    INY
-    LDA 4C6_OBJ_UNK[18],X
-    SEC
-    SBC [**:$00AA],Y
-    BMI 1F:0B27
-    LDA #$80
-    STA TMP_03
-    INY
-    LDA [**:$00AA],Y
-    STA TMP_0A
-    LDA 4A2_OBJ_UNK_POS?[18],X
-    STA TMP_07
-    LDX TMP_09
-    LDA OBJECT_DATA_EXTRA_B?[18],X
-    PHA
+DIR_BIT_CLEAR: ; 1F:0AF7, 0x03EAF7
+    LDA TMP_00 ; Load
+    CLC ; Prep add
+    ADC OBJ_POS_X[18],X ; Add with obj.
+    BCC DONT_SEED_ADD ; No overflow, skip seed.
+    LDA #$FC ; Seed
+DONT_SEED_ADD: ; 1F:0B01, 0x03EB01
+    STA TMP_00 ; Store to.
+    LDA OBJ_POS_X[18],X ; Load
+    SEC ; Prep sub.
+    SBC TMP_01 ; Sub with file.
+    BCS DONT_SEED_SUB ; No underflow, skip seed.
+    LDA #$04 ; Seed
+DONT_SEED_SUB: ; 1F:0B0D, 0x03EB0D
+    STA TMP_01 ; Store result.
+    INY ; Stream++
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Load from stream.
+    CLC ; Prep add.
+    ADC 4C6_OBJ_UNK[18],X ; Add with OBJ.
+    BMI FILE_OBJ_ADD_NEGATIVE ; If negative, skip seed.
+    LDA #$FF ; Seed
+FILE_OBJ_ADD_NEGATIVE: ; 1F:0B1A, 0x03EB1A
+    STA TMP_02 ; Store result.
+    INY ; Stream++
+    LDA 4C6_OBJ_UNK[18],X ; Load OBJ.
+    SEC ; Prep sub.
+    SBC [FILE_PLAYER_OBJ_USE_A[2]],Y ; Sub.
+    BMI SKIP_SEED ; If negative, goto.
+    LDA #$80 ; Seed
+SKIP_SEED: ; 1F:0B27, 0x03EB27
+    STA TMP_03 ; Store.
+    INY ; Stream++
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Load from file.
+    STA TMP_0A ; Store to.
+    LDA 4A2_OBJ_UNK_POS?[18],X ; Load obj.
+    STA TMP_07 ; Store to.
+    LDX TMP_09 ; Load object higher.
+    LDA OBJECT_DATA_EXTRA_B?[18],X ; Get data from.
+    PHA ; Save
     LDA #$00
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Clear obj.
+    JSR SUB_UNK_HIT_DETECT_CC_TRUE_CS_FALSE? ; Do sub.
+    BCS RET_FALSE ; False.
+    LDX TMP_09 ; Load obj higher.
+    PLA ; Restore extra.
     STA OBJECT_DATA_EXTRA_B?[18],X
-    JSR 1F:0C3E
-    BCS 1F:0B4C
-    LDX TMP_09
-    PLA
+RTS_ZERO: ; 1F:0B49, 0x03EB49
+    LDA #$00 ; Load zero.
+    RTS ; Return.
+RET_FALSE: ; 1F:0B4C, 0x03EB4C
+    LDX TMP_09 ; Load higher OBJ.
+    PLA ; Restore extra.
     STA OBJECT_DATA_EXTRA_B?[18],X
-    LDA #$00
-    RTS
-    LDX TMP_09
-    PLA
-    STA OBJECT_DATA_EXTRA_B?[18],X
-    LDY TMP_08
-    LDA OBJECT_DATA_EXTRA_B?[18],Y
-    BPL 1F:0B49
-    LDA OBJ_SECONDARY_SWITCH?[18],Y
-    CMP #$06
-    BEQ 1F:0B49
-    LDY #$06
-    LDA [**:$00AA],Y
-    AND #$F0
-    CMP #$70
-    BEQ 1F:0B70
-    CMP #$80
-    BEQ 1F:0B49
-    BNE 1F:0B8B
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$0D
-    BNE 1F:0B49
+    LDY TMP_08 ; Load OBJ.
+    LDA OBJECT_DATA_EXTRA_B?[18],Y ; Get extra from.
+    BPL RTS_ZERO ; If positive, leave.
+    LDA OBJ_SECONDARY_SWITCH?[18],Y ; Get switch.
+    CMP #$06 ; If _ #$06, state?
+    BEQ RTS_ZERO ; ==, leave.
+    LDY #$06 ; File index.
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Get from file.
+    AND #$F0 ; Keep 1111.0000
+    CMP #$70 ; If _ #$70
+    BEQ FILE_EQ_0x70 ; ==, goto.
+    CMP #$80 ; If _ #$80
+    BEQ RTS_ZERO ; ==, leave.
+    BNE NOT_SPECIALS ; Always taken.
+FILE_EQ_0x70: ; 1F:0B70, 0x03EB70
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load switch
+    AND #$0D ; Keep 0000.1101
+    BNE RTS_ZERO ; If any set, leave.
     LDA #$3C
-    STA OBJECT_DATA_HEALTH?[18],X
-    LDY TMP_0B
+    STA OBJECT_DATA_HEALTH?[18],X ; Set health.
+    LDY TMP_0B ; Get obj.
     LDA #$01
-    STA 662_PLAYER_UPDATE_UNK[2],Y
+    STA 662_PLAYER_UPDATE_UNK[2],Y ; Set.
     LDA #$5C
-    JSR SND_BANKED_DISPATCH
-    LDA #$01
-    RTS
-    LDY TMP_0B
-    LDA 93_PLAYER_UNK[2],Y
-    BNE 1F:0B49
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$04
-    BNE 1F:0B49
-    LDA OBJ_SECONDARY_SWITCH?[18],X
+    JSR SND_BANKED_DISPATCH ; Set sound.
+    LDA #$01 ; Return true.
+    RTS ; Leave.
+NOT_SPECIALS: ; 1F:0B8B, 0x03EB8B
+    LDY TMP_0B ; Get lower object.
+    LDA 93_PLAYER_UNK[2],Y ; Load from player.
+    BNE RTS_ZERO ; If any set, leave.
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Get switch
+    AND #$04 ; Keep 0000.0100
+    BNE RTS_ZERO ; If set, leave.
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Set 0x04 bit.
     ORA #$04
     STA OBJ_SECONDARY_SWITCH?[18],X
-    LDY #$06
-    LDA [**:$00AA],Y
-    AND #$0F
-    STA TMP_0E
-    LDA [**:$00AA],Y
+    LDY #$06 ; File index.
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Load from file.
+    AND #$0F ; Keep 0000.1111
+    STA TMP_0E ; Store to TMP.
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Load from file again.
     LSR A
     LSR A
     LSR A
-    LSR A
-    STA OBJECT_DATA_EXTRA_B?[18],X
-    CMP #$03
-    BCS 1F:0BDE
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$01
-    BEQ 1F:0BC8
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$FB
-    STA OBJ_SECONDARY_SWITCH?[18],X
-    JMP 1F:0B49
-    LDA TMP_08
-    STA 5D4_ARR_OBJ_TIMER?[18],X
-    TAY
+    LSR A ; Shift 0xF0 to 0x0F
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Store to.
+    CMP #$03 ; If _ #$03
+    BCS UNK_GTE_0x03 ; >=, goto.
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load secondary.
+    AND #$01 ; Keep 0x01
+    BEQ BIT_0x01_CLEARED ; If 0, goto.
+UNSET_0x04_SECONDARY: ; 1F:0BBD, 0x03EBBD
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load
+    AND #$FB ; Keep 1111.1011
+    STA OBJ_SECONDARY_SWITCH?[18],X ; Save
+    JMP RTS_ZERO ; Leave zero.
+BIT_0x01_CLEARED: ; 1F:0BC8, 0x03EBC8
+    LDA TMP_08 ; Load
+    STA 5D4_EXTRA_TIMER/OBJ[18],X ; Store to OBJ.
+    TAY ; To index.
     LDA #$06
-    STA OBJ_SECONDARY_SWITCH?[18],Y
+    STA OBJ_SECONDARY_SWITCH?[18],Y ; Set switches, Sec 0x06 Tert 0x00.
     LDA #$00
     STA OBJ_TERTIARY_SWITCH?[18],Y
-    JSR 1F:0C16
-    LDA #$FF
+    JSR REMOVE_PLAYER?
+    LDA #$FF ; Leave with 0xFF. Player killed?
     RTS
-    CMP #$03
-    BEQ 1F:0BE6
-    CMP #$0A
-    BNE 1F:0BED
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    AND #$01
-    BNE 1F:0BBD
-    LDA TMP_08
-    STA 5D4_ARR_OBJ_TIMER?[18],X
-    LDA R_**:$06D6
-    BNE 1F:0C0B
-    LDA OBJECT_DATA_HEALTH?[18],X
-    SEC
-    SBC TMP_0E
-    BCS 1F:0C01
-    LDA #$00
-    STA OBJECT_DATA_HEALTH?[18],X
-    LDY TMP_0B
+UNK_GTE_0x03: ; 1F:0BDE, 0x03EBDE
+    CMP #$03 ; If OBJ.unk _ #$03
+    BEQ EQ_0x03 ; ==, goto.
+    CMP #$0A ; If OBJ.unk _ #$0A
+    BNE NE_0x0A ; !=, goto.
+EQ_0x03: ; 1F:0BE6, 0x03EBE6
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load
+    AND #$01 ; Remove 0x01
+    BNE UNSET_0x04_SECONDARY
+NE_0x0A: ; 1F:0BED, 0x03EBED
+    LDA TMP_08 ; Load
+    STA 5D4_EXTRA_TIMER/OBJ[18],X ; Store to obj.
+    LDA 6D6_OBJ_UNK ; Load
+    BNE 6D6_HAS_VAL ; If value, goto.
+    LDA OBJECT_DATA_HEALTH?[18],X ; Load
+    SEC ; Set sub.
+    SBC TMP_0E ; Sub val.
+    BCS WRITE_HEALTH
+    LDA #$00 ; Val min.
+WRITE_HEALTH: ; 1F:0C01, 0x03EC01
+    STA OBJECT_DATA_HEALTH?[18],X ; Store new health.
+    LDY TMP_0B ; Y from.
     LDA #$01
-    STA 662_PLAYER_UPDATE_UNK[2],Y
-    LDY TMP_0B
-    LDA R_**:$0091,Y
-    CLC
-    ADC TMP_0E
-    STA R_**:$0091,Y
-    LDY TMP_0B
-    LDA #$00
-    STA 43_PLAYER_UNK[2],Y
-    STA 4FC_ARR_UNK[18],X
+    STA 662_PLAYER_UPDATE_UNK[2],Y ; Set player to true.
+6D6_HAS_VAL: ; 1F:0C0B, 0x03EC0B
+    LDY TMP_0B ; Y from.
+    LDA PLAYERS_UNK[2],Y ; Load
+    CLC ; Prep add.
+    ADC TMP_0E ; Add
+    STA PLAYERS_UNK[2],Y ; Store back.
+REMOVE_PLAYER?: ; 1F:0C16, 0x03EC16
+    LDY TMP_0B ; Y from.
+    LDA #$00 ; Clear
+    STA 43_PLAYER_UNK[2],Y ; Player
+    STA 4FC_ARR_UNK[18],X ; And misc.
     STA 4EA_ARR_UNK[18],X
     STA 520_ARR_UNK[18],X
     STA 50E_ARR_UNK[18],X
     STA 544_OBJ_UNK_POS?[18],X
     STA 532_OBJ_UNK_POS?[18],X
-    STA 4FC_ARR_UNK+1,X
+    STA 4FC_ARR_UNK+1,X ; Clear pair.
     STA 4EA_ARR_UNK+1,X
     STA 520_ARR_UNK+1,X
     STA 50E_ARR_UNK+1,X
-    LDA #$02
+    LDA #$02 ; Return val.
     RTS
-    LDX TMP_09
-    CPX #$04
-    BCC 1F:0C68
-    LDA OBJECT_DATA_EXTRA_B?[18],X
-    BPL 1F:0C5A
+SUB_UNK_HIT_DETECT_CC_TRUE_CS_FALSE?: ; 1F:0C3E, 0x03EC3E
+    LDX TMP_09 ; Load higher. 9 higher, B lower.
+    CPX #$04 ; If Obj # _ #$04
+    BCC HIGHER_LT_0x04 ; <, goto.
+    LDA OBJECT_DATA_EXTRA_B?[18],X ; Load
+    BPL FILE_B_MOVE
     LDY #$05
-    LDA [**:$00AA],Y
-    BPL 1F:0C5A
-    LDA **:$00AA
+    LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Load FILE[5]
+    BPL FILE_B_MOVE ; Positive, goto.
+    LDA FILE_PLAYER_OBJ_USE_A[2] ; Move file ptr.
     STA TMP_04
-    LDA **:$00AB
+    LDA FILE_PLAYER_OBJ_USE_A+1
     STA TMP_05
-    JMP 1F:0C62
-    LDA **:$00A8
+    JMP RTN_CONTINUE
+FILE_B_MOVE: ; 1F:0C5A, 0x03EC5A
+    LDA FILE_PLAYER_OBJ_USE_B[2] ; Move file ptr.
     STA TMP_04
-    LDA A9_UNK
+    LDA FILE_PLAYER_OBJ_USE_B+1
     STA TMP_05
+RTN_CONTINUE: ; 1F:0C62, 0x03EC62
     LDY #$00
-    STY TMP_06
-    BEQ 1F:0C80
-    LDA OBJECT_DATA_EXTRA_B?[18],X
+    STY TMP_06 ; Clear, index.
+    BEQ RTN_START_UNK ; Always taken.
+HIGHER_LT_0x04: ; 1F:0C68, 0x03EC68
+    LDA OBJECT_DATA_EXTRA_B?[18],X ; Load obj.
+    ASL A ; << 2, *4. Data size.
     ASL A
-    ASL A
-    STA TMP_06
-    LDY TMP_0B
-    LDA TURTLE_SELECTION[2],Y
-    ASL A
-    TAY
-    LDA 1F:0516,Y
+    STA TMP_06 ; Store index.
+    LDY TMP_0B ; Load lower OBJ?
+    LDA TURTLE_SELECTION[2],Y ; Load, UNK. Not selection. $35
+    ASL A ; >> 1, *2. Word size.
+    TAY ; To Index.
+    LDA DPTRS_UNK_L,Y ; Move file pointer into place.
     STA TMP_04
-    LDA 1F:0517,Y
+    LDA DPTRS_UNK_H,Y
     STA TMP_05
-    LDA 4A2_OBJ_UNK_POS?[18],X
-    SEC
-    SBC TMP_07
-    BPL 1F:0C8F
-    STA TMP_07
-    LDA #$00
-    SEC
-    SBC TMP_07
-    CMP TMP_0A
-    BCS 1F:0CE4
-    LDY TMP_06
+RTN_START_UNK: ; 1F:0C80, 0x03EC80
+    LDA 4A2_OBJ_UNK_POS?[18],X ; Load
+    SEC ; Prep sub.
+    SBC TMP_07 ; Sub with.
+    BPL SUB_POSITIVE
+    STA TMP_07 ; Store result.
+    LDA #$00 ; Seed
+    SEC ; Prep sub.
+    SBC TMP_07 ; Get negative difference.
+SUB_POSITIVE: ; 1F:0C8F, 0x03EC8F
+    CMP TMP_0A ; If _ #$0A
+    BCS RTS_CC ; >=, goto.
+    LDY TMP_06 ; Get index.
+    INY ; Move index.
     INY
-    INY
-    LDA [TMP_04],Y
-    CLC
-    ADC 4C6_OBJ_UNK[18],X
-    BMI 1F:0CA1
-    LDA #$FF
-    CMP TMP_03
-    BCC 1F:0CE4
-    INY
-    LDA 4C6_OBJ_UNK[18],X
-    SEC
-    SBC [TMP_04],Y
-    BMI 1F:0CB4
-    CMP #$70
-    BCS 1F:0CB4
-    LDA #$FF
-    CMP TMP_02
-    BCS 1F:0CE4
-    LDY TMP_06
-    LDA OBJ_DIRECTION_RELATED?[18],X
-    AND #$40
-    BEQ 1F:0CC2
-    INY
-    LDA [TMP_04],Y
-    CLC
-    ADC OBJ_POS_X[18],X
-    BCS 1F:0CCE
-    CMP TMP_01
-    BCC 1F:0CE4
-    LDY TMP_06
-    LDA OBJ_DIRECTION_RELATED?[18],X
-    AND #$40
-    BNE 1F:0CD8
-    INY
-    LDA OBJ_POS_X[18],X
-    SEC
-    SBC [TMP_04],Y
-    BCC 1F:0CE6
-    CMP TMP_00
-    BCC 1F:0CE6
-    CLC
+    LDA [TMP_04],Y ; Load from file.
+    CLC ; Prep add.
+    ADC 4C6_OBJ_UNK[18],X ; Add with obj.
+    BMI DONT_SEE_ADD
+    LDA #$FF ; Seed if positive.
+DONT_SEE_ADD: ; 1F:0CA1, 0x03ECA1
+    CMP TMP_03 ; If value _ F[3]
+    BCC RTS_CC ; <, goto.
+    INY ; Pointer++
+    LDA 4C6_OBJ_UNK[18],X ; Load from obj.
+    SEC ; Prep sub.
+    SBC [TMP_04],Y ; Subtract from file.
+    BMI DONT_SEED_SUB ; If negative.
+    CMP #$70 ; If result _ #$70
+    BCS DONT_SEED_SUB ; <, goto.
+    LDA #$FF ; Seed
+DONT_SEED_SUB: ; 1F:0CB4, 0x03ECB4
+    CMP TMP_02 ; If result _ F[2]
+    BCS RTS_CC ; >=, goto.
+    LDY TMP_06 ; Reload index.
+    LDA OBJ_DIRECTION_RELATED?[18],X ; Load from OBJ.
+    AND #$40 ; Test bit 0100.0000
+    BEQ BIT_CLEAR
+    INY ; Mod index.
+BIT_CLEAR: ; 1F:0CC2, 0x03ECC2
+    LDA [TMP_04],Y ; Load from file.
+    CLC ; Prep add.
+    ADC OBJ_POS_X[18],X ; Add from OBJ.
+    BCS ADD_OVERFLOW
+    CMP TMP_01 ; If result _ #$01
+    BCC RTS_CC ; <, goto.
+ADD_OVERFLOW: ; 1F:0CCE, 0x03ECCE
+    LDY TMP_06 ; Load index.
+    LDA OBJ_DIRECTION_RELATED?[18],X ; Get again.
+    AND #$40 ; Test 0x40 again.
+    BNE BIT_0x40_SET
+    INY ; Next index if clear.
+BIT_0x40_SET: ; 1F:0CD8, 0x03ECD8
+    LDA OBJ_POS_X[18],X ; Load from OBJ.
+    SEC ; Prep sub.
+    SBC [TMP_04],Y ; Sub from file.
+    BCC RTS_CS ; If underflow, leave.
+    CMP TMP_00 ; If result _ TMP_00
+    BCC RTS_CS ; If < , leave CS.
+RTS_CC: ; 1F:0CE4, 0x03ECE4
+    CLC ; Passed, carry clear.
     RTS
-    SEC
+RTS_CS: ; 1F:0CE6, 0x03ECE6
+    SEC ; Failed, carry set.
     RTS
 DATA_UNK_L: ; 1F:0CE8, 0x03ECE8
     .db 00
@@ -3796,11 +3875,11 @@ STATE_0x31_SWITCH_A: ; 1F:138E, 0x03F38E
     JSR L_1F:154F
     JSR L_1F:1558
     LDA #$10
-    STA 59E_OBJ_UNK_TIMER?[18],X
+    STA 59E_OBJ_UNK[18],X
     INC OBJ_TERTIARY_SWITCH?[18],X
     RTS
 STATE_0x31_SWITCH_B: ; 1F:13A0, 0x03F3A0
-    DEC 59E_OBJ_UNK_TIMER?[18],X
+    DEC 59E_OBJ_UNK[18],X
     BNE 1F:13C8
     LDY OBJ_TERTIARY_SWITCH?[18],X
     DEY
@@ -3816,7 +3895,7 @@ STATE_0x31_SWITCH_B: ; 1F:13A0, 0x03F3A0
     BEQ 1F:13C5
     STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$08
-    STA 59E_OBJ_UNK_TIMER?[18],X
+    STA 59E_OBJ_UNK[18],X
     INC OBJ_TERTIARY_SWITCH?[18],X
     JMP OBJECT_X_MOVE?
 L_1F:13CB: ; 1F:13CB, 0x03F3CB
@@ -3971,10 +4050,10 @@ INT_OBJECT[X]_DATA_SMOL: ; 1F:14E8, 0x03F4E8
     STA OBJECT_DATA_HEALTH?[18],X
     STA OBJECT_DATA_EXTRA_B?[18],X
     STA OBJ_TERTIARY_SWITCH?[18],X
-    STA 59E_OBJ_UNK_TIMER?[18],X
+    STA 59E_OBJ_UNK[18],X
     STA 5B0_OBJ_UNK[18],X
     STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
-    STA 5D4_ARR_OBJ_TIMER?[18],X
+    STA 5D4_EXTRA_TIMER/OBJ[18],X
     RTS
 TEST_OBJ[7-18]_DISABLED/!8B_RET_CS_TRUE: ; 1F:1527, 0x03F527
     TXA ; Save X.
@@ -4074,7 +4153,7 @@ L_1F:15BE: ; 1F:15BE, 0x03F5BE
 L_1F:15D2: ; 1F:15D2, 0x03F5D2
     LDA #$00
     STA OBJ_TERTIARY_SWITCH?[18],X
-    STA 59E_OBJ_UNK_TIMER?[18],X
+    STA 59E_OBJ_UNK[18],X
     LDA #$02
     STA OBJ_SECONDARY_SWITCH?[18],X
     RTS
@@ -4170,15 +4249,17 @@ L_1F:1680: ; 1F:1680, 0x03F680
     JSR $87A0
     LDA #$20
     JMP BANK_PAIR_USE_A
-L_1F:168F: ; 1F:168F, 0x03F68F
-    LDX #$07
-    LDA OBJ_ENABLED_STATE+MORE?[18],X
-    BEQ 1F:169D
-    INX
-    CPX #$12
-    BCC 1F:1691
-    CLC
+QUERY_OBJ_UNUSED_CS_TRUE_CC_FALSE: ; 1F:168F, 0x03F68F
+    LDX #$07 ; Xobj
+LOOP_OBJS: ; 1F:1691, 0x03F691
+    LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load
+    BEQ XOBJ_NOT_ENABLED ; If enable == 0x00, goto.
+    INX ; Obj++
+    CPX #$12 ; If Xobj _ #$12
+    BCC LOOP_OBJS ; <, loop.
+    CLC ; None found, fail.
     RTS
+XOBJ_NOT_ENABLED: ; 1F:169D, 0x03F69D
     SEC
     RTS
     STA OBJ_ENABLED_STATE+MORE?[18],X
@@ -4205,9 +4286,9 @@ OBJ_MANIP_BASED_ON_LIVES_UNK: ; 1F:16CE, 0x03F6CE
     LDA TWO_PLAYERS_FLAG ; Load flag.
     BNE TWO_PLAYERS ; != 0, goto.
     LDA #$00
-    STA 5D4_ARR_OBJ_TIMER?[18],X ; Write clear if one player.
+    STA 5D4_EXTRA_TIMER/OBJ[18],X ; Write clear if one player.
 TWO_PLAYERS: ; 1F:16D7, 0x03F6D7
-    LDA 5D4_ARR_OBJ_TIMER?[18],X ; Load
+    LDA 5D4_EXTRA_TIMER/OBJ[18],X ; Load
     LSR A ; >> 1, /2.
     TAY ; To Y index.
     LDA NUM_PLAYER_LIVES[2],Y ; Load lives for player.
@@ -4221,7 +4302,7 @@ TWO_PLAYERS: ; 1F:16D7, 0x03F6D7
     BMI RTS_CS ; If none, goto.
     TYA ; Index to A.
     ASL A ; << 1, *2.
-    STA 5D4_ARR_OBJ_TIMER?[18],X ; Store to obj.
+    STA 5D4_EXTRA_TIMER/OBJ[18],X ; Store to obj.
     JMP RTS_CC ; Leave CC.
 RTS_CS: ; 1F:16F6, 0x03F6F6
     SEC
@@ -4264,9 +4345,9 @@ RTS_CC: ; 1F:16F8, 0x03F6F8
     LDA #$00
     BCC 1F:173E
     LDA #$02
-    STA 5D4_ARR_OBJ_TIMER?[18],X
+    STA 5D4_EXTRA_TIMER/OBJ[18],X
     RTS
-    LDY 5D4_ARR_OBJ_TIMER?[18],X
+    LDY 5D4_EXTRA_TIMER/OBJ[18],X
     LDA OBJ_POS_X[18],Y
     STA TMP_14
     LDA 4A2_OBJ_UNK_POS?[18],Y
@@ -4290,14 +4371,15 @@ RTS_CC: ; 1F:16F8, 0x03F6F8
     ADC #$01
     STA TMP_11
     RTS
-L_1F:1772: ; 1F:1772, 0x03F772
-    LDA OBJ_POS_X[18],X
-    LDY 5D4_ARR_OBJ_TIMER?[18],X
-    CMP OBJ_POS_X[18],Y
-    LDA OBJ_DIRECTION_RELATED?[18],X
-    AND #$03
-    BCS 1F:1784
-    ORA #$40
+OBJ_DIR_MOD_FROM_POS_AND_UNK: ; 1F:1772, 0x03F772
+    LDA OBJ_POS_X[18],X ; Load from Xobj.
+    LDY 5D4_EXTRA_TIMER/OBJ[18],X ; Y from Xobj
+    CMP OBJ_POS_X[18],Y ; If X.Xpos _ Y.Xpos
+    LDA OBJ_DIRECTION_RELATED?[18],X ; Load
+    AND #$03 ; Keep
+    BCS DONT_MOD_DIRECTION ; >=, goto.
+    ORA #$40 ; Set other direction.
+DONT_MOD_DIRECTION: ; 1F:1784, 0x03F784
     STA OBJ_DIRECTION_RELATED?[18],X
     RTS
 MOVE_FINALIZE?: ; 1F:1788, 0x03F788
@@ -4391,19 +4473,21 @@ L_1F:17E6: ; 1F:17E6, 0x03F7E6
     LDA #$02
     BCC 1F:183D
     LDA #$00
-    STA 5D4_ARR_OBJ_TIMER?[18],X
+    STA 5D4_EXTRA_TIMER/OBJ[18],X
     RTS
-L_1F:1841: ; 1F:1841, 0x03F841
-    LDA TWO_PLAYERS_FLAG
-    BEQ 1F:184C
-    LDA TMP_0D
-    LSR A
-    LDY #$02
-    BCS 1F:184E
+XOBJ_WRITE_UNK: ; 1F:1841, 0x03F841
+    LDA TWO_PLAYERS_FLAG ; Load 2P flag.
+    BEQ 1P_GAME
+    LDA TMP_0D ; Load
+    LSR A ; >> 1, /2.
+    LDY #$02 ; P2 data index?
+    BCS 2P_SHIFTED_ONE ; If shifted off 1, goto.
+1P_GAME: ; 1F:184C, 0x03F84C
     LDY #$00
-    TYA
-    STA 5D4_ARR_OBJ_TIMER?[18],X
-    RTS
+2P_SHIFTED_ONE: ; 1F:184E, 0x03F84E
+    TYA ; To A.
+    STA 5D4_EXTRA_TIMER/OBJ[18],X ; Store to OBJ.
+    RTS ; leave.
     LDA #$40
     BNE MOVE_RTN?
 MOVE_RTN?: ; 1F:1857, 0x03F857
