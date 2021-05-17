@@ -876,7 +876,7 @@ SECONDARY_AND_TERTIARY_SWITCH_RTN: ; 0A:0583, 0x014583
     INY
     LDA [TMP_00],Y
     STA TMP_03
-    JMP [TMP_02]
+    JMP [TMP_02] ; Run code from multiswitch.
 SECONDARY_RTNS_L: ; 0A:05A3, 0x0145A3
     LOW(HANDLER_0x01_MULTISWITCH_A) ; Note: All contain own pointer tables inside on tertiary switch.
 SECONDARY_RTNS_H: ; 0A:05A4, 0x0145A4

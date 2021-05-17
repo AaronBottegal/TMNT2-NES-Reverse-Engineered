@@ -1,8 +1,13 @@
     .db 2C
 OBJ_STATE_0x50_HANDLER: ; 0C:0001, 0x018001
-    JMP OBJECT_X_MOVE? ; Basically used as a leave.
+    .db 4C ; Basically used as a leave.
+    .db F1 ; SBC $F3,Y
+OBJ_STATE_0x6D_HANDLER: ; 0C:0003, 0x018003
+    .db F3 ; Unofficial opcode ISC (zp),y. Looks to be just a mistake.
 L_0C:0004: ; 0C:0004, 0x018004
-    LDA 70E_OBJ_UNK
+    .db AD ; LDA $070E
+    .db 0E ; ASL $F007
+    .db 07 ; Unofficial, SLO d
     BEQ L_0C:000C
     DEC 70E_OBJ_UNK
 L_0C:000C: ; 0C:000C, 0x01800C

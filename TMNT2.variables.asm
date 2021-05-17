@@ -540,18 +540,25 @@ OBJ_TERTIARY_SWITCH?:                         .rs 18
 
           .rsset 0x05EE
 R_**:$05EE:                                   .rs 1
-R_**:$05EF:                                   .rs 1
-R_**:$05F0:                                   .rs 1
-R_**:$05F1:                                   .rs 1
+5EF_UNK:                                      .rs 1
+5F0_UNK:                                      .rs 1
+5F1_UNK:                                      .rs 1
+5F2_UNK:                                      .rs 1
+5F3_UNK:                                      .rs 1
 
 
-          .rsset 0x05F8
+          .rsset 0x05F5
+5F5_UNK:                                      .rs 1
+
+
+          .rsset 0x05F7
+5F7_UNK:                                      .rs 1
 5F8_UNK:                                      .rs 1
 ZP_13_INDEX_VAL_UNK:                          .rs 1
 5FA_UNK:                                      .rs 1
 5FB_TIMER_ALL_FINISHED?:                      .rs 1
 R_**:$05FC:                                   .rs 1
-R_**:$05FD:                                   .rs 1
+5FD_UNK:                                      .rs 1
 R_**:$05FE:                                   .rs 1
 
 
