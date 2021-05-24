@@ -104,9 +104,9 @@ L_0D:0070: ; 0D:0070, 0x01A070
     LDA L_0D:016B,Y
     ADC 4B4_OBJ_SPEED?+17,X
     STA 4C6_OBJ_UNK[18],X
-    LDA 490_OBJ_UNK_SPEED?+17,X
+    LDA OBJ_POS_X_SUBPIXEL?+17,X
     STA 4A2_OBJ_UNK_POS?[18],X
-    JSR MOVE_FINALIZE?
+    JSR MOVE_Y_FINALIZE
     LDY TMP_06
     DEC OBJ_ANIM_HOLD_TIMER?[18],X
     BEQ L_0D:009C
@@ -118,14 +118,14 @@ L_0D:009C: ; 0D:009C, 0x01A09C
     STA OBJ_ANIMATION_DISPLAY[18],X
     INC OBJ_SECONDARY_SWITCH?[18],X
     LDA L_0D:0158,Y
-    STA 544_OBJ_UNK_POS?[18],X
+    STA 544_OBJ_UNK_POS_DELTA?[18],X
     LDA L_0D:0159,Y
-    STA 532_OBJ_UNK_POS?[18],X
+    STA 532_OBJ_UNK_POS_DELTA?[18],X
     LDY TMP_05
     LDA L_0D:015E,Y
-    STA 4FC_ARR_UNK[18],X
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
     LDA L_0D:015F,Y
-    STA 4EA_ARR_UNK[18],X
+    STA OBJ_POS_X_DELTA?[18],X
     LDA L_0D:0160,Y
     STA 520_ARR_UNK[18],X
     LDA L_0D:0161,Y
@@ -136,23 +136,23 @@ L_0D:009C: ; 0D:009C, 0x01A09C
     BCC L_0D:00E3
     SEC
     LDA #$00
-    SBC 4FC_ARR_UNK[18],X
-    STA 4FC_ARR_UNK[18],X
+    SBC OBJ_POS_X_SUBPIXEL_DELTA?[18],X
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
     LDA #$00
-    SBC 4EA_ARR_UNK[18],X
-    STA 4EA_ARR_UNK[18],X
+    SBC OBJ_POS_X_DELTA?[18],X
+    STA OBJ_POS_X_DELTA?[18],X
 L_0D:00E3: ; 0D:00E3, 0x01A0E3
     RTS
 L_0D:00E4: ; 0D:00E4, 0x01A0E4
     DEY
     BNE L_0D:0129
-    JSR FUNKY_ADD/ROT_RTN
+    JSR XPOS_RTN_RET_??
     BCS L_0D:0141
-    JSR L_1F:1895
+    JSR MOVE_UNK_RET_??
     BCS L_0D:0141
     JSR NO_OVERFLOW
     BCS L_0D:010B
-    JSR MOVE_FINALIZE?
+    JSR MOVE_Y_FINALIZE
     LDA IRQ/SCRIPT_RUN_COUNT?
     AND #$03
     CMP OBJ_TERTIARY_SWITCH?+17,X
@@ -168,7 +168,7 @@ L_0D:010B: ; 0D:010B, 0x01A10B
     LDA 4A2_OBJ_UNK_POS?[18],X
     STA OBJ_POS_Y[18],X
     LDA #$00
-    STA 45A_OBJ_DATA_ENTRY?[18],X
+    STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
     LDA #$07
     STA OBJ_ANIM_HOLD_TIMER?[18],X
     LDA #$19
@@ -180,8 +180,8 @@ L_0D:0129: ; 0D:0129, 0x01A129
     BNE L_0D:0153
     LDA #$07
     STA OBJ_ANIM_HOLD_TIMER?[18],X
-    INC 45A_OBJ_DATA_ENTRY?[18],X
-    LDY 45A_OBJ_DATA_ENTRY?[18],X
+    INC 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
+    LDY 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
     LDA L_0D:0154,Y
     STA OBJ_ANIMATION_DISPLAY[18],X
     BNE L_0D:0153
@@ -295,7 +295,7 @@ L_0D:01D2: ; 0D:01D2, 0x01A1D2
     LDY #$00
 L_0D:01D4: ; 0D:01D4, 0x01A1D4
     TYA
-    STA 5D4_EXTRA_TIMER/OBJ[18],X
+    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     LDA #$28
     STA OBJ_ANIM_HOLD_TIMER?[18],X
     RTS
@@ -2581,7 +2581,7 @@ L_0D:08D2: ; 0D:08D2, 0x01A8D2
     .db 1B
     .db AC
 OBJ_STATE_0x5F_HANDLER: ; 0D:0B43, 0x01AB43
-    JSR FUNKY_ADD/ROT_RTN
+    JSR XPOS_RTN_RET_??
     BCS L_0D:0B85
     INC 59E_OBJ_UNK[18],X
     LDA 59E_OBJ_UNK[18],X
@@ -2638,9 +2638,9 @@ L_0D:0B88: ; 0D:0B88, 0x01AB88
     LDY #$02
 L_0D:0BAF: ; 0D:0BAF, 0x01ABAF
     LDA L_0D:0BF1,Y
-    STA 4FC_ARR_UNK[18],X
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
     LDA L_0D:0BF2,Y
-    STA 4EA_ARR_UNK[18],X
+    STA OBJ_POS_X_DELTA?[18],X
     LDA L_0D:0BED,Y
     LDY TMP_00
     CLC
@@ -4050,11 +4050,11 @@ L_0D:117E: ; 0D:117E, 0x01B17E
     LDA #$00
     STA OBJ_POS_Y[18],X
     STA 4B4_OBJ_SPEED?[18],X
-    STA 544_OBJ_UNK_POS?[18],X
+    STA 544_OBJ_UNK_POS_DELTA?[18],X
     LDA #$02
     STA OBJ_DIRECTION_RELATED?[18],X
     LDA #$01
-    STA 532_OBJ_UNK_POS?[18],X
+    STA 532_OBJ_UNK_POS_DELTA?[18],X
     LDY TMP_02
     LDA L_0D:11D7,Y
     CLC
@@ -4086,16 +4086,16 @@ OBJ_STATE_0x60_HANDLER: ; 0D:11DD, 0x01B1DD
     STA OBJECT_DATA_EXTRA_B?[18],X
     LDA #$20
     CLC
-    ADC 544_OBJ_UNK_POS?[18],X
-    STA 544_OBJ_UNK_POS?[18],X
+    ADC 544_OBJ_UNK_POS_DELTA?[18],X
+    STA 544_OBJ_UNK_POS_DELTA?[18],X
     BCC L_0D:11F0
-    INC 532_OBJ_UNK_POS?[18],X
+    INC 532_OBJ_UNK_POS_DELTA?[18],X
 L_0D:11F0: ; 0D:11F0, 0x01B1F0
     CLC
-    LDA 544_OBJ_UNK_POS?[18],X
+    LDA 544_OBJ_UNK_POS_DELTA?[18],X
     ADC 4B4_OBJ_SPEED?[18],X
     STA 4B4_OBJ_SPEED?[18],X
-    LDA 532_OBJ_UNK_POS?[18],X
+    LDA 532_OBJ_UNK_POS_DELTA?[18],X
     ADC OBJ_POS_Y[18],X
     STA OBJ_POS_Y[18],X
     CMP 5B0_OBJ_UNK[18],X
@@ -4856,7 +4856,7 @@ L_0D:1295: ; 0D:1295, 0x01B295
     .db AE
     .db B3
 OBJ_STATE_0x63_HANDLER: ; 0D:153F, 0x01B53F
-    JSR FUNKY_ADD/ROT_RTN
+    JSR XPOS_RTN_RET_??
     BCC L_0D:1547
     JMP INIT_OBJECT[X]_DATA_FULL
 L_0D:1547: ; 0D:1547, 0x01B547
@@ -4904,9 +4904,9 @@ L_0D:156B: ; 0D:156B, 0x01B56B
     LDY #$02
 L_0D:15A5: ; 0D:15A5, 0x01B5A5
     LDA L_0D:161B,Y
-    STA 4FC_ARR_UNK[18],X
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
     LDA L_0D:161C,Y
-    STA 4EA_ARR_UNK[18],X
+    STA OBJ_POS_X_DELTA?[18],X
     LDA L_0D:1617,Y
     LDY OBJ_HANDLER_FOCUS_SCRATCHPAD
     CLC
@@ -4992,8 +4992,8 @@ OBJ_STATE_0x65_HANDLER: ; 0D:163E, 0x01B63E
     CMP #$04
     BCC L_0D:1637
     JMP INIT_OBJECT[X]_DATA_FULL
-    LDA 4EA_ARR_UNK[18],X
-    ORA 4FC_ARR_UNK[18],X
+    LDA OBJ_POS_X_DELTA?[18],X
+    ORA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
     ORA 50E_ARR_UNK[18],X
     ORA 520_ARR_UNK[18],X
     BEQ L_0D:167A
@@ -5001,9 +5001,9 @@ OBJ_STATE_0x65_HANDLER: ; 0D:163E, 0x01B63E
     BPL L_0D:1675
     LDA #$09
     STA 5B0_OBJ_UNK[18],X
-    INC 45A_OBJ_DATA_ENTRY?[18],X
+    INC 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
 L_0D:1675: ; 0D:1675, 0x01B675
-    LDA 45A_OBJ_DATA_ENTRY?[18],X
+    LDA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
     AND #$03
 L_0D:167A: ; 0D:167A, 0x01B67A
     TAY
@@ -6080,7 +6080,7 @@ OBJ_STATE_0x68_HANDLER: ; 0D:1AE4, 0x01BAE4
     BEQ L_0D:1AEC
     JMP L_0D:1BC0
 L_0D:1AEC: ; 0D:1AEC, 0x01BAEC
-    JSR FUNKY_ADD/ROT_RTN
+    JSR XPOS_RTN_RET_??
     BCS L_0D:1B17
     INC 59E_OBJ_UNK[18],X
     LDA 59E_OBJ_UNK[18],X
@@ -6139,9 +6139,9 @@ L_0D:1B2A: ; 0D:1B2A, 0x01BB2A
     LDY #$02
 L_0D:1B64: ; 0D:1B64, 0x01BB64
     LDA L_0D:1BBC,Y
-    STA 4FC_ARR_UNK[18],X
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
     LDA L_0D:1BBD,Y
-    STA 4EA_ARR_UNK[18],X
+    STA OBJ_POS_X_DELTA?[18],X
     LDA L_0D:1BB8,Y
     LDY OBJ_HANDLER_FOCUS_SCRATCHPAD
     CLC
@@ -6391,7 +6391,7 @@ OBJ_STATE_0x69_HANDLER: ; 0D:1C88, 0x01BC88
     BNE L_0D:1CC8
     JSR L_0D:1DDA
     BCS L_0D:1CB5
-    JSR FUNKY_ADD/ROT_RTN
+    JSR XPOS_RTN_RET_??
     BCS L_0D:1CDA
     LDA 4C6_OBJ_UNK[18],X
     ADC 4A2_OBJ_UNK_POS?[18],X
@@ -6430,7 +6430,7 @@ L_0D:1CDA: ; 0D:1CDA, 0x01BCDA
     BEQ L_0D:1CF8
     TXA
     PHA
-    LDA 5D4_EXTRA_TIMER/OBJ[18],X
+    LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     TAX
     JSR L_0D:1CFB
     LDA 706_UNK
@@ -6450,7 +6450,7 @@ L_0D:1CFB: ; 0D:1CFB, 0x01BCFB
     LDA #$00
     STA OBJ_ANIM_HOLD_TIMER?[18],X
     STA 5B0_OBJ_UNK[18],X
-    STA 45A_OBJ_DATA_ENTRY?[18],X
+    STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
     LDA #$06
     STA OBJECT_DATA_EXTRA_B?[18],X
     RTS
@@ -6463,7 +6463,7 @@ L_0D:1CFB: ; 0D:1CFB, 0x01BCFB
     SEC
     SBC #$38
     STA TMP_09
-    LDY 5D4_EXTRA_TIMER/OBJ[18],X
+    LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     LDA OBJ_POS_X[18],Y
     STA TMP_0A
     LDA 4A2_OBJ_UNK_POS?[18],Y
@@ -6483,7 +6483,7 @@ L_0D:1D4C: ; 0D:1D4C, 0x01BD4C
     ASL A
     ASL A
     STA TMP_00
-    LDA 45A_OBJ_DATA_ENTRY?[18],X
+    LDA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
     AND #$FC
     STA TMP_04
     ASL A
@@ -6518,17 +6518,17 @@ L_0D:1D61: ; 0D:1D61, 0x01BD61
     STA 556_OBJ_UPDATE_FLAGS?[18],X
     STA OBJ_TERTIARY_SWITCH?[18],X
     LDA TMP_0C
-    STA 4FC_ARR_UNK[18],X
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
     LDA TMP_0D
-    STA 4EA_ARR_UNK[18],X
+    STA OBJ_POS_X_DELTA?[18],X
     LDA TMP_0E
-    STA 544_OBJ_UNK_POS?[18],X
+    STA 544_OBJ_UNK_POS_DELTA?[18],X
     LDA TMP_0F
-    STA 532_OBJ_UNK_POS?[18],X
+    STA 532_OBJ_UNK_POS_DELTA?[18],X
     LDA TMP_12
     STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
     LDA OBJ_HANDLER_FOCUS_SCRATCHPAD
-    STA 5D4_EXTRA_TIMER/OBJ[18],X
+    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     LDA OBJ_DIRECTION_RELATED?[18],X
     AND #$FC
     ORA #$02
@@ -6553,165 +6553,95 @@ L_0D:1DCF: ; 0D:1DCF, 0x01BDCF
     .db 0C
     .db C5
 L_0D:1DDA: ; 0D:1DDA, 0x01BDDA
-    .db 18
-    .db BD
-    .db 44
-    .db 05
-    .db 7D
-    .db D8
-    .db 04
-    .db 9D
-    .db D8
-    .db 04
-    .db BD
-    .db 32
-    .db 05
-    .db 7D
-    .db C6
-    .db 04
-    .db 9D
-    .db C6
-    .db 04
-    .db 10
-    .db 02
-    .db 18
-    .db 60
-    .db 38
-    .db 60
+    CLC
+    LDA 544_OBJ_UNK_POS_DELTA?[18],X
+    ADC 4D8_OBJ_UNK[18],X
+    STA 4D8_OBJ_UNK[18],X
+    LDA 532_OBJ_UNK_POS_DELTA?[18],X
+    ADC 4C6_OBJ_UNK[18],X
+    STA 4C6_OBJ_UNK[18],X
+    BPL 0D:1DF1
+    CLC
+    RTS
+    SEC
+    RTS
 L_0D:1DF3: ; 0D:1DF3, 0x01BDF3
-    .db 38
-    .db A5
-    .db 08
-    .db E5
-    .db 0A
-    .db 85
-    .db 04
-    .db A0
-    .db 00
-    .db B0
-    .db 07
-    .db A0
-    .db 02
-    .db A9
-    .db 00
-    .db 38
-    .db E5
-    .db 04
-    .db 84
-    .db 02
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 85
-    .db 04
-    .db 38
-    .db A5
-    .db 09
-    .db E5
-    .db 0B
-    .db 85
-    .db 05
-    .db A9
-    .db 00
-    .db B0
-    .db 07
-    .db 38
-    .db E5
-    .db 05
-    .db 85
-    .db 05
-    .db A9
-    .db 01
-    .db 05
-    .db 02
-    .db 85
-    .db 02
-    .db A5
-    .db 05
-    .db 4A
-    .db 4A
-    .db 29
-    .db 38
-    .db 05
-    .db 04
-    .db 4A
-    .db A8
-    .db B9
-    .db 7B
-    .db BE
-    .db B0
-    .db 04
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 29
-    .db 07
-    .db 85
-    .db 05
-    .db 0A
-    .db 0A
-    .db A8
-    .db B9
-    .db 97
-    .db BE
-    .db 85
-    .db 0C
-    .db B9
-    .db 98
-    .db BE
-    .db 85
-    .db 0D
-    .db B9
-    .db 99
-    .db BE
-    .db 85
-    .db 0E
-    .db B9
-    .db 9A
-    .db BE
-    .db 85
-    .db 0F
-    .db A5
-    .db 02
-    .db 4A
-    .db B0
-    .db 0D
-    .db 38
-    .db A9
-    .db 00
-    .db E5
-    .db 0E
-    .db 85
-    .db 0E
-    .db A9
-    .db 00
-    .db E5
-    .db 0F
-    .db 85
-    .db 0F
-    .db BD
-    .db 36
-    .db 04
-    .db 0A
-    .db 30
-    .db 0D
-    .db 38
-    .db A9
-    .db 00
-    .db E5
-    .db 0C
-    .db 85
-    .db 0C
-    .db A9
-    .db 00
-    .db E5
-    .db 0D
-    .db 85
-    .db 0D
-    .db 60
+    SEC
+    LDA TMP_08
+    SBC TMP_0A
+    STA TMP_04
+    LDY #$00
+    BCS 0D:1E05
+    LDY #$02
+    LDA #$00
+    SEC
+    SBC TMP_04
+    STY TMP_02
+    LSR A
+    LSR A
+    LSR A
+    LSR A
+    LSR A
+    STA TMP_04
+    SEC
+    LDA TMP_09
+    SBC TMP_0B
+    STA TMP_05
+    LDA #$00
+    BCS 0D:1E20
+    SEC
+    SBC TMP_05
+    STA TMP_05
+    LDA #$01
+    ORA TMP_02
+    STA TMP_02
+    LDA TMP_05
+    LSR A
+    LSR A
+    AND #$38
+    ORA TMP_04
+    LSR A
+    TAY
+    LDA 0D:1E7B,Y
+    BCS 0D:1E37
+    LSR A
+    LSR A
+    LSR A
+    LSR A
+    AND #$07
+    STA TMP_05
+    ASL A
+    ASL A
+    TAY
+    LDA 0D:1E97,Y
+    STA TMP_0C
+    LDA 0D:1E98,Y
+    STA TMP_0D
+    LDA 0D:1E99,Y
+    STA TMP_0E
+    LDA 0D:1E9A,Y
+    STA TMP_0F
+    LDA TMP_02
+    LSR A
+    BCS 0D:1E64
+    SEC
+    LDA #$00
+    SBC TMP_0E
+    STA TMP_0E
+    LDA #$00
+    SBC TMP_0F
+    STA TMP_0F
+    LDA OBJ_DIRECTION_RELATED?[18],X
+    ASL A
+    BMI 0D:1E77
+    SEC
+    LDA #$00
+    SBC TMP_0C
+    STA TMP_0C
+    LDA #$00
+    SBC TMP_0D
+    STA TMP_0D
+    RTS
 L_0D:1E78: ; 0D:1E78, 0x01BE78
     .db 9C
     .db 90

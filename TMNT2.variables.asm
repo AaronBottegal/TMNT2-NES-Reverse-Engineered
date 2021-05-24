@@ -215,10 +215,10 @@ B1_SCROLL_X_COPY_IRQ_ZP:                      .rs 2
 B3_SCROLL_X_IRQ_J:                            .rs 1
 NAMETABLE_FOCUS_VAL?:                         .rs 2
 B6_NAMETABLE_FOCUS_UNK:                       .rs 1
-B7_UNK_SPRITES?:                              .rs 1
+OBJ_POS_X_SUBPIXEL_DELTA:                     .rs 1
 B8_UNK:                                       .rs 1
 B9_UNK:                                       .rs 1
-BA_UNK_SPRITES?:                              .rs 1
+OBJ_POS_X_DELTA:                              .rs 1
 BB_UNK:                                       .rs 1
 BC_UNK:                                       .rs 1
 BD_PLAYER?_UNK:                               .rs 2
@@ -514,20 +514,20 @@ OBJ_SECONDARY_SWITCH?:                        .rs 18
 OBJ_ENABLED_STATE+MORE?:                      .rs 18
 OBJ_DIRECTION_RELATED?:                       .rs 18
 OBJ_ANIM_HOLD_TIMER?:                         .rs 18
-45A_OBJ_DATA_ENTRY?:                          .rs 18
+45A_OBJ_DATA_ENTRY?STATE_STEP?:               .rs 18
 OBJ_POS_Y:                                    .rs 18
 OBJ_POS_X:                                    .rs 18
-490_OBJ_UNK_SPEED?:                           .rs 18
+OBJ_POS_X_SUBPIXEL?:                          .rs 18
 4A2_OBJ_UNK_POS?:                             .rs 18
 4B4_OBJ_SPEED?:                               .rs 18
 4C6_OBJ_UNK:                                  .rs 18
 4D8_OBJ_UNK:                                  .rs 18
-4EA_ARR_UNK:                                  .rs 18
-4FC_ARR_UNK:                                  .rs 18
+OBJ_POS_X_DELTA?:                             .rs 18
+OBJ_POS_X_SUBPIXEL_DELTA?:                    .rs 18
 50E_ARR_UNK:                                  .rs 18
 520_ARR_UNK:                                  .rs 18
-532_OBJ_UNK_POS?:                             .rs 18
-544_OBJ_UNK_POS?:                             .rs 18
+532_OBJ_UNK_POS_DELTA?:                       .rs 18
+544_OBJ_UNK_POS_DELTA?:                       .rs 18
 556_OBJ_UPDATE_FLAGS?:                        .rs 18
 OBJECT_DATA_HEALTH?:                          .rs 18
 OBJECT_DATA_EXTRA_B?:                         .rs 18
@@ -535,7 +535,7 @@ OBJ_TERTIARY_SWITCH?:                         .rs 18
 59E_OBJ_UNK:                                  .rs 18
 5B0_OBJ_UNK:                                  .rs 18
 5C2_OBJ_DATA_PTR/MISC_INDEX:                  .rs 18
-5D4_EXTRA_TIMER/OBJ:                          .rs 18
+5D4_EXTRA_TIMER/OBJ/FOCUS:                    .rs 18
 
 
           .rsset 0x05EE
@@ -708,7 +708,7 @@ PPU_PALETTE_BUF?:                             .rs 32
 OBJ_HANDLER_FOCUS_SCRATCHPAD:                 .rs 1
 701_TSELECT_CONFIRMED/TIMER:                  .rs 1
 ARR_SPRITE_OBJ_TIMER?:                        .rs 2
-704_UNK:                                      .rs 1
+704_OBJ_USE_UNK:                              .rs 1
 R_**:$0705:                                   .rs 1
 706_UNK:                                      .rs 1
 R_**:$0707:                                   .rs 1

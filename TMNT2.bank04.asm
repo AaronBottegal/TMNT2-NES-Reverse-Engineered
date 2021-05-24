@@ -466,15 +466,15 @@ LOOP_INDEXES: ; 04:01EE, 0x0081EE
     LDA #$16 ; Switch val.
     JSR RTN_SWITCH_UNK
 SKIP_RTN: ; 04:0203, 0x008203
-    LDA B7_UNK_SPRITES? ; Load val.
-    ORA BA_UNK_SPRITES? ; Set bits.
+    LDA OBJ_POS_X_SUBPIXEL_DELTA ; Load val.
+    ORA OBJ_POS_X_DELTA ; Set bits.
     BEQ NEXT_INDEX ; No bits set still, skip.
     LDA 674_UNK,X ; Load val.
     SEC ; Prep sub.
-    SBC B7_UNK_SPRITES? ; -= Val.
+    SBC OBJ_POS_X_SUBPIXEL_DELTA ; -= Val.
     STA 674_UNK,X ; Store back.
     LDA 678_UNK,X ; Load
-    SBC BA_UNK_SPRITES? ; Subtract with.
+    SBC OBJ_POS_X_DELTA ; Subtract with.
     STA 678_UNK,X ; Store to.
     BCC CLEAR_INDEX_DATA ; Underflow, goto.
     LDA 83_UNK ; Load
