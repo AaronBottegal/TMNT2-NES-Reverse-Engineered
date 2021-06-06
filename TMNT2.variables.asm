@@ -215,10 +215,10 @@ B1_SCROLL_X_COPY_IRQ_ZP:                      .rs 2
 B3_SCROLL_X_IRQ_J:                            .rs 1
 NAMETABLE_FOCUS_VAL?:                         .rs 2
 B6_NAMETABLE_FOCUS_UNK:                       .rs 1
-OBJ_POS_X_SUBPIXEL_DELTA:                     .rs 1
+OBJ_POS_X_SUBPIXEL_DELTA?:                    .rs 1
 B8_UNK:                                       .rs 1
 B9_UNK:                                       .rs 1
-OBJ_POS_X_DELTA:                              .rs 1
+OBJ_POS_X_DELTA?:                             .rs 1
 BB_UNK:                                       .rs 1
 BC_UNK:                                       .rs 1
 BD_PLAYER?_UNK:                               .rs 2
@@ -236,7 +236,7 @@ C6_SPR_ARR_UNK:                               .rs 2
 
 
           .rsset 0x00C9
-R_**:$00C9:                                   .rs 1
+C9_UNK:                                       .rs 1
 
 
           .rsset 0x00D8
@@ -516,7 +516,7 @@ OBJ_DIRECTION_RELATED?:                       .rs 18
 OBJ_ANIM_HOLD_TIMER?:                         .rs 18
 45A_OBJ_DATA_ENTRY?STATE_STEP?:               .rs 18
 OBJ_POS_Y:                                    .rs 18
-OBJ_POS_X:                                    .rs 18
+OBJ_POS_X?:                                   .rs 18
 OBJ_POS_X_SUBPIXEL?:                          .rs 18
 4A2_OBJ_UNK_POS?:                             .rs 18
 4B4_OBJ_SPEED?:                               .rs 18
@@ -539,7 +539,7 @@ OBJ_TERTIARY_SWITCH?:                         .rs 18
 
 
           .rsset 0x05EE
-R_**:$05EE:                                   .rs 1
+5EE_UNK:                                      .rs 1
 5EF_UNK:                                      .rs 1
 5F0_UNK:                                      .rs 1
 5F1_UNK:                                      .rs 1
@@ -709,11 +709,11 @@ OBJ_HANDLER_FOCUS_SCRATCHPAD:                 .rs 1
 701_TSELECT_CONFIRMED/TIMER:                  .rs 1
 ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 704_OBJ_USE_UNK:                              .rs 1
-R_**:$0705:                                   .rs 1
+705_UNK:                                      .rs 1
 706_UNK:                                      .rs 1
-R_**:$0707:                                   .rs 1
-R_**:$0708:                                   .rs 1
-R_**:$0709:                                   .rs 1
+707_UNK:                                      .rs 1
+708_UNK:                                      .rs 1
+709_UNK:                                      .rs 1
 
 
           .rsset 0x070C
@@ -723,7 +723,7 @@ R_**:$0709:                                   .rs 1
           .rsset 0x070E
 70E_OBJ_UNK:                                  .rs 1
 R_**:$070F:                                   .rs 1
-R_**:$0710:                                   .rs 1
+710_UNK:                                      .rs 1
 
 
           .rsset 0x0712

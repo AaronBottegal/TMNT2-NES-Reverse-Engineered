@@ -5,8 +5,8 @@ RTN_LEVEL_GROUP_6_UNK_A: ; 06:0001, 0x00C001
     CMP #$05 ; If _ #$05
     BEQ VAL_EQ_FIVE ; ==, goto.
     LDA #$00
-    STA OBJ_POS_X_SUBPIXEL_DELTA ; Clear these if not 5.
-    STA OBJ_POS_X_DELTA
+    STA OBJ_POS_X_SUBPIXEL_DELTA? ; Clear these if not 5.
+    STA OBJ_POS_X_DELTA?
     STA 83_UNK
     STA 84_UNK
     STA B8_UNK
@@ -296,7 +296,7 @@ L_06:01F2: ; 06:01F2, 0x00C1F2
     LDA 43_PLAYER_UNK[2],X
     BEQ L_06:0203
     BMI L_06:0204
-    LDA OBJ_POS_X[18],Y
+    LDA OBJ_POS_X?[18],Y
     CMP #$18
     BCS L_06:0203
 L_06:01FF: ; 06:01FF, 0x00C1FF
@@ -314,7 +314,7 @@ L_06:020E: ; 06:020E, 0x00C20E
     LDA R_**:$0061
     BNE L_06:01FF
 L_06:0212: ; 06:0212, 0x00C212
-    LDA OBJ_POS_X[18],Y
+    LDA OBJ_POS_X?[18],Y
     CMP #$18
     BCC L_06:01FF
     LDA OBJ_POS_Y[18],Y
@@ -323,18 +323,18 @@ L_06:0212: ; 06:0212, 0x00C212
     RTS
 L_06:0221: ; 06:0221, 0x00C221
     LDA #$F0
-    STA OBJ_POS_X_SUBPIXEL_DELTA ; Set to 0xF0
+    STA OBJ_POS_X_SUBPIXEL_DELTA? ; Set to 0xF0
     LSR A ; >> 1, /2
     STA B8_UNK ; Store to.
     LDA #$00
-    STA OBJ_POS_X_DELTA ; Clear these.
+    STA OBJ_POS_X_DELTA? ; Clear these.
     STA BB_UNK
     STA C3_UNK
     STA C4_UNK
     BEQ RTN_UNK_INDEXED ; Always taken.
 RTN_UNK: ; 06:0234, 0x00C234
     LDA #$04 ; Load
-    STA OBJ_POS_X_DELTA ; Store.
+    STA OBJ_POS_X_DELTA? ; Store.
     LDA 60C_UNK_INDEX ; Load
     CMP #$06 ; If _ #$06
     BEQ CLEAR_UNK ; ==, goto. Unk val.
@@ -364,7 +364,7 @@ PAST_UNK: ; 06:0267, 0x00C267
     LDA #$00
     STA C4_UNK ; Clear all these.
     STA C3_UNK
-    STA OBJ_POS_X_SUBPIXEL_DELTA
+    STA OBJ_POS_X_SUBPIXEL_DELTA?
 RTN_UNK_INDEXED: ; 06:026F, 0x00C26F
     LDX #$00 ; Index.
 LOOP_RTN_UNK: ; 06:0271, 0x00C271
@@ -372,20 +372,20 @@ LOOP_RTN_UNK: ; 06:0271, 0x00C271
     BPL NEXT_INDEX_CHECK ; If positive, skip.
     LDA AE_ARR_UNK[2],X ; Load val.
     CLC ; Prep add.
-    ADC OBJ_POS_X_SUBPIXEL_DELTA,X ; Add with val.
+    ADC OBJ_POS_X_SUBPIXEL_DELTA?,X ; Add with val.
     STA AE_ARR_UNK[2],X ; Store back.
     BCC NO_OVERFLOW ; No overflow, goto.
     INC 7B_UNK,X ; Inc high byte.
 NO_OVERFLOW: ; 06:0280, 0x00C280
     LDA B1_SCROLL_X_COPY_IRQ_ZP[2],X ; Load
-    ADC OBJ_POS_X_DELTA,X ; Add with.
+    ADC OBJ_POS_X_DELTA?,X ; Add with.
     STA B1_SCROLL_X_COPY_IRQ_ZP[2],X ; Store back.
     LDA NAMETABLE_FOCUS_VAL?[2],X ; Load
     ADC C3_UNK,X ; Add with.
     STA NAMETABLE_FOCUS_VAL?[2],X ; Store back.
     LDA 7B_UNK,X ; Load
     CLC ; Prep add.
-    ADC OBJ_POS_X_DELTA,X ; Add with.
+    ADC OBJ_POS_X_DELTA?,X ; Add with.
     STA 7B_UNK,X ; Store back.
 NEXT_INDEX_CHECK: ; 06:0293, 0x00C293
     INX ; Next index.
@@ -432,7 +432,7 @@ RTS: ; 06:02CB, 0x00C2CB
     RTS ; Leave.
 RTN_UNK: ; 06:02CC, 0x00C2CC
     LDA #$C0
-    STA OBJ_POS_X_SUBPIXEL_DELTA ; Set to.
+    STA OBJ_POS_X_SUBPIXEL_DELTA? ; Set to.
     JSR RTN_UNK_INDEXED ; Do.
     LDA #$C0 ; Load
     STA 83_UNK ; Set

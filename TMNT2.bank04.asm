@@ -466,15 +466,15 @@ LOOP_INDEXES: ; 04:01EE, 0x0081EE
     LDA #$16 ; Switch val.
     JSR RTN_SWITCH_UNK
 SKIP_RTN: ; 04:0203, 0x008203
-    LDA OBJ_POS_X_SUBPIXEL_DELTA ; Load val.
-    ORA OBJ_POS_X_DELTA ; Set bits.
+    LDA OBJ_POS_X_SUBPIXEL_DELTA? ; Load val.
+    ORA OBJ_POS_X_DELTA? ; Set bits.
     BEQ NEXT_INDEX ; No bits set still, skip.
     LDA 674_UNK,X ; Load val.
     SEC ; Prep sub.
-    SBC OBJ_POS_X_SUBPIXEL_DELTA ; -= Val.
+    SBC OBJ_POS_X_SUBPIXEL_DELTA? ; -= Val.
     STA 674_UNK,X ; Store back.
     LDA 678_UNK,X ; Load
-    SBC OBJ_POS_X_DELTA ; Subtract with.
+    SBC OBJ_POS_X_DELTA? ; Subtract with.
     STA 678_UNK,X ; Store to.
     BCC CLEAR_INDEX_DATA ; Underflow, goto.
     LDA 83_UNK ; Load
@@ -557,13 +557,13 @@ L_04:0288: ; 04:0288, 0x008288
     BCS L_04:02D9
 L_04:02AF: ; 04:02AF, 0x0082AF
     LDA 678_UNK,Y
-    CMP OBJ_POS_X[18],X
+    CMP OBJ_POS_X?[18],X
     BCS L_04:02D9
     LDA 678_UNK,Y
     CLC
     ADC TMP_0A
     BCS L_04:02C4
-    CMP OBJ_POS_X[18],X
+    CMP OBJ_POS_X?[18],X
     BCC L_04:02D9
 L_04:02C4: ; 04:02C4, 0x0082C4
     LDA 680_UNK,Y

@@ -1,32 +1,36 @@
     .db 05
-    BEQ 0B:003F
+    BEQ JMP_OBJS_UNK ; Not set, goto.
     LDA #$00
-    STA 556_OBJ_UPDATE_FLAGS?[18],X
-    DEC OBJ_ANIM_HOLD_TIMER?[18],X
-    BNE 0B:0017
+    STA 556_OBJ_UPDATE_FLAGS?[18],X ; Clear.
+RET_CC: ; 0B:0008, 0x016008
+    DEC OBJ_ANIM_HOLD_TIMER?[18],X ; Hold--
+    BNE HOLD_NOT_ZERO ; != 0, goto.
     LDA #$16
-    STA OBJ_TERTIARY_SWITCH?[18],X
+    STA OBJ_TERTIARY_SWITCH?[18],X ; Move state.
     LDA #$7C
     STA OBJ_ANIMATION_DISPLAY[18],X
-    LDA RANDOM_VALS?[2]
+HOLD_NOT_ZERO: ; 0B:0017, 0x016017
+    LDA RANDOM_VALS?[2] ; Load random.
+    LSR A ; >> 2
     LSR A
-    LSR A
-    AND #$01
-    EOR OBJ_ANIMATION_DISPLAY[18],X
-    STA OBJ_ANIMATION_DISPLAY[18],X
-    JSR MOVE_Y_FINALIZE
+    AND #$01 ; Keep 0x01
+    EOR OBJ_ANIMATION_DISPLAY[18],X ; Invert animate.
+    STA OBJ_ANIMATION_DISPLAY[18],X ; Store back.
+    JSR MOVE_Y_FINALIZE ; Do.
     LDA #$02
-    STA OBJ_SECONDARY_SWITCH?[18],X
-    JSR OBJ_RTN_UNK_RET_VAL_UNK
-    LSR A
-    LDA #$03
-    STA OBJ_SECONDARY_SWITCH?[18],X
-    BCS 0B:003C
+    STA OBJ_SECONDARY_SWITCH?[18],X ; Move secondary.
+    JSR OBJ_RTN_UNK_RET_VAL_UNK ; Do.
+    LSR A ; >> 1
+    LDA #$03 ; Load
+    STA OBJ_SECONDARY_SWITCH?[18],X ; Set
+    BCS SHIFTED_ONE ; 1 shifted off, do.
     LDA #$00
-    STA OBJECT_DATA_EXTRA_B?[18],X
-    RTS
-    JMP SET_XOBJ_SWITCHES_AND_ANIMATION
-    JMP 0B:05B9
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Clear extra.
+    RTS ; Leave.
+SHIFTED_ONE: ; 0B:003C, 0x01603C
+    JMP SET_XOBJ_SWITCHES_AND_ANIMATION ; State mod.
+JMP_OBJS_UNK: ; 0B:003F, 0x01603F
+    JMP UNK_RTN_INIT_OBJS
 S15_EXJ_RTN_A: ; 0B:0042, 0x016042
     LDA #$00
     STA OBJECT_DATA_EXTRA_B?[18],X
@@ -47,10 +51,11 @@ S15_EXJ_RTN_A: ; 0B:0042, 0x016042
     STA OBJ_ANIMATION_DISPLAY[18],X
     RTS
     .db 60 ; Oops?
-    LDA OBJ_ENABLED_STATE+MORE?[18],X
-    ASL A
-    TAY
-    LDA PTR_TBL_UNK_L,Y
+SUB_SWITCH_XOBJ_UNK: ; 0B:0069, 0x016069
+    LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load from Xobj.
+    ASL A ; << 1, *2. To word pointer.
+    TAY ; To Y index.
+    LDA PTR_TBL_UNK_L,Y ; Move pointer.
     STA TMP_00
     LDA PTR_TBL_UNK_H,Y
     STA TMP_01
@@ -59,47 +64,48 @@ PTR_TBL_UNK_L: ; 0B:0079, 0x016079
     LOW(TMP_00)
 PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     HIGH(TMP_00)
-    LOW(0B:00A3)
-    HIGH(0B:00A3)
-    LOW(0B:00D6)
-    HIGH(0B:00D6)
-    LOW(0B:011E)
-    HIGH(0B:011E)
-    LOW(0B:0148)
-    HIGH(0B:0148)
-    LOW(0B:016C)
-    HIGH(0B:016C)
-    LOW(0B:01AA)
-    HIGH(0B:01AA)
-    LOW(0B:01D5)
-    HIGH(0B:01D5)
-    LOW(0B:01F4)
-    HIGH(0B:01F4)
-    LOW(0B:01FE)
-    HIGH(0B:01FE)
-    LOW(0B:021D)
-    HIGH(0B:021D)
-    LOW(0B:0238)
-    HIGH(0B:0238)
-    LOW(0B:00EC)
-    HIGH(0B:00EC)
-    LOW(0B:0271)
-    HIGH(0B:0271)
-    LOW(0B:0148)
-    HIGH(0B:0148)
-    LOW(0B:01D5)
-    HIGH(0B:01D5)
-    LOW(0B:00A3)
-    HIGH(0B:00A3)
-    LOW(0B:0105)
-    HIGH(0B:0105)
-    LOW(0B:018B)
-    HIGH(0B:018B)
-    LOW(0B:00A3)
-    HIGH(0B:00A3)
-    LOW(0B:00A3)
-    HIGH(0B:00A3)
-    .db 60 ; RTS?
+    LOW(RTN_RTS)
+    HIGH(RTN_RTS)
+    LOW(RTN_B)
+    HIGH(RTN_B)
+    LOW(RTN_C)
+    HIGH(RTN_C)
+    LOW(RTN_D)
+    HIGH(RTN_D)
+    LOW(RTN_E)
+    HIGH(RTN_E)
+    LOW(RTN_F)
+    HIGH(RTN_F)
+    LOW(RTN_G)
+    HIGH(RTN_G)
+    LOW(RTN_H)
+    HIGH(RTN_H)
+    LOW(RTN_I)
+    HIGH(RTN_I)
+    LOW(RTN_J)
+    HIGH(RTN_J)
+    LOW(RTN_K)
+    HIGH(RTN_K)
+    LOW(RTN_L)
+    HIGH(RTN_L)
+    LOW(RTN_M)
+    HIGH(RTN_M)
+    LOW(RTN_D)
+    HIGH(RTN_D)
+    LOW(RTN_G)
+    HIGH(RTN_G)
+    LOW(RTN_RTS)
+    HIGH(RTN_RTS)
+    LOW(RTN_N)
+    HIGH(RTN_N)
+    LOW(RTN_O)
+    HIGH(RTN_O)
+    LOW(RTN_RTS)
+    HIGH(RTN_RTS)
+    LOW(RTN_RTS)
+    HIGH(RTN_RTS)
+RTN_RTS: ; 0B:00A3, 0x0160A3
+    .db 60 ; Just leave.
     LDA ARR_SPRITE_OBJ_TIMER?+1
     BNE 0B:00D2
     JSR RANDOMNESS?
@@ -118,7 +124,7 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     BCC 0B:00D2
     CMP #$4A
     BCS 0B:00CE
-    JSR 0A:185A
+    JSR RTN_UNK
     SEC
     RTS
     CLC
@@ -127,6 +133,7 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     CLC
     LDA #$00
     RTS
+RTN_B: ; 0B:00D6, 0x0160D6
     LDA 712_FLAG_PALETTE_UNK
     BNE 0B:00E2
     JSR 0B:00A4
@@ -137,6 +144,7 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     BCS 0B:00EB
     JMP 0A:19C0
     RTS
+RTN_L: ; 0B:00EC, 0x0160EC
     LDY #$04
     LDA OBJ_ENABLED_STATE+MORE?[18],Y
     CMP #$1C
@@ -147,7 +155,8 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     LDA #$02
     STA OBJ_ENABLED_STATE+MORE?[18],X
     JSR SUB_GFX_BANKS_FROM_STATE
-    JMP 0B:00D6
+    JMP RTN_B
+RTN_N: ; 0B:0105, 0x016105
     LDY #$04
     LDA OBJ_ENABLED_STATE+MORE?[18],Y
     CMP #$21
@@ -158,7 +167,8 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     LDA #$02
     STA OBJ_ENABLED_STATE+MORE?[18],X
     JSR SUB_GFX_BANKS_FROM_STATE
-    JMP 0B:00D6
+    JMP RTN_B
+RTN_C: ; 0B:011E, 0x01611E
     LDA 712_FLAG_PALETTE_UNK
     BNE 0B:012A
     JSR 0B:00A4
@@ -168,7 +178,7 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     CMP #$20
     BCS 0B:0133
     JMP 0A:1A41
-    LDA OBJ_POS_X[18],X
+    LDA OBJ_POS_X?[18],X
     CMP #$10
     BCC 0B:00EB
     CMP #$F0
@@ -177,11 +187,12 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     AND #$07
     BNE 0B:00EB
     JMP 0A:1B2E
+RTN_D: ; 0B:0148, 0x016148
     LDA TMP_16
     CMP #$20
     BCS 0B:0151
-    JMP 0A:1BC2
-    LDA OBJ_POS_X[18],X
+    JMP SUB_SEC0x03_TERT0x05_HOLD0x00
+    LDA OBJ_POS_X?[18],X
     CMP #$10
     BCC 0B:016B
     CMP #$F0
@@ -193,11 +204,12 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     LDA #$0C
     JMP SND_BANKED_DISPATCH
     RTS
+RTN_E: ; 0B:016C, 0x01616C
     LDA TMP_16
     CMP #$20
     BCS 0B:0175
     JMP 0A:19C0
-    LDA OBJ_POS_X[18],X
+    LDA OBJ_POS_X?[18],X
     CMP #$10
     BCC 0B:018A
     CMP #$F0
@@ -207,11 +219,12 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     BNE 0B:018A
     JMP 0A:1B3E
     RTS
+RTN_O: ; 0B:018B, 0x01618B
     LDA TMP_16
     CMP #$20
     BCS 0B:0194
     JMP 0A:19C0
-    LDA OBJ_POS_X[18],X
+    LDA OBJ_POS_X?[18],X
     CMP #$10
     BCC 0B:01A9
     CMP #$F0
@@ -221,13 +234,14 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     BNE 0B:01A9
     JMP 0A:1B4E
     RTS
+RTN_F: ; 0B:01AA, 0x0161AA
     LDA TMP_16
     CMP #$20
     BCS 0B:01BD
     JSR RANDOMNESS?
     AND #$07
     BEQ 0B:01BA
-    JMP 0A:1C51
+    JMP SUB_CLEAR_UNK_SEC0x03_TERT0x09
     JMP 0A:1CB1
     CMP #$30
     BCC 0B:01D4
@@ -240,11 +254,12 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     JMP 0A:1CA5
     JMP 0A:1CAB
     RTS
+RTN_G: ; 0B:01D5, 0x0161D5
     LDA TMP_16
     CMP #$20
     BCS 0B:01DE
     JMP 0A:19C0
-    LDA OBJ_POS_X[18],X
+    LDA OBJ_POS_X?[18],X
     CMP #$10
     BCC 0B:01F3
     CMP #$F0
@@ -254,16 +269,18 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     BNE 0B:01F3
     JMP 0A:1D61
     RTS
+RTN_H: ; 0B:01F4, 0x0161F4
     LDA TMP_16
     CMP #$20
     BCS 0B:01FD
     JMP 0A:1DF6
     RTS
+RTN_I: ; 0B:01FE, 0x0161FE
     LDA TMP_16
     CMP #$20
     BCS 0B:0207
     JMP 0A:1A51
-    LDA OBJ_POS_X[18],X
+    LDA OBJ_POS_X?[18],X
     CMP #$10
     BCC 0B:021C
     CMP #$F0
@@ -273,7 +290,8 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     BNE 0B:021C
     JMP 0A:1B5E
     RTS
-    LDA OBJ_POS_X[18],X
+RTN_J: ; 0B:021D, 0x01621D
+    LDA OBJ_POS_X?[18],X
     CMP #$10
     BCC 0B:0237
     CMP #$F0
@@ -285,6 +303,7 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     LDA #$2E
     JMP SND_BANKED_DISPATCH
     RTS
+RTN_K: ; 0B:0238, 0x016238
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     SEC
     LDA 4A2_OBJ_UNK_POS?[18],X
@@ -305,13 +324,14 @@ PTR_TBL_UNK_H: ; 0B:007A, 0x01607A
     BCC 0B:0270
     CMP #$5A
     BCS 0B:0270
-    LDA OBJ_POS_X[18],X
+    LDA OBJ_POS_X?[18],X
     CMP #$10
     BCC 0B:0270
     CMP #$F0
     BCS 0B:0270
     JMP 0A:1EE9
     RTS
+RTN_M: ; 0B:0271, 0x016271
     LDA 59E_OBJ_UNK[18],X
     BMI 0B:0294
     JSR 0B:00A4
@@ -494,7 +514,7 @@ S01_MSE_RTN_B: ; 0B:039B, 0x01639B
     LDA #$02
     STA 556_OBJ_UPDATE_FLAGS?[18],X
     JSR MOVE_Y_FINALIZE
-    LDA OBJ_POS_X[18],X
+    LDA OBJ_POS_X?[18],X
     STA TMP_06
     JSR XPOS_RTN_RET_??
     BCC 0B:03E9
@@ -505,13 +525,13 @@ S01_MSE_RTN_B: ; 0B:039B, 0x01639B
     STA 556_OBJ_UPDATE_FLAGS?[18],X
     LDA 556_OBJ_UPDATE_FLAGS?[18],X
     BNE 0B:0400
-    LDY OBJ_POS_X[18],X
+    LDY OBJ_POS_X?[18],X
     LDA 4A2_OBJ_UNK_POS?[18],X
     CLC
     ADC 4C6_OBJ_UNK+1,X
     JSR UNK_SUB_B
     BNE 0B:0400
-    JSR 0A:12D6
+    JSR SUB_UNK
     RTS
     LDA 4C6_OBJ_UNK+1,X
     STA 4C6_OBJ_UNK[18],X
@@ -573,7 +593,7 @@ S01_MSE_RTN_D: ; 0B:0480, 0x016480
     BEQ 0B:04A2
     JSR XPOS_RTN_RET_??
     BCC 0B:0495
-    JMP 0B:05B9
+    JMP UNK_RTN_INIT_OBJS
     LDA RANDOM_VALS?[2]
     LSR A
     LSR A
@@ -593,8 +613,8 @@ S01_MSE_RTN_D: ; 0B:0480, 0x016480
     INY
     CLC
     LDA 0B:04FB,Y
-    ADC OBJ_POS_X[18],X
-    STA OBJ_POS_X[18],X
+    ADC OBJ_POS_X?[18],X
+    STA OBJ_POS_X?[18],X
     LDA OBJ_POS_X_DELTA?[18],X
     ASL A
     LDY #$00
@@ -619,114 +639,46 @@ S01_MSE_RTN_D: ; 0B:0480, 0x016480
     JMP SND_BANKED_DISPATCH
     .db 00
     .db 00
-    .db 20
-    .db 8F
-    .db F6
-    .db 90
-    .db 4A
-    .db AC
-    .db 00
-    .db 07
-    .db B9
-    .db 7E
-    .db 04
-    .db 9D
-    .db 7E
-    .db 04
-    .db B9
-    .db 90
-    .db 04
-    .db 9D
-    .db 90
-    .db 04
-    .db B9
-    .db A2
-    .db 04
-    .db 9D
-    .db A2
-    .db 04
-    .db B9
-    .db 6C
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db B9
-    .db 36
-    .db 04
-    .db 9D
-    .db 36
-    .db 04
-    .db B9
-    .db EA
-    .db 04
-    .db 9D
-    .db EA
-    .db 04
-    .db B9
-    .db FC
-    .db 04
-    .db 9D
-    .db FC
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db C6
-    .db 04
-    .db 9D
-    .db 0E
-    .db 05
-    .db 9D
-    .db 20
-    .db 05
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 20
-    .db 9D
-    .db 24
-    .db 04
-    .db A9
-    .db 02
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 82
-    .db 9D
-    .db 00
-    .db 04
-    .db AE
-    .db 00
-    .db 07
-    .db 60
-    .db A9
-    .db 05
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db BC
-    .db 24
-    .db 04
-    .db B9
-    .db 56
-    .db AD
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 17
-    .db 9D
-    .db 48
-    .db 04
-    .db 60
+    JSR QUERY_OBJ_UNUSED_CS_TRUE_CC_FALSE
+    BCC 0B:054C
+    LDY OBJ_HANDLER_FOCUS_SCRATCHPAD
+    LDA OBJ_POS_X?[18],Y
+    STA OBJ_POS_X?[18],X
+    LDA OBJ_POS_X_SUBPIXEL?[18],Y
+    STA OBJ_POS_X_SUBPIXEL?[18],X
+    LDA 4A2_OBJ_UNK_POS?[18],Y
+    STA 4A2_OBJ_UNK_POS?[18],X
+    LDA OBJ_POS_Y[18],Y
+    STA OBJ_POS_Y[18],X
+    LDA OBJ_DIRECTION_RELATED?[18],Y
+    STA OBJ_DIRECTION_RELATED?[18],X
+    LDA OBJ_POS_X_DELTA?[18],Y
+    STA OBJ_POS_X_DELTA?[18],X
+    LDA OBJ_POS_X_SUBPIXEL_DELTA?[18],Y
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
+    LDA #$00
+    STA 4C6_OBJ_UNK[18],X
+    STA 50E_ARR_UNK[18],X
+    STA 520_ARR_UNK[18],X
+    STA 59E_OBJ_UNK[18],X
+    LDA #$20
+    STA OBJ_ENABLED_STATE+MORE?[18],X
+    LDA #$02
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$82
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDX OBJ_HANDLER_FOCUS_SCRATCHPAD
+    RTS
+    LDA #$05
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDY OBJ_ENABLED_STATE+MORE?[18],X
+    LDA 0B:0D56,Y
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$17
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    RTS
 HANDLER_0x01_MULTISWITCH_F: ; 0B:0569, 0x016569
     LOW(S01_MSF_RTN_A)
     HIGH(S01_MSF_RTN_A)
@@ -753,7 +705,7 @@ S01_MSF_RTN_B: ; 0B:0585, 0x016585
     BNE 0B:05A2
     LDY OBJ_TERTIARY_SWITCH?[18],X
     LDA L_0B:05B5,Y
-    BEQ 0B:05B9
+    BEQ UNK_RTN_INIT_OBJS
     STA OBJ_ANIMATION_DISPLAY[18],X
     INC OBJ_TERTIARY_SWITCH?[18],X
     LDA #$06
@@ -771,19 +723,14 @@ L_0B:05B5: ; 0B:05B5, 0x0165B5
     .db 02
     .db 03
     .db 00
-    .db 20
-    .db 54
-    .db 95
-    .db 20
-    .db D1
-    .db F4
-    .db E8
-    .db 20
-    .db D1
-    .db F4
-    .db CA
-    .db EA
-    .db 60
+UNK_RTN_INIT_OBJS: ; 0B:05B9, 0x0165B9
+    JSR 0A:1554
+    JSR INIT_OBJECT[X]_DATA_FULL
+    INX
+    JSR INIT_OBJECT[X]_DATA_FULL
+    DEX
+    NOP ; Shoutout to homelessrhino for praising the non-wate of cycles in NES games. :D
+    RTS
 OBJ_STATE_0x15_HANDLER: ; 0B:05C6, 0x0165C6
     STX OBJ_HANDLER_FOCUS_SCRATCHPAD
     JSR L_0B:05CF
@@ -815,8 +762,8 @@ L_0B:05E0: ; 0B:05E0, 0x0165E0
     ADC #$01
 L_0B:05FA: ; 0B:05FA, 0x0165FA
     CLC
-    ADC OBJ_POS_X[18],X
-    STA OBJ_POS_X[18],X
+    ADC OBJ_POS_X?[18],X
+    STA OBJ_POS_X?[18],X
     LDA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
     BEQ L_0B:0611
     LDA #$00
@@ -889,7 +836,7 @@ L_0B:067A: ; 0B:067A, 0x01667A
     TAY
     LDA L_0B:0C8D,Y
     STA OBJ_ANIMATION_DISPLAY[18],X
-    INC R_**:$0707
+    INC 707_UNK
     AND #$01
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     LDA #$02
@@ -996,7 +943,7 @@ L_0B:06F8: ; 0B:06F8, 0x0166F8
     .db 01
     .db 01
     .db 01
-SUB_UNK_CC_FAIL_CS_PASS: ; 0B:0732, 0x016732
+SUB_UNK_CC_FAIL_CS_PASS_HIT_DETECT?: ; 0B:0732, 0x016732
     JSR QUERY_OBJ_UNUSED_CS_TRUE_CC_FALSE ; Test if any unused.
     BCS UNUSED_OBJ_EXISTS ; True.
     LDX OBJ_HANDLER_FOCUS_SCRATCHPAD ; X from.
@@ -1009,8 +956,8 @@ UNUSED_OBJ_EXISTS: ; 0B:073B, 0x01673B
     LDA DATA_OBJ_EXISTS,Y ; Load
     STA OBJ_ENABLED_STATE+MORE?[18],X ; Store to OBJ.
     LDY OBJ_HANDLER_FOCUS_SCRATCHPAD ; Y again.
-    LDA OBJ_POS_X[18],Y ; YOBJ to XOBJ
-    STA OBJ_POS_X[18],X
+    LDA OBJ_POS_X?[18],Y ; YOBJ to XOBJ
+    STA OBJ_POS_X?[18],X
     LDA 4A2_OBJ_UNK_POS?[18],Y
     STA 4A2_OBJ_UNK_POS?[18],X
     INC 4A2_OBJ_UNK_POS?[18],X ; ++ on X
@@ -1517,9 +1464,10 @@ BG_DATA_RELATED?: ; 0B:0AFB, 0x016AFB
     .db 00
     .db 00
     .db 00
+SUB_UNK: ; 0B:0B0B, 0x016B0B
     LDA #$06
     STA TMP_06
-    LDY OBJ_POS_X[18],X
+    LDY OBJ_POS_X?[18],X
     LDA 4A2_OBJ_UNK_POS?[18],X
     CLC
     ADC 4C6_OBJ_UNK+1,X
@@ -1612,6 +1560,7 @@ NEXT_OBJ_INDEX_PER_STATE: ; 0B:0B7A, 0x016B7A
     .db 00
     .db 00
     .db 00
+OBJ_DATA_INDEX_UNK: ; 0B:0B90, 0x016B90
     .db 00
     .db 00
     .db 01
@@ -1656,6 +1605,7 @@ HEALTHS_PER_STATE: ; 0B:0BA5, 0x016BA5
     .db FF
     .db FF
     .db FF
+COMPARE_PER_SCREEN_UNK: ; 0B:0BBB, 0x016BBB
     .db 24
     .db 24
     .db 1C

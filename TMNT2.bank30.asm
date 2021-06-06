@@ -2822,7 +2822,7 @@ NO_CONTROLLER_NEWLY_PRESSED: ; 1E:0B65, 0x03CB65
     CPX #$03 ; If X _ #$03
     BCC X_INDEX_LOOP ; <, goto.
     LDA #$50 ; XPos
-    STA OBJ_POS_X[18] ; To
+    STA OBJ_POS_X?[18] ; To
     LDA #$74 ; Object
     STA OBJ_ANIMATION_DISPLAY[18] ; To
     LDA #$C4 ; GFX Bank.
@@ -3259,7 +3259,7 @@ OBJECT_ANIM_DECIDED?: ; 1E:0E71, 0x03CE71
     BEQ SKIP_UPDATE? ; ==, goto.
     LDY OBJ_POS_Y[18],X ; Load from.
     STY TMP_01 ; To temp.
-    LDY OBJ_POS_X[18],X ; Same
+    LDY OBJ_POS_X?[18],X ; Same
     STY TMP_02
     JSR RTN_ANIMATE_SPRITES? ; Do routine.
     LDA TMP_0F ; Load. Out of sprites flag.
@@ -3592,7 +3592,7 @@ SET_ARRS_FF: ; 1E:10C7, 0x03D0C7
 LOOP_UNTIL_INDEX_18: ; 1E:10D7, 0x03D0D7
     LDX C6_SPR_ARR_UNK[2],Y ; X from array.
     BMI C6_VAL_NEGATIVE ; Negative, goto.
-    LDA OBJ_POS_X[18],X ; Load Xpos.
+    LDA OBJ_POS_X?[18],X ; Load Xpos.
     BPL XPOS_POSITIVE ; Positive, goto.
     STY TMP_15 ; Save Y.
     LDY TMP_17 ; Index Y from.
@@ -3699,7 +3699,7 @@ CORE_STATE_SWITCH: ; 1E:1172, 0x03D172
     HIGH(SWITCH_3C_RTN_E) ; 0x04
     LOW(SWITCH_3C_RTN_F) ; End level script?
     HIGH(SWITCH_3C_RTN_F) ; 0x05
-    LOW(SWITCH_3C_RTN_G) ; Set up loads of gameplay stuff, turtle attrs, level sound.
+    LOW(SWITCH_3C_RTN_G) ; Set up loads of gameplay stuff, turtle attrs, cutscene sound.
     HIGH(SWITCH_3C_RTN_G) ; 0x06
     LOW(SWITCH_3C_RTN_H) ; Game over portion.
     HIGH(SWITCH_3C_RTN_H) ; 0x07
@@ -4012,7 +4012,7 @@ SWITCH_3C_RTN_I: ; 1E:13AD, 0x03D3AD
     STA 3C_SWITCH_CORE ; Switch core to state 7, game over?
     LDA #$00
     STA 4B_SWITCH_GAME_PREP/OVER ; Clear vars.
-    STA CONTINUES_LEFT
+    STA CONTINUES_LEFT ; No continues, game actually over.
     RTS
 CUTSCENE_START_DOES_SOMETHING?: ; 1E:13C9, 0x03D3C9
     LDA GAME_STARTED ; Load val.
