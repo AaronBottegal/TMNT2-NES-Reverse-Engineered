@@ -15,7 +15,7 @@ NOT_2P: ; 0A:001A, 0x01401A
     LDA 5FA_UNK ; Load
     STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X ; Store to obj.
     LDA #$00
-    STA 5FA_UNK ; Clear
+    STA 5FA_UNK ; Clear these.
     STA 95_UNK
     STA 96_UNK
     INC OBJ_TERTIARY_SWITCH?[18],X ; Obj next.
@@ -69,7 +69,7 @@ OBJ_DATA_B_ZERO: ; 0A:0073, 0x014073
     INC 714_UNK ; ++ unk.
     JMP INIT_OBJECT[X]_DATA_FULL ; Abuse RTS. Clear object?
 OBJ_UNK_NONZERO: ; 0A:0079, 0x014079
-    JSR GET_OBJS_MATCH_X? ; Get val in TMP.
+    JSR GET_OBJS_COUNT_MATCH_FOCUS_AS_STATE_IN_TMP_00 ; Get val in TMP.
     LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Load from X.
     CMP #$30 ; If _ #$30
     BCS VAL_GTE ; >=, goto.
@@ -86,10 +86,10 @@ OBJ_UNK_NONZERO: ; 0A:0079, 0x014079
     BEQ RTS_MOVE ; ==, goto.
     BCC RTS_MOVE ; <, goto.
 L_0A:009C: ; 0A:009C, 0x01409C
-    JSR RTN_GET_OBJ_PAIR_IN_T_RET_CC_SUCCESS
+    JSR RTN_GET_OBJ_PAIR_IN_Y_RET_CC_SUCCESS
     BCS RTS_MOVE ; Didn't get Yobj. Leave.
     LDA #$30
-    STA 59E_OBJ_UNK[18],X ; Set timer.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set timer.
     JSR SETUP_OBJ_X? ; Do...
     INC OBJ_TERTIARY_SWITCH?[18],X ; Next switch.
 RTS_MOVE: ; 0A:00AC, 0x0140AC
@@ -242,7 +242,7 @@ ZP_13--_EQ_ZERO: ; 0A:014F, 0x01414F
 A_FROM_X: ; 0A:0153, 0x014153
     TAX ; A to X.
     LDA DATA_UPDATE_FLAGS?,X ; Get data.
-    STA 556_OBJ_UPDATE_FLAGS?[18],Y ; Store to obj.
+    STA 556_OBJ_STATUS_FLAGS[18],Y ; Store to obj.
     LDA DATA_POS_X,X
     STA OBJ_POS_X?[18],Y
     LDA LEVEL/SCREEN_ON ; Get level.
@@ -310,20 +310,20 @@ DATA_TMP12_UNK: ; 0A:01A3, 0x0141A3
     .db A0
     .db D8
 TERTIARY_RTN_C: ; 0A:01B8, 0x0141B8
-    DEC 59E_OBJ_UNK[18],X ; --
+    DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; --
     BNE RTS ; != 0, leave.
     DEC OBJ_TERTIARY_SWITCH?[18],X ; Back to switch 2.
 RTS: ; 0A:01C0, 0x0141C0
     RTS
-GET_OBJS_MATCH_X?: ; 0A:01C1, 0x0141C1
+GET_OBJS_COUNT_MATCH_FOCUS_AS_STATE_IN_TMP_00: ; 0A:01C1, 0x0141C1
     LDA #$00
-    STA TMP_00 ; Clear.
+    STA TMP_00 ; Clear match count.
     LDY #$07 ; Obj start.
 LOOP_OBJS: ; 0A:01C7, 0x0141C7
     LDA OBJ_ENABLED_STATE+MORE?[18],Y ; Get state.
     CMP 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; If X.var _ Y.State
     BNE STATE_NE_TIMER? ; !=, goto.
-    INC TMP_00 ; ++
+    INC TMP_00 ; Matches++
 STATE_NE_TIMER?: ; 0A:01D1, 0x0141D1
     INY ; Obj pair ++
     INY
@@ -416,15 +416,15 @@ YOBJ_NONZERO: ; 0A:024B, 0x01424B
     CLC ; Clear carry, success.
     RTS
     LDA #$01
-    STA 556_OBJ_UPDATE_FLAGS?[18],X
-    STA 556_OBJ_UPDATE_FLAGS?[18],Y
+    STA 556_OBJ_STATUS_FLAGS[18],X
+    STA 556_OBJ_STATUS_FLAGS[18],Y
     LDA #$18
     STA OBJ_POS_X?[18],X
     LDA #$20
     BNE L_0A:0273
     LDA #$02
-    STA 556_OBJ_UPDATE_FLAGS?[18],X
-    STA 556_OBJ_UPDATE_FLAGS?[18],Y
+    STA 556_OBJ_STATUS_FLAGS[18],X
+    STA 556_OBJ_STATUS_FLAGS[18],Y
     LDA #$E8
     STA OBJ_POS_X?[18],X
     LDA #$E0
@@ -524,114 +524,114 @@ L_0A:02BC: ; 0A:02BC, 0x0142BC
     .db 02
     .db 02
 OBJ_STATE_0x24_HANDLER: ; 0A:02F2, 0x0142F2
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    JSR SWITCH_CODE_PTRS_PAST_JSR
-    LOW(STATE_0x24_SWITCH_A)
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load
+    JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch
+    LOW(STATE_0x24_SWITCH_A) ; Sets val.
     HIGH(STATE_0x24_SWITCH_A)
-    LOW(STATE_0x24_SWITCH_B)
+    LOW(STATE_0x24_SWITCH_B) ; Pair create rtn.
     HIGH(STATE_0x24_SWITCH_B)
 STATE_0x24_SWITCH_A: ; 0A:02FC, 0x0142FC
     LDA #$10
-    STA 59E_OBJ_UNK[18],X
-    INC OBJ_SECONDARY_SWITCH?[18],X
-L_0A:0304: ; 0A:0304, 0x014304
-    JMP OBJECT_X_MOVE?
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set. Val?
+    INC OBJ_SECONDARY_SWITCH?[18],X ; Move secondary.
+EXIT_X_MOVE?: ; 0A:0304, 0x014304
+    JMP OBJECT_X_MOVE? ; Finalize.
 STATE_0x24_SWITCH_B: ; 0A:0307, 0x014307
-    DEC 59E_OBJ_UNK[18],X
-    BNE L_0A:0304
-    LDA OBJ_POS_X?[18],X
-    PHA
-    JSR INIT_OBJECT[X]_DATA_FULL
-    PLA
-    JMP L_0A:074A
+    DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Val--
+    BNE EXIT_X_MOVE? ; != 0, goto.
+    LDA OBJ_POS_X?[18],X ; Load
+    PHA ; Save
+    JSR INIT_OBJECT[X]_DATA_FULL ; Re-init.
+    PLA ; Pull.
+    JMP PAIR_OBJS_CREATE_UNK ; Goto.
 OBJ_STATE_0x25_HANDLER: ; 0A:0317, 0x014317
-    LDA OBJ_SECONDARY_SWITCH?[18],X
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Switch on.
     JSR SWITCH_CODE_PTRS_PAST_JSR
-    LOW(S25_EXTRA_RTN_A)
+    LOW(S25_EXTRA_RTN_A) ; Setup palette.
     HIGH(S25_EXTRA_RTN_A)
-    LOW(S25_EXTRA_RTN_B)
+    LOW(S25_EXTRA_RTN_B) ; Makes objs.
     HIGH(S25_EXTRA_RTN_B)
 S25_EXTRA_RTN_A: ; 0A:0321, 0x014321
-    LDY #$00
-    JSR UPDATE_PALETTE[0x1C]_WITH_A_SAVING_XOBJ
-    LDA #$10
-    STA 59E_OBJ_UNK[18],X
-    INC OBJ_SECONDARY_SWITCH?[18],X
-L_0A:032E: ; 0A:032E, 0x01432E
-    JMP OBJECT_X_MOVE?
+    LDY #$00 ; Palette
+    JSR UPDATE_PALETTE[0x1C]_WITH_A_SAVING_XOBJ ; Update.
+    LDA #$10 ; Val?
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set.
+    INC OBJ_SECONDARY_SWITCH?[18],X ; Move to other.
+EXIT(_X_MOVE?): ; 0A:032E, 0x01432E
+    JMP OBJECT_X_MOVE? ; Exit, abuse RTS.
 S25_EXTRA_RTN_B: ; 0A:0331, 0x014331
-    DEC 59E_OBJ_UNK[18],X
-    BNE L_0A:032E
-    LDA OBJ_POS_X?[18],X
-    PHA
-    JSR INIT_OBJECT[X]_DATA_FULL
-    PLA
-    JMP L_0A:06FC
+    DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; --
+    BNE EXIT(_X_MOVE?) ; != 0, leave.
+    LDA OBJ_POS_X?[18],X ; Load
+    PHA ; Save.
+    JSR INIT_OBJECT[X]_DATA_FULL ; Re-init.
+    PLA ; Restore Xpos.
+    JMP RTN_MAKE_OTHER_OBJS_LOOP ; Make objs.
 OBJ_STATE_0x26_HANDLER: ; 0A:0341, 0x014341
-    LDA OBJ_SECONDARY_SWITCH?[18],X
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Switch on.
     JSR SWITCH_CODE_PTRS_PAST_JSR
-    LOW(STATE_0x26_SWITCH_A)
+    LOW(STATE_0x26_SWITCH_A) ; Obj count matched matters.
     HIGH(STATE_0x26_SWITCH_A)
-    LOW(STATE_0x26_SWITCH_B)
+    LOW(STATE_0x26_SWITCH_B) ; IRQ/Script runs accounted for in rtn.
     HIGH(STATE_0x26_SWITCH_B)
-    LOW(STATE_0x26_SWITCH_C)
+    LOW(STATE_0x26_SWITCH_C) ; Moves back to B.
     HIGH(STATE_0x26_SWITCH_C)
 STATE_0x26_SWITCH_A: ; 0A:034D, 0x01434D
     LDA #$10
-    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
-    INC OBJ_SECONDARY_SWITCH?[18],X
-    JMP OBJECT_X_MOVE?
+    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Set.
+    INC OBJ_SECONDARY_SWITCH?[18],X ; Move switch.
+    JMP OBJECT_X_MOVE? ; Exit/finalize.
 STATE_0x26_SWITCH_B: ; 0A:0358, 0x014358
-    JSR GET_OBJS_MATCH_X?
-    LDA TMP_00
-    CMP #$02
-    BCS L_0A:03AC
-    JSR RTN_GET_OBJ_PAIR_IN_T_RET_CC_SUCCESS
-    BCS L_0A:03AC
-    LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
-    STA OBJ_ENABLED_STATE+MORE?[18],Y
-    LDA 5B0_OBJ_UNK[18],X
-    AND #$01
-    CLC
-    ADC #$01
-    STA 556_OBJ_UPDATE_FLAGS?[18],Y
-    CMP #$01
-    BEQ L_0A:0389
+    JSR GET_OBJS_COUNT_MATCH_FOCUS_AS_STATE_IN_TMP_00 ; Get count.
+    LDA TMP_00 ; Count
+    CMP #$02 ; If _ #$02
+    BCS EXIT_MOVE/UPDATE_FLAG ; >=, goto.
+    JSR RTN_GET_OBJ_PAIR_IN_Y_RET_CC_SUCCESS
+    BCS EXIT_MOVE/UPDATE_FLAG ; Fail, exit.
+    LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Load
+    STA OBJ_ENABLED_STATE+MORE?[18],Y ; Store to Yobj.
+    LDA 5B0_OBJ_UNK[18],X ; Load
+    AND #$01 ; Keep 0000.0001
+    CLC ; Prep add
+    ADC #$01 ; Add
+    STA 556_OBJ_STATUS_FLAGS[18],Y ; Store to update.
+    CMP #$01 ; If _ #$01
+    BEQ UPDATE_EQ_0x01 ; ==, goto. Was 0x00.
     LDA #$D0
-    STA OBJ_POS_X?[18],Y
-    LDA IRQ/SCRIPT_RUN_COUNT?
-    AND #$0F
+    STA OBJ_POS_X?[18],Y ; Set Xpos.
+    LDA IRQ/SCRIPT_RUN_COUNT? ; Load ran count.
+    AND #$0F ; Keep 0000.1111
     CLC
-    ADC #$88
-    BNE L_0A:0395
-L_0A:0389: ; 0A:0389, 0x014389
-    LDA #$30
-    STA OBJ_POS_X?[18],Y
-    LDA IRQ/SCRIPT_RUN_COUNT?
-    AND #$0F
-    CLC
-    ADC #$A8
-L_0A:0395: ; 0A:0395, 0x014395
-    STA 4A2_OBJ_UNK_POS?[18],Y
-    INC 5B0_OBJ_UNK[18],X
-    JSR GET_OBJS_MATCH_X?
-    LDA TMP_00
-    CMP #$02
-    BCC L_0A:03AC
+    ADC #$88 ; Add with
+    BNE A_SEEDED ; Always taken.
+UPDATE_EQ_0x01: ; 0A:0389, 0x014389
+    LDA #$30 ; Val.
+    STA OBJ_POS_X?[18],Y ; Set.
+    LDA IRQ/SCRIPT_RUN_COUNT? ; Load
+    AND #$0F ; Keep 0000.1111
+    CLC ; Prep add.
+    ADC #$A8 ; Add with.
+A_SEEDED: ; 0A:0395, 0x014395
+    STA 4A2_OBJ_UNK_POS?[18],Y ; Store to.
+    INC 5B0_OBJ_UNK[18],X ; ++
+    JSR GET_OBJS_COUNT_MATCH_FOCUS_AS_STATE_IN_TMP_00 ; Do.
+    LDA TMP_00 ; Count of objs.
+    CMP #$02 ; If _ #$02
+    BCC EXIT_MOVE/UPDATE_FLAG ; <, exit.
     LDA #$80
-    STA 59E_OBJ_UNK[18],X
-    INC OBJ_SECONDARY_SWITCH?[18],X
-L_0A:03AC: ; 0A:03AC, 0x0143AC
-    JSR OBJECT_X_MOVE?
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set
+    INC OBJ_SECONDARY_SWITCH?[18],X ; Secondary++
+EXIT_MOVE/UPDATE_FLAG: ; 0A:03AC, 0x0143AC
+    JSR OBJECT_X_MOVE? ; Exit.
     JMP TEST_OBJ_UPDATE_FLAG_INIT
 STATE_0x26_SWITCH_C: ; 0A:03B2, 0x0143B2
-    DEC 59E_OBJ_UNK[18],X
-    BNE L_0A:03AC
-    DEC OBJ_SECONDARY_SWITCH?[18],X
-    JMP L_0A:03AC
+    DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; --
+    BNE EXIT_MOVE/UPDATE_FLAG ; != 0, exit.
+    DEC OBJ_SECONDARY_SWITCH?[18],X ; Move secondary back.
+    JMP EXIT_MOVE/UPDATE_FLAG ; Exit.
 OBJ_STATE_0x01_HANDLER: ; 0A:03BD, 0x0143BD
     LDA 544_OBJ_UNK_POS_DELTA?+17,X ; OBJ_UPDATE_FLAGS-1.
-    STA 556_OBJ_UPDATE_FLAGS?[18],X ; Copy to our flags.
+    STA 556_OBJ_STATUS_FLAGS[18],X ; Copy to our flags.
     LDA OBJ_POS_Y+17,X ; OBJ_POS_X-1
     STA OBJ_POS_X?[18],X ; Copy to ours.
     LDY OBJ_ANIMATION_DISPLAY+17,X ; OBJ_SECONDARY_SWITCH-1
@@ -749,9 +749,9 @@ SECONDARY_NONZERO: ; 0A:0476, 0x014476
     LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],Y ; Load current.
     EOR #$02 ; Invert 0000.0010
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],Y ; Store back.
-    LDA 59E_OBJ_UNK[18],Y ; Load OBJ
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],Y ; Load OBJ
     AND #$8F ; Keep 1000.1111
-    STA 59E_OBJ_UNK[18],Y ; Store back.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],Y ; Store back.
 SINGLE_PLAYER/SKIP: ; 0A:04A2, 0x0144A2
     JSR TEST_XOBJ_EQ_717/718_INDEX_MATCH ; Test..?
     LDY OBJ_TERTIARY_SWITCH?+1,X ; Get from Xobj next to..
@@ -785,7 +785,7 @@ SYNC_UNK: ; 0A:04DF, 0x0144DF
     JSR SECONDARY_AND_TERTIARY_SWITCH_RTN ; Do one of a billion things??? Ugh, lots to do here.
     LDA OBJECT_DATA_EXTRA_B?[18],X ; Get extra
     BEQ RTS ; No extra, leave.
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load update flags.
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load update flags.
     BNE RTS ; If any set, leave.
     TXA ; Object to A.
     LSR A ; Shift.
@@ -794,18 +794,18 @@ SYNC_UNK: ; 0A:04DF, 0x0144DF
     BCC RTS ; If shifted off 0, leave.
     LDA OBJECT_DATA_HEALTH?[18],X ; Load health
     PHA ; Save
-    LDA 59E_OBJ_UNK[18],X ; Load timer.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load timer.
     AND #$08 ; Test 0000.1000
     BEQ TIMER?_BIT_0x08_NOT_SET
     LDA #$FF
     STA OBJECT_DATA_HEALTH?[18],X ; Set health
-    DEC 59E_OBJ_UNK+1,X ; -- from pair.
+    DEC 59E_OBJ_UNK/EXTRA_TIMER+1,X ; -- from pair.
     BNE TIMER?_BIT_0x08_NOT_SET ; If not set, skip ??
-    LDA 59E_OBJ_UNK[18],X ; Load
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     AND #$F7 ; Keep 1111.0111
-    STA 59E_OBJ_UNK[18],X ; Store back
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Store back
     LDA #$00
-    STA 59E_OBJ_UNK+1,X ; Clear pair.
+    STA 59E_OBJ_UNK/EXTRA_TIMER+1,X ; Clear pair.
 TIMER?_BIT_0x08_NOT_SET: ; 0A:0518, 0x014518
     JSR OBJ_RTN_UNK_RET_VAL_UNK ; Do..
     STA TMP_00 ; Store ret.
@@ -826,9 +826,9 @@ RET_NE_0xFF: ; 0A:0531, 0x014531
     BCC RTS ; Return 0x02 clear, leave.
     CPX 719_OBJ_CMP_UNK ; If Xobj _ Var
     BNE RTS ; !=, leave.
-    LDA 59E_OBJ_UNK[18],X ; Load from OBJ.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load from OBJ.
     AND #$EF ; Keep 1110.1111
-    STA 59E_OBJ_UNK[18],X ; Store back.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Store back.
     LDA #$00
     STA 5B0_OBJ_UNK+1,X ; Clear pair var.
 RTS: ; 0A:0549, 0x014549
@@ -846,7 +846,7 @@ GTEQ_0x02: ; 0A:0554, 0x014554
 VAL_NE_0x10: ; 0A:055E, 0x01455E
     CMP #$0D ; If _ #$0D
     BNE STATE_NE_0x0D ; !=, goto.
-    LDA 59E_OBJ_UNK[18],X ; Load
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     BPL STATE_NE_0x0D ; If positive, skip.
     JSR SUB_UNK_CC_FAIL_CS_PASS_HIT_DETECT?
     LDA #$01
@@ -905,9 +905,9 @@ RTN_RET_0xFF: ; 0A:05B5, 0x0145B5
     LDA #$00
     STA OBJ_TERTIARY_SWITCH?[18],X
     STA OBJ_ANIMATION_DISPLAY[18],X
-    LDA 59E_OBJ_UNK[18],X
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     AND #$EF
-    STA 59E_OBJ_UNK[18],X
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     JMP L_0A:14FD
 HANDLER_0x01_MULTISWITCH_G_RTN_A: ; 0A:05CD, 0x0145CD
     LDA #$8B
@@ -1026,7 +1026,7 @@ A_TO_SECONDARY_FOR_PAIRED: ; 0A:066E, 0x01466E
     LDA 716_UNK ; Load
     AND #$03 ; Keep 0000.0011
     ORA #$80 ; Set 1000.0000
-    STA 59E_OBJ_UNK[18],X ; Store to.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Store to.
     AND #$01 ; Keep 0000.0001
     ASL A ; << 1, *2.
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Store to.
@@ -1072,7 +1072,7 @@ SWITCH_BASED_ON_MISC_INDEX: ; 0A:06AB, 0x0146AB
     LOW(SWITCH_0x02_RTN_L) ; Sec 0x01, Tert 0x0E, smol clear.
     HIGH(SWITCH_0x02_RTN_L)
 SWITCH_0x02_RTN_A: ; 0A:06C9, 0x0146C9
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load flags.
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load flags.
     BNE FLAGS_SET ; != 0, goto.
     JMP OBJ_STATE_MOVE_TO_S02_T00 ; Set this.
 FLAGS_SET: ; 0A:06D1, 0x0146D1
@@ -1094,36 +1094,36 @@ SWITCH_0x02_RTN_C: ; 0A:06EB, 0x0146EB
     STA 4C6_OBJ_UNK[18],X ; Clear
     STA OBJ_TERTIARY_SWITCH?+1,X ; Clear.
     JMP SET_OBJ_SECONDARY_0x01_TERTIARY_0x08_DIRECTION_POS_MORE ; Do.
-L_0A:06FC: ; 0A:06FC, 0x0146FC
-    STA TMP_16
+RTN_MAKE_OTHER_OBJS_LOOP: ; 0A:06FC, 0x0146FC
+    STA TMP_16 ; Save Xobj Xpos.
+    LDA #$02 ; Loop count.
+    STA TMP_17 ; Store to TMP.
+LOOP_MAKE_OBJS: ; 0A:0702, 0x014702
+    JSR OBJ_SEARCH_UNUSED_PAIR_RET_CS_FAIL ; Get Xobj.
+    BCS RTS ; Ret CS, failed.
     LDA #$02
-    STA TMP_17
-L_0A:0702: ; 0A:0702, 0x014702
-    JSR L_1F:1317
-    BCS L_0A:0737
-    LDA #$02
-    STA OBJ_ENABLED_STATE+MORE?[18],X
+    STA OBJ_ENABLED_STATE+MORE?[18],X ; Set xobj state.
     LDA #$00
-    STA 556_OBJ_UPDATE_FLAGS?[18],X
-    CLC
-    LDY TMP_17
-    LDA TMP_16
-    ADC L_0A:0738,Y
-    STA OBJ_POS_X?[18],X
+    STA 556_OBJ_STATUS_FLAGS[18],X ; Clear.
+    CLC ; Prep add.
+    LDY TMP_17 ; Load loop.
+    LDA TMP_16 ; Load Xpos.
+    ADC XPOS_ADD,Y ; Mod Xpos.
+    STA OBJ_POS_X?[18],X ; Store to this Xpos.
     LDA #$97
-    STA 4A2_OBJ_UNK_POS?[18],X
+    STA 4A2_OBJ_UNK_POS?[18],X ; Set
     LDA #$E9
-    STA 4C6_OBJ_UNK[18],X
+    STA 4C6_OBJ_UNK[18],X ; Set
     LDA #$00
-    STA 4D8_OBJ_UNK[18],X
-    STA OBJ_TERTIARY_SWITCH?+1,X
+    STA 4D8_OBJ_UNK[18],X ; Clear.
+    STA OBJ_TERTIARY_SWITCH?+1,X ; Clear pair tert.
     LDA #$03
-    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
-    DEC TMP_17
-    BPL L_0A:0702
-L_0A:0737: ; 0A:0737, 0x014737
-    RTS
-L_0A:0738: ; 0A:0738, 0x014738
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; Set.
+    DEC TMP_17 ; Loop--
+    BPL LOOP_MAKE_OBJS ; Make more if positive.
+RTS: ; 0A:0737, 0x014737
+    RTS ; Leave.
+XPOS_ADD: ; 0A:0738, 0x014738
     .db 00
     .db F0
     .db 10
@@ -1137,120 +1137,83 @@ SWITCH_0x02_RTN_K: ; 0A:0744, 0x014744
     JMP SET_SECONDARY_TERTIARY_DISPLAY_MORE
 SWITCH_0x02_RTN_L: ; 0A:0747, 0x014747
     JMP SET_SECONDARY_0x01_TERTIARY_0x0E_MORE
-L_0A:074A: ; 0A:074A, 0x01474A
-    STA TMP_16
-    LDA #$02
-    STA TMP_17
-L_0A:0750: ; 0A:0750, 0x014750
-    JSR L_1F:1317
-    BCS L_0A:0795
+PAIR_OBJS_CREATE_UNK: ; 0A:074A, 0x01474A
+    STA TMP_16 ; Store obj Xpos to.
+    LDA #$02 ; Loops - 1
+    STA TMP_17 ; Store.
+LOOP_RTN: ; 0A:0750, 0x014750
+    JSR OBJ_SEARCH_UNUSED_PAIR_RET_CS_FAIL ; Find pair.
+    BCS RTS ; Failed to get pair, leave.
     LDA #$04
-    STA OBJ_ENABLED_STATE+MORE?[18],X
+    STA OBJ_ENABLED_STATE+MORE?[18],X ; Set obj state.
     LDA TMP_16
-    STA OBJ_POS_X?[18],X
-    LDA #$70
-    STA 4A2_OBJ_UNK_POS?[18],X
-    LDA #$04
-    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
-    LDA TMP_17
-    ASL A
-    TAY
-    LDA L_0A:079A,Y
-    STA 45A_OBJ_DATA_ENTRY?STATE_STEP?+1,X
-    LDA L_0A:079B,Y
-    STA OBJ_ANIM_HOLD_TIMER?+1,X
-    LDA L_0A:0796
-    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
-    LDA L_0A:0797
-    STA OBJ_POS_X_DELTA?[18],X
-    LDA L_0A:0798
-    STA 520_ARR_UNK[18],X
-    LDA L_0A:0799
-    STA 50E_ARR_UNK[18],X
-    DEC TMP_17
-    BPL L_0A:0750
-L_0A:0795: ; 0A:0795, 0x014795
+    STA OBJ_POS_X?[18],X ; Set from other obj.
+    LDA #$70 ; Val?
+    STA 4A2_OBJ_UNK_POS?[18],X ; Set
+    LDA #$04 ; Val?
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; Set.
+    LDA TMP_17 ; Load loop count.
+    ASL A ; >> 1, /2
+    TAY ; To index.
+    LDA OBJ_DATA_A,Y
+    STA 45A_OBJ_DATA_ENTRY?STATE_STEP?+1,X ; Set pair.
+    LDA OBJ_DATA_B_PAIR_HOLD,Y
+    STA OBJ_ANIM_HOLD_TIMER?+1,X ; Set pair.
+    LDA OBJ_DATA_C
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X ; Set
+    LDA OBJ_DATA_D
+    STA OBJ_POS_X_DELTA?[18],X ; Set.
+    LDA OBJ_DATA_E
+    STA 520_OBJ_POS_X_LARGE?[18],X ; Set
+    LDA OBJ_DATA_F
+    STA 503_OBJ_POS_X_LARGEST?[18],X ; Set.
+    DEC TMP_17 ; --
+    BPL LOOP_RTN ; Positive, loop.
+RTS: ; 0A:0795, 0x014795
     RTS
-L_0A:0796: ; 0A:0796, 0x014796
+OBJ_DATA_C: ; 0A:0796, 0x014796
     .db 80
-L_0A:0797: ; 0A:0797, 0x014797
+OBJ_DATA_D: ; 0A:0797, 0x014797
     .db 01
-L_0A:0798: ; 0A:0798, 0x014798
+OBJ_DATA_E: ; 0A:0798, 0x014798
     .db 9A
-L_0A:0799: ; 0A:0799, 0x014799
+OBJ_DATA_F: ; 0A:0799, 0x014799
     .db 02
-L_0A:079A: ; 0A:079A, 0x01479A
+OBJ_DATA_A: ; 0A:079A, 0x01479A
     .db 14
-L_0A:079B: ; 0A:079B, 0x01479B
-    .db 0F
+OBJ_DATA_B_PAIR_HOLD: ; 0A:079B, 0x01479B
+    .db 0F ; TODO: Mistake because not 2 entries for data A/B?
     .db 0A
     .db 19
     .db 01
     .db 23
-    .db 85
-    .db 16
-    .db A9
-    .db 02
-    .db 85
-    .db 17
-    .db 20
-    .db 17
-    .db F3
-    .db B0
-    .db 34
-    .db A9
-    .db 02
-    .db 9D
-    .db 24
-    .db 04
-    .db A5
-    .db 16
-    .db 9D
-    .db 7E
-    .db 04
-    .db A9
-    .db 88
-    .db 9D
-    .db A2
-    .db 04
-    .db A9
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db A5
-    .db 17
-    .db 0A
-    .db A8
-    .db B9
-    .db E2
-    .db 87
-    .db 9D
-    .db 5B
-    .db 04
-    .db B9
-    .db E3
-    .db 87
-    .db 9D
-    .db 49
-    .db 04
-    .db AD
-    .db E0
-    .db 87
-    .db 9D
-    .db 20
-    .db 05
-    .db AD
-    .db E1
-    .db 87
-    .db 9D
-    .db 0E
-    .db 05
-    .db C6
-    .db 17
-    .db 10
-    .db C7
-    .db 60
+    STA TMP_16 ; TODO: This another version of above?
+    LDA #$02
+    STA TMP_17
+    JSR OBJ_SEARCH_UNUSED_PAIR_RET_CS_FAIL
+    BCS 0A:07DF
+    LDA #$02
+    STA OBJ_ENABLED_STATE+MORE?[18],X
+    LDA TMP_16
+    STA OBJ_POS_X?[18],X
+    LDA #$88
+    STA 4A2_OBJ_UNK_POS?[18],X
+    LDA #$05
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    LDA TMP_17
+    ASL A
+    TAY
+    LDA 0A:07E2,Y
+    STA 45A_OBJ_DATA_ENTRY?STATE_STEP?+1,X
+    LDA 0A:07E3,Y
+    STA OBJ_ANIM_HOLD_TIMER?+1,X
+    LDA 0A:07E0
+    STA 520_OBJ_POS_X_LARGE?[18],X
+    LDA 0A:07E1
+    STA 503_OBJ_POS_X_LARGEST?[18],X
+    DEC TMP_17
+    BPL 0A:07A6
+    RTS
     .db 80
     .db 00
     .db 59
@@ -1265,7 +1228,7 @@ SWITCH_0x02_RTN_G: ; 0A:07E8, 0x0147E8
     LDA #$01
     STA OBJ_TERTIARY_SWITCH?[18],X
     LDA #$00
-    STA 556_OBJ_UPDATE_FLAGS?[18],X ; Clear
+    STA 556_OBJ_STATUS_FLAGS[18],X ; Clear
     JSR XPOS_RANDOMNESS ; Xpos from randomness.
     JSR RANDOMNESS? ; More
     AND #$07 ; Keep bottom bits.
@@ -1400,7 +1363,7 @@ SWITCH_0x02_RTN_J: ; 0A:08B5, 0x0148B5
     STA OBJ_ANIM_HOLD_TIMER?[18],X ; Set as hold.
     LDA #$7A
     STA OBJ_ANIMATION_DISPLAY[18],X ; Set display.
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load
     LSR A ; >> 1
     LDA OBJ_DIRECTION_RELATED?[18],X ; Load
     AND #$BF ; Keep 0x10111111
@@ -1462,13 +1425,13 @@ S01_MSC_RTN_B: ; 0A:091C, 0x01491C
     JSR XPOS_RTN_RET_?? ; Do.
     BCC CC_RET ; Ret CC, goto.
     LDA #$00
-    STA 556_OBJ_UPDATE_FLAGS?[18],X ; Clear
+    STA 556_OBJ_STATUS_FLAGS[18],X ; Clear
     JSR RANDOMNESS? ; Do.
     AND #$0F ; Keep 0000.1111
     ORA #$10 ; Set 0001.0000
     STA OBJ_ANIM_HOLD_TIMER?+1,X ; Store to hold.
 CC_RET: ; 0A:0938, 0x014938
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load
     BNE ANY_FLAGS_SET ; If value, goto.
     DEC OBJ_ANIM_HOLD_TIMER?+1,X ; -- for pair.
     BMI PAIR_HOLD_NEGATIVE ; If now negative, goto.
@@ -1498,7 +1461,7 @@ SET_SECONDARY/TERTIARY_DIRECTION_MORE: ; 0A:0970, 0x014970
     STA OBJ_SECONDARY_SWITCH?[18],X ; Set secondary.
     LDA #$01
     STA OBJ_TERTIARY_SWITCH?[18],X ; Set tertiary.
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load flags.
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load flags.
     BNE FLAGS_NE_ZERO ; != 0, goto.
     LDA #$00
     STA OBJ_ANIM_HOLD_TIMER?+1,X ; No hold timer for secondary.
@@ -1514,7 +1477,7 @@ X_LARGER: ; 0A:0997, 0x014997
     STA OBJ_DIRECTION_RELATED?[18],X ; A to direction.
     JMP OBJ_SET_UNK_FROM_Y ; Set from Y.
 FLAGS_NE_ZERO: ; 0A:099D, 0x01499D
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load
     CMP #$02 ; If _ #$02
     LDA #$00 ; Prep vals. Direction related.
     LDY #$02 ; Index.
@@ -1554,13 +1517,13 @@ PAIR_RTN_A: ; 0A:09D3, 0x0149D3
     JSR XPOS_RTN_RET_?? ; Do
     BCC RET_CC ; If carry not set, goto.
     LDA #$00
-    STA 556_OBJ_UPDATE_FLAGS?[18],X ; No update.
+    STA 556_OBJ_STATUS_FLAGS[18],X ; No update.
     JSR RANDOMNESS? ; Get random.
     AND #$3F ; Range 0x00 - 0x3F, 0 to 64 frames.
     ADC #$20 ; += 0x20, 32 frames.
     STA OBJ_ANIM_HOLD_TIMER?+1,X ; Set hold for pair.
 RET_CC: ; 0A:09EF, 0x0149EF
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load update
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load update
     BNE RTS ; If any set, leave.
     DEC OBJ_ANIM_HOLD_TIMER?+1,X ; Pair hold--
     BPL RTS ; Pair hold still positive, leave.
@@ -1607,7 +1570,7 @@ SET_OBJ_SECONDARY_0x01_TERTIARY_0x08_DIRECTION_POS_MORE: ; 0A:0A48, 0x014A48
     STA OBJ_SECONDARY_SWITCH?[18],X ; Set secondary.
     LDA #$08
     STA OBJ_TERTIARY_SWITCH?[18],X ; Set tertiary.
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load update
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load update
     BNE UPDATE_NONZERO ; != 0, goto.
     JMP OBJ_STATE_MOVE_TO_S02_T00 ; Set
 UPDATE_NONZERO: ; 0A:0A5A, 0x014A5A
@@ -1659,9 +1622,9 @@ SET_OBJ_SECONDARY_TERTIARY_UPDATE: ; 0A:0AAC, 0x014AAC
     LDA #$00
     STA OBJ_DIRECTION_RELATED?[18],X ; Clear
     LDA OBJ_DATA_UNK[4] ; Move from ROM.
-    STA 520_ARR_UNK[18],X ; To object.
+    STA 520_OBJ_POS_X_LARGE?[18],X ; To object.
     LDA OBJ_DATA_UNK+1
-    STA 50E_ARR_UNK[18],X
+    STA 503_OBJ_POS_X_LARGEST?[18],X
     LDA OBJ_DATA_UNK+2
     STA 544_OBJ_UNK_POS_DELTA?[18],X
     LDA OBJ_DATA_UNK+3
@@ -1728,9 +1691,9 @@ GTE_TWELVE: ; 0A:0B3D, 0x014B3D
     LDA OBJ_DATA_B
     STA 532_OBJ_UNK_POS_DELTA?[18],X
     LDA OBJ_DATA_C
-    STA 520_ARR_UNK[18],X
+    STA 520_OBJ_POS_X_LARGE?[18],X
     LDA OBJ_DATA_D
-    STA 50E_ARR_UNK[18],X
+    STA 503_OBJ_POS_X_LARGEST?[18],X
     JSR SET_PAIR_SECONDARY|0x01_SCREEN_3_DIFFER ; Set pair.
 JMP_TO_Y_FINALIZE: ; 0A:0B5D, 0x014B5D
     JMP MOVE_Y_FINALIZE ; FInalize.
@@ -1811,9 +1774,9 @@ GT_#$88: ; 0A:0BEB, 0x014BEB
     LDA #$F0
     STA 45A_OBJ_DATA_ENTRY?STATE_STEP?+1,X ; Store extra.
     LDA OBJ_DATA_A
-    STA 520_ARR_UNK[18],X ; Move data to OBJ.
+    STA 520_OBJ_POS_X_LARGE?[18],X ; Move data to OBJ.
     LDA OBJ_DATA_B
-    STA 50E_ARR_UNK[18],X
+    STA 503_OBJ_POS_X_LARGEST?[18],X
     JSR SUB_GFX_BANKS_FROM_STATE ; Set GFX.
 STATE/ANIMATION/DIR_MOD/FINALIZE_RE-ENTER: ; 0A:0BFF, 0x014BFF
     JSR STATE_SOLVING_AND_ANIMATION_FOR_STATE ; State and animation.
@@ -1892,9 +1855,9 @@ S01_MSB_RTN_A: ; 0A:0C6E, 0x014C6E
     LDA OBJ_DATA_B
     STA 532_OBJ_UNK_POS_DELTA?[18],X
     LDA OBJ_DATA_C
-    STA 520_ARR_UNK[18],X
+    STA 520_OBJ_POS_X_LARGE?[18],X
     LDA OBJ_DATA_D
-    STA 50E_ARR_UNK[18],X
+    STA 503_OBJ_POS_X_LARGEST?[18],X
     JSR SET_PAIR_SECONDARY|0x01_SCREEN_3_DIFFER
 FINALIZE_OBJECT: ; 0A:0CAB, 0x014CAB
     JMP MOVE_Y_FINALIZE ; Move object.
@@ -2105,7 +2068,7 @@ S01_MSB_RTN_F: ; 0A:0E28, 0x014E28
     BPL RTS ; If positive, goto.
 UNDERFLOW: ; 0A:0E49, 0x014E49
     LDA #$00
-    STA 556_OBJ_UPDATE_FLAGS?[18],X ; Clear
+    STA 556_OBJ_STATUS_FLAGS[18],X ; Clear
     STA OBJECT_DATA_EXTRA_B?[18],X ; Clear
     LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load
     CMP #$10 ; If _ #$10
@@ -2192,9 +2155,9 @@ PAIR_HELD: ; 0A:0EBE, 0x014EBE
     LDA 0A:0F21,Y
     STA 532_OBJ_UNK_POS_DELTA?[18],X
     LDA 0A:0F22,Y
-    STA 520_ARR_UNK[18],X
+    STA 520_OBJ_POS_X_LARGE?[18],X
     LDA 0A:0F23,Y
-    STA 50E_ARR_UNK[18],X
+    STA 503_OBJ_POS_X_LARGEST?[18],X
     LDA #$0F
     STA OBJ_ANIM_HOLD_TIMER?+1,X
     RTS
@@ -2307,9 +2270,9 @@ FOCUS_OBJ_0x0A: ; 0A:0FB2, 0x014FB2
     LDA #$0F
     STA OBJ_ANIM_HOLD_TIMER?+1,X ; Pair hold.
     LDA OTHER_DATA_0x40 ; Move to Xobj.
-    STA 520_ARR_UNK[18],X
+    STA 520_OBJ_POS_X_LARGE?[18],X
     LDA OTHER_DATA_0xFF
-    STA 50E_ARR_UNK[18],X
+    STA 503_OBJ_POS_X_LARGEST?[18],X
     RTS ; Leave.
 DATA_TERTIARY_NEXT_UNK: ; 0A:0FDE, 0x014FDE
     .db 00
@@ -2383,11 +2346,11 @@ OBJ_STATE_MOVE_TO_S02_T00: ; 0A:1017, 0x015017
     STA OBJ_TERTIARY_SWITCH?[18],X ; Set tertiary.
     RTS
 S01_MSC_RTN_A: ; 0A:1022, 0x015022
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load
     BEQ ALT_RTN
     JMP SET_SECONDARY/TERTIARY_DIRECTION_MORE ; Do if none.
 ALT_RTN: ; 0A:102A, 0x01502A
-    LDA 59E_OBJ_UNK[18],X ; Load
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     ASL A ; << 1, *2.
     BMI SKIP_RTN ; If negative, goto.
     LDA 5B0_OBJ_UNK+1,X ; Load from pair.
@@ -2396,9 +2359,9 @@ ALT_RTN: ; 0A:102A, 0x01502A
     BNE SKIP_RTN ; Still not zero, goto.
     CPX 719_OBJ_CMP_UNK ; If Xobj _ var
     BNE SKIP_RTN ; !=, goto.
-    LDA 59E_OBJ_UNK[18],X ; Load
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     AND #$EF ; Keep 1110.1111
-    STA 59E_OBJ_UNK[18],X ; Store back.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Store back.
 SKIP_RTN: ; 0A:1047, 0x015047
     JSR XOBJ_CMP_STUFF_RET_CS_CLEARED_CC_NO_MOD ; Do sub.
     BCC RET_CLEARED ; If cleared, goto.
@@ -2411,7 +2374,7 @@ RET_CLEARED: ; 0A:104D, 0x01504D
     STA TMP_17 ; Store to.
     JSR HIT_DETECT?_UNK ; Do..
     JSR RTN_UNK_BITS_SET_IDK ; Do..
-    LDA 59E_OBJ_UNK[18],X ; Load
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     ASL A ; >> 1, *2.
     BPL SHIFT_POSITIVE ; If positive, goto.
     JMP RTN_UNK ; Goto.
@@ -2452,8 +2415,8 @@ UNDER_0x17: ; 0A:109E, 0x01509E
     CMP COMPARE_PER_SCREEN_UNK,Y ; Compare value for screen.
     BCC RTN_UNK_OTHER ; <, goto.
 5B0_VAL_EQ_0x01: ; 0A:10AF, 0x0150AF
-    LDA 50E_ARR_UNK[18],X ; Load from obj.
-    ORA 520_ARR_UNK[18],X ; Combine with.
+    LDA 503_OBJ_POS_X_LARGEST?[18],X ; Load from obj.
+    ORA 520_OBJ_POS_X_LARGE?[18],X ; Combine with.
     BNE SKIP_UNK ; If either set, skip.
     LDA OBJ_TERTIARY_SWITCH?+1,X ; Load pair.
     BNE SKIP_UNK ; If set, skip.
@@ -2482,7 +2445,7 @@ RTN_UNK_XSWITCH: ; 0A:10DF, 0x0150DF
 RTN_UNK_OTHER: ; 0A:10EF, 0x0150EF
     CPX 719_OBJ_CMP_UNK ; If Xobj _ var
     BNE XOBJ_NOT_719_VAR ; !=, goto.
-    LDA 59E_OBJ_UNK[18],X ; Load
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     AND #$10 ; Keep 0001.0000
     BEQ BIT_0x10_UNSET ; Not set, goto.
     LDA OBJ_SECONDARY_SWITCH?+1,X ; Load pair.
@@ -2490,15 +2453,15 @@ RTN_UNK_OTHER: ; 0A:10EF, 0x0150EF
     BNE BIT_0x02_SET ; If set, goto.
     ASL OBJ_POS_X_SUBPIXEL_DELTA?[18],X ; Shift.
     ROL OBJ_POS_X_DELTA?[18],X ; Roll to.
-    ASL 520_ARR_UNK[18],X ; Shift
-    ROL 50E_ARR_UNK[18],X ; Roll to.
+    ASL 520_OBJ_POS_X_LARGE?[18],X ; Shift
+    ROL 503_OBJ_POS_X_LARGEST?[18],X ; Roll to.
 BIT_0x02_SET: ; 0A:110E, 0x01510E
     JMP RTN_UNK ; Goto.
 BIT_0x10_UNSET: ; 0A:1111, 0x015111
     LDA OBJ_POS_X_DELTA?[18],X ; Load
     ORA OBJ_POS_X_SUBPIXEL_DELTA?[18],X ; Combine with these.
-    ORA 50E_ARR_UNK[18],X
-    ORA 520_ARR_UNK[18],X
+    ORA 503_OBJ_POS_X_LARGEST?[18],X
+    ORA 520_OBJ_POS_X_LARGE?[18],X
     BNE RTN_UNK ; If any set, goto.
     LDA 5C2_OBJ_DATA_PTR/MISC_INDEX+1,X ; Losd pair.
     EOR #$01 ; Set 0000.0001
@@ -2507,9 +2470,9 @@ BIT_0x10_UNSET: ; 0A:1111, 0x015111
     LDA 5D4_EXTRA_TIMER/OBJ/FOCUS+1,X ; Load
     CMP #$04 ; If _ #$04
     BCC RTN_UNK ; <, goto.
-    LDA 59E_OBJ_UNK[18],X ; Load from Xobj.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load from Xobj.
     ORA #$10 ; Set 0001.0000
-    STA 59E_OBJ_UNK[18],X ; Store back.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Store back.
     LDA #$00
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS+1,X ; Clear pair.
     LDA #$C8
@@ -2526,11 +2489,11 @@ XOBJ_NOT_719_VAR: ; 0A:1144, 0x015144
     AND #$04 ; Test 0000.0100
     BNE RTN_UNK ; If set, goto.
     LDY 717_OBJ_INDEX_A_UNK ; Y from var.
-    LDA 59E_OBJ_UNK[18],Y ; Load from Yobj.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],Y ; Load from Yobj.
     ASL A ; << 1
     BMI RTN_UNK ; If 0x40 was set, goto.
     LDY 718_OBJ_INDEX_B_UNK ; Y from
-    LDA 59E_OBJ_UNK[18],Y ; Load from Yobj.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],Y ; Load from Yobj.
     ASL A ; << 1, *2.
     BMI RTN_UNK ; If bit 0x40 was set, goto.
     LDA 5B0_OBJ_UNK+1,X ; Load from Xobj pair.
@@ -2544,7 +2507,7 @@ XOBJ_NOT_719_VAR: ; 0A:1144, 0x015144
     BEQ RTN_UNK ; ==, goto.
     JSR SUB_UNK ; Not screen 2, 3, or 8. Do routine.
 RTN_UNK: ; 0A:1182, 0x015182
-    LDA 59E_OBJ_UNK[18],X ; Load
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     ASL A ; << 1.
     BPL SHIFT_POSITIVE ; Positive, goto.
     JSR SUB_UNK
@@ -2552,14 +2515,14 @@ RTN_UNK: ; 0A:1182, 0x015182
     BEQ OBJ_CLEAR_AND_SET_PAIR_UNK ; If zero, goto.
     LDA 5B0_OBJ_UNK+1,X ; Load from pair.
     BNE PAIR_NOT_ZERO ; != 0, goto.
-    LDA 50E_ARR_UNK[18],X ; Load
-    ORA 520_ARR_UNK[18],X ; Combine with.
+    LDA 503_OBJ_POS_X_LARGEST?[18],X ; Load
+    ORA 520_OBJ_POS_X_LARGE?[18],X ; Combine with.
     BEQ OBJ_CLEAR_AND_SET_PAIR_UNK ; If neither set, goto.
     JMP FINALIZATION ; Goto.
 OBJ_CLEAR_AND_SET_PAIR_UNK: ; 0A:11A0, 0x0151A0
-    LDA 59E_OBJ_UNK[18],X ; Load from obj.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load from obj.
     AND #$9F ; Keep 0x1001.1111
-    STA 59E_OBJ_UNK[18],X ; Store back.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Store back.
     LDA #$64 ; Set pair to val.
     STA 5B0_OBJ_UNK+1,X
     RTS ; Leave.
@@ -2614,7 +2577,7 @@ SHIFT_POSITIVE: ; 0A:11B4, 0x0151B4
     LDA 4A2_OBJ_UNK_POS?[18],X
     CMP #$38
     BCS 0A:122A
-    JMP UNK_RTN_INIT_OBJS
+    JMP SUB_UNK_SLOTS_AND_INIT
     CMP #$E1
     BCC 0A:1233
     LDA #$E0
@@ -2644,7 +2607,7 @@ SHIFT_POSITIVE: ; 0A:11B4, 0x0151B4
     ADC 4C6_OBJ_UNK+1,X
     JSR UNK_SUB_B
     BNE FINALIZATION
-    LDA 50E_ARR_UNK[18],X
+    LDA 503_OBJ_POS_X_LARGEST?[18],X
     BPL 0A:128F
     LDA OBJ_TERTIARY_SWITCH?+1,X
     BNE 0A:12A6
@@ -2734,7 +2697,7 @@ DATA_ADD_SEED: ; 0A:1300, 0x015300
     ADC 81_UNK
     AND #$0F
     STA TMP_00
-    LDA 50E_ARR_UNK[18],X
+    LDA 503_OBJ_POS_X_LARGEST?[18],X
     BMI 0A:133B
     INC TMP_00
     CLC
@@ -2769,7 +2732,7 @@ HIT_DETECT?_UNK: ; 0A:1359, 0x015359
     STA TMP_14 ; Store to.
     CPY #$02 ; If _ #$02
     BNE OBJ_IS_P2 ; P2, goto.
-    LDA 59E_OBJ_UNK[18],X ; Load from Xobj.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load from Xobj.
     AND #$10 ; Keep 0001.0000
     BNE BIT_SET ; If set, goto.
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Y from Xobj.
@@ -2901,9 +2864,9 @@ BIT_0x02_NOT_SET_B: ; 0A:142E, 0x01542E
     TAY ; Back to Y.
 DATA_MOVE_Y_INDEX: ; 0A:1438, 0x015438
     LDA OBJ_DATA_C,Y ; Move data to OBJ.
-    STA 520_ARR_UNK[18],X
+    STA 520_OBJ_POS_X_LARGE?[18],X
     LDA OBJ_DATA_D,Y
-    STA 50E_ARR_UNK[18],X
+    STA 503_OBJ_POS_X_LARGEST?[18],X
     RTS ; Leave.
 OBJ_DATA_A: ; 0A:1445, 0x015445
     .db 00
@@ -2967,7 +2930,7 @@ STATE_COMP_STUFF: ; 0A:1482, 0x015482
     LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load enabled.
     CMP #$0D ; If state _ #$0D
     BNE STATE_NE_0x0D ; Not eq.
-    LDY 59E_OBJ_UNK[18],X ; Load
+    LDY 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     BMI A_AS_WORD_INDEX ; If negative, goto.
     LDA #$02 ; Load
     BNE A_AS_WORD_INDEX ; Always taken.
@@ -3048,58 +3011,66 @@ L_0A:14FD: ; 0A:14FD, 0x0154FD
     STX 719_OBJ_CMP_UNK
     STA 718_OBJ_INDEX_B_UNK
     TAY
-    LDA 59E_OBJ_UNK[18],Y
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],Y
     AND #$8F
-    STA 59E_OBJ_UNK[18],Y
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],Y
     LDA #$00
     STA 5B0_OBJ_UNK+1,Y
     STA 5C2_OBJ_DATA_PTR/MISC_INDEX+1,Y
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS+1,Y
     LDY 719_OBJ_CMP_UNK
-    LDA 59E_OBJ_UNK[18],Y
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],Y
     AND #$8F
-    STA 59E_OBJ_UNK[18],Y
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],Y
     LDA #$00
     STA 5B0_OBJ_UNK+1,Y
     STA 5C2_OBJ_DATA_PTR/MISC_INDEX+1,Y
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS+1,Y
     JSR TEST_XOBJ_EQ_717/718_INDEX_MATCH
     RTS
+SUB_OBJ_SLOTS_UNK: ; 0A:1554, 0x015554
+    LDA #$00 ; Load
+    CPX 719_OBJ_CMP_UNK ; If Xobj _ This obj.
+    BNE DIDNT_MATCH_719 ; !=, goto.
+    STA 719_OBJ_CMP_UNK ; Clear.
+    RTS ; Leave.
+DIDNT_MATCH_719: ; 0A:155F, 0x01555F
+    CPX 718_OBJ_INDEX_B_UNK ; If Xobj _ This obj
+    BNE DIDNT_MATCH_718 ; !=, goto.
+    LDY 719_OBJ_CMP_UNK ; Load obj.
+    BNE MOVE_719_SLOT_DOWN ; != 0, goto.
+    LDY 717_OBJ_INDEX_A_UNK ; Load obj.
+    BEQ 717_NO_OBJ ; ==, goto.
+    STY 718_OBJ_INDEX_B_UNK ; Move 717 up to here.
+    STA 717_OBJ_INDEX_A_UNK ; Clear 717.
+    JMP REENTER ; rE-ENTER.
+717_NO_OBJ: ; 0A:1577, 0x015577
+    STA 718_OBJ_INDEX_B_UNK ; Clear
+    RTS ; Leave.
+MOVE_719_SLOT_DOWN: ; 0A:157B, 0x01557B
+    STY 718_OBJ_INDEX_B_UNK ; Store Y to here now.
+    STA 719_OBJ_CMP_UNK ; Clear.
+    JMP REENTER ; Goto.
+DIDNT_MATCH_718: ; 0A:1584, 0x015584
+    CPX 717_OBJ_INDEX_A_UNK ; If Xobj _ This obj.
+    BNE RTS ; !=, leave.
+    LDY 719_OBJ_CMP_UNK ; If 719...
+    BNE 719_VAL_717_CLEAR ; != 0, goto.
+    STA 717_OBJ_INDEX_A_UNK ; Clear.
+    RTS
+719_VAL_717_CLEAR: ; 0A:1592, 0x015592
+    STY 717_OBJ_INDEX_A_UNK ; Move down
+    STA 719_OBJ_CMP_UNK ; Clear upper.
+REENTER: ; 0A:1598, 0x015598
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],Y ; Load from Yobj.
+    AND #$8F ; Keep 1000.1111
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],Y ; Store back.
     LDA #$00
-    CPX 719_OBJ_CMP_UNK
-    BNE 0A:155F
-    STA 719_OBJ_CMP_UNK
-    RTS
-    CPX 718_OBJ_INDEX_B_UNK
-    BNE 0A:1584
-    LDY 719_OBJ_CMP_UNK
-    BNE 0A:157B
-    LDY 717_OBJ_INDEX_A_UNK
-    BEQ 0A:1577
-    STY 718_OBJ_INDEX_B_UNK
-    STA 717_OBJ_INDEX_A_UNK
-    JMP 0A:1598
-    STA 718_OBJ_INDEX_B_UNK
-    RTS
-    STY 718_OBJ_INDEX_B_UNK
-    STA 719_OBJ_CMP_UNK
-    JMP 0A:1598
-    CPX 717_OBJ_INDEX_A_UNK
-    BNE 0A:15AB
-    LDY 719_OBJ_CMP_UNK
-    BNE 0A:1592
-    STA 717_OBJ_INDEX_A_UNK
-    RTS
-    STY 717_OBJ_INDEX_A_UNK
-    STA 719_OBJ_CMP_UNK
-    LDA 59E_OBJ_UNK[18],Y
-    AND #$8F
-    STA 59E_OBJ_UNK[18],Y
-    LDA #$00
-    STA 5B0_OBJ_UNK+1,Y
+    STA 5B0_OBJ_UNK+1,Y ; Clear these for pair.
     STA 5C2_OBJ_DATA_PTR/MISC_INDEX+1,Y
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS+1,Y
-    RTS
+RTS: ; 0A:15AB, 0x0155AB
+    RTS ; Leave.
 XOBJ_CMP_STUFF_RET_CS_CLEARED_CC_NO_MOD: ; 0A:15AC, 0x0155AC
     CPX 719_OBJ_CMP_UNK ; If Xobj _ var
     BNE RTS_CC ; !=, goto.
@@ -3114,9 +3085,9 @@ XOBJ_CMP_STUFF_RET_CS_CLEARED_CC_NO_MOD: ; 0A:15AC, 0x0155AC
 CLEAR_OBJ_ATTRS: ; 0A:15C4, 0x0155C4
     LDA #$00
     STA 719_OBJ_CMP_UNK ; Clear
-    LDA 59E_OBJ_UNK[18],X ; Load from obj.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load from obj.
     AND #$8F ; Keep 1000.1111
-    STA 59E_OBJ_UNK[18],X ; Store back.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Store back.
     LDA #$00
     STA 5B0_OBJ_UNK+1,X ; Clear these.
     STA 5C2_OBJ_DATA_PTR/MISC_INDEX+1,X
@@ -3170,7 +3141,7 @@ SUB_UNK: ; 0A:15E0, 0x0155E0
     LDA TMP_07
     STA 4A2_OBJ_UNK_POS?[18],X
     JMP OBJ_CLEAR_AND_SET_PAIR_UNK
-    LDA 59E_OBJ_UNK[18],X
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     LSR A
     LSR A
     BMI 0A:165E
@@ -3224,20 +3195,20 @@ SUB_UNK: ; 0A:166E, 0x01566E
     ASL A
     ASL A
     TAY
-    LDA 59E_OBJ_UNK[18],X
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     AND #$9F
     ORA 0A:1747,Y
-    STA 59E_OBJ_UNK[18],X
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     LDA 0A:1748,Y
     STA 5C2_OBJ_DATA_PTR/MISC_INDEX+1,X
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     LDA OBJ_POS_X?[18],Y
     STA OBJ_POS_X_DELTA?+1,X
     LDA 4A2_OBJ_UNK_POS?[18],Y
-    STA 50E_ARR_UNK+1,X
+    STA 503_OBJ_POS_X_LARGEST?+1,X
     LDA #$80
     STA OBJ_POS_X_SUBPIXEL_DELTA?+1,X
-    STA 520_ARR_UNK+1,X
+    STA 520_OBJ_POS_X_LARGE?+1,X
     LDA #$B4
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS+1,X
     LDA #$1E
@@ -3270,20 +3241,20 @@ SUB_UNK: ; 0A:166E, 0x01566E
     ASL A
     ASL A
     TAY
-    LDA 59E_OBJ_UNK[18],X
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     AND #$9F
     ORA 0A:1757,Y
-    STA 59E_OBJ_UNK[18],X
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     LDA 0A:1758,Y
     STA 5C2_OBJ_DATA_PTR/MISC_INDEX+1,X
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     LDA OBJ_POS_X?[18],Y
     STA OBJ_POS_X_DELTA?+1,X
     LDA 4A2_OBJ_UNK_POS?[18],Y
-    STA 50E_ARR_UNK+1,X
+    STA 503_OBJ_POS_X_LARGEST?+1,X
     LDA #$80
     STA OBJ_POS_X_SUBPIXEL_DELTA?+1,X
-    STA 520_ARR_UNK+1,X
+    STA 520_OBJ_POS_X_LARGE?+1,X
     JMP 0A:16DD
     .db 40
     .db 78
@@ -3634,9 +3605,9 @@ OBJ_THINGS_IDK: ; 0A:18D9, 0x0158D9
     BPL LOADED_POSITIVE ; If positive, goto.
     LDA #$02 ; Alt val.
 LOADED_POSITIVE: ; 0A:18EC, 0x0158EC
-    STA 556_OBJ_UPDATE_FLAGS?[18],X ; Set flag.
+    STA 556_OBJ_STATUS_FLAGS[18],X ; Set flag.
 XPOS_RTN_RET_CC: ; 0A:18EF, 0x0158EF
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load flags.
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load flags.
     BNE OBJ_UPDATING_ALREADY ; If has value, goto.
     LDY OBJ_POS_X?[18],X ; Y from
     LDA 4A2_OBJ_UNK_POS?[18],X ; A from.
@@ -3660,15 +3631,15 @@ SHIFTED_OFF_ONE: ; 0A:1919, 0x015919
     TYA ; Y to A
     STA OBJ_ANIMATION_DISPLAY[18],X ; Store animation to use.
     BCS RTS ; If shifted one, don't do below.
-    LDA 59E_OBJ_UNK[18],X ; Load from Xobj.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load from Xobj.
     ORA #$08 ; Set 0000.1000
-    STA 59E_OBJ_UNK[18],X ; Store back.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Store back.
     LDA #$14 ; Val?
-    STA 59E_OBJ_UNK+1,X ; Set pair.
+    STA 59E_OBJ_UNK/EXTRA_TIMER+1,X ; Set pair.
 RTS: ; 0A:192F, 0x01592F
     RTS ; Leave.
 RTN_UPDATE_PAIR_MOD_ANIM/STATE/RETARGET/MORE: ; 0A:1930, 0x015930
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load from OBJ.A
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load from OBJ.A
     BNE OBJ_UPDATE_SET ; If set, goto.
     LDY OBJ_POS_X?[18],X ; Y from obj.
     LDA 4A2_OBJ_UNK_POS?[18],X ; Load from obj.
@@ -3680,11 +3651,11 @@ RTN_UPDATE_PAIR_MOD_ANIM/STATE/RETARGET/MORE: ; 0A:1930, 0x015930
     STA OBJECT_DATA_EXTRA_B?[18],X ; Clear.
     JSR SUB_UNK ; Do?
 OBJ_UPDATE_SET: ; 0A:194C, 0x01594C
-    LDA 59E_OBJ_UNK[18],X ; Load from Obj.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load from Obj.
     AND #$F7 ; Keep 1111.01111
-    STA 59E_OBJ_UNK[18],X ; Store back.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Store back.
     LDA #$00
-    STA 59E_OBJ_UNK+1,X ; Clear.
+    STA 59E_OBJ_UNK/EXTRA_TIMER+1,X ; Clear.
     LDA 4C6_OBJ_UNK+1,X ; Load from pair.
     STA 4C6_OBJ_UNK[18],X ; Store to Xobj.
     LDA #$00
@@ -3759,11 +3730,11 @@ NOT_SCREEN_0x03: ; 0A:19E3, 0x0159E3
     BCS GTE_0x0F ; >=, goto.
     LDA #$81
     STA OBJECT_DATA_EXTRA_B?[18],X ; Set
-    LDA 59E_OBJ_UNK[18],X ; Load and set 0000.1000
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load and set 0000.1000
     ORA #$08
-    STA 59E_OBJ_UNK[18],X
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     LDA #$14 ; Val?
-    STA 59E_OBJ_UNK+1,X ; Set pair.
+    STA 59E_OBJ_UNK/EXTRA_TIMER+1,X ; Set pair.
 GTE_0x0F: ; 0A:1A0B, 0x015A0B
     LDA #$01 ; Index val.
 USE_VALS: ; 0A:1A0D, 0x015A0D
@@ -3778,9 +3749,9 @@ ANIMATION_DISPLAY_VALS: ; 0A:1A17, 0x015A17
     .db 8F ; Sewer alt.
     .db 90
 RTN_ANIM/STATE_RETARGET_CHANCE_MORE: ; 0A:1A1B, 0x015A1B
-    LDA 59E_OBJ_UNK[18],X ; Load from Xobj.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load from Xobj.
     AND #$F7 ; Keep 1111.0111
-    STA 59E_OBJ_UNK[18],X ; Store back.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Store back.
     LDA #$01
     STA 5B0_OBJ_UNK[18],X ; Set to 0x01
     JSR SET_OBJ_ANIM_HOLD/CLEAR_ENTRY ; Do.
@@ -3820,11 +3791,11 @@ S01_MSD_RTN_D: ; 0A:1A61, 0x015A61
     BCC HOLD_UNDER_0x0A ; <, goto.
     CPY #$0F ; Hold _ #$0F
     BCS 0A:1A88 ; >=, goto.
-    LDA 59E_OBJ_UNK[18],X ; Load
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     ORA #$08 ; Set
-    STA 59E_OBJ_UNK[18],X
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     LDA #$14
-    STA 59E_OBJ_UNK+1,X ; Set pair. Val?
+    STA 59E_OBJ_UNK/EXTRA_TIMER+1,X ; Set pair. Val?
     LDA #$01 ; Use odd.
 HOLD_UNDER_0x0A: ; 0A:1A8A, 0x015A8A
     STA TMP_00 ; To TMP.
@@ -4100,11 +4071,11 @@ HOLD_NOT_EXPIRED: ; 0A:1BE5, 0x015BE5
     LDA #$00
     CPY #$06 ; Hold _ #$06
     BCC HOLD_LT_0x06 ; Always taken.
-    LDA 59E_OBJ_UNK[18],X ; Set 0000.1000
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set 0000.1000
     ORA #$08
-    STA 59E_OBJ_UNK[18],X
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     LDA #$14 ; Set pair.
-    STA 59E_OBJ_UNK+1,X
+    STA 59E_OBJ_UNK/EXTRA_TIMER+1,X
     LDA #$01 ; Index.
     CPY #$0C ; Hold _ #$0C
     BCC HOLD_LT_0x06 ; <, goto.
@@ -4159,7 +4130,7 @@ RANDOM_ANIM_DISP_VALS: ; 0A:1C4F, 0x015C4F
     .db 16
 SUB_CLEAR_UNK_SEC0x03_TERT0x09: ; 0A:1C51, 0x015C51
     LDA #$00
-    STA 59E_OBJ_UNK[18],X
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
 SUB_SEC0x03_TERT0x09: ; 0A:1C56, 0x015C56
     LDA #$03
     STA OBJ_SECONDARY_SWITCH?[18],X
@@ -4321,7 +4292,7 @@ HOLD_LT_0x1C: ; 0A:1D81, 0x015D81
     TYA ; Y to A. TODO: Y change in subs?
     STA 4A2_OBJ_UNK_POS?+1,X ; To pair.
     LDA #$01
-    STA 59E_OBJ_UNK[18],Y ; Set in Yobj.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],Y ; Set in Yobj.
     LDA #$0D
     STA OBJ_TERTIARY_SWITCH?[18],X ; Set in Xobj.
     LDA #$00
@@ -4343,7 +4314,7 @@ S01_MSD_RTN_K: ; 0A:1DB5, 0x015DB5
     LDY 4A2_OBJ_UNK_POS?+1,X ; Y from pair.
     LDA OBJ_ENABLED_STATE+MORE?[18],Y ; Load from Xobj.
     BEQ YOBJ_ZERO_STATE/ENABLED ; No val, goto.
-    LDA 59E_OBJ_UNK[18],Y ; Load from Yobj.
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],Y ; Load from Yobj.
     BNE RTS ; If nonzero, goto.
     SEC ; Prep sub.
     LDA OBJ_POS_X?[18],X ; Load X
@@ -4657,4 +4628,4 @@ ALT_A_SEED: ; 0A:1FF3, 0x015FF3
     JSR SUB_OBJ_SPEED_AND_XPOS_STUFF ; Do.
     JSR XPOS_RTN_RET_?? ; Do.
     BCC RET_CC ; Ret CC, goto.
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load

@@ -2682,7 +2682,7 @@ GAME_SCRIPT_SWITCHES: ; 1E:0A83, 0x03CA83
     HIGH(SWITCH_18_TITLE_DATA_MOVE)
     LOW(SWITCH_18_SELECT_TURTLE) ; Select turtle screen.
     HIGH(SWITCH_18_SELECT_TURTLE)
-    LOW(SWITCH_18_RTN_CORE_GAMEPLAY) ; Cutscene+Gameplay?
+    LOW(SWITCH_18_RTN_CORE_GAMEPLAY) ; Cutscene+Gameplay? <<<<<<<<
     HIGH(SWITCH_18_RTN_CORE_GAMEPLAY)
 SWITCH_18_RTN_FIRST_SCREEN: ; 1E:0A96, 0x03CA96
     LDA SUBSTATE_SWITCH_MENUS
@@ -3252,7 +3252,7 @@ INDEX_GE_4: ; 1E:0E67, 0x03CE67
     BCS OBJECT_ANIM_DECIDED? ; >=, goto.
     INC TMP_0E ; ++ otherwise.
 OBJECT_ANIM_DECIDED?: ; 1E:0E71, 0x03CE71
-    LDA 556_OBJ_UPDATE_FLAGS?[18],X ; Load value from.
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load value from.
     AND #$03 ; Get bits 0000.0011
     STA TMP_06 ; Store to.
     LDA OBJ_ANIMATION_DISPLAY[18],X
@@ -3693,7 +3693,7 @@ CORE_STATE_SWITCH: ; 1E:1172, 0x03D172
     HIGH(SWITCH_3C_RTN_B) ; 0x01
     LOW(SWITCH_3C_RTN_C) ; Turtle UI info.
     HIGH(SWITCH_3C_RTN_C) ; 0x02
-    LOW(SWITCH_3C_RTN_D) ; Gameplay/level handling.
+    LOW(SWITCH_3C_RTN_D) ; Gameplay/level handling. <<<<<<<<
     HIGH(SWITCH_3C_RTN_D) ; 0x03
     LOW(SWITCH_3C_RTN_E) ; End level begin?
     HIGH(SWITCH_3C_RTN_E) ; 0x04
@@ -3902,7 +3902,7 @@ SWITCH_3C_RTN_D: ; 1E:12C9, 0x03D2C9
     JSR RTN_OBJECTS_SPAWN? ; Def objects of some type.
     LDA #$2A ; Bank A/B
     JSR BANK_PAIR_USE_A
-    JSR OBJ[0x4-0x11]_RUN_STATE_HANDLERS ; Process objects.
+    JSR OBJ[0x4-0x11]_RUN_STATE_HANDLERS ; Process objects. <<<<<<<<<<<<<<<<
     JSR WAIT_UPDATES_AND_???
     JSR RTN_ALL_OBJS_DISABLED?_UNK ; Test for end of level.
     JSR UPDATE_PLAYERS_SCORE_IF_NO_QUEUED ; Scores update.

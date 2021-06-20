@@ -553,7 +553,7 @@ L_12:0375: ; 12:0375, 0x024375
     TXA
     PHA
     LDA #$06
-    JSR L_1F:0ED4
+    JSR CROSS_BANK_INTERFACE_UNKNOWN
     PLA
     TAX
 L_12:03E0: ; 12:03E0, 0x0243E0
@@ -5195,7 +5195,7 @@ IDK_DATA_H: ; 12:1734, 0x025734
     .db 05
     .db 60
 RTN_MOVE?_RET_CS_DONE: ; 12:1963, 0x025963
-    LDA 59E_OBJ_UNK[18],X ; Load
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     BNE 593_NONZERO ; If set, goto.
     JMP RTS_SEC ; If 0, done.
 593_NONZERO: ; 12:196B, 0x02596B
@@ -5205,10 +5205,10 @@ RTN_MOVE?_RET_CS_DONE: ; 12:1963, 0x025963
     LDA OBJ_POS_X_DELTA?[18],X ; Load val.
     ROL A ; << 1, *2, with carry.
     STA TMP_09 ; Store to.
-    LDA 520_ARR_UNK[18],X ; Load
+    LDA 520_OBJ_POS_X_LARGE?[18],X ; Load
     ASL A ; << 1, *2.
     STA TMP_0A ; Store to.
-    LDA 50E_ARR_UNK[18],X ; Load.
+    LDA 503_OBJ_POS_X_LARGEST?[18],X ; Load.
     ROL A ; << 1, *2, with carry.
     STA TMP_0B ; Store to.
 RTN_??: ; 12:1983, 0x025983
@@ -5260,7 +5260,7 @@ RTN_??: ; 12:19D4, 0x0259D4
     LDA 4A2_OBJ_UNK_POS?[18],X ; Load val
     ADC 4C6_OBJ_UNK[18],X ; += val.
     STA OBJ_POS_Y[18],X ; Store back.
-    DEC 59E_OBJ_UNK[18],X ; --
+    DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; --
     BEQ RTS_SEC ; If decrease now zero, RTS.
     CLC ; Clear carry.
     JMP RTS ; RTS with cleared carry.
