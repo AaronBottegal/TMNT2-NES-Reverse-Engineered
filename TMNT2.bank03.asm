@@ -2586,84 +2586,84 @@ MULTISWITCH_RTN: ; 03:0A24, 0x006A24
     LOW(STATE_0x32_SWITCH_G)
     HIGH(STATE_0x32_SWITCH_G)
 OBJ_STATE_0x35_HANDLER: ; 03:0A38, 0x006A38
-    LDA OBJ_SECONDARY_SWITCH?[18],X
-    BNE L_03:0A46
-    LDA OBJ_TERTIARY_SWITCH?[18],X
-    CMP #$06
-    BCC L_03:0A8F
-    BCS L_03:0A4A
-L_03:0A46: ; 03:0A46, 0x006A46
-    CMP #$04
-    BCS L_03:0A8F
-L_03:0A4A: ; 03:0A4A, 0x006A4A
-    LDA IRQ/SCRIPT_RUN_COUNT?
-    LSR A
-    BCC L_03:0A55
-    CPX #$0D
-    BCC L_03:0A8F
-    BCS L_03:0A59
-L_03:0A55: ; 03:0A55, 0x006A55
-    CPX #$0D
-    BCS L_03:0A8F
-L_03:0A59: ; 03:0A59, 0x006A59
-    JSR OBJ_RTN_UNK_RET_VAL_UNK
-    CMP #$00
-    BEQ L_03:0A8F
-    CMP #$FF
-    BEQ L_03:0A81
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load secondary.
+    BNE SECONDARY_HAS_VAL ; != 0, goto.
+    LDA OBJ_TERTIARY_SWITCH?[18],X ; Load tert.
+    CMP #$06 ; If _ #$06
+    BCC SWITCH_ON_SECONDARY ; <, goto.
+    BCS SEC_ZERO_TERT_GTE_0x06
+SECONDARY_HAS_VAL: ; 03:0A46, 0x006A46
+    CMP #$04 ; If _ #$04
+    BCS SWITCH_ON_SECONDARY ; >=, goto.
+SEC_ZERO_TERT_GTE_0x06: ; 03:0A4A, 0x006A4A
+    LDA IRQ/SCRIPT_RUN_COUNT? ; Get count.
+    LSR A ; >> 1, /2
+    BCC CARRY_SHIFT_ZERO ; Shifted zero, goto.
+    CPX #$0D ; If OBJ# _ 0x0D
+    BCC SWITCH_ON_SECONDARY ; <, goto.
+    BCS OBJ_GTE_0x0D ; >=, goto.
+CARRY_SHIFT_ZERO: ; 03:0A55, 0x006A55
+    CPX #$0D ; If OBJ# _ 0x0D
+    BCS SWITCH_ON_SECONDARY ; >=, goto switch.
+OBJ_GTE_0x0D: ; 03:0A59, 0x006A59
+    JSR OBJ_RTN_UNK_RET_VAL_UNK ; Do
+    CMP #$00 ; If A _ #$00
+    BEQ SWITCH_ON_SECONDARY ; ==, goto, switch.
+    CMP #$FF ; If A _ #$FF
+    BEQ A_RET_EQ_FF ; ==, goto.
     LDA #$2B
-    JSR SND_BANKED_DISPATCH
-    LDA 5B0_OBJ_UNK[18],X
-    LSR A
-    TAY
+    JSR SND_BANKED_DISPATCH ; Play sound.
+    LDA 5B0_OBJ_UNK[18],X ; Load from Xobj
+    LSR A ; >> 1, /2
+    TAY ; Val to Y.
     LDA #$00
-    STA 8F_ARR_UNK[2],Y
+    STA 8F_ARR_UNK[2],Y ; Clear from Yobj.
     LDA #$04
-    STA OBJ_SECONDARY_SWITCH?[18],X
+    STA OBJ_SECONDARY_SWITCH?[18],X ; Set secondary of Xobj.
     LDA #$00
-    STA OBJ_TERTIARY_SWITCH?[18],X
-    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
-    RTS
-L_03:0A81: ; 03:0A81, 0x006A81
-    INX
-    JSR INIT_OBJECT[X]_DATA_FULL
-    DEX
-    LDY 5B0_OBJ_UNK[18],X
-    LDA 4A2_OBJ_UNK_POS?[18],Y
-    STA 4A2_OBJ_UNK_POS?[18],X
-L_03:0A8F: ; 03:0A8F, 0x006A8F
-    LDA OBJ_SECONDARY_SWITCH?[18],X
+    STA OBJ_TERTIARY_SWITCH?[18],X ; Clear tert of Xobj.
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Clear attr.
+    RTS ; Leave.
+A_RET_EQ_FF: ; 03:0A81, 0x006A81
+    INX ; Next object.
+    JSR INIT_OBJECT[X]_DATA_FULL ; Init.
+    DEX ; Return to prev object.
+    LDY 5B0_OBJ_UNK[18],X ; Load Yobj from Xobj.
+    LDA 4A2_OBJ_UNK_POS?[18],Y ; Load from Yobj.
+    STA 4A2_OBJ_UNK_POS?[18],X ; Move to Xobj.
+SWITCH_ON_SECONDARY: ; 03:0A8F, 0x006A8F
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Switch on secondary.
     JSR SWITCH_CODE_PTRS_PAST_JSR
-    LOW(UNK_SWITCH2_A)
+    LOW(UNK_SWITCH2_A) ; 0x00
     HIGH(UNK_SWITCH2_A)
-    LOW(UNK_SWITCH2_B)
+    LOW(UNK_SWITCH2_B) ; 0x01
     HIGH(UNK_SWITCH2_B)
-    LOW(UNK_SWITCH2_C)
+    LOW(UNK_SWITCH2_C) ; 0x02
     HIGH(UNK_SWITCH2_C)
-    LOW(UNK_SWITCH2_D)
+    LOW(UNK_SWITCH2_D) ; 0x03
     HIGH(UNK_SWITCH2_D)
-    LOW(UNK_SWITCH2_E)
+    LOW(UNK_SWITCH2_E) ; 0x04
     HIGH(UNK_SWITCH2_E)
-    LOW(STATE_0x32_SWITCH_F)
+    LOW(STATE_0x32_SWITCH_F) ; 0x05
     HIGH(STATE_0x32_SWITCH_F)
-    LOW(UNK_SWITCH2_F)
+    LOW(UNK_SWITCH2_F) ; 0x06
     HIGH(UNK_SWITCH2_F)
 OBJ_STATE_0x33_HANDLER: ; 03:0AA3, 0x006AA3
     LDA OBJ_SECONDARY_SWITCH?[18],X
     JSR SWITCH_CODE_PTRS_PAST_JSR
-    LOW(STATE_0x33_SUBSWITCH_A)
+    LOW(STATE_0x33_SUBSWITCH_A) ; 0x00
     HIGH(STATE_0x33_SUBSWITCH_A)
-    LOW(STATE_0x33_SUBSWITCH_B)
+    LOW(STATE_0x33_SUBSWITCH_B) ; 0x01
     HIGH(STATE_0x33_SUBSWITCH_B)
-    LOW(STATE_0x33_SUBSWITCH_B)
+    LOW(STATE_0x33_SUBSWITCH_B) ; 0x02
     HIGH(STATE_0x33_SUBSWITCH_B)
-    LOW(STATE_0x33_SUBSWITCH_B)
+    LOW(STATE_0x33_SUBSWITCH_B) ; 0x03
     HIGH(STATE_0x33_SUBSWITCH_B)
-    LOW(STATE_0x33_SUBSWITCH_B)
+    LOW(STATE_0x33_SUBSWITCH_B) ; 0x04
     HIGH(STATE_0x33_SUBSWITCH_B)
-    LOW(STATE_0x33_SUBSWITCH_B)
+    LOW(STATE_0x33_SUBSWITCH_B) ; 0x05
     HIGH(STATE_0x33_SUBSWITCH_B)
-    LOW(INIT_OBJECT[X]_DATA_FULL)
+    LOW(INIT_OBJECT[X]_DATA_FULL) ; 0x06
     HIGH(INIT_OBJECT[X]_DATA_FULL)
 OBJ_STATE_0x30_HANDLER: ; 03:0AB7, 0x006AB7
     LDA #$04
@@ -2707,6 +2707,7 @@ STATE_0x32_SWITCH_B: ; 03:0AF5, 0x006AF5
 STATE_0x32_SWITCH_G: ; 03:0AFC, 0x006AFC
     LDA OBJ_TERTIARY_SWITCH?[18],X ; Load tert.
     BNE TERT_HAS_VAL ; != 0, goto.
+SWITCH_TERT_A: ; 03:0B01, 0x006B01
     LDA 5B0_OBJ_UNK[18],X ; Load
     LSR A ; >> 1, /2.
     TAY ; To Y index.
@@ -2729,95 +2730,56 @@ SEEDED_VAL: ; 03:0B1E, 0x006B1E
     STA OBJECT_DATA_EXTRA_B?[18],X ; Clear.
     JMP EXIT_SET_SEC_CLEAR_TERT/EXTRA ; Exit.
 UNK_SWITCH2_F: ; 03:0B29, 0x006B29
-    LDA OBJ_TERTIARY_SWITCH?[18],X
+    LDA OBJ_TERTIARY_SWITCH?[18],X ; Switch val.
     JSR SWITCH_CODE_PTRS_PAST_JSR
+    LOW(SWITCH_TERT_A) ; Small, 8F inc.
+    HIGH(SWITCH_TERT_A)
+    LOW(SWITCH_TERT_B) ; Medium, two things, moves tert/secondary.
+    HIGH(SWITCH_TERT_B)
+SWITCH_TERT_B: ; 03:0B33, 0x006B33
+    LDY #$00 ; Index.
+    LDA 4C6_OBJ_UNK[18],X ; Load
+    CMP #$D0 ; If _ #$D0
+    BCC LT_0xD0 ; <, goto.
+    LDY #$06 ; Index.
+LT_0xD0: ; 03:0B3E, 0x006B3E
+    LDA OBJ_DATA_A,Y
+    STA OBJ_POS_X_DELTA?[18],X ; Set attrs from Y index data.
+    LDA OBJ_DATA_B,Y
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
+    LDA OBJ_DATA_C,Y
+    STA 503_OBJ_POS_X_LARGEST?[18],X
+    LDA OBJ_DATA_D,Y
+    STA 520_OBJ_POS_X_LARGE?[18],X
+    LDA OBJ_DATA_E,Y
+    STA 532_OBJ_UNK_POS_DELTA?[18],X
+    LDA OBJ_DATA_F,Y
+    STA 544_OBJ_UNK_POS_DELTA?[18],X
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load flag.
+    AND #$04 ; Test.
+    BEQ BIT_UNSET ; == 0, not set, goto.
+    JSR SUB_INVERT_X_DELTA? ; Invert otherwise.
+BIT_UNSET: ; 03:0B6C, 0x006B6C
+    LDA #$09
+    STA OBJ_ANIMATION_DISPLAY[18],X ; Set anim.
+    LDA #$04
+    STA OBJ_SECONDARY_SWITCH?[18],X ; Set secondary.
+    LDA #$02
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Set extra.
+    LDA #$01
+    STA OBJ_TERTIARY_SWITCH?[18],X ; Set tert.
+    RTS ; Leave.
+OBJ_DATA_A: ; 03:0B81, 0x006B81
     .db 01
-    .db AB
-    .db 33
-    .db AB
-    .db A0
+OBJ_DATA_B: ; 03:0B82, 0x006B82
     .db 00
-    .db BD
-    .db C6
-    .db 04
-    .db C9
-    .db D0
-    .db 90
-    .db 02
-    .db A0
-    .db 06
-    .db B9
-    .db 81
-    .db AB
-    .db 9D
-    .db EA
-    .db 04
-    .db B9
-    .db 82
-    .db AB
-    .db 9D
-    .db FC
-    .db 04
-    .db B9
-    .db 83
-    .db AB
-    .db 9D
-    .db 0E
-    .db 05
-    .db B9
-    .db 84
-    .db AB
-    .db 9D
-    .db 20
-    .db 05
-    .db B9
-    .db 85
-    .db AB
-    .db 9D
-    .db 32
-    .db 05
-    .db B9
-    .db 86
-    .db AB
-    .db 9D
-    .db 44
-    .db 05
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db F0
-    .db 03
-    .db 20
-    .db 76
-    .db F5
-    .db A9
-    .db 09
-    .db 9D
+OBJ_DATA_C: ; 03:0B83, 0x006B83
     .db 00
-    .db 04
-    .db A9
-    .db 04
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 02
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db 01
-    .db 9D
-    .db 8C
-    .db 05
-    .db 60
-    .db 01
-    .db 00
-    .db 00
+OBJ_DATA_D: ; 03:0B84, 0x006B84
     .db 80
+OBJ_DATA_E: ; 03:0B85, 0x006B85
     .db FB
+OBJ_DATA_F: ; 03:0B86, 0x006B86
     .db 00
     .db 01
     .db 80
@@ -4000,558 +3962,266 @@ L_03:13DB: ; 03:13DB, 0x0073DB
 L_03:141A: ; 03:141A, 0x00741A
     RTS
 UNK_SWITCH2_A: ; 03:141B, 0x00741B
-    LDA OBJ_TERTIARY_SWITCH?[18],X
+    LDA OBJ_TERTIARY_SWITCH?[18],X ; Switch on tert.
     JSR SWITCH_CODE_PTRS_PAST_JSR
-    LOW(UNK_SWITCH_A)
+    LOW(UNK_SWITCH_A) ; Init things.
     HIGH(UNK_SWITCH_A)
-    LOW(UNK_SWITCH_B)
+    LOW(UNK_SWITCH_B) ; Set single attr.
     HIGH(UNK_SWITCH_B)
-    LOW(UNK_SWITCH_C)
+    LOW(UNK_SWITCH_C) ; Set attr/anim.
     HIGH(UNK_SWITCH_C)
     LOW(UNK_SWITCH_C)
     HIGH(UNK_SWITCH_C)
     LOW(UNK_SWITCH_C)
     HIGH(UNK_SWITCH_C)
-    LOW(UNK_SWITCH_D)
+    LOW(UNK_SWITCH_D) ; Set attr, deltas, anim.
     HIGH(UNK_SWITCH_D)
-    LOW(UNK_SWITCH_E)
+    LOW(UNK_SWITCH_E) ; Sound and other things.
     HIGH(UNK_SWITCH_E)
 UNK_SWITCH_A: ; 03:142F, 0x00742F
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 03
-    .db D0
-    .db 25
-    .db A9
-    .db 2C
-    .db 85
-    .db 31
-    .db A9
-    .db 2D
-    .db 85
-    .db 32
-    .db A0
-    .db 06
-    .db 20
-    .db 55
-    .db F6
-    .db A9
-    .db 03
-    .db 9D
-    .db 68
-    .db 05
-    .db A9
-    .db 02
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db E8
-    .db A4
-    .db 42
-    .db C0
-    .db 08
-    .db F0
-    .db 03
-    .db 9D
-    .db C6
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load attr.
+    AND #$03 ; Keep 0000.0011
+    BNE RTS ; Either set, goto.
+    LDA #$2C
+    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    LDA #$2D
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDY #$06
+    JSR UPDATE_PALETTE[0x1C]_WITH_A_SAVING_XOBJ ; Set color.
+    LDA #$03
+    STA OBJECT_DATA_HEALTH?[18],X ; Set health.
+    LDA #$02
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Set extra.
+    LDA #$E8 ; Load val.
+    LDY LEVEL/SCREEN_ON ; Load screen.
+    CPY #$08 ; If _ #$08, Dojo.
+    BEQ SKIP_ATTR_SET ; ==, goto.
+    STA 4C6_OBJ_UNK[18],X ; Set on dojo.
+SKIP_ATTR_SET: ; 03:1458, 0x007458
+    INC OBJ_TERTIARY_SWITCH?[18],X ; Move tert.
+RTS: ; 03:145B, 0x00745B
+    RTS ; Leave.
 UNK_SWITCH_B: ; 03:145C, 0x00745C
-    .db FE
-    .db 8C
-    .db 05
-    .db A9
-    .db 01
-    .db 9D
-    .db 9E
-    .db 05
-    .db 60
+    INC OBJ_TERTIARY_SWITCH?[18],X ; Move tert.
+    LDA #$01
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set attr.
+    RTS ; Leave.
 UNK_SWITCH_C: ; 03:1465, 0x007465
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 17
-    .db BD
-    .db 8C
-    .db 05
-    .db 38
-    .db E9
-    .db 02
-    .db 0A
-    .db A8
-    .db B9
-    .db 84
-    .db B4
-    .db 9D
-    .db 00
-    .db 04
-    .db B9
-    .db 85
-    .db B4
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
+    DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; --
+    BNE EXIT_MOVE ; != 0, goto.
+    LDA OBJ_TERTIARY_SWITCH?[18],X ; Load tert.
+    SEC ; Prep sub.
+    SBC #$02 ; -= 2
+    ASL A ; << 1, *2, word size.
+    TAY ; To Y index.
+    LDA ANIM_DATA,Y
+    STA OBJ_ANIMATION_DISPLAY[18],X ; Set from data.
+    LDA ATTR_DATA,Y
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set from extra.
+    INC OBJ_TERTIARY_SWITCH?[18],X ; Tert++
+EXIT_MOVE: ; 03:1481, 0x007481
+    JMP OBJECT_X_MOVE? ; Exit, abuse RTS.
+ANIM_DATA: ; 03:1484, 0x007484
     .db 0C
+ATTR_DATA: ; 03:1485, 0x007485
     .db 08
     .db 0D
     .db 08
     .db 0E
     .db 08
 UNK_SWITCH_D: ; 03:148A, 0x00748A
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 1A
-    .db A9
-    .db 06
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db FC
-    .db 9D
-    .db 32
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 44
-    .db 05
-    .db 9D
-    .db 0E
-    .db 05
-    .db A9
-    .db D0
-    .db 9D
-    .db 20
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
+    DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; --
+    BNE EXIT_MOVE ; != 0, goto.
+    LDA #$06
+    STA OBJ_ANIMATION_DISPLAY[18],X ; Set anim.
+    LDA #$FC
+    STA 532_OBJ_UNK_POS_DELTA?[18],X ; Set direction? To left?
+    LDA #$00
+    STA 544_OBJ_UNK_POS_DELTA?[18],X ; Clear attrs.
+    STA 503_OBJ_POS_X_LARGEST?[18],X
+    LDA #$D0
+    STA 520_OBJ_POS_X_LARGE?[18],X ; Set
+    INC OBJ_TERTIARY_SWITCH?[18],X ; Tert++
+EXIT_MOVE: ; 03:14A9, 0x0074A9
+    JMP OBJECT_X_MOVE?
 UNK_SWITCH_E: ; 03:14AC, 0x0074AC
-    .db A9
-    .db 40
-    .db A0
-    .db 00
-    .db 20
-    .db AC
-    .db F5
-    .db 20
-    .db BE
-    .db F5
-    .db BD
-    .db 32
-    .db 05
-    .db 30
-    .db 3D
-    .db BD
-    .db A2
-    .db 04
-    .db BC
-    .db 7E
-    .db 04
-    .db 20
-    .db AA
-    .db E7
-    .db C9
-    .db 05
-    .db F0
-    .db 09
-    .db BD
-    .db C6
-    .db 04
-    .db 30
-    .db 2B
-    .db A9
-    .db 00
-    .db F0
-    .db 09
-    .db BD
-    .db C6
-    .db 04
-    .db C9
-    .db F0
-    .db 90
-    .db 20
-    .db A9
-    .db F0
-    .db 9D
-    .db C6
-    .db 04
-    .db 20
-    .db 58
-    .db F5
-    .db 9D
-    .db D8
-    .db 04
-    .db 9D
-    .db 8C
-    .db 05
-    .db A9
-    .db 22
-    .db 20
-    .db 52
-    .db DB
-    .db BD
-    .db C2
-    .db 05
-    .db D0
-    .db 05
-    .db A9
-    .db 01
-    .db 9D
-    .db 9E
-    .db 05
-    .db FE
-    .db 12
-    .db 04
-    .db 4C
-    .db F1
-    .db F3
+    LDA #$40 ; Load vals.
+    LDY #$00
+    JSR ADD_A/Y_TO_OBJ_DELTA? ; Add to obj.
+    JSR MOVE_OBJ_POS_DELTA_AMOUNT? ; Move?
+    LDA 532_OBJ_UNK_POS_DELTA?[18],X ; Load Xobj.
+    BMI EXIT_MOVE ; If negative, goto.
+    LDA 4A2_OBJ_UNK_POS?[18],X ; Load from Xobj.
+    LDY OBJ_POS_X?[18],X ; Load Y from Xobj.
+    JSR RTN_SCREEN?_UNK ; Do.
+    CMP #$05 ; If _ #$05
+    BEQ A_EQ_0x05
+    LDA 4C6_OBJ_UNK[18],X ; Load
+    BMI EXIT_MOVE ; Exit.
+    LDA #$00 ; Seed val, attr clear.
+    BEQ A_SEEDED_0x00 ; Always taken.
+A_EQ_0x05: ; 03:14D1, 0x0074D1
+    LDA 4C6_OBJ_UNK[18],X ; Load from Xobj.
+    CMP #$F0 ; If A _ #$F0
+    BCC EXIT_MOVE ; <, goto.
+    LDA #$F0 ; Seed attr.
+A_SEEDED_0x00: ; 03:14DA, 0x0074DA
+    STA 4C6_OBJ_UNK[18],X ; Set obj. 0x00 - 0xF0.
+    JSR CLEAR_OBJ_ATTRS_DELTAS? ; Do.
+    STA 4D8_OBJ_UNK[18],X ; Also clear.
+    STA OBJ_TERTIARY_SWITCH?[18],X ; Clear tert.
+    LDA #$22
+    JSR SND_BANKED_DISPATCH ; PLay sound.
+    LDA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; Load from Xobj.
+    BNE EXIT_MOVE_SECONDARY ; If nonzero, goto.
+    LDA #$01
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set attr.
+EXIT_MOVE_SECONDARY: ; 03:14F5, 0x0074F5
+    INC OBJ_SECONDARY_SWITCH?[18],X ; Secondary++
+EXIT_MOVE: ; 03:14F8, 0x0074F8
+    JMP OBJECT_X_MOVE? ; Exit, abuse RTS.
 UNK_SWITCH2_B: ; 03:14FB, 0x0074FB
-    .db E8
-    .db 20
-    .db D1
-    .db F4
-    .db CA
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 10
-    .db 20
-    .db 22
-    .db F6
-    .db FE
-    .db 12
-    .db 04
-    .db FE
-    .db 9E
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db D4
-    .db 05
-    .db F0
-    .db 1D
-    .db FE
-    .db D4
-    .db 05
-    .db BD
-    .db D4
-    .db 05
-    .db C9
-    .db 10
-    .db D0
-    .db 13
-    .db A9
-    .db 00
-    .db 9D
-    .db D4
-    .db 05
-    .db A5
-    .db 22
-    .db 29
-    .db 01
-    .db D0
-    .db 08
-    .db BD
-    .db 56
-    .db 05
-    .db 49
-    .db 04
-    .db 9D
-    .db 56
-    .db 05
-    .db 20
-    .db F2
-    .db B5
-    .db 20
-    .db 79
-    .db B7
-    .db 4C
-    .db F1
-    .db F3
-    .db 20
-    .db 43
-    .db F6
-    .db A9
-    .db FF
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db A0
-    .db 9D
-    .db FC
-    .db 04
-    .db D0
-    .db 18
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 03
-    .db F0
-    .db 2D
-    .db 29
-    .db 01
-    .db D0
-    .db E6
-    .db 20
-    .db 43
-    .db F6
-    .db A9
-    .db 00
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db 60
-    .db 9D
-    .db FC
-    .db 04
-    .db BD
-    .db A2
-    .db 04
-    .db C9
-    .db A0
-    .db 90
-    .db 09
-    .db A9
-    .db FF
-    .db 9D
-    .db 0E
-    .db 05
-    .db A9
-    .db A0
-    .db D0
-    .db 07
-    .db A9
-    .db 00
-    .db 9D
-    .db 0E
-    .db 05
-    .db A9
-    .db 60
-    .db 9D
-    .db 20
-    .db 05
-    .db D0
-    .db 68
-    .db DE
-    .db 9E
-    .db 05
-    .db D0
-    .db 3C
-    .db 8A
-    .db 85
-    .db 00
-    .db A5
-    .db 22
-    .db 18
-    .db 65
-    .db 00
-    .db 29
-    .db 07
-    .db C9
-    .db 05
-    .db 90
-    .db 12
-    .db C9
-    .db 07
-    .db 90
-    .db 19
-    .db 20
-    .db 93
-    .db B6
-    .db 20
-    .db 61
-    .db F5
-    .db A9
-    .db 20
-    .db 9D
-    .db 9E
-    .db 05
-    .db 4C
-    .db C5
-    .db B5
-    .db A9
-    .db 20
-    .db 9D
-    .db 9E
-    .db 05
-    .db 20
-    .db 93
-    .db B6
-    .db 4C
-    .db C5
-    .db B5
-    .db A5
-    .db 22
-    .db C9
-    .db 40
-    .db B0
-    .db 02
-    .db 09
-    .db 40
-    .db 9D
-    .db 9E
-    .db 05
-    .db DE
-    .db 12
-    .db 04
-    .db 4C
-    .db C5
-    .db B5
-    .db 20
-    .db F2
-    .db B5
-    .db 20
-    .db 4B
-    .db B6
-    .db A5
-    .db 01
-    .db C9
-    .db E1
-    .db 90
-    .db 08
-    .db A9
-    .db E0
-    .db 9D
-    .db A2
-    .db 04
-    .db 20
-    .db 4F
-    .db F5
-    .db A5
-    .db 10
-    .db C9
-    .db 07
-    .db D0
-    .db 0A
-    .db A9
-    .db 02
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 02
-    .db 9D
-    .db 8C
-    .db 05
-    .db 20
-    .db 77
-    .db B6
-    .db 20
-    .db 79
-    .db B7
-    .db 4C
-    .db F1
-    .db F3
-    .db BD
-    .db B0
-    .db 05
-    .db 4A
-    .db A8
-    .db B9
-    .db 8F
-    .db 00
-    .db D0
-    .db 44
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db E0
-    .db F5
-    .db C9
-    .db 18
-    .db B0
-    .db 3A
-    .db 20
-    .db F5
-    .db F5
-    .db C9
-    .db 24
-    .db B0
-    .db 33
-    .db BD
-    .db 7E
-    .db 04
-    .db C9
-    .db 20
-    .db 90
-    .db 2C
-    .db C9
-    .db E0
-    .db B0
-    .db 28
-    .db 8A
-    .db 38
-    .db E9
-    .db 07
-    .db 4A
-    .db 0A
-    .db A8
-    .db B9
-    .db 41
-    .db B6
-    .db 85
-    .db 08
-    .db B9
-    .db 42
-    .db B6
-    .db 85
-    .db 09
-    .db A5
-    .db 1B
-    .db C5
-    .db 08
-    .db 90
-    .db 11
-    .db C5
-    .db 09
-    .db B0
-    .db 0D
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 03
-    .db 9D
-    .db 12
-    .db 04
-    .db 60
+    INX
+    JSR INIT_OBJECT[X]_DATA_FULL
+    DEX
+    JSR CLEAR_OBJ_ATTRS_UNK
+    JSR CLEAR_OBJ_ATTRS_UNK
+    DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    BNE 03:151B
+    JSR SUB_ALT_ATTR_2P_UNK
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    INC 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    LDA #$00
+    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
+    BEQ 03:1538
+    INC 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
+    LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
+    CMP #$10
+    BNE 03:1538
+    LDA #$00
+    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
+    LDA INF_LOOP_COUNTER
+    AND #$01
+    BNE 03:1538
+    LDA 556_OBJ_STATUS_FLAGS[18],X
+    EOR #$04
+    STA 556_OBJ_STATUS_FLAGS[18],X
+    JSR 03:15F2
+    JSR 03:1779
+    JMP OBJECT_X_MOVE?
+    JSR MOD_UPDATE_FLAG_&_0xFB
+    LDA #$FF
+    STA OBJ_POS_X_DELTA?[18],X
+    LDA #$A0
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
+    BNE 03:1568
+SWITCH_RTN_B: ; 03:1550, 0x007550
+    LDA 556_OBJ_STATUS_FLAGS[18],X
+    AND #$03
+    BEQ 03:1584
+    AND #$01
+    BNE 03:1541
+    JSR MOD_UPDATE_FLAG_&_0xFB
+    LDA #$00
+    STA OBJ_POS_X_DELTA?[18],X
+    LDA #$60
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    CMP #$A0
+    BCC 03:1578
+    LDA #$FF
+    STA 503_OBJ_POS_X_LARGEST?[18],X
+    LDA #$A0
+    BNE 03:157F
+    LDA #$00
+    STA 503_OBJ_POS_X_LARGEST?[18],X
+    LDA #$60
+    STA 520_OBJ_POS_X_LARGE?[18],X
+    BNE 03:15EC
+    DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    BNE 03:15C5
+    TXA
+    STA TMP_00
+    LDA INF_LOOP_COUNTER
+    CLC
+    ADC TMP_00
+    AND #$07
+    CMP #$05
+    BCC 03:15A9
+    CMP #$07
+    BCC 03:15B4
+    JSR 03:1693
+    JSR 1F:1561
+    LDA #$20
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    JMP 03:15C5
+    LDA #$20
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    JSR 03:1693
+    JMP 03:15C5
+    LDA INF_LOOP_COUNTER
+    CMP #$40
+    BCS 03:15BC
+    ORA #$40
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    DEC OBJ_SECONDARY_SWITCH?[18],X
+    JMP 03:15C5
+    JSR 03:15F2
+    JSR SUB_CLEAR_ATTRS_IF_??
+    LDA TMP_01
+    CMP #$E1
+    BCC 03:15D9
+    LDA #$E0
+    STA 4A2_OBJ_UNK_POS?[18],X
+    JSR CLEAR_OBJ_ATTRS_UNK
+    LDA TMP_10
+    CMP #$07
+    BNE 03:15E9
+    LDA #$02
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$02
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    JSR SCREEN_UNK
+    JSR 03:1779
+    JMP OBJECT_X_MOVE?
+    LDA 5B0_OBJ_UNK[18],X
+    LSR A
+    TAY
+    LDA 8F_ARR_UNK[2],Y
+    BNE 03:1640
+    LDY 5B0_OBJ_UNK[18],X
+    JSR GET_DIFF_POS_BETWEEN_X_AND_Y_OBJ
+    CMP #$18
+    BCS 03:1640
+    JSR FIND_POS_DIFF_X+YOBJ_XPOS_TMP_FLAGS
+    CMP #$24
+    BCS 03:1640
+    LDA OBJ_POS_X?[18],X
+    CMP #$20
+    BCC 03:1640
+    CMP #$E0
+    BCS 03:1640
+    TXA
+    SEC
+    SBC #$07
+    LSR A
+    ASL A
+    TAY
+    LDA 03:1641,Y
+    STA TMP_08
+    LDA 03:1642,Y
+    STA TMP_09
+    LDA IRQ/SCRIPT_RUN_COUNT?
+    CMP TMP_08
+    BCC 03:1640
+    CMP TMP_09
+    BCS 03:1640
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    LDA #$03
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    RTS
     .db 00
     .db 3F
     .db 40
@@ -4562,50 +4232,27 @@ UNK_SWITCH2_B: ; 03:14FB, 0x0074FB
     .db FF
     .db 00
     .db 3F
-    .db BC
-    .db 7E
-    .db 04
-    .db 18
-    .db BD
-    .db B4
-    .db 04
-    .db 7D
-    .db 20
-    .db 05
-    .db 85
-    .db 00
-    .db BD
-    .db A2
-    .db 04
-    .db 7D
-    .db 0E
-    .db 05
-    .db 85
-    .db 01
-    .db 18
-    .db A5
-    .db 00
-    .db 7D
-    .db D8
-    .db 04
-    .db A5
-    .db 01
-    .db 7D
-    .db C6
-    .db 04
-    .db 20
-    .db AA
-    .db E7
-    .db 85
-    .db 10
-    .db C9
-    .db 01
-    .db D0
-    .db 03
-    .db 20
-    .db 4F
-    .db F5
-    .db 60
+SUB_CLEAR_ATTRS_IF_??: ; 03:164B, 0x00764B
+    LDY OBJ_POS_X?[18],X ; Load Yobj from Xobj.
+    CLC ; Prep add.
+    LDA 4B4_OBJ_SPEED?[18],X ; Load Xobj.
+    ADC 520_OBJ_POS_X_LARGE?[18],X ; Add with Xobj attr.
+    STA TMP_00 ; Store to.
+    LDA 4A2_OBJ_UNK_POS?[18],X ; Load Xobj.
+    ADC 503_OBJ_POS_X_LARGEST?[18],X ; Add with Xobj attr.
+    STA TMP_01 ; Store to.
+    CLC ; Prep add.
+    LDA TMP_00 ; Load
+    ADC 4D8_OBJ_UNK[18],X ; Add with.
+    LDA TMP_01 ; Load
+    ADC 4C6_OBJ_UNK[18],X ; Add with.
+    JSR RTN_SCREEN?_UNK ; Do ??
+    STA TMP_10 ; Store result.
+    CMP #$01 ; If _ #$01
+    BNE VAL_NE_0x01 ; != 0, goto.
+    JSR CLEAR_OBJ_ATTRS_UNK ; Clear attrs if true.
+VAL_NE_0x01: ; 03:1676, 0x007676
+    RTS ; Leave.
 SCREEN_UNK: ; 03:1677, 0x007677
     CLC ; Prep add.
     LDA OBJ_POS_X_SUBPIXEL?[18],X ; Load
@@ -4621,26 +4268,30 @@ SCREEN_UNK: ; 03:1677, 0x007677
 RTS: ; 03:1692, 0x007692
     RTS ; Leave.
     LDY 5B0_OBJ_UNK[18],X
-    JSR L_1F:160A
-    JSR GET_DIFF_POS_BETWEEN_X_AND_Y_OBJ
-    LDA TMP_12
+    JSR SUB_CONDITIONALLY_SET_FLAG_UNK ; Set flag maybe.
+    JSR GET_DIFF_POS_BETWEEN_X_AND_Y_OBJ ; Do.
+    LDA TMP_12 ; Load
+    ASL A ; << 1, *2.
+    ORA TMP_10 ; OR with val.
+    ASL A ; << 2, *4.
     ASL A
-    ORA TMP_10
-    ASL A
-    ASL A
-    TAY
-    LDA 03:16BD,Y
-    STA OBJ_POS_X_DELTA?[18],X
-    LDA 03:16BE,Y
+    TAY ; To Y index.
+    LDA OBJ_DATA_A,Y
+    STA OBJ_POS_X_DELTA?[18],X ; Set from data.
+    LDA OBJ_DATA_B,Y
     STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
-    LDA 03:16BF,Y
+    LDA OBJ_DATA_C,Y
     STA 503_OBJ_POS_X_LARGEST?[18],X
-    LDA 03:16C0,Y
+    LDA OBJ_DATA_D,Y
     STA 520_OBJ_POS_X_LARGE?[18],X
     RTS
+OBJ_DATA_A: ; 03:16BD, 0x0076BD
     .db 00
+OBJ_DATA_B: ; 03:16BE, 0x0076BE
     .db 60
+OBJ_DATA_C: ; 03:16BF, 0x0076BF
     .db 00
+OBJ_DATA_D: ; 03:16C0, 0x0076C0
     .db 40
     .db 00
     .db 60
@@ -4657,19 +4308,25 @@ RTS: ; 03:1692, 0x007692
 UNK_SWITCH2_C: ; 03:16CD, 0x0076CD
     LDA OBJ_TERTIARY_SWITCH?[18],X
     JSR SWITCH_CODE_PTRS_PAST_JSR
-    ???
-    LDX IRQ_HANDLER_JMP[3],Y
-    LDA F0_UNK,X
-    LDX TITLE_PLAYERS_COUNT_CURSOR_0/1,Y
-    ???
-    LDA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],Y
-    BNE 03:16EA
+    LOW(SWITCH_RTN_A)
+    HIGH(SWITCH_RTN_A)
+    LOW(SWITCH_RTN_B)
+    HIGH(SWITCH_RTN_B)
+    LOW(SWITCH_RTN_C)
+    HIGH(SWITCH_RTN_C)
+    LOW(SWITCH_RTN_D)
+    HIGH(SWITCH_RTN_D)
+SWITCH_RTN_A: ; 03:16DB, 0x0076DB
+    LDA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],Y ; Load from Yobj. TODO: Mistake?
+    BNE EXIT_TERT_INC ; != 0, goto.
     LDA #$30
-    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set attr.
     LDA #$80
-    STA 520_OBJ_POS_X_LARGE?[18],X
-    INC OBJ_TERTIARY_SWITCH?[18],X
-    JMP OBJECT_X_MOVE?
+    STA 520_OBJ_POS_X_LARGE?[18],X ; Set attr.
+EXIT_TERT_INC: ; 03:16EA, 0x0076EA
+    INC OBJ_TERTIARY_SWITCH?[18],X ; Move tert.
+    JMP OBJECT_X_MOVE? ; Exit, abuse RTS.
+SWITCH_RTN_C: ; 03:16F0, 0x0076F0
     LDA #$FA
     STA 532_OBJ_UNK_POS_DELTA?[18],X
     LDA #$08
@@ -4689,6 +4346,7 @@ UNK_SWITCH2_C: ; 03:16CD, 0x0076CD
     INC OBJ_TERTIARY_SWITCH?[18],X
     JSR OBJECT_X_MOVE?
     JMP OBJ_WAIT_TO_INIT?
+SWITCH_RTN_D: ; 03:1721, 0x007721
     LDA #$70
     LDY #$00
     JSR ADD_A/Y_TO_OBJ_DELTA?
@@ -4716,7 +4374,7 @@ UNK_SWITCH2_C: ; 03:16CD, 0x0076CD
     INX
     JSR INIT_OBJECT[X]_DATA_FULL
     DEX
-    JSR 03:164B
+    JSR SUB_CLEAR_ATTRS_IF_??
     LDA TMP_01
     CMP #$E1
     BCC 03:1773
@@ -4774,210 +4432,99 @@ UNK_SWITCH2_C: ; 03:16CD, 0x0076CD
     .db 10
     .db 0F
 UNK_SWITCH2_D: ; 03:17D2, 0x0077D2
-    .db BD
-    .db 8C
-    .db 05
-    .db D0
-    .db 7D
-    .db A9
-    .db 4A
-    .db 9D
+    LDA OBJ_TERTIARY_SWITCH?[18],X ; Load tert.
+    BNE TERT_NONZERO ; != 0, goto.
+    LDA #$4A
+    STA OBJ_ANIMATION_DISPLAY[18],X ; Set disp.
+    LDA #$00
+    STA TMP_10 ; Clear.
+    STA TMP_11
+    STA TMP_01
+    STA TMP_03
+    LDY 5B0_OBJ_UNK[18],X ; Y from Xobj.
+    JSR GET_DIFF_POS_BETWEEN_X_AND_Y_OBJ ; Get diff.
+    STA TMP_02 ; Store to.
+    JSR FIND_POS_DIFF_X+YOBJ_XPOS_TMP_FLAGS ; Get diff.
+    STA TMP_04 ; Store to.
+    LDA TMP_04 ; Load
+    CMP #$30 ; If _ #$30
+    BCC LT_0x30 ; <, goto.
+    LDA #$30 ; Cap value.
+LT_0x30: ; 03:17FB, 0x0077FB
+    ASL A ; << 1, *2.
+    TAY ; To Y index.
+    LDA OBJ_DELTA_DATA,Y
+    STA OBJ_POS_X_DELTA?[18],X ; Set from data.
+    LDA OBJ_OTHER_DATA,Y
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X ; Set from data.
+    LDA TMP_02 ; Load
+    ASL A ; << 1, *2.
+    TAY ; To Y index.
+    LDA OBJ_DELTA_DATA,Y
+    STA 503_OBJ_POS_X_LARGEST?[18],X ; Set from data.
+    LDA OBJ_OTHER_DATA,Y
+    STA 520_OBJ_POS_X_LARGE?[18],X ; Set from data.
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Set attr bit 0x04.
+    ORA #$04
+    STA 556_OBJ_STATUS_FLAGS[18],X
+    LDA TMP_12 ; Load
+    BEQ TMP_12_ZERO ; == 0, goto.
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Clear aatr bit 0x04.
+    AND #$FB ; Keep 1111.1011
+    STA 556_OBJ_STATUS_FLAGS[18],X ; Store back.
+    JSR SUB_INVERT_X_DELTA? ; Do rtn.
+TMP_12_ZERO: ; 03:1830, 0x007830
+    LDA TMP_10 ; Load temp.
+    BEQ TMP_10_EQ_ZERO ; == 0, goto.
+    JSR SUB_INVERT_X_POS? ; Invert rtn.
+TMP_10_EQ_ZERO: ; 03:1837, 0x007837
+    LDA #$FA
+    STA 532_OBJ_UNK_POS_DELTA?[18],X ; Set attr.
+    LDA #$00
+    STA 544_OBJ_UNK_POS_DELTA?[18],X ; Set attr.
+    LDA #$88
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Set attr.
+    LDA #$30
+    STA OBJ_ENABLED_STATE+MORE?+1,X ; Set pair state.
+    LDA #$04
+    STA OBJ_ANIMATION_DISPLAY+1,X ; Set pair display.
+    INC OBJ_TERTIARY_SWITCH?[18],X ; Tert++
+    RTS ; Leave.
+TERT_NONZERO: ; 03:1854, 0x007854
+    LDA #$70
+    LDY #$00
+    JSR ADD_A/Y_TO_OBJ_DELTA? ; Mod attrs.
+    JSR MOVE_OBJ_POS_DELTA_AMOUNT? ; Move.
+    BMI RET_NEGATIVE ; If negative, goto.
+    JSR CLEAR_OBJ_ATTRS_UNK ; Clear attrs.
+    JSR CLEAR_OBJ_ATTRS_UNK
+    JSR CLEAR_OBJ_ATTRS_DELTAS?
+    STA 4C6_OBJ_UNK[18],X ; Also clear these.
+    STA 4D8_OBJ_UNK[18],X
+    LDA #$01
+    STA OBJ_SECONDARY_SWITCH?[18],X ; Set secondary.
+    STA OBJ_TERTIARY_SWITCH?[18],X ; Set tert.
+    LDA #$40
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set attr.
+    LDA #$02
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Set attr.
+    INX ; Next obj.
+    JSR INIT_OBJECT[X]_DATA_FULL ; Init it.
+    DEX ; Back to main obj.
+RET_NEGATIVE: ; 03:1886, 0x007886
+    JSR SUB_CLEAR_ATTRS_IF_?? ; Do sub.
+    LDA TMP_01 ; Load
+    CMP #$E1 ; If _ #$E1
+    BCC VAL_LT_0xE1 ; <, goto.
+    LDA #$E0
+    STA 4A2_OBJ_UNK_POS?[18],X ; Set max.
+    JSR CLEAR_OBJ_ATTRS_UNK ; Clear attrs.
+VAL_LT_0xE1: ; 03:1897, 0x007897
+    JSR SCREEN_UNK ; Do ??
+    JMP OBJECT_X_MOVE? ; Exit, abuse RTS.
+OBJ_DELTA_DATA: ; 03:189D, 0x00789D
     .db 00
-    .db 04
-    .db A9
-    .db 00
-    .db 85
-    .db 10
-    .db 85
-    .db 11
-    .db 85
-    .db 01
-    .db 85
-    .db 03
-    .db BC
-    .db B0
-    .db 05
-    .db 20
-    .db E0
-    .db F5
-    .db 85
-    .db 02
-    .db 20
-    .db F5
-    .db F5
-    .db 85
-    .db 04
-    .db A5
-    .db 04
-    .db C9
-    .db 30
-    .db 90
-    .db 02
-    .db A9
-    .db 30
-    .db 0A
-    .db A8
-    .db B9
-    .db 9D
-    .db B8
-    .db 9D
-    .db EA
-    .db 04
-    .db B9
-    .db 9E
-    .db B8
-    .db 9D
-    .db FC
-    .db 04
-    .db A5
-    .db 02
-    .db 0A
-    .db A8
-    .db B9
-    .db 9D
-    .db B8
-    .db 9D
-    .db 0E
-    .db 05
-    .db B9
-    .db 9E
-    .db B8
-    .db 9D
-    .db 20
-    .db 05
-    .db BD
-    .db 56
-    .db 05
-    .db 09
-    .db 04
-    .db 9D
-    .db 56
-    .db 05
-    .db A5
-    .db 12
-    .db F0
-    .db 0B
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db FB
-    .db 9D
-    .db 56
-    .db 05
-    .db 20
-    .db 76
-    .db F5
-    .db A5
-    .db 10
-    .db F0
-    .db 03
-    .db 20
-    .db 64
-    .db F5
-    .db A9
-    .db FA
-    .db 9D
-    .db 32
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 44
-    .db 05
-    .db A9
-    .db 88
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db 30
-    .db 9D
-    .db 25
-    .db 04
-    .db A9
-    .db 04
-    .db 9D
-    .db 01
-    .db 04
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db A9
-    .db 70
-    .db A0
-    .db 00
-    .db 20
-    .db AC
-    .db F5
-    .db 20
-    .db BE
-    .db F5
-    .db 30
-    .db 26
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db 20
-    .db 58
-    .db F5
-    .db 9D
-    .db C6
-    .db 04
-    .db 9D
-    .db D8
-    .db 04
-    .db A9
-    .db 01
-    .db 9D
-    .db 12
-    .db 04
-    .db 9D
-    .db 8C
-    .db 05
-    .db A9
-    .db 40
-    .db 9D
-    .db 9E
-    .db 05
-    .db A9
-    .db 02
-    .db 9D
-    .db 7A
-    .db 05
-    .db E8
-    .db 20
-    .db D1
-    .db F4
-    .db CA
-    .db 20
-    .db 4B
-    .db B6
-    .db A5
-    .db 01
-    .db C9
-    .db E1
-    .db 90
-    .db 08
-    .db A9
-    .db E0
-    .db 9D
-    .db A2
-    .db 04
-    .db 20
-    .db 4F
-    .db F5
-    .db 20
-    .db 77
-    .db B6
-    .db 4C
-    .db F1
-    .db F3
-    .db 00
+OBJ_OTHER_DATA: ; 03:189E, 0x00789E
     .db 00
     .db 00
     .db 0C
@@ -5076,221 +4623,99 @@ UNK_SWITCH2_D: ; 03:17D2, 0x0077D2
     .db 01
     .db 80
 UNK_SWITCH2_E: ; 03:18FF, 0x0078FF
-    .db BD
-    .db 8C
-    .db 05
-    .db D0
-    .db 47
-    .db A5
-    .db 42
-    .db C9
-    .db 08
-    .db D0
-    .db 07
-    .db BD
-    .db A2
-    .db 04
-    .db C9
-    .db 98
-    .db 90
-    .db 03
-    .db 20
-    .db 4F
-    .db F5
-    .db A9
-    .db 09
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 30
-    .db 9D
-    .db 25
-    .db 04
-    .db A9
-    .db 04
-    .db 9D
-    .db 01
-    .db 04
-    .db BD
-    .db 56
-    .db 05
-    .db 29
-    .db 04
-    .db D0
-    .db 09
-    .db A9
-    .db FF
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db 40
-    .db F0
-    .db 07
-    .db A9
-    .db 00
-    .db 9D
-    .db EA
-    .db 04
-    .db A9
-    .db C0
-    .db 9D
-    .db FC
-    .db 04
-    .db A9
-    .db F8
-    .db 9D
-    .db 32
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 44
-    .db 05
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db A9
-    .db 80
-    .db A0
-    .db 00
-    .db 20
-    .db AC
-    .db F5
-    .db 20
-    .db BE
-    .db F5
-    .db A5
-    .db 42
-    .db C9
-    .db 08
-    .db D0
-    .db 07
-    .db BD
-    .db A2
-    .db 04
-    .db C9
-    .db 98
-    .db 90
-    .db 14
-    .db 20
-    .db 77
-    .db B6
-    .db 20
-    .db 4B
-    .db B6
-    .db A5
-    .db 01
-    .db C9
-    .db E1
-    .db 90
-    .db 08
-    .db A9
-    .db E0
-    .db 9D
-    .db A2
-    .db 04
-    .db 20
-    .db 4F
-    .db F5
-    .db BD
-    .db 32
-    .db 05
-    .db 30
-    .db 58
-    .db BD
-    .db A2
-    .db 04
-    .db BC
-    .db 7E
-    .db 04
-    .db 20
-    .db AA
-    .db E7
-    .db C9
-    .db 05
-    .db F0
-    .db 09
-    .db BD
-    .db C6
-    .db 04
-    .db 30
-    .db 46
-    .db A9
-    .db 00
-    .db F0
-    .db 09
-    .db BD
-    .db C6
-    .db 04
-    .db C9
-    .db F0
-    .db 90
-    .db 3B
-    .db A9
-    .db F0
-    .db 9D
-    .db C6
-    .db 04
-    .db E8
-    .db 20
-    .db D1
-    .db F4
-    .db CA
-    .db 20
-    .db 46
-    .db F5
-    .db 20
-    .db 4F
-    .db F5
-    .db 20
-    .db 58
-    .db F5
-    .db 9D
-    .db C6
-    .db 04
-    .db 9D
-    .db D8
-    .db 04
-    .db 9D
-    .db 8C
-    .db 05
-    .db BD
-    .db 68
-    .db 05
-    .db D0
-    .db 06
-    .db FE
-    .db 12
-    .db 04
-    .db 4C
-    .db F1
-    .db F3
-    .db A9
-    .db 05
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 01
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db A9
-    .db 02
-    .db 9D
-    .db 7A
-    .db 05
-    .db 4C
-    .db F1
-    .db F3
+    LDA OBJ_TERTIARY_SWITCH?[18],X ; Load tert.
+    BNE TERT_NONZERO ; != 0, goto.
+    LDA LEVEL/SCREEN_ON ; Load screen.
+    CMP #$08 ; If _ #$08
+    BNE ATTR_CLEAR ; !=, goto, dojo.
+    LDA 4A2_OBJ_UNK_POS?[18],X ; Load
+    CMP #$98 ; If _ #$98
+    BCC SKIP_ATTR_CLEAR
+ATTR_CLEAR: ; 03:1911, 0x007911
+    JSR CLEAR_OBJ_ATTRS_UNK ; Clear attrs.
+SKIP_ATTR_CLEAR: ; 03:1914, 0x007914
+    LDA #$09
+    STA OBJ_ANIMATION_DISPLAY[18],X ; Set anim disp.
+    LDA #$30
+    STA OBJ_ENABLED_STATE+MORE?+1,X ; Set pair state.
+    LDA #$04
+    STA OBJ_ANIMATION_DISPLAY+1,X ; Set anim disp for pair.
+    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load attr.
+    AND #$04 ; Clear flags except.
+    BNE ATTR_0x04_SET ; Bit set, goto.
+    LDA #$FF
+    STA OBJ_POS_X_DELTA?[18],X ; Move left.
+    LDA #$40 ; Seed A.
+    BEQ A_SEEDED ; Never taken. TODO: Mistake? Probably.
+ATTR_0x04_SET: ; 03:1933, 0x007933
+    LDA #$00
+    STA OBJ_POS_X_DELTA?[18],X ; Clear.
+    LDA #$C0
+A_SEEDED: ; 03:193A, 0x00793A
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X ; Set.
+    LDA #$F8
+    STA 532_OBJ_UNK_POS_DELTA?[18],X ; Set.
+    LDA #$00
+    STA 544_OBJ_UNK_POS_DELTA?[18],X ; Clear.
+    INC OBJ_TERTIARY_SWITCH?[18],X ; Move tert.
+    RTS ; Leave.
+TERT_NONZERO: ; 03:194B, 0x00794B
+    LDA #$80
+    LDY #$00
+    JSR ADD_A/Y_TO_OBJ_DELTA?
+    JSR MOVE_OBJ_POS_DELTA_AMOUNT?
+    LDA LEVEL/SCREEN_ON
+    CMP #$08
+    BNE 03:1962
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    CMP #$98
+    BCC 03:1976
+    JSR SCREEN_UNK
+    JSR SUB_CLEAR_ATTRS_IF_??
+    LDA TMP_01
+    CMP #$E1
+    BCC 03:1976
+    LDA #$E0
+    STA 4A2_OBJ_UNK_POS?[18],X
+    JSR CLEAR_OBJ_ATTRS_UNK
+    LDA 532_OBJ_UNK_POS_DELTA?[18],X
+    BMI 03:19D3
+    LDA 4A2_OBJ_UNK_POS?[18],X
+    LDY OBJ_POS_X?[18],X
+    JSR RTN_SCREEN?_UNK
+    CMP #$05
+    BEQ 03:1991
+    LDA 4C6_OBJ_UNK[18],X
+    BMI 03:19D3
+    LDA #$00
+    BEQ 03:199A
+    LDA 4C6_OBJ_UNK[18],X
+    CMP #$F0
+    BCC 03:19D3
+    LDA #$F0
+    STA 4C6_OBJ_UNK[18],X
+    INX
+    JSR INIT_OBJECT[X]_DATA_FULL
+    DEX
+    JSR CLEAR_OBJ_ATTRS_UNK
+    JSR CLEAR_OBJ_ATTRS_UNK
+    JSR CLEAR_OBJ_ATTRS_DELTAS?
+    STA 4C6_OBJ_UNK[18],X
+    STA 4D8_OBJ_UNK[18],X
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDA OBJECT_DATA_HEALTH?[18],X
+    BNE 03:19BF
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    JMP OBJECT_X_MOVE?
+    LDA #$05
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$01
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$02
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    JMP OBJECT_X_MOVE?
     .db FF
     .db FF
     .db FF

@@ -549,9 +549,7 @@ OBJ_TERTIARY_SWITCH?:                         .rs 18
 
           .rsset 0x05F5
 5F5_UNK:                                      .rs 1
-
-
-          .rsset 0x05F7
+5F6_UNK:                                      .rs 1
 5F7_UNK:                                      .rs 1
 5F8_UNK:                                      .rs 1
 ZP_13_INDEX_VAL_UNK:                          .rs 1
