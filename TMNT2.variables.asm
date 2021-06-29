@@ -245,7 +245,7 @@ D9_IRQ_CONFIG_A:                              .rs 1
 DA_FLAG?_UNK:                                 .rs 1
 R_**:$00DB:                                   .rs 1
 DC_UNK:                                       .rs 1
-R_**:$00DD:                                   .rs 1
+DD_UNK:                                       .rs 1
 DE_FLAG_PALETTE_UNK:                          .rs 1
 DF_UNK:                                       .rs 1
 R_**:$00E0:                                   .rs 1
@@ -557,7 +557,7 @@ ZP_13_INDEX_VAL_UNK:                          .rs 1
 5FB_TIMER_ALL_FINISHED?:                      .rs 1
 R_**:$05FC:                                   .rs 1
 5FD_UNK:                                      .rs 1
-R_**:$05FE:                                   .rs 1
+5FE_UNK:                                      .rs 1
 
 
           .rsset 0x0600
