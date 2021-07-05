@@ -512,7 +512,7 @@ SCORES_BCD_XX0000:                            .rs 1
 OBJ_ANIMATION_DISPLAY:                        .rs 18
 OBJ_SECONDARY_SWITCH?:                        .rs 18
 OBJ_ENABLED_STATE+MORE?:                      .rs 18
-OBJ_DIRECTION_RELATED?:                       .rs 18
+OBJ_STATE_DIR_RELATED_C:                      .rs 18
 OBJ_ANIM_HOLD_TIMER?:                         .rs 18
 45A_OBJ_DATA_ENTRY?STATE_STEP?:               .rs 18
 OBJ_POS_Y:                                    .rs 18
@@ -732,9 +732,7 @@ R_**:$070F:                                   .rs 1
 714_UNK:                                      .rs 1
 A/B_WHICH_RESULT:                             .rs 1
 716_UNK:                                      .rs 1
-717_OBJ_INDEX_A_UNK:                          .rs 1
-718_OBJ_INDEX_B_UNK:                          .rs 1
-719_OBJ_CMP_UNK:                              .rs 1
+OBJ_INDEXES_GROUP_UNK:                        .rs 3
 
 
           .rsset 0x071C

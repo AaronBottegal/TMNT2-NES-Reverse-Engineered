@@ -2937,14 +2937,14 @@ SET_TIMER_YA: ; 1E:0C2F, 0x03CC2F
     STA 40_TIMER?[2] ; Store timer low.
     STY 40_TIMER?+1 ; Store timer high.
     RTS ; RTS.
-L_1E:0C34: ; 1E:0C34, 0x03CC34
-    INC INF_LOOP_COUNTER
-    CLC
-    LDA INF_LOOP_COUNTER
-    ADC #$5A
-    STA INF_LOOP_COUNTER
-    INC INF_LOOP_COUNTER
-    RTS
+COUNTER_RANDOMNESS_BAD: ; 1E:0C34, 0x03CC34
+    INC INF_LOOP_COUNTER ; ++. This code is pretty bad. Remove incs, add with 5C, same results.
+    CLC ; Prep add.
+    LDA INF_LOOP_COUNTER ; Load
+    ADC #$5A ; Add with.
+    STA INF_LOOP_COUNTER ; Store back.
+    INC INF_LOOP_COUNTER ; Inc again.
+    RTS ; Leave.
 RANDOMNESS?: ; 1E:0C40, 0x03CC40
     INC RANDOM_VALS?+1 ; ++
     CLC ; Prep add.
@@ -3221,10 +3221,10 @@ SKIP_OTHER_LOAD: ; 1E:0E2F, 0x03CE2F
 PPU_FLAG_NOT_SET: ; 1E:0E31, 0x03CE31
     TAX ; A val to X.
     STX TMP_0B ; Store to.
-    LDA OBJ_DIRECTION_RELATED?[18],X ; A from
+    LDA OBJ_STATE_DIR_RELATED_C[18],X ; A from
     AND #$03 ; Get bits 0000.0011 from val.
     STA TMP_0C ; Store them here.
-    LDA OBJ_DIRECTION_RELATED?[18],X
+    LDA OBJ_STATE_DIR_RELATED_C[18],X
     AND #$E0 ; Get bits 1110.0000
     STA TMP_07 ; Store here.
     LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load value.
