@@ -183,7 +183,7 @@ L_12:00F8: ; 12:00F8, 0x0240F8
     STA OBJ_DIRECTION_RELATED?[18],X
     LDA OBJ_POS_X?[18],X
     STA TMP_08
-    LDA 4A2_OBJ_UNK_POS?[18],X
+    LDA OBJ_POS_Y?[18],X
     STA TMP_0A
     LDA LEVEL/SCREEN_ON
     ASL A
@@ -233,7 +233,7 @@ SWITCH_RTN_B: ; 12:0144, 0x024144
     LDA #$A0
     STA OBJ_POS_X?[18],X
     LDA #$90
-    STA 4A2_OBJ_UNK_POS?[18],X
+    STA OBJ_POS_Y?[18],X
     LDA $8395
     STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$20
@@ -325,7 +325,7 @@ SWITCH_RTN_G: ; 12:01E9, 0x0241E9
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     LDA OBJ_POS_X?[18],X
     STA TMP_08
-    LDA 4A2_OBJ_UNK_POS?[18],X
+    LDA OBJ_POS_Y?[18],X
     STA TMP_0A
     LDA #$E0
     STA TMP_0C
@@ -385,7 +385,7 @@ L_12:0265: ; 12:0265, 0x024265
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     LDA OBJ_POS_X?[18],X
     STA TMP_08
-    LDA 4A2_OBJ_UNK_POS?[18],X
+    LDA OBJ_POS_Y?[18],X
     STA TMP_0A
     LDA $8815
     STA TMP_0C
@@ -758,7 +758,7 @@ L_12:054F: ; 12:054F, 0x02454F
     BCS L_12:0578
     SEC
     LDA $812F
-    SBC 4A2_OBJ_UNK_POS?[18],X
+    SBC OBJ_POS_Y?[18],X
     BPL L_12:0561
     EOR #$FF
     CLC
@@ -985,7 +985,7 @@ L_12:06EA: ; 12:06EA, 0x0246EA
     LDA $8726,Y
     STA OBJ_POS_X?[18],X
     LDA $8727,Y
-    STA 4A2_OBJ_UNK_POS?[18],X
+    STA OBJ_POS_Y?[18],X
     STA OBJ_POS_Y[18],X
     LDA $8728,Y
     STA OBJ_ANIMATION_DISPLAY[18],X
@@ -4224,7 +4224,7 @@ SPRITE_OBJECT_FILLOUT_LOOP: ; 12:1468, 0x025468
     LDA SPRITE_DATA_47E,X
     STA OBJ_POS_X?[18],X
     LDA SPRITE_DATA_4A2,X
-    STA 4A2_OBJ_UNK_POS?[18],X
+    STA OBJ_POS_Y?[18],X
     STA OBJ_POS_Y[18],X
     LDA SPRITE_DATA_400,X
     STA OBJ_ANIMATION_DISPLAY[18],X
@@ -4399,7 +4399,7 @@ LOOP: ; 12:15A4, 0x0255A4
     LDA #$30 ; Val?
     STA OBJ_POS_X?[18],X
     LDA #$98 ; Val?
-    STA 4A2_OBJ_UNK_POS?[18],X
+    STA OBJ_POS_Y?[18],X
     LDA #$81 ; Val?
     STA 4C6_OBJ_UNK[18],X
     JSR MOVE_Y_FINALIZE ; Move?
@@ -5214,12 +5214,12 @@ RTN_MOVE?_RET_CS_DONE: ; 12:1963, 0x025963
 RTN_??: ; 12:1983, 0x025983
     LDA 532_OBJ_UNK_POS_DELTA?[18],X ; Load
     BMI VAL_NEG ; Value is negative.
-    LDA 5B0_OBJ_UNK[18],X ; Load
+    LDA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Load
     BNE VAL_NONZERO_A ; != 0, goto.
     CLC ; Prep add.
-    LDA 4A2_OBJ_UNK_POS?[18],X ; Load
+    LDA OBJ_POS_Y?[18],X ; Load
     ADC 4B4_OBJ_SPEED?[18],X ; +=
-    STA 4A2_OBJ_UNK_POS?[18],X ; Store back.
+    STA OBJ_POS_Y?[18],X ; Store back.
     JMP RTN_SUBTRACT? ; Goto.
 VAL_NONZERO_A: ; 12:199A, 0x02599A
     CLC ; Prep add.
@@ -5236,7 +5236,7 @@ RTN_SUBTRACT?: ; 12:19A4, 0x0259A4
     STA 532_OBJ_UNK_POS_DELTA?[18],X ; Store back.
     JMP RTN_??
 VAL_NEG: ; 12:19B8, 0x0259B8
-    LDA 5B0_OBJ_UNK[18],X ; Load val.
+    LDA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Load val.
     BNE VAL_NONZERO_B ; != 0, goto.
     CLC ; Prep add.
     LDA OBJ_POS_X?[18],X ; Load
@@ -5245,9 +5245,9 @@ VAL_NEG: ; 12:19B8, 0x0259B8
     JMP RTN_??
 VAL_NONZERO_B: ; 12:19CA, 0x0259CA
     CLC ; Prep add.
-    LDA 4A2_OBJ_UNK_POS?[18],X ; Load
+    LDA OBJ_POS_Y?[18],X ; Load
     ADC 4B4_OBJ_SPEED?[18],X ; += val.
-    STA 4A2_OBJ_UNK_POS?[18],X ; Store back.
+    STA OBJ_POS_Y?[18],X ; Store back.
 RTN_??: ; 12:19D4, 0x0259D4
     CLC ; Prep add.
     LDA 544_OBJ_UNK_POS_DELTA?[18],X ; Load
@@ -5257,7 +5257,7 @@ RTN_??: ; 12:19D4, 0x0259D4
     ADC TMP_0B ; += TMP.
     STA 532_OBJ_UNK_POS_DELTA?[18],X ; Store back.
     CLC ; Prep add.
-    LDA 4A2_OBJ_UNK_POS?[18],X ; Load val
+    LDA OBJ_POS_Y?[18],X ; Load val
     ADC 4C6_OBJ_UNK[18],X ; += val.
     STA OBJ_POS_Y[18],X ; Store back.
     DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; --
@@ -5467,7 +5467,7 @@ REENTER_RTN_??: ; 12:1B46, 0x025B46
     BCC SUB_NOT_READY_FWD ; <, goto.
     LDA OBJ_POS_X?[18],X ; Setup temp..?
     STA TMP_00
-    LDA 4A2_OBJ_UNK_POS?[18],X
+    LDA OBJ_POS_Y?[18],X
     STA TMP_01
     LDA [TMP_08],Y ; Move next stream val.
     STA TMP_02
@@ -5519,7 +5519,7 @@ STREAM_TO_OBJ_B: ; 12:1BAA, 0x025BAA
     STA OBJ_POS_X?[18],X ; Store to obj.
     JSR FORWARD_XOBJ_STREAM_PTR ; Forward.
     LDA [TMP_08],Y ; Load from stream.
-    STA 4A2_OBJ_UNK_POS?[18],X ; Store to obj.
+    STA OBJ_POS_Y?[18],X ; Store to obj.
     JSR FORWARD_XOBJ_STREAM_PTR ; Forward.
     RTS
 SWITCH_TO_OBJ_C: ; 12:1BBE, 0x025BBE
@@ -5685,8 +5685,8 @@ RTN_UPDATES_BG?: ; 12:1CAE, 0x025CAE
     LSR A
     LSR A
     STA TMP_00 ; To tmp.
-    INC 4A2_OBJ_UNK_POS?[18],X ; ++
-    LDA 4A2_OBJ_UNK_POS?[18],X ; Load val
+    INC OBJ_POS_Y?[18],X ; ++
+    LDA OBJ_POS_Y?[18],X ; Load val
     LSR A ; >> 3, /8.
     LSR A
     LSR A
@@ -5718,7 +5718,7 @@ RTN_MAKE_OBJ_RET_CS_FAIL: ; 12:1CE3, 0x025CE3
     ASL A
     SEC ; Prep sub.
     SBC #$01 ; -=1
-    STA 4A2_OBJ_UNK_POS?[18],Y ; Store to.
+    STA OBJ_POS_Y?[18],Y ; Store to.
     STA OBJ_POS_Y[18],Y ; Also here.
     LDA TMP_02 ; Load val.
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],Y ; Store.

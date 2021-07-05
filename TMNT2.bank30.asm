@@ -3252,7 +3252,7 @@ INDEX_GE_4: ; 1E:0E67, 0x03CE67
     BCS OBJECT_ANIM_DECIDED? ; >=, goto.
     INC TMP_0E ; ++ otherwise.
 OBJECT_ANIM_DECIDED?: ; 1E:0E71, 0x03CE71
-    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load value from.
+    LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load value from.
     AND #$03 ; Get bits 0000.0011
     STA TMP_06 ; Store to.
     LDA OBJ_ANIMATION_DISPLAY[18],X
@@ -3527,7 +3527,7 @@ CHANGED_GT_4: ; 1E:106C, 0x03D06C
     CMP #$04 ; Obj _ #$04
     BEQ OBJ_EQ_4 ; ==, goto.
 OBJ_MOD_0/2: ; 1E:1070, 0x03D070
-    LDA 4A2_OBJ_UNK_POS?[18],X ; Load
+    LDA OBJ_POS_Y?[18],X ; Load
     STA TMP_00,Y ; Store to.
     STX C6_SPR_ARR_UNK[2],Y ; Obj to array.
     INY ; Arr++

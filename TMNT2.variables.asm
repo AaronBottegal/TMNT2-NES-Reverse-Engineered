@@ -518,7 +518,7 @@ OBJ_ANIM_HOLD_TIMER?:                         .rs 18
 OBJ_POS_Y:                                    .rs 18
 OBJ_POS_X?:                                   .rs 18
 OBJ_POS_X_SUBPIXEL?:                          .rs 18
-4A2_OBJ_UNK_POS?:                             .rs 18
+OBJ_POS_Y?:                                   .rs 18
 4B4_OBJ_SPEED?:                               .rs 18
 4C6_OBJ_UNK:                                  .rs 18
 4D8_OBJ_UNK:                                  .rs 18
@@ -528,12 +528,12 @@ OBJ_POS_X_SUBPIXEL_DELTA?:                    .rs 18
 520_OBJ_POS_X_LARGE?:                         .rs 18
 532_OBJ_UNK_POS_DELTA?:                       .rs 18
 544_OBJ_UNK_POS_DELTA?:                       .rs 18
-556_OBJ_STATUS_FLAGS:                         .rs 18
+556_OBJ_STATUS_FLAGS_A:                       .rs 18
 OBJECT_DATA_HEALTH?:                          .rs 18
 OBJECT_DATA_EXTRA_B?:                         .rs 18
 OBJ_TERTIARY_SWITCH?:                         .rs 18
 59E_OBJ_UNK/EXTRA_TIMER:                      .rs 18
-5B0_OBJ_UNK:                                  .rs 18
+STATUS_FLAGS_B/OBJ_FOCUS:                     .rs 18
 5C2_OBJ_DATA_PTR/MISC_INDEX:                  .rs 18
 5D4_EXTRA_TIMER/OBJ/FOCUS:                    .rs 18
 

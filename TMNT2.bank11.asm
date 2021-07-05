@@ -1,7 +1,7 @@
     .db 05
     BEQ JMP_OBJS_UNK ; Not set, goto.
     LDA #$00
-    STA 556_OBJ_STATUS_FLAGS[18],X ; Clear.
+    STA 556_OBJ_STATUS_FLAGS_A[18],X ; Clear.
 RET_CC: ; 0B:0008, 0x016008
     DEC OBJ_ANIM_HOLD_TIMER?[18],X ; Hold--
     BNE HOLD_NOT_ZERO ; != 0, goto.
@@ -308,8 +308,8 @@ RTN_J: ; 0B:021D, 0x01621D
 RTN_K: ; 0B:0238, 0x016238
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     SEC
-    LDA 4A2_OBJ_UNK_POS?[18],X
-    SBC 4A2_OBJ_UNK_POS?[18],Y
+    LDA OBJ_POS_Y?[18],X
+    SBC OBJ_POS_Y?[18],Y
     BPL 0B:0249
     EOR #$FF
     CLC
@@ -514,10 +514,10 @@ SUB_RET_CC: ; 0B:03BB, 0x0163BB
     JSR FIND_PLAYER_TO_FOCUS_ON_TO_OBJ ; Find focus.
     JSR X_MOVE_RET_CS_UNDERFLOW_CC_OKAY ; Do.
     BCC RTN_OKAY ; If okay, goto.
-    DEC 556_OBJ_STATUS_FLAGS[18],X ; --
+    DEC 556_OBJ_STATUS_FLAGS_A[18],X ; --
     BPL RTN_OKAY ; If positive, skip.
     LDA #$02
-    STA 556_OBJ_STATUS_FLAGS[18],X ; Set otherwise.
+    STA 556_OBJ_STATUS_FLAGS_A[18],X ; Set otherwise.
 RTN_OKAY: ; 0B:03D0, 0x0163D0
     JSR MOVE_Y_FINALIZE ; Pos.
     LDA OBJ_POS_X?[18],X ; Load
@@ -529,12 +529,12 @@ RTN_OKAY: ; 0B:03D0, 0x0163D0
     BPL USE_VAL_ASIS ; If positive, use 0x01.
     LDA #$02 ; 0x02 otherwise.
 USE_VAL_ASIS: ; 0B:03E6, 0x0163E6
-    STA 556_OBJ_STATUS_FLAGS[18],X ; Set flag.
+    STA 556_OBJ_STATUS_FLAGS_A[18],X ; Set flag.
 XPOS_RTN_CC: ; 0B:03E9, 0x0163E9
-    LDA 556_OBJ_STATUS_FLAGS[18],X ; Load flag.
+    LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load flag.
     BNE RTS ; If set, leave.
     LDY OBJ_POS_X?[18],X ; Load
-    LDA 4A2_OBJ_UNK_POS?[18],X ; Load from obj.
+    LDA OBJ_POS_Y?[18],X ; Load from obj.
     CLC ; Prep add.
     ADC 4C6_OBJ_UNK+1,X ; Add with pair.
     JSR UNK_SUB_B ; Do rtn.
@@ -665,8 +665,8 @@ RTN_NEW_OBJ_UNK: ; 0B:04FD, 0x0164FD
     STA OBJ_POS_X?[18],X
     LDA OBJ_POS_X_SUBPIXEL?[18],Y
     STA OBJ_POS_X_SUBPIXEL?[18],X
-    LDA 4A2_OBJ_UNK_POS?[18],Y
-    STA 4A2_OBJ_UNK_POS?[18],X
+    LDA OBJ_POS_Y?[18],Y
+    STA OBJ_POS_Y?[18],X
     LDA OBJ_POS_Y[18],Y
     STA OBJ_POS_Y[18],X
     LDA OBJ_DIRECTION_RELATED?[18],Y
@@ -736,10 +736,10 @@ HOLD_NOT_EXPIRED: ; 0B:05A2, 0x0165A2
     JSR FIND_PLAYER_TO_FOCUS_ON_TO_OBJ ; Find focus.
     JSR X_MOVE_RET_CS_UNDERFLOW_CC_OKAY ; Do rtn.
     BCC RTS ; CC, leave.
-    DEC 556_OBJ_STATUS_FLAGS[18],X ; --
+    DEC 556_OBJ_STATUS_FLAGS_A[18],X ; --
     BEQ RTS ; If 0, leave.
     LDA #$02
-    STA 556_OBJ_STATUS_FLAGS[18],X ; Set.
+    STA 556_OBJ_STATUS_FLAGS_A[18],X ; Set.
 RTS: ; 0B:05B4, 0x0165B4
     RTS ; Leave.
 OBJ_DATA_PER_TERT: ; 0B:05B5, 0x0165B5
@@ -802,8 +802,8 @@ LOAD_ZERO_A: ; 0B:0611, 0x016611
     LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],Y ; Load from that obj.
     TAY ; Put that value to Y.
     SEC ; Prep sub.
-    LDA 4A2_OBJ_UNK_POS?[18],X ; Load from Xobj.
-    SBC 4A2_OBJ_UNK_POS?[18],Y ; Sub with Yobj.
+    LDA OBJ_POS_Y?[18],X ; Load from Xobj.
+    SBC OBJ_POS_Y?[18],Y ; Sub with Yobj.
     STA TMP_03 ; Store to TMP.
     BPL RESULT_POSITIVE ; If positive, skip comp.
     EOR #$FF ; Compliment.
@@ -986,12 +986,12 @@ UNUSED_OBJ_EXISTS: ; 0B:073B, 0x01673B
     LDY OBJ_HANDLER_FOCUS_SCRATCHPAD ; Y again.
     LDA OBJ_POS_X?[18],Y ; YOBJ to XOBJ
     STA OBJ_POS_X?[18],X
-    LDA 4A2_OBJ_UNK_POS?[18],Y
-    STA 4A2_OBJ_UNK_POS?[18],X
-    INC 4A2_OBJ_UNK_POS?[18],X ; ++ on X
+    LDA OBJ_POS_Y?[18],Y
+    STA OBJ_POS_Y?[18],X
+    INC OBJ_POS_Y?[18],X ; ++ on X
     LDA 4C6_OBJ_UNK[18],Y
     STA 4C6_OBJ_UNK[18],X
-    STA 5B0_OBJ_UNK[18],X ; To different in X.
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; To different in X.
     LDA OBJ_DIRECTION_RELATED?[18],Y ; Load
     AND #$40 ; Keep 0x40
     STA OBJ_DIRECTION_RELATED?[18],X ; Store to X.
@@ -1124,7 +1124,7 @@ S15_EXB_RTN_A: ; 0B:083E, 0x01683E
     JSR XPOS_RTN_RET_?? ; Do.
     BCS LEAVE_REINIT ; CS, goto.
     JSR MOVE_UNK_RET_??_SKIPPED ; Do.
-    LDA 5B0_OBJ_UNK[18],X ; Load
+    LDA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Load
     BNE HAS_VALUE ; If nonzero, goto.
     BCS RET_CS ; Ret branches.
     BCC SET_EXTRA/HEALTH ; CC, goto.
@@ -1133,7 +1133,7 @@ HAS_VALUE: ; 0B:0854, 0x016854
     BCS SET_EXTRA/HEALTH ; >=, goto.
 RET_CS: ; 0B:0859, 0x016859
     INC OBJ_TERTIARY_SWITCH?[18],X ; Tert++
-    LDA 5B0_OBJ_UNK[18],X ; Load
+    LDA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Load
     STA 4C6_OBJ_UNK[18],X ; Store to.
     LDA #$03
     STA OBJ_ANIM_HOLD_TIMER?[18],X ; Set hold.
@@ -1537,7 +1537,7 @@ SUB_UNK: ; 0B:0B0B, 0x016B0B
     LDA #$06
     STA TMP_06
     LDY OBJ_POS_X?[18],X
-    LDA 4A2_OBJ_UNK_POS?[18],X
+    LDA OBJ_POS_Y?[18],X
     CLC
     ADC 4C6_OBJ_UNK+1,X
     JSR RTN_BACKGROUND_TILE_RELATED?
