@@ -1,73 +1,37 @@
     .db 01
-    .db 9D
-    .db 00
-    .db 04
-    .db 60
-    .db 20
-    .db D1
-    .db F4
-    .db E8
-    .db 20
-    .db D1
-    .db F4
-    .db 60
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    RTS
+    JSR INIT_OBJECT[X]_DATA_FULL
+    INX
+    JSR INIT_OBJECT[X]_DATA_FULL
+    RTS
 L_0D:000D: ; 0D:000D, 0x01A00D
-    .db A9
-    .db 2A
-    .db 20
-    .db 52
-    .db DB
-    .db A9
-    .db 01
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 06
-    .db 9D
-    .db 48
-    .db 04
-    .db 18
-    .db 60
+    LDA #$2A
+    JSR SND_BANKED_DISPATCH
+    LDA #$01
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$06
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    CLC
+    RTS
 L_0D:001E: ; 0D:001E, 0x01A01E
-    .db DE
-    .db 48
-    .db 04
-    .db 10
-    .db F9
-    .db A9
-    .db 07
-    .db 9D
-    .db 48
-    .db 04
-    .db FE
-    .db 00
-    .db 04
-    .db BD
-    .db 00
-    .db 04
-    .db C9
-    .db 04
-    .db 90
-    .db EA
-    .db A9
-    .db 00
-    .db 9D
-    .db 00
-    .db 04
-    .db 38
-    .db 60
-    .db A9
-    .db 01
-    .db 9D
-    .db 13
-    .db 04
-    .db A9
-    .db 06
-    .db 9D
-    .db 49
-    .db 04
-    .db 60
+    DEC OBJ_ANIM_HOLD_TIMER?[18],X
+    BPL 0D:001C
+    LDA #$07
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    INC OBJ_ANIMATION_DISPLAY[18],X
+    LDA OBJ_ANIMATION_DISPLAY[18],X
+    CMP #$04
+    BCC 0D:001C
+    LDA #$00
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    SEC
+    RTS
+    LDA #$01
+    STA OBJ_SECONDARY_SWITCH?+1,X
+    LDA #$06
+    STA OBJ_ANIM_HOLD_TIMER?+1,X
+    RTS
 OBJ_STATE_0x5C_HANDLER: ; 0D:0044, 0x01A044
     LDY OBJ_SECONDARY_SWITCH?[18],X
     BNE L_0D:004A
@@ -98,14 +62,14 @@ L_0D:0070: ; 0D:0070, 0x01A070
     TAY
     CLC
     LDA L_0D:016A,Y
-    ADC OBJ_POS_Y+17,X
+    ADC OBJ_POS_Y??+17,X
     STA OBJ_POS_X?[18],X
     CLC
     LDA L_0D:016B,Y
     ADC 4B4_OBJ_SPEED?+17,X
     STA 4C6_OBJ_UNK[18],X
     LDA OBJ_POS_X_SUBPIXEL?+17,X
-    STA OBJ_POS_Y?[18],X
+    STA OBJ_POS_X??[18],X
     JSR MOVE_Y_FINALIZE
     LDY TMP_06
     DEC OBJ_ANIM_HOLD_TIMER?[18],X
@@ -165,8 +129,8 @@ L_0D:010A: ; 0D:010A, 0x01A10A
 L_0D:010B: ; 0D:010B, 0x01A10B
     LDA #$00
     STA 4C6_OBJ_UNK[18],X
-    LDA OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y[18],X
+    LDA OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??[18],X
     LDA #$00
     STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
     LDA #$07
@@ -248,7 +212,7 @@ L_0D:0177: ; 0D:0177, 0x01A177
     .db 15
 OBJ_STATE_0x5A_HANDLER: ; 0D:017C, 0x01A17C
     STX OBJ_HANDLER_FOCUS_SCRATCHPAD
-    JSR L_0D:0261
+    JSR RTN_MULTISWITCH
     LDA OBJ_SECONDARY_SWITCH?[18],X
     CMP #$02
     BNE L_0D:01BC
@@ -336,8 +300,8 @@ L_0D:0220: ; 0D:0220, 0x01A220
     BEQ L_0D:0237
     LDA OBJ_POS_X?[18],Y
     STA OBJ_POS_X?[18],X
-    LDA OBJ_POS_Y?[18],Y
-    STA OBJ_POS_Y[18],X
+    LDA OBJ_POS_X??[18],Y
+    STA OBJ_POS_Y??[18],X
     LDA #$04
     STA OBJ_ANIMATION_DISPLAY[18],X
     RTS
@@ -367,7 +331,7 @@ L_0D:025C: ; 0D:025C, 0x01A25C
     LDA #$00
     STA 8B_UNK
     RTS
-L_0D:0261: ; 0D:0261, 0x01A261
+RTN_MULTISWITCH: ; 0D:0261, 0x01A261
     JSR L_0D:06F5
     LDA OBJ_SECONDARY_SWITCH?[18],X
     ASL A
@@ -418,228 +382,96 @@ L_0D:0285: ; 0D:0285, 0x01A285
     .db F9
     .db A1
 L_0D:02A2: ; 0D:02A2, 0x01A2A2
-    .db A9
-    .db 01
-    .db 8D
-    .db 10
-    .db 07
+    LDA #$01
+    STA 710_UNK
 L_0D:02A7: ; 0D:02A7, 0x01A2A7
-    .db A9
-    .db 07
-    .db 85
-    .db 08
-    .db 85
-    .db 09
-    .db 85
-    .db 0A
-    .db 85
-    .db 0B
-    .db A9
-    .db 03
-    .db 85
-    .db 10
-    .db 20
-    .db 17
-    .db F3
-    .db B0
-    .db 29
-    .db A4
-    .db 10
-    .db 8A
-    .db 99
-    .db 08
-    .db 00
-    .db A9
-    .db 5A
-    .db 9D
-    .db 24
-    .db 04
-    .db A9
-    .db 5C
-    .db 9D
-    .db 25
-    .db 04
-    .db A9
-    .db FF
-    .db 9D
-    .db 69
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 12
-    .db 04
-    .db 9D
-    .db 13
-    .db 04
-    .db 9D
-    .db 8C
-    .db 05
-    .db A5
-    .db 10
-    .db 9D
-    .db 9E
-    .db 05
-    .db C6
-    .db 10
-    .db 10
-    .db D2
-    .db 20
-    .db 17
-    .db F3
-    .db B0
-    .db 24
-    .db A9
-    .db 5B
-    .db 9D
-    .db 24
-    .db 04
-    .db 9D
-    .db 25
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 56
-    .db 05
-    .db 9D
-    .db 57
-    .db 05
-    .db A5
-    .db 08
-    .db 9D
-    .db 9E
-    .db 05
-    .db A5
-    .db 09
-    .db 9D
-    .db B0
-    .db 05
-    .db A5
-    .db 0A
-    .db 9D
-    .db 9F
-    .db 05
-    .db A5
-    .db 0B
-    .db 9D
-    .db B1
-    .db 05
-    .db 60
-    .db A9
-    .db 00
-    .db 9D
-    .db 56
-    .db 05
-    .db A9
-    .db 7C
-    .db 9D
-    .db 7E
-    .db 04
-    .db A9
-    .db 98
-    .db 9D
-    .db A2
-    .db 04
-    .db A9
-    .db D8
-    .db 9D
-    .db C6
-    .db 04
-    .db 20
-    .db 88
-    .db F7
-    .db 20
-    .db 35
-    .db A4
-    .db A9
-    .db 06
-    .db 9D
-    .db 68
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 7A
-    .db 05
-    .db 9D
-    .db 36
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db B0
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db BC
-    .db 9E
-    .db 05
-    .db B9
-    .db 7F
-    .db A3
-    .db 9D
-    .db 8D
-    .db 05
-    .db B9
-    .db 83
-    .db A3
-    .db 9D
-    .db 5A
-    .db 04
-    .db B9
-    .db 87
-    .db A3
-    .db 9D
-    .db 49
-    .db 04
-    .db 20
-    .db 24
-    .db A4
-    .db BD
-    .db 9E
-    .db 05
-    .db 0A
-    .db 0A
-    .db A8
-    .db B9
-    .db 93
-    .db A3
-    .db 9D
-    .db FC
-    .db 04
-    .db B9
-    .db 94
-    .db A3
-    .db 9D
-    .db EA
-    .db 04
-    .db B9
-    .db 95
-    .db A3
-    .db 9D
-    .db 20
-    .db 05
-    .db B9
-    .db 96
-    .db A3
-    .db 9D
-    .db 0E
-    .db 05
-    .db BD
-    .db 9E
-    .db 05
-    .db 25
-    .db 47
-    .db 0A
-    .db 9D
-    .db D4
-    .db 05
-    .db FE
-    .db 12
-    .db 04
-    .db 60
+    LDA #$07
+    STA TMP_08
+    STA TMP_09
+    STA TMP_0A
+    STA TMP_0B
+    LDA #$03
+    STA TMP_10
+    JSR OBJ_SEARCH_UNUSED_PAIR_RET_CS_FAIL
+    BCS 0D:02E3
+    LDY TMP_10
+    TXA
+    STA TMP_08,Y
+    LDA #$5A
+    STA OBJ_ENABLED_STATE+MORE?[18],X
+    LDA #$5C
+    STA OBJ_ENABLED_STATE+MORE?+1,X
+    LDA #$FF
+    STA OBJECT_DATA_HEALTH?+1,X
+    LDA #$00
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    STA OBJ_SECONDARY_SWITCH?+1,X
+    STA OBJ_TERTIARY_SWITCH?[18],X
+    LDA TMP_10
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    DEC TMP_10
+    BPL 0D:02B5
+    JSR OBJ_SEARCH_UNUSED_PAIR_RET_CS_FAIL
+    BCS 0D:030C
+    LDA #$5B
+    STA OBJ_ENABLED_STATE+MORE?[18],X
+    STA OBJ_ENABLED_STATE+MORE?+1,X
+    LDA #$00
+    STA 556_OBJ_STATUS_FLAGS_A[18],X
+    STA 556_OBJ_STATUS_FLAGS_A+1,X
+    LDA TMP_08
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    LDA TMP_09
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X
+    LDA TMP_0A
+    STA 59E_OBJ_UNK/EXTRA_TIMER+1,X
+    LDA TMP_0B
+    STA STATUS_FLAGS_B/OBJ_FOCUS+1,X
+    RTS
+    LDA #$00
+    STA 556_OBJ_STATUS_FLAGS_A[18],X
+    LDA #$7C
+    STA OBJ_POS_X?[18],X
+    LDA #$98
+    STA OBJ_POS_X??[18],X
+    LDA #$D8
+    STA 4C6_OBJ_UNK[18],X
+    JSR MOVE_Y_FINALIZE
+    JSR 0D:0435
+    LDA #$06
+    STA OBJECT_DATA_HEALTH?[18],X
+    LDA #$00
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    STA OBJ_STATE_DIR_RELATED_C[18],X
+    LDA #$00
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    LDY 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    LDA 0D:037F,Y
+    STA OBJ_TERTIARY_SWITCH?+1,X
+    LDA 0D:0383,Y
+    STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
+    LDA 0D:0387,Y
+    STA OBJ_ANIM_HOLD_TIMER?+1,X
+    JSR 0D:0424
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    ASL A
+    ASL A
+    TAY
+    LDA 0D:0393,Y
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
+    LDA 0D:0394,Y
+    STA OBJ_POS_X_DELTA?[18],X
+    LDA 0D:0395,Y
+    STA 520_OBJ_POS_X_LARGE?[18],X
+    LDA 0D:0396,Y
+    STA 503_OBJ_POS_X_LARGEST?[18],X
+    LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X
+    AND TWO_PLAYERS_FLAG
+    ASL A
+    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
+    INC OBJ_SECONDARY_SWITCH?[18],X
+    RTS
     .db 0E
     .db 0B
     .db 07
@@ -1917,7 +1749,7 @@ L_0D:0878: ; 0D:0878, 0x01A878
 L_0D:0888: ; 0D:0888, 0x01A888
     LDA #$06
     STA OBJECT_DATA_EXTRA_B?[18],X
-    JSR L_0D:08D2
+    JSR RTN_MULTISWITCH
     LDA OBJECT_DATA_EXTRA_B?[18],X
     BEQ L_0D:08C8
     LDA OBJ_SECONDARY_SWITCH?[18],X
@@ -1943,9 +1775,9 @@ L_0D:08BC: ; 0D:08BC, 0x01A8BC
     BCC L_0D:08C8
     LDA #$2F
     JSR SND_BANKED_DISPATCH
-    JMP L_0D:0C29
+    JMP FOCUS_CHANGE
 L_0D:08C8: ; 0D:08C8, 0x01A8C8
-    JMP L_0D:10BE
+    JMP MISC_OBJ_END
 L_0D:08CB: ; 0D:08CB, 0x01A8CB
     .db 00
     .db 00
@@ -1954,39 +1786,23 @@ L_0D:08CB: ; 0D:08CB, 0x01A8CB
     .db 00
     .db 00
     .db 00
-L_0D:08D2: ; 0D:08D2, 0x01A8D2
-    .db BD
-    .db 12
-    .db 04
-    .db 0A
-    .db A8
-    .db B9
-    .db F2
-    .db A8
-    .db 85
-    .db 00
-    .db B9
-    .db F3
-    .db A8
-    .db 85
-    .db 01
-    .db BD
-    .db 8C
-    .db 05
-    .db 0A
-    .db A8
-    .db B1
-    .db 00
-    .db 85
-    .db 02
-    .db C8
-    .db B1
-    .db 00
-    .db 85
-    .db 03
-    .db 6C
-    .db 02
-    .db 00
+RTN_MULTISWITCH: ; 0D:08D2, 0x01A8D2
+    LDA OBJ_SECONDARY_SWITCH?[18],X
+    ASL A
+    TAY
+    LDA 0D:08F2,Y
+    STA TMP_00
+    LDA 0D:08F3,Y
+    STA TMP_01
+    LDA OBJ_TERTIARY_SWITCH?[18],X
+    ASL A
+    TAY
+    LDA [TMP_00],Y
+    STA TMP_02
+    INY
+    LDA [TMP_00],Y
+    STA TMP_03
+    JMP [TMP_02]
     .db FE
     .db A8
     .db 00
@@ -2646,13 +2462,13 @@ L_0D:0BAF: ; 0D:0BAF, 0x01ABAF
     CLC
     ADC OBJ_POS_X?[18],Y
     STA OBJ_POS_X?[18],X
-    LDA OBJ_POS_Y?[18],Y
-    STA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],Y
+    STA OBJ_POS_X??[18],X
     LDA #$D9
     STA 4C6_OBJ_UNK[18],X
     CLC
-    ADC OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y[18],X
+    ADC OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??[18],X
     LDA #$00
     STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
     STA OBJ_ANIMATION_DISPLAY[18],X
@@ -2728,157 +2544,76 @@ L_0D:0BFE: ; 0D:0BFE, 0x01ABFE
     .db 00
     .db 04
     .db 60
-L_0D:0C29: ; 0D:0C29, 0x01AC29
-    .db A5
-    .db 47
-    .db F0
-    .db 07
-    .db 20
-    .db 40
-    .db CC
-    .db 29
-    .db 01
-    .db F0
-    .db 03
-    .db 20
-    .db 41
-    .db F8
-    .db BD
-    .db 68
-    .db 05
-    .db D0
-    .db 03
-    .db 4C
-    .db CD
-    .db AC
-    .db C9
-    .db 18
-    .db B0
-    .db 0C
-    .db AD
-    .db 03
-    .db 07
-    .db 30
-    .db 07
-    .db 09
-    .db 80
-    .db 8D
-    .db 03
-    .db 07
-    .db D0
-    .db 03
-    .db 20
-    .db B1
-    .db B0
-    .db A9
-    .db 00
-    .db 9D
-    .db 7A
-    .db 05
-    .db AD
-    .db 07
-    .db 07
-    .db C9
-    .db 03
-    .db F0
-    .db 29
-    .db C9
-    .db 02
-    .db F0
-    .db 25
-    .db A9
-    .db 04
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 12
-    .db 9D
-    .db 48
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db CE
-    .db 0D
-    .db 07
-    .db 10
-    .db 11
-    .db A5
-    .db 23
-    .db 29
-    .db 03
-    .db 09
-    .db 01
-    .db 8D
-    .db 0D
-    .db 07
-    .db A9
-    .db 00
-    .db 9D
-    .db 9E
-    .db 05
-    .db 9D
-    .db D8
-    .db 04
-    .db 60
-    .db A9
-    .db 0A
-    .db 9D
-    .db C2
-    .db 05
-    .db A9
-    .db 68
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db A8
-    .db 85
-    .db 31
-    .db A9
-    .db AB
-    .db 85
-    .db 32
-    .db 4C
-    .db AF
-    .db AC
-    .db A9
-    .db 0A
-    .db 9D
-    .db C2
-    .db 05
-    .db A9
-    .db 7C
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db AC
-    .db 85
-    .db 31
-    .db A9
-    .db AF
-    .db 85
-    .db 32
-    .db DE
-    .db 48
-    .db 04
-    .db D0
-    .db D3
-    .db A9
-    .db 0A
-    .db 9D
-    .db 48
-    .db 04
-    .db AD
-    .db 07
-    .db 07
-    .db 20
-    .db 98
-    .db CC
+FOCUS_CHANGE: ; 0D:0C29, 0x01AC29
+    LDA TWO_PLAYERS_FLAG ; Load 2P flag.
+    BEQ 1P_GAME ; 1P, goto.
+    JSR RANDOMNESS? ; Do.
+    AND #$01 ; Test bit.
+    BEQ BIT_UNSET ; Unset, goto.
+1P_GAME: ; 0D:0C34, 0x01AC34
+    JSR XOBJ_WRITE_PLAYER_FOCUS ; Focus.
+BIT_UNSET: ; 0D:0C37, 0x01AC37
+    LDA OBJECT_DATA_HEALTH?[18],X ; Load
+    BNE VAL_NE_ZERO ; != 0, goto.
+    JMP DEATH_HELPER ; No health, goto.
+VAL_NE_ZERO: ; 0D:0C3F, 0x01AC3F
+    CMP #$18 ; If _ #$18
+    BCS DO_UNK ; >=, goto.
+    LDA ARR_SPRITE_OBJ_TIMER?+1 ; Load
+    BMI DO_UNK ; If negative, goto.
+    ORA #$80 ; Set negative.
+    STA ARR_SPRITE_OBJ_TIMER?+1 ; Store back.
+    BNE SKIP_RTN ; Always taken.
+DO_UNK: ; 0D:0C4F, 0x01AC4F
+    JSR ATTRS_SET_UNSURE ; Do.
+SKIP_RTN: ; 0D:0C52, 0x01AC52
+    LDA #$00
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Clear attr.
+    LDA 707_UNK ; Load
+    CMP #$03 ; If _ #$03
+    BEQ RTS ; ==, leave.
+    CMP #$02 ; If _ #$02
+    BEQ RTS ; ==, leave.
+    LDA #$04
+    STA OBJ_SECONDARY_SWITCH?[18],X ; Set secondary.
+    LDA #$12
+    STA OBJ_ANIM_HOLD_TIMER?[18],X ; Set hold.
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X ; Set tert.
+    DEC 70D_UNK ; --
+    BPL RTS ; If positive, leave.
+    LDA RANDOM_VALS?[2] ; Load rand.
+    AND #$03 ; Keep bits.
+    ORA #$01 ; Set at least 0x01.
+    STA 70D_UNK ; Store to.
+    LDA #$00
+    STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Clear attrs.
+    STA 4D8_OBJ_UNK[18],X ; Clear.
+RTS: ; 0D:0C87, 0x01AC87
+    RTS ; Leave.
+    LDA #$0A
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    LDA #$68
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$A8
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$AB
+    STA ZP_R2-R5_BANK_VALUES+3
+    JMP 0D:0CAF
+    LDA #$0A
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    LDA #$7C
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$AC
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$AF
+    STA ZP_R2-R5_BANK_VALUES+3
+    DEC OBJ_ANIM_HOLD_TIMER?[18],X
+    BNE RTS
+    LDA #$0A
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA 707_UNK
+    JSR SWITCH_CODE_PTRS_PAST_JSR
     .db A3
     .db BE
     .db A3
@@ -2893,175 +2628,98 @@ L_0D:0C29: ; 0D:0C29, 0x01AC29
     .db BE
     .db A3
     .db BE
-    .db A9
-    .db 01
-    .db 8D
-    .db DB
-    .db 03
-    .db 20
-    .db 28
-    .db DB
-    .db AD
-    .db 07
-    .db 07
-    .db C9
-    .db 03
-    .db F0
-    .db 05
-    .db A9
-    .db 7E
-    .db 20
-    .db 52
-    .db DB
-    .db A9
-    .db 05
-    .db 9D
-    .db 12
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 8C
-    .db 05
-    .db A9
-    .db 04
-    .db 9D
-    .db 90
-    .db 04
-    .db A9
-    .db 96
-    .db 9D
-    .db 48
-    .db 04
-    .db A9
-    .db 00
-    .db 8D
-    .db 03
-    .db 07
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 9D
-    .db 36
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db B0
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db AD
-    .db 07
-    .db 07
-    .db 0A
-    .db 0A
-    .db 0A
-    .db BC
-    .db 68
-    .db 05
-    .db D0
-    .db 02
-    .db 09
-    .db 04
-    .db A8
-    .db B9
-    .db 73
-    .db AD
-    .db 20
-    .db 2F
-    .db AD
-    .db B9
-    .db 74
-    .db AD
-    .db 9D
-    .db 00
-    .db 04
-    .db B9
-    .db 75
-    .db AD
-    .db 85
-    .db 31
-    .db B9
-    .db 76
-    .db AD
-    .db 85
-    .db 32
-    .db 60
-    .db 85
-    .db 00
-    .db 8E
-    .db 00
-    .db 07
-    .db A2
-    .db 07
-    .db BD
-    .db 24
-    .db 04
-    .db F0
-    .db 07
-    .db C5
-    .db 00
-    .db F0
-    .db 03
-    .db 20
-    .db D1
-    .db F4
-    .db E8
-    .db E0
-    .db 12
-    .db 90
-    .db EF
-    .db A2
-    .db 00
-    .db BD
-    .db 12
-    .db 04
-    .db 29
-    .db 04
-    .db F0
-    .db 19
-    .db BD
-    .db 7A
-    .db 05
-    .db C9
-    .db 02
-    .db D0
-    .db 12
-    .db BD
-    .db 12
-    .db 04
-    .db 29
-    .db FB
-    .db 9D
-    .db 12
-    .db 04
-    .db 8A
-    .db 4A
-    .db AA
-    .db A9
-    .db 00
-    .db 95
-    .db 85
-    .db 8A
-    .db 0A
-    .db AA
-    .db E8
-    .db E8
-    .db E0
-    .db 04
-    .db 90
-    .db DA
-    .db AE
-    .db 00
-    .db 07
-    .db 60
+DEATH_HELPER: ; 0D:0CCD, 0x01ACCD
+    LDA #$01
+    STA 3DB_UNKNOWN ; Set.
+    JSR SOUND_RESET/INIT_RTN? ; Stop.
+    LDA 707_UNK ; Load
+    CMP #$03 ; If _ #$03
+    BEQ SKIP_SOUND ; ==, goto.
+    LDA #$7E
+    JSR SND_BANKED_DISPATCH ; Play sound.
+SKIP_SOUND: ; 0D:0CE1, 0x01ACE1
+    LDA #$05
+    STA OBJ_SECONDARY_SWITCH?[18],X ; Move attrs.
+    LDA #$00
+    STA OBJ_TERTIARY_SWITCH?[18],X ; Clear tert.
+    LDA #$04
+    STA OBJ_POS_X_SUBPIXEL?[18],X ; Set attr.
+    LDA #$96
+    STA OBJ_ANIM_HOLD_TIMER?[18],X ; Set attr.
+    LDA #$00
+    STA ARR_SPRITE_OBJ_TIMER?+1 ; Clear.
+    LDA OBJ_STATE_DIR_RELATED_C[18],X ; Load
+    AND #$FC ; Keep 1111.1100
+    STA OBJ_STATE_DIR_RELATED_C[18],X ; Store back.
+    LDA #$00
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Clear.
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; Clear.
+GFX_MOD_UNK: ; 0D:0D0A, 0x01AD0A
+    LDA 707_UNK ; Load
+    ASL A ; << 3, *8.
+    ASL A
+    ASL A
+    LDY OBJECT_DATA_HEALTH?[18],X ; Load P1 attr.
+    BNE P1_HAS_HEALTH
+    ORA #$04 ; Set if P1 doesn't have health.
+P1_HAS_HEALTH: ; 0D:0D17, 0x01AD17
+    TAY ; To Y index.
+    LDA DATA_UNK_A,Y ; Load data from index.
+    JSR INIT_OBJS_PLAYER_ATTRS_UNK ; Do.
+    LDA GFX_ANIM_DATA,Y
+    STA OBJ_ANIMATION_DISPLAY[18],X ; Set anim disp.
+    LDA GFX_DATA_A,Y
+    STA ZP_R2-R5_BANK_VALUES+2 ; Set gfx.
+    LDA GFX_DATA_B,Y
+    STA ZP_R2-R5_BANK_VALUES+3
+    RTS ; Leave.
+INIT_OBJS_PLAYER_ATTRS_UNK: ; 0D:0D2F, 0x01AD2F
+    STA TMP_00 ; Val to TMP.
+    STX OBJ_HANDLER_FOCUS_SCRATCHPAD ; Save obj to scratch.
+    LDX #$07 ; Obj val.
+LOOP: ; 0D:0D36, 0x01AD36
+    LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load obj state.
+    BEQ NEXT_ITER ; Not enabled, next.
+    CMP TMP_00 ; If _ #$00
+    BEQ NEXT_ITER ; State/enabled same, skip.
+    JSR INIT_OBJECT[X]_DATA_FULL ; Init obj.
+NEXT_ITER: ; 0D:0D42, 0x01AD42
+    INX ; Next obj.
+    CPX #$12 ; If _ Obj #$18
+    BCC LOOP ; <, goto.
+    LDX #$00 ; Obj.
+LOOP_PLAYERS: ; 0D:0D49, 0x01AD49
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load from player.
+    AND #$04 ; Test bit.
+    BEQ INC_PLAYER_INDEX ; Not set, next player.
+    LDA OBJECT_DATA_EXTRA_B?[18],X ; Load
+    CMP #$02 ; If _ #$02
+    BNE INC_PLAYER_INDEX ; !=, next player.
+    LDA OBJ_SECONDARY_SWITCH?[18],X ; Load from player.
+    AND #$FB ; Keep 1111.0011
+    STA OBJ_SECONDARY_SWITCH?[18],X ; Store back.
+    TXA ; Player to A.
+    LSR A ; Shift, turn to 0-1 index instead of 0x00/0x02.
+    TAX ; Back to index.
+    LDA #$00
+    STA 85_PLAYER_UNK?[2],X ; Clear player custom attr.
+    TXA ; Back to A.
+    ASL A ; Turn it back.
+    TAX ; Back to index.
+INC_PLAYER_INDEX: ; 0D:0D69, 0x01AD69
+    INX ; += 2, next player obj data index.
+    INX
+    CPX #$04 ; If _ #$04
+    BCC LOOP_PLAYERS ; <, loop, do P2.
+    LDX OBJ_HANDLER_FOCUS_SCRATCHPAD ; Load original object.
+    RTS
+DATA_UNK_A: ; 0D:0D73, 0x01AD73
     .db 5E
+GFX_ANIM_DATA: ; 0D:0D74, 0x01AD74
     .db 68
+GFX_DATA_A: ; 0D:0D75, 0x01AD75
     .db A8
+GFX_DATA_B: ; 0D:0D76, 0x01AD76
     .db AB
     .db 5E
     .db 68
@@ -3091,65 +2749,33 @@ L_0D:0C29: ; 0D:0C29, 0x01AC29
     .db 05
     .db 2C
     .db 2D
-    .db A9
-    .db 00
-    .db 9D
-    .db 7A
-    .db 05
-    .db AD
-    .db 07
-    .db 07
-    .db C9
-    .db 03
-    .db F0
-    .db 1C
-    .db C9
-    .db 01
-    .db D0
-    .db 13
-    .db BD
-    .db B0
-    .db 05
-    .db D0
-    .db 0E
-    .db A9
-    .db 61
-    .db 20
-    .db D4
-    .db EE
-    .db A5
-    .db 87
-    .db D0
-    .db 05
-    .db A9
-    .db 01
-    .db 9D
-    .db B0
-    .db 05
-    .db DE
-    .db 48
-    .db 04
-    .db D0
-    .db 70
-    .db FE
-    .db 8C
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db B0
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db 20
-    .db 0A
-    .db AD
-    .db A9
-    .db 5B
-    .db 4C
-    .db 52
-    .db DB
+RTN_A: ; 0D:0D93, 0x01AD93
+    LDA #$00
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Set attr.
+    LDA 707_UNK ; Load
+    CMP #$03 ; If _ #$03
+    BEQ EXTENDED ; ==, goto.
+    CMP #$01 ; If _ #$01
+    BNE HOLD_EXTEND ; !=, goto.
+    LDA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Load from Xobj.
+    BNE HOLD_EXTEND ; != 0, goto.
+    LDA #$61
+    JSR CROSS_BANK_INTERFACE_UNKNOWN ; Do rtn.
+    LDA 87_UNK ; Load from 0x87.
+    BNE HOLD_EXTEND ; != 0, goto.
+    LDA #$01
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Set attr.
+HOLD_EXTEND: ; 0D:0DB6, 0x01ADB6
+    DEC OBJ_ANIM_HOLD_TIMER?[18],X ; --
+    BNE RTS ; != 0, leave.
+EXTENDED: ; 0D:0DBB, 0x01ADBB
+    INC OBJ_TERTIARY_SWITCH?[18],X ; Move tert.
+    LDA #$00
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Clear attrs.
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    JSR GFX_MOD_UNK ; Do.
+    LDA #$5B
+    JMP SND_BANKED_DISPATCH ; Play sound, abuse RTS.
     .db 8A
     .db 48
     .db 98
@@ -3178,355 +2804,164 @@ L_0D:0C29: ; 0D:0C29, 0x01AC29
     .db 68
     .db AA
     .db 60
-    .db A9
-    .db 00
-    .db 9D
-    .db 7A
-    .db 05
-    .db DE
-    .db C2
-    .db 05
-    .db 10
-    .db 37
-    .db BC
-    .db B0
-    .db 05
-    .db B9
-    .db 46
-    .db AF
-    .db C9
-    .db 80
-    .db D0
-    .db 03
-    .db 4C
-    .db 85
-    .db AE
-    .db BD
-    .db 7E
-    .db 04
-    .db 85
-    .db 00
-    .db BD
-    .db A2
-    .db 04
-    .db 85
-    .db 01
-    .db AC
-    .db 07
-    .db 07
-    .db A9
-    .db 00
-    .db C0
-    .db 03
-    .db D0
-    .db 03
-    .db BD
-    .db C6
-    .db 04
-    .db 85
-    .db 02
-    .db 20
-    .db CE
-    .db AD
-    .db B0
-    .db 05
-    .db 20
-    .db 20
-    .db B1
-    .db B0
-    .db 09
-    .db AE
-    .db 00
-    .db 07
-    .db A9
-    .db 00
-    .db 9D
-    .db C2
-    .db 05
-    .db 60
-    .db AC
-    .db 00
-    .db 07
-    .db B9
-    .db B0
-    .db 05
-    .db A8
+RTN_B: ; 0D:0DEA, 0x01ADEA
+    LDA #$00
+    STA OBJECT_DATA_EXTRA_B?[18],X ; Clear
+    DEC 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; --
+    BPL RTS ; If positive, leave.
+    LDY STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Get attr.
+    LDA DATA_A,Y ; Load data.
+    CMP #$80 ; If _ #$80
+    BNE VAL_NE_0x80 ; !=, goto.
+    JMP 0D:0E85 ; Goto.
+VAL_NE_0x80: ; 0D:0E01, 0x01AE01
+    LDA OBJ_POS_X?[18],X ; Load
+    STA TMP_00 ; Store to.
+    LDA OBJ_POS_X??[18],X ; Load
+    STA TMP_01 ; Store to.
+    LDY 707_UNK ; Y from.
+    LDA #$00 ; Load A.
+    CPY #$03 ; If Y _ #$03
+    BNE NOT_0x03 ; !=, goto.
+    LDA 4C6_OBJ_UNK[18],X ; A from here if is.
+NOT_0x03: ; 0D:0E17, 0x01AE17
+    STA TMP_02 ; A to.
+    JSR 0D:0DCE ; Do rtn.
+    BCS EXIT_RESTORE/CLEAR ; Ret CS, goto.
+    JSR FIND_ANY_PAIR_UNUSED ; Do.
+    BCS XOBJ_NEW_RECEIVED ; Ret CS, goto.
+EXIT_RESTORE/CLEAR: ; 0D:0E23, 0x01AE23
+    LDX OBJ_HANDLER_FOCUS_SCRATCHPAD ; Restore Xobj.
+    LDA #$00
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; Clear.
+RTS: ; 0D:0E2B, 0x01AE2B
+    RTS ; Leave.
+XOBJ_NEW_RECEIVED: ; 0D:0E2C, 0x01AE2C
+    LDY OBJ_HANDLER_FOCUS_SCRATCHPAD ; Original obj in Y.
+    LDA STATUS_FLAGS_B/OBJ_FOCUS[18],Y ; Focus from original.
+    TAY ; Focus obj to Y.
+    CLC ; Prep add.
+    LDA DATA_A,Y ; Load from focus.
+    ADC TMP_00 ; Add with.
+    STA OBJ_POS_X?[18],X ; Store to new.
+    ROR A ; >> 1, /2 + 0x00/0x80.
+    EOR DATA_A,Y ; Eor with.
+    BMI VAL_NEGATIVE ; Negative, goto.
+    CLC ; Prep add.
+    LDA DATA_B,Y ; Load
+    ADC TMP_02 ; Add with.
+    STA 4C6_OBJ_UNK[18],X ; Store to new.
+    INC TMP_01 ; ++
+    LDA TMP_01 ; Load
+    STA OBJ_POS_X??[18],X ; Store to new.
+    CLC ; Prep add.
+    ADC 4C6_OBJ_UNK[18],X ; Add with.
+    STA OBJ_POS_Y??[18],X ; Store to new.
+    ROR A ; >> 1, /2 + 0x00/0x80
+    EOR DATA_B,Y ; Invert bits.
+    BMI VAL_NEGATIVE ; If neg, goto.
+    LDA #$61
+    STA OBJ_ENABLED_STATE+MORE?[18],X ; Set state.
+    LDA #$01
+    STA OBJ_ANIMATION_DISPLAY[18],X ; Set anim.
+    LDA #$00
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; Clear attrs.
+    STA OBJ_STATE_DIR_RELATED_C[18],X
+    LDA #$02
+    STA OBJ_ANIM_HOLD_TIMER?[18],X ; Set hold.
+VAL_NEGATIVE: ; 0D:0E76, 0x01AE76
+    INY ; Next original.
+    INY
+    TYA ; To A.
+    LDX OBJ_HANDLER_FOCUS_SCRATCHPAD ; Restore original Xobj.
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Store
+    LDA #$05
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; Set attr.
+    RTS ; Leave.
+    DEC OBJ_POS_X_SUBPIXEL?[18],X
+    LDA OBJ_POS_X_SUBPIXEL?[18],X
+    CMP #$02
+    BCS 0D:0EF8
+    LDY 707_UNK
+    CPY #$03
+    BNE 0D:0EA2
+    CMP #$01
+    BNE 0D:0EF8
+    LDA #$00
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    JMP 0D:0EF8
+    CPY #$02
+    BEQ 0D:0EC8
+    EOR #$01
+    CLC
+    ADC #$69
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$AA
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$AB
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDA #$00
+    STA ARR_SPRITE_OBJ_TIMER?+1
+    LDA OBJ_STATE_DIR_RELATED_C[18],X
+    AND #$FC
+    ORA #$02
+    STA OBJ_STATE_DIR_RELATED_C[18],X
+    JMP 0D:0EF8
+    TAY
+    BNE 0D:0EF8
+    LDA #$E0
+    CLC
+    ADC OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??[18],X
+    LDA #$95
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$B3
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDA #$6C
+    STA OBJ_ENABLED_STATE+MORE?+1,X
+    LDA OBJ_POS_X?[18],X
+    STA OBJ_POS_X?+1,X
+    LDA OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??+1,X
+    LDA #$00
+    STA OBJ_STATE_DIR_RELATED_C+1,X
+    LDA #$04
+    STA OBJ_ANIMATION_DISPLAY+1,X
+    LDA OBJ_POS_X_SUBPIXEL?[18],X
+    BEQ 0D:0F08
+    LDA #$00
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    JMP RTN_B
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    LDA #$00
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    LDA 707_UNK
+    CMP #$03
+    BEQ 0D:0F40
+    CMP #$02
+    BNE 0D:0F3F
+    LDA #$FD
+    STA OBJ_POS_X??[18],X
+    LDA #$00
+    STA 4B4_OBJ_SPEED?[18],X
+    STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
+    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
+    LDA #$28
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X
+    LDA #$07
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    LDA #$FF
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA #$51
+    JSR SND_BANKED_DISPATCH
+    RTS
+    LDA #$20
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    RTS
+DATA_A: ; 0D:0F46, 0x01AF46
     .db 18
-    .db B9
-    .db 46
-    .db AF
-    .db 65
-    .db 00
-    .db 9D
-    .db 7E
-    .db 04
-    .db 6A
-    .db 59
-    .db 46
-    .db AF
-    .db 30
-    .db 34
-    .db 18
-    .db B9
-    .db 47
-    .db AF
-    .db 65
-    .db 02
-    .db 9D
-    .db C6
-    .db 04
-    .db E6
-    .db 01
-    .db A5
-    .db 01
-    .db 9D
-    .db A2
-    .db 04
-    .db 18
-    .db 7D
-    .db C6
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db 6A
-    .db 59
-    .db 47
-    .db AF
-    .db 30
-    .db 17
-    .db A9
-    .db 61
-    .db 9D
-    .db 24
-    .db 04
-    .db A9
-    .db 01
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db C2
-    .db 05
-    .db 9D
-    .db 36
-    .db 04
-    .db A9
-    .db 02
-    .db 9D
-    .db 48
-    .db 04
-    .db C8
-    .db C8
-    .db 98
-    .db AE
-    .db 00
-    .db 07
-    .db 9D
-    .db B0
-    .db 05
-    .db A9
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db 60
-    .db DE
-    .db 90
-    .db 04
-    .db BD
-    .db 90
-    .db 04
-    .db C9
-    .db 02
-    .db B0
-    .db 69
-    .db AC
-    .db 07
-    .db 07
-    .db C0
-    .db 03
-    .db D0
-    .db 0C
-    .db C9
-    .db 01
-    .db D0
-    .db 5E
-    .db A9
-    .db 00
-    .db 9D
-    .db 00
-    .db 04
-    .db 4C
-    .db F8
-    .db AE
-    .db C0
-    .db 02
-    .db F0
-    .db 22
-    .db 49
-    .db 01
-    .db 18
-    .db 69
-    .db 69
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db AA
-    .db 85
-    .db 31
-    .db A9
-    .db AB
-    .db 85
-    .db 32
-    .db A9
-    .db 00
-    .db 8D
-    .db 03
-    .db 07
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 09
-    .db 02
-    .db 9D
-    .db 36
-    .db 04
-    .db 4C
-    .db F8
-    .db AE
-    .db A8
-    .db D0
-    .db 2D
-    .db A9
-    .db E0
-    .db 18
-    .db 7D
-    .db A2
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db A9
-    .db 95
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db B3
-    .db 85
-    .db 32
-    .db A9
-    .db 6C
-    .db 9D
-    .db 25
-    .db 04
-    .db BD
-    .db 7E
-    .db 04
-    .db 9D
-    .db 7F
-    .db 04
-    .db BD
-    .db A2
-    .db 04
-    .db 9D
-    .db 6D
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 37
-    .db 04
-    .db A9
-    .db 04
-    .db 9D
-    .db 01
-    .db 04
-    .db BD
-    .db 90
-    .db 04
-    .db F0
-    .db 0B
-    .db A9
-    .db 00
-    .db 9D
-    .db B0
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db 4C
-    .db EA
-    .db AD
-    .db FE
-    .db 8C
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db C2
-    .db 05
-    .db AD
-    .db 07
-    .db 07
-    .db C9
-    .db 03
-    .db F0
-    .db 29
-    .db C9
-    .db 02
-    .db D0
-    .db 24
-    .db A9
-    .db FD
-    .db 9D
-    .db A2
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db B4
-    .db 04
-    .db 9D
-    .db 5A
-    .db 04
-    .db 9D
-    .db D4
-    .db 05
-    .db A9
-    .db 28
-    .db 9D
-    .db B0
-    .db 05
-    .db A9
-    .db 07
-    .db 9D
-    .db C2
-    .db 05
-    .db A9
-    .db FF
-    .db 9D
-    .db 48
-    .db 04
-    .db A9
-    .db 51
-    .db 20
-    .db 52
-    .db DB
-    .db 60
-    .db A9
-    .db 20
-    .db 9D
-    .db 48
-    .db 04
-    .db 60
-    .db 18
+DATA_B: ; 0D:0F47, 0x01AF47
     .db E8
     .db 10
     .db E0
@@ -3548,414 +2983,182 @@ L_0D:0C29: ; 0D:0C29, 0x01AC29
     .db F0
     .db 80
     .db 80
-    .db BD
-    .db D4
-    .db 05
-    .db F0
-    .db 03
-    .db 4C
-    .db 69
-    .db B0
-    .db BD
-    .db 48
-    .db 04
-    .db 30
-    .db 12
-    .db DE
-    .db 48
-    .db 04
-    .db 10
-    .db 0D
-    .db A9
-    .db 0A
-    .db 9D
-    .db 48
-    .db 04
-    .db BD
-    .db 00
-    .db 04
-    .db 49
-    .db 01
-    .db 9D
-    .db 00
-    .db 04
-    .db BD
-    .db 5A
-    .db 04
-    .db F0
-    .db 03
-    .db 4C
-    .db 17
-    .db B0
-    .db A9
-    .db 00
-    .db 85
-    .db 07
-    .db BD
-    .db B0
-    .db 05
-    .db 10
-    .db 02
-    .db C6
-    .db 07
-    .db 18
-    .db 7D
-    .db B4
-    .db 04
-    .db 9D
-    .db B4
-    .db 04
-    .db A5
-    .db 07
-    .db 7D
-    .db A2
-    .db 04
-    .db 9D
-    .db A2
-    .db 04
-    .db 18
-    .db 7D
-    .db 6C
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db BD
-    .db C2
-    .db 05
-    .db D0
-    .db 24
-    .db BD
-    .db A2
-    .db 04
-    .db D0
-    .db 1F
-    .db FE
-    .db D4
-    .db 05
-    .db A9
-    .db 98
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db FE
-    .db 9D
-    .db A2
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db B4
-    .db 04
-    .db 9D
-    .db 5A
-    .db 04
-    .db A9
-    .db 06
-    .db 9D
-    .db 48
-    .db 04
-    .db A9
-    .db 52
-    .db 4C
-    .db 52
-    .db DB
-    .db BD
-    .db B0
-    .db 05
-    .db 30
-    .db 12
-    .db BD
-    .db A2
-    .db 04
-    .db 30
-    .db 3F
-    .db C9
-    .db 03
-    .db 90
-    .db 3B
-    .db DE
-    .db 6C
-    .db 04
-    .db DE
-    .db 6C
-    .db 04
-    .db 4C
-    .db ED
-    .db AF
-    .db BD
-    .db A2
-    .db 04
-    .db 10
-    .db 2D
-    .db C9
-    .db FE
-    .db B0
-    .db 29
-    .db A9
-    .db 00
-    .db 38
-    .db FD
-    .db B0
-    .db 05
-    .db 9D
-    .db B0
-    .db 05
-    .db DE
-    .db C2
-    .db 05
-    .db 30
-    .db 0A
-    .db BD
-    .db C2
-    .db 05
-    .db C9
-    .db 03
-    .db D0
-    .db 14
-    .db 4C
-    .db 1B
-    .db B0
-    .db FE
-    .db D4
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 48
-    .db 04
-    .db 9D
-    .db 5A
-    .db 04
-    .db 9D
-    .db B0
-    .db 05
-    .db 9D
-    .db C2
-    .db 05
-    .db 60
-    .db DE
-    .db 5A
-    .db 04
-    .db 60
-    .db A9
-    .db 59
-    .db 85
-    .db 31
-    .db A9
-    .db 29
-    .db 85
-    .db 32
-    .db A9
-    .db 96
-    .db 9D
-    .db 00
-    .db 04
-    .db A9
-    .db 0A
-    .db 9D
-    .db 48
-    .db 04
-    .db A9
-    .db C8
-    .db 9D
-    .db 5A
-    .db 04
-    .db 8E
-    .db 00
-    .db 07
-    .db BD
-    .db 7E
-    .db 04
-    .db 85
-    .db 00
-    .db BD
-    .db 6C
-    .db 04
-    .db 85
-    .db 01
-    .db 20
-    .db 20
-    .db B1
-    .db 90
-    .db 21
-    .db A9
-    .db 6B
-    .db 9D
-    .db 24
-    .db 04
-    .db A9
-    .db 00
-    .db 9D
-    .db 36
-    .db 04
-    .db A5
-    .db 00
-    .db 9D
-    .db 7E
-    .db 04
-    .db A5
-    .db 01
-    .db 38
-    .db E9
-    .db 08
-    .db 9D
-    .db 6C
-    .db 04
-    .db A9
-    .db C8
-    .db 9D
-    .db 48
-    .db 04
-    .db A9
-    .db 9A
-    .db 9D
-    .db 00
-    .db 04
-    .db AE
-    .db 00
-    .db 07
-    .db 60
-    .db DE
-    .db 48
-    .db 04
-    .db 10
-    .db 0D
-    .db A9
-    .db 06
-    .db 9D
-    .db 48
-    .db 04
-    .db BD
-    .db 00
-    .db 04
-    .db 49
-    .db 01
-    .db 9D
-    .db 00
-    .db 04
-    .db FE
-    .db 5A
-    .db 04
-    .db BD
-    .db 5A
-    .db 04
-    .db C9
-    .db 1A
-    .db 90
-    .db 2B
-    .db 18
-    .db A9
-    .db A0
-    .db 7D
-    .db B4
-    .db 04
-    .db 9D
-    .db B4
-    .db 04
-    .db B0
-    .db 0F
-    .db DE
-    .db A2
-    .db 04
-    .db BD
-    .db A2
-    .db 04
-    .db C9
-    .db FD
-    .db B0
-    .db 05
-    .db A9
-    .db FD
-    .db 9D
-    .db A2
-    .db 04
-    .db 18
-    .db BD
-    .db A2
-    .db 04
-    .db 7D
-    .db 6C
-    .db 04
-    .db 9D
-    .db 6C
-    .db 04
-    .db C9
-    .db 05
-    .db B0
-    .db 03
-    .db FE
-    .db 8C
-    .db 05
-    .db 60
-    .db AD
-    .db 03
-    .db 07
-    .db 09
-    .db 01
-    .db 8D
-    .db 03
-    .db 07
-    .db A9
-    .db 1C
-    .db 8D
-    .db 04
-    .db 07
-L_0D:10BE: ; 0D:10BE, 0x01B0BE
-    .db AD
-    .db 03
-    .db 07
-    .db F0
-    .db 1B
-    .db CE
-    .db 04
-    .db 07
-    .db F0
-    .db 17
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 85
-    .db 00
-    .db A5
-    .db 1B
-    .db 4A
-    .db 4A
-    .db 29
-    .db 03
-    .db A8
-    .db B9
-    .db F2
-    .db B0
-    .db 05
-    .db 00
-    .db 9D
-    .db 36
-    .db 04
-    .db 60
-    .db AD
-    .db 03
-    .db 07
-    .db 29
-    .db 80
-    .db 8D
-    .db 03
-    .db 07
-    .db 30
-    .db DF
-    .db BD
-    .db 36
-    .db 04
-    .db 29
-    .db FC
-    .db 9D
-    .db 36
-    .db 04
-L_0D:10F1: ; 0D:10F1, 0x01B0F1
-    .db 60
+    LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
+    BEQ 0D:0F64
+    JMP 0D:1069
+    LDA OBJ_ANIM_HOLD_TIMER?[18],X
+    BMI 0D:0F7B
+    DEC OBJ_ANIM_HOLD_TIMER?[18],X
+    BPL 0D:0F7B
+    LDA #$0A
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA OBJ_ANIMATION_DISPLAY[18],X
+    EOR #$01
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
+    BEQ 0D:0F83
+    JMP 0D:1017
+    LDA #$00
+    STA TMP_07
+    LDA STATUS_FLAGS_B/OBJ_FOCUS[18],X
+    BPL 0D:0F8E
+    DEC TMP_07
+    CLC
+    ADC 4B4_OBJ_SPEED?[18],X
+    STA 4B4_OBJ_SPEED?[18],X
+    LDA TMP_07
+    ADC OBJ_POS_X??[18],X
+    STA OBJ_POS_X??[18],X
+    CLC
+    ADC OBJ_POS_Y??[18],X
+    STA OBJ_POS_Y??[18],X
+    LDA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    BNE 0D:0FCD
+    LDA OBJ_POS_X??[18],X
+    BNE 0D:0FCD
+    INC 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
+    LDA #$98
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$FE
+    STA OBJ_POS_X??[18],X
+    LDA #$00
+    STA 4B4_OBJ_SPEED?[18],X
+    STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
+    LDA #$06
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA #$52
+    JMP SND_BANKED_DISPATCH
+    LDA STATUS_FLAGS_B/OBJ_FOCUS[18],X
+    BMI 0D:0FE4
+    LDA OBJ_POS_X??[18],X
+    BMI 0D:1016
+    CMP #$03
+    BCC 0D:1016
+    DEC OBJ_POS_Y??[18],X
+    DEC OBJ_POS_Y??[18],X
+    JMP 0D:0FED
+    LDA OBJ_POS_X??[18],X
+    BPL 0D:1016
+    CMP #$FE
+    BCS 0D:1016
+    LDA #$00
+    SEC
+    SBC STATUS_FLAGS_B/OBJ_FOCUS[18],X
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X
+    DEC 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    BMI 0D:1005
+    LDA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    CMP #$03
+    BNE 0D:1016
+    JMP 0D:101B
+    INC 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
+    LDA #$00
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
+    STA STATUS_FLAGS_B/OBJ_FOCUS[18],X
+    STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
+    RTS
+    DEC 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
+    RTS
+    LDA #$59
+    STA ZP_R2-R5_BANK_VALUES+2
+    LDA #$29
+    STA ZP_R2-R5_BANK_VALUES+3
+    LDA #$96
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDA #$0A
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA #$C8
+    STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
+    STX OBJ_HANDLER_FOCUS_SCRATCHPAD
+    LDA OBJ_POS_X?[18],X
+    STA TMP_00
+    LDA OBJ_POS_Y??[18],X
+    STA TMP_01
+    JSR FIND_ANY_PAIR_UNUSED
+    BCC 0D:1065
+    LDA #$6B
+    STA OBJ_ENABLED_STATE+MORE?[18],X
+    LDA #$00
+    STA OBJ_STATE_DIR_RELATED_C[18],X
+    LDA TMP_00
+    STA OBJ_POS_X?[18],X
+    LDA TMP_01
+    SEC
+    SBC #$08
+    STA OBJ_POS_Y??[18],X
+    LDA #$C8
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA #$9A
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    LDX OBJ_HANDLER_FOCUS_SCRATCHPAD
+    RTS
+    DEC OBJ_ANIM_HOLD_TIMER?[18],X
+    BPL 0D:107B
+    LDA #$06
+    STA OBJ_ANIM_HOLD_TIMER?[18],X
+    LDA OBJ_ANIMATION_DISPLAY[18],X
+    EOR #$01
+    STA OBJ_ANIMATION_DISPLAY[18],X
+    INC 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
+    LDA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
+    CMP #$1A
+    BCC 0D:10B0
+    CLC
+    LDA #$A0
+    ADC 4B4_OBJ_SPEED?[18],X
+    STA 4B4_OBJ_SPEED?[18],X
+    BCS 0D:109F
+    DEC OBJ_POS_X??[18],X
+    LDA OBJ_POS_X??[18],X
+    CMP #$FD
+    BCS 0D:109F
+    LDA #$FD
+    STA OBJ_POS_X??[18],X
+    CLC
+    LDA OBJ_POS_X??[18],X
+    ADC OBJ_POS_Y??[18],X
+    STA OBJ_POS_Y??[18],X
+    CMP #$05
+    BCS 0D:10B0
+    INC OBJ_TERTIARY_SWITCH?[18],X
+    RTS
+ATTRS_SET_UNSURE: ; 0D:10B1, 0x01B0B1
+    LDA ARR_SPRITE_OBJ_TIMER?+1 ; Load
+    ORA #$01 ; Set bit.
+    STA ARR_SPRITE_OBJ_TIMER?+1 ; Store back.
+    LDA #$1C
+    STA 704_OBJ_USE_UNK ; Set unk.
+MISC_OBJ_END: ; 0D:10BE, 0x01B0BE
+    LDA ARR_SPRITE_OBJ_TIMER?+1 ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 704_OBJ_USE_UNK ; --
+    BEQ VAL_EQ_ZERO_B ; Other zero.
+WAS_SET: ; 0D:10C8, 0x01B0C8
+    LDA OBJ_STATE_DIR_RELATED_C[18],X ; Load
+    AND #$FC ; Keep 1111.1100
+    STA TMP_00 ; Store to TMP.
+    LDA IRQ/SCRIPT_RUN_COUNT? ; Load
+    LSR A ; >> 2, /4.
+    LSR A
+    AND #$03 ; Keep bits 0000.0011
+    TAY ; To Y.
+    LDA OBJ_DATA,Y ; Load datya for bits.
+    ORA TMP_00 ; Or with other portion.
+    STA OBJ_STATE_DIR_RELATED_C[18],X ; Store back.
+VAL_EQ_ZERO: ; 0D:10DE, 0x01B0DE
+    RTS ; Leave.
+VAL_EQ_ZERO_B: ; 0D:10DF, 0x01B0DF
+    LDA ARR_SPRITE_OBJ_TIMER?+1 ; Load val.
+    AND #$80 ; Keep only 1000.0000
+    STA ARR_SPRITE_OBJ_TIMER?+1 ; Store back.
+    BMI WAS_SET ; Go into other portion.
+    LDA OBJ_STATE_DIR_RELATED_C[18],X ; Load
+    AND #$FC ; Keep 1111.1100
+    STA OBJ_STATE_DIR_RELATED_C[18],X ; Store back.
+RTS: ; 0D:10F1, 0x01B0F1
+    RTS ; Leave.
+OBJ_DATA: ; 0D:10F2, 0x01B0F2
     .db 03
     .db 01
     .db 03
@@ -3964,7 +3167,7 @@ OBJ_STATE_0x61_HANDLER: ; 0D:10F6, 0x01B0F6
     LDA #$00
     STA OBJECT_DATA_EXTRA_B?[18],X
     DEC OBJ_ANIM_HOLD_TIMER?[18],X
-    BPL L_0D:10F1
+    BPL RTS
     LDA #$06
     STA OBJ_ANIM_HOLD_TIMER?[18],X
     INC OBJ_ANIMATION_DISPLAY[18],X
@@ -3980,20 +3183,20 @@ L_0D:1117: ; 0D:1117, 0x01B117
     STA OBJ_ANIM_HOLD_TIMER?[18],X
 L_0D:111F: ; 0D:111F, 0x01B11F
     RTS
-L_0D:1120: ; 0D:1120, 0x01B120
-    LDX #$07
-L_0D:1122: ; 0D:1122, 0x01B122
-    LDA OBJ_ENABLED_STATE+MORE?[18],X
-    ORA OBJ_ENABLED_STATE+MORE?+1,X
-    BEQ L_0D:1131
-    INX
-    CPX #$11
-    BCC L_0D:1122
-    CLC
-    RTS
-L_0D:1131: ; 0D:1131, 0x01B131
-    SEC
-    RTS
+FIND_ANY_PAIR_UNUSED: ; 0D:1120, 0x01B120
+    LDX #$07 ; Xobj start.
+FIND_LOOP: ; 0D:1122, 0x01B122
+    LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load
+    ORA OBJ_ENABLED_STATE+MORE?+1,X ; Combine with pair.
+    BEQ RET_CS ; Both unused, goto.
+    INX ; Next obj.
+    CPX #$11 ; If _ #$11
+    BCC FIND_LOOP ; <, goto.
+    CLC ; CC, failure.
+    RTS ; Leave.
+RET_CS: ; 0D:1131, 0x01B131
+    SEC ; CS, pass.
+    RTS ; Leave.
     LDA #$00
     STA OBJECT_DATA_EXTRA_B?[18],X
     INC 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
@@ -4037,18 +3240,18 @@ L_0D:117E: ; 0D:117E, 0x01B17E
     STY TMP_02
     LDA OBJ_POS_X?[18],X
     STA TMP_00
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     STA TMP_01
     STX OBJ_HANDLER_FOCUS_SCRATCHPAD
-    JSR L_0D:1120
+    JSR FIND_ANY_PAIR_UNUSED
     BCC L_0D:11D0
     LDA #$60
     STA OBJ_ENABLED_STATE+MORE?[18],X
     LDA TMP_01
-    STA OBJ_POS_Y?[18],X
-    DEC OBJ_POS_Y?[18],X
+    STA OBJ_POS_X??[18],X
+    DEC OBJ_POS_X??[18],X
     LDA #$00
-    STA OBJ_POS_Y[18],X
+    STA OBJ_POS_Y??[18],X
     STA 4B4_OBJ_SPEED?[18],X
     STA 544_OBJ_UNK_POS_DELTA?[18],X
     LDA #$02
@@ -4096,8 +3299,8 @@ L_0D:11F0: ; 0D:11F0, 0x01B1F0
     ADC 4B4_OBJ_SPEED?[18],X
     STA 4B4_OBJ_SPEED?[18],X
     LDA 532_OBJ_UNK_POS_DELTA?[18],X
-    ADC OBJ_POS_Y[18],X
-    STA OBJ_POS_Y[18],X
+    ADC OBJ_POS_Y??[18],X
+    STA OBJ_POS_Y??[18],X
     CMP STATUS_FLAGS_B/OBJ_FOCUS[18],X
     BCC L_0D:11D6
     LDA #$4C
@@ -4161,9 +3364,9 @@ L_0D:127F: ; 0D:127F, 0x01B27F
     BCC L_0D:128B
     LDA #$2F
     JSR SND_BANKED_DISPATCH
-    JMP L_0D:0C29
+    JMP FOCUS_CHANGE
 L_0D:128B: ; 0D:128B, 0x01B28B
-    JMP L_0D:10BE
+    JMP MISC_OBJ_END
 L_0D:128E: ; 0D:128E, 0x01B28E
     .db 00
     .db 00
@@ -4912,13 +4115,13 @@ L_0D:15A5: ; 0D:15A5, 0x01B5A5
     CLC
     ADC OBJ_POS_X?[18],Y
     STA OBJ_POS_X?[18],X
-    LDA OBJ_POS_Y?[18],Y
-    STA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],Y
+    STA OBJ_POS_X??[18],X
     LDA #$DD
     STA 4C6_OBJ_UNK[18],X
     CLC
-    ADC OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y[18],X
+    ADC OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??[18],X
     LDA #$00
     STA OBJECT_DATA_EXTRA_B?[18],X
     STA 59E_OBJ_UNK/EXTRA_TIMER[18],X
@@ -4937,8 +4140,8 @@ L_0D:15A5: ; 0D:15A5, 0x01B5A5
     LDY TMP_00
     LDA OBJ_POS_X?[18],Y
     STA OBJ_POS_X?[18],X
-    LDA OBJ_POS_Y[18],Y
-    STA OBJ_POS_Y[18],X
+    LDA OBJ_POS_Y??[18],Y
+    STA OBJ_POS_Y??[18],X
     LDA OBJ_STATE_DIR_RELATED_C[18],Y
     STA OBJ_STATE_DIR_RELATED_C[18],X
 L_0D:160A: ; 0D:160A, 0x01B60A
@@ -5064,7 +4267,7 @@ L_0D:16DE: ; 0D:16DE, 0x01B6DE
     LSR A
     BCS L_0D:16E6
 L_0D:16E3: ; 0D:16E3, 0x01B6E3
-    JMP L_0D:10BE
+    JMP MISC_OBJ_END
 L_0D:16E6: ; 0D:16E6, 0x01B6E6
     JMP L_0D:1C10
 L_0D:16E9: ; 0D:16E9, 0x01B6E9
@@ -6147,13 +5350,13 @@ L_0D:1B64: ; 0D:1B64, 0x01BB64
     CLC
     ADC OBJ_POS_X?[18],Y
     STA OBJ_POS_X?[18],X
-    LDA OBJ_POS_Y?[18],Y
-    STA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],Y
+    STA OBJ_POS_X??[18],X
     LDA #$D8
     STA 4C6_OBJ_UNK[18],X
     CLC
-    ADC OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y[18],X
+    ADC OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??[18],X
     LDA #$00
     STA 556_OBJ_STATUS_FLAGS_A[18],X
     STA OBJECT_DATA_EXTRA_B?[18],X
@@ -6394,8 +5597,8 @@ OBJ_STATE_0x69_HANDLER: ; 0D:1C88, 0x01BC88
     JSR XPOS_RTN_RET_??
     BCS L_0D:1CDA
     LDA 4C6_OBJ_UNK[18],X
-    ADC OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y[18],X
+    ADC OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??[18],X
     LDA #$98
     STA OBJECT_DATA_EXTRA_B?[18],X
     LDA #$FF
@@ -6413,8 +5616,8 @@ L_0D:1CB5: ; 0D:1CB5, 0x01BCB5
     STA OBJ_ANIM_HOLD_TIMER?[18],X
     LDA #$91
     STA OBJ_ANIMATION_DISPLAY[18],X
-    LDA OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y[18],X
+    LDA OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??[18],X
 L_0D:1CC8: ; 0D:1CC8, 0x01BCC8
     INC OBJ_ANIM_HOLD_TIMER?[18],X
     LDA OBJ_ANIM_HOLD_TIMER?[18],X
@@ -6458,7 +5661,7 @@ L_0D:1CFB: ; 0D:1CFB, 0x01BCFB
     STA 706_UNK
     LDA OBJ_POS_X?[18],X
     STA TMP_08
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     STA TMP_06
     SEC
     SBC #$38
@@ -6466,7 +5669,7 @@ L_0D:1CFB: ; 0D:1CFB, 0x01BCFB
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     LDA OBJ_POS_X?[18],Y
     STA TMP_0A
-    LDA OBJ_POS_Y?[18],Y
+    LDA OBJ_POS_X??[18],Y
     STA TMP_0B
     JSR L_0D:1DF3
     LDA TMP_05
@@ -6476,7 +5679,7 @@ L_0D:1CFB: ; 0D:1CFB, 0x01BCFB
     JMP L_0D:1D4C
     LDA OBJ_POS_X?[18],X
     STA TMP_08
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     STA TMP_06
 L_0D:1D4C: ; 0D:1D4C, 0x01BD4C
     LDA TMP_05
@@ -6506,9 +5709,9 @@ L_0D:1D61: ; 0D:1D61, 0x01BD61
     STA 4C6_OBJ_UNK[18],X
     CLC
     ADC TMP_06
-    STA OBJ_POS_Y[18],X
+    STA OBJ_POS_Y??[18],X
     LDA TMP_06
-    STA OBJ_POS_Y?[18],X
+    STA OBJ_POS_X??[18],X
     LDA TMP_04
     STA OBJ_STATE_DIR_RELATED_C[18],X
     LDY TMP_05

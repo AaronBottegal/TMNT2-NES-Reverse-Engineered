@@ -317,7 +317,7 @@ L_06:0212: ; 06:0212, 0x00C212
     LDA OBJ_POS_X?[18],Y
     CMP #$18
     BCC L_06:01FF
-    LDA OBJ_POS_Y[18],Y
+    LDA OBJ_POS_Y??[18],Y
     CMP #$58
     BCC L_06:01FF
     RTS

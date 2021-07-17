@@ -2925,8 +2925,8 @@ L_16:0BCC: ; 16:0BCC, 0x02CBCC
     LDA OBJ_STATE_DIR_RELATED_C[18],Y
     AND #$FC
     STA OBJ_STATE_DIR_RELATED_C[18],X
-    LDA OBJ_POS_Y?[18],Y
-    STA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],Y
+    STA OBJ_POS_X??[18],X
     LDA OBJ_POS_X?[18],Y
     STA TMP_00
     LDA OBJ_STATE_DIR_RELATED_C[18],X
@@ -3438,11 +3438,11 @@ RET _CC: ; 16:0F8E, 0x02CF8E
 OBJ_STATE_0x4E_HANDLER: ; 16:0F90, 0x02CF90
     LDA 544_OBJ_UNK_POS_DELTA?+17,X ; From Obj[17]
     STA 556_OBJ_STATUS_FLAGS_A[18],X ; To handling.
-    LDA OBJ_POS_Y+17,X
+    LDA OBJ_POS_Y??+17,X
     STA OBJ_POS_X?[18],X ; To handling.
     LDA OBJ_POS_X_SUBPIXEL?+17,X
-    STA OBJ_POS_Y?[18],X ; To handling.
-    STA OBJ_POS_Y[18],X ; To this also.
+    STA OBJ_POS_X??[18],X ; To handling.
+    STA OBJ_POS_Y??[18],X ; To this also.
     LDA #$00 ; Prep val.
     LDY 4B4_OBJ_SPEED?+17,X ; Load
     BPL ANIM_SEEDED ; If positive, skip reseed.
@@ -3546,16 +3546,16 @@ OBJ_RECEIVED: ; 16:105C, 0x02D05C
     TAY ; To Yobj.
     LDA OBJ_POS_X?[18],Y ; Load from Yobj.
     STA TMP_0C ; Store to.
-    LDA OBJ_POS_Y[18],Y ; Load from Yobj.
+    LDA OBJ_POS_Y??[18],Y ; Load from Yobj.
     STA TMP_0D ; Store to.
     LDY OBJ_HANDLER_FOCUS_SCRATCHPAD ; Y from.
     LDA #$07
     STA 45A_OBJ_DATA_ENTRY?STATE_STEP?+1,Y ; Set pair step.
     LDA OBJ_POS_X?[18],Y ; Load from handling.
     STA TMP_00 ; Save.
-    LDA OBJ_POS_Y?[18],Y ; Move from handling to new.
-    STA OBJ_POS_Y?[18],X
-    INC OBJ_POS_Y?[18],X ; Inc new.
+    LDA OBJ_POS_X??[18],Y ; Move from handling to new.
+    STA OBJ_POS_X??[18],X
+    INC OBJ_POS_X??[18],X ; Inc new.
     LDA 4C6_OBJ_UNK[18],Y ; Load handling.
     STA TMP_02 ; Save.
     LDA OBJ_STATE_DIR_RELATED_C[18],Y ; Load handling.
@@ -3579,7 +3579,7 @@ SHIFT_CC: ; 16:109C, 0x02D09C
     JSR MOVE_Y_FINALIZE ; Move new.
     LDA OBJ_POS_X?[18],X ; Load new.
     STA TMP_0E ; Store to.
-    LDA OBJ_POS_Y[18],X ; Load new.
+    LDA OBJ_POS_Y??[18],X ; Load new.
     STA TMP_0F ; Store to.
     LDY #$03 ; Val?
     JSR 16:129B ; Do ??
@@ -3670,7 +3670,7 @@ NE_TWO: ; 16:1130, 0x02D130
 SHIFT_CC: ; 16:115B, 0x02D15B
     STA TMP_14 ; Store to.
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Y from Xobj.
-    LDA OBJ_POS_Y?[18],Y ; Load from Yobj.
+    LDA OBJ_POS_X??[18],Y ; Load from Yobj.
     STA TMP_15 ; Store to.
 VAL_NONZERO: ; 16:1165, 0x02D165
     JSR HIT_DETECT_HELPER_UNK ; Help.
@@ -3768,17 +3768,17 @@ RTS: ; 16:11E4, 0x02D1E4
 RTN_MOVE/POS_UNK: ; 16:11E5, 0x02D1E5
     JSR MOVE_UNK_RET_?? ; dO.
     LDA #$78 ; Seed val.
-    CMP OBJ_POS_Y?[18],X ; If seed _ attr
+    CMP OBJ_POS_X??[18],X ; If seed _ attr
     BCS WRITE_SEED ; >, write val.
     LDA #$E4 ; Alt seed.
-    CMP OBJ_POS_Y?[18],X ; If seed _ attr.
+    CMP OBJ_POS_X??[18],X ; If seed _ attr.
     BCS RTS ; >=, leave.
 WRITE_SEED: ; 16:11F6, 0x02D1F6
-    STA OBJ_POS_Y?[18],X ; Store val.
+    STA OBJ_POS_X??[18],X ; Store val.
 RTS: ; 16:11F9, 0x02D1F9
     RTS ; Leave.
 L_16:11FA: ; 16:11FA, 0x02D1FA
-    JSR XOBJ_WRITE_UNK
+    JSR XOBJ_WRITE_PLAYER_FOCUS
     LDA #$04
     STA OBJ_SECONDARY_SWITCH?[18],X
     LDA #$00
@@ -3838,11 +3838,11 @@ GRP_E_RTN_A: ; 16:1258, 0x02D258
     STA 4C6_OBJ_UNK[18],X ; Set.
 GTE_0x81: ; 16:1273, 0x02D273
     JSR MOVE_Y_FINALIZE ; Do.
-    LDA OBJ_POS_Y[18],X ; Load
+    LDA OBJ_POS_Y??[18],X ; Load
     CMP #$40 ; If _ #$40
     BCS RTS ; >=, goto.
     LDA #$40 ; Minimum.
-    STA OBJ_POS_Y[18],X ; Set.
+    STA OBJ_POS_Y??[18],X ; Set.
 RTS: ; 16:1282, 0x02D282
     RTS ; Leave.
 CS_RET: ; 16:1283, 0x02D283
@@ -4065,11 +4065,11 @@ L_16:134D: ; 16:134D, 0x02D34D
 OBJ_STATE_0x4A_HANDLER: ; 16:13C7, 0x02D3C7
     LDA 544_OBJ_UNK_POS_DELTA?+17,X ; Move attrs from Obj[17]
     STA 556_OBJ_STATUS_FLAGS_A[18],X ; Store as diff?
-    LDA OBJ_POS_Y+17,X
+    LDA OBJ_POS_Y??+17,X
     STA OBJ_POS_X?[18],X ; Store to.
     LDA OBJ_POS_X_SUBPIXEL?+17,X
-    STA OBJ_POS_Y?[18],X ; Store to.
-    STA OBJ_POS_Y[18],X ; Also store here.
+    STA OBJ_POS_X??[18],X ; Store to.
+    STA OBJ_POS_Y??[18],X ; Also store here.
     LDA #$00 ; Anim seed.
     LDY 4B4_OBJ_SPEED?+17,X ; Load from Obj[17]
     BPL ANIMATION_SEEDED_IN_A ; Positive, no change.
@@ -4125,7 +4125,7 @@ USE_A_VAL_SOUND: ; 16:1440, 0x02D440
     JSR SND_BANKED_DISPATCH ; Play sound.
     JMP LINE_BELOW ; Make sure we get there, lol.
 LINE_BELOW: ; 16:1446, 0x02D446
-    JSR XOBJ_WRITE_UNK ; Do.
+    JSR XOBJ_WRITE_PLAYER_FOCUS ; Do.
     LDA #$04
     STA OBJ_SECONDARY_SWITCH?[18],X ; Move state.
     LDA #$00
@@ -4689,9 +4689,9 @@ OBJ_DATA_B: ; 16:1844, 0x02D844
 ATTR_HELPER_YOBJ_CONSIDERED: ; 16:184F, 0x02D84F
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Y from Xobj.
 L_16:1852: ; 16:1852, 0x02D852
-    LDA OBJ_POS_Y?[18],Y ; A from Yobj.
+    LDA OBJ_POS_X??[18],Y ; A from Yobj.
     LDY #$00 ; Index seed.
-    CMP OBJ_POS_Y?[18],X ; If Yobj pos _ Xobj pos
+    CMP OBJ_POS_X??[18],X ; If Yobj pos _ Xobj pos
     BEQ POS_MATCH ; ==, goto.
     LDY #$02 ; Alt seed.
     BCC POS_MATCH ; <, goto.
@@ -4752,11 +4752,11 @@ OBJ_DATA: ; 16:18B6, 0x02D8B6
 OBJ_STATE_0x4C_HANDLER: ; 16:18BA, 0x02D8BA
     LDA 544_OBJ_UNK_POS_DELTA?+17,X ; Move from Obj[17]
     STA 556_OBJ_STATUS_FLAGS_A[18],X
-    LDA OBJ_POS_Y+17,X
+    LDA OBJ_POS_Y??+17,X
     STA OBJ_POS_X?[18],X
     LDA OBJ_POS_X_SUBPIXEL?+17,X
-    STA OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y[18],X
+    STA OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??[18],X
     LDA #$04
     STA OBJ_ANIMATION_DISPLAY[18],X ; Set anim.
     RTS ; Leave.
@@ -4890,7 +4890,7 @@ DONT_RANGE_VAL: ; 16:19C6, 0x02D9C6
     LDA 4C6_OBJ_UNK[18],X
     BMI L_16:19F8
     SEC
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     SBC #$80
     BCC L_16:1A15
     STA TMP_00
@@ -4903,13 +4903,13 @@ DONT_RANGE_VAL: ; 16:19C6, 0x02D9C6
     CLC
     ADC TMP_00
     BCC L_16:1A15
-    STA OBJ_POS_Y[18],X
+    STA OBJ_POS_Y??[18],X
     JMP L_16:1A01
 L_16:19F8: ; 16:19F8, 0x02D9F8
     CLC
-    ADC OBJ_POS_Y?[18],X
+    ADC OBJ_POS_X??[18],X
     BCC L_16:1A15
-    STA OBJ_POS_Y[18],X
+    STA OBJ_POS_Y??[18],X
 L_16:1A01: ; 16:1A01, 0x02DA01
     JSR L_16:1A1B
     LDA OBJ_POS_X_DELTA?[18],X
@@ -5013,8 +5013,8 @@ SHITED_CLEAR: ; 16:1AB7, 0x02DAB7
     CLC ; Prep add.
     ADC OBJ_POS_X?[18],Y ; Add to handled.
     STA OBJ_POS_X?[18],X ; Store to new.
-    LDA OBJ_POS_Y?[18],Y ; Load handled.
-    STA OBJ_POS_Y?[18],X ; Store to new.
+    LDA OBJ_POS_X??[18],Y ; Load handled.
+    STA OBJ_POS_X??[18],X ; Store to new.
     CLC ; Prep add.
     LDA #$E4 ; Load
     LDY TMP_00 ; Load saved.
@@ -5848,12 +5848,12 @@ OBJ_STATE_0x72_HANDLER: ; 16:1E66, 0x02DE66
     BEQ ANIM_SEEDED
     LDA 544_OBJ_UNK_POS_DELTA?+17,X
     STA 556_OBJ_STATUS_FLAGS_A[18],X
-    LDA OBJ_POS_Y+17,X
+    LDA OBJ_POS_Y??+17,X
     STA OBJ_POS_X?[18],X
     LDA OBJ_POS_X_SUBPIXEL?+17,X
-    STA OBJ_POS_Y?[18],X
-    DEC OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y[18],X
+    STA OBJ_POS_X??[18],X
+    DEC OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??[18],X
     LDA #$04
 ANIM_SEEDED: ; 16:1E85, 0x02DE85
     STA OBJ_ANIMATION_DISPLAY[18],X
@@ -6002,7 +6002,7 @@ L_16:1F9A: ; 16:1F9A, 0x02DF9A
     BNE L_16:1FC1
     LDA 556_OBJ_STATUS_FLAGS_A[18],X
     BNE L_16:1FC1
-    LDA OBJ_POS_Y+17,X
+    LDA OBJ_POS_Y??+17,X
     STA TMP_0C
     LDA #$AB
     STA TMP_0D

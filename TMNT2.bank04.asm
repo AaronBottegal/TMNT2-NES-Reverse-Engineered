@@ -517,8 +517,8 @@ L_04:0261: ; 04:0261, 0x008261
     LDA 688_UNK,X
     CMP TMP_07
     BNE L_04:026E
-    JSR $8241
-    JMP $8273
+    JSR ZERO_ALL_INDEX
+    JMP 04:0273
 L_04:026E: ; 04:026E, 0x00826E
     INX
     CPX #$04
@@ -567,13 +567,13 @@ L_04:02AF: ; 04:02AF, 0x0082AF
     BCC L_04:02D9
 L_04:02C4: ; 04:02C4, 0x0082C4
     LDA 680_UNK,Y
-    CMP OBJ_POS_Y?[18],X
+    CMP OBJ_POS_X??[18],X
     BCS L_04:02D9
     LDA 680_UNK,Y
     CLC
     ADC TMP_0B
     BCS L_04:0307
-    CMP OBJ_POS_Y?[18],X
+    CMP OBJ_POS_X??[18],X
     BCS L_04:0307
 L_04:02D9: ; 04:02D9, 0x0082D9
     LDY TMP_09
@@ -1697,6 +1697,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db A4
     .db A5
     .db A6
+CB_AN: ; 04:074B, 0x00874B
     .db A5
     .db A6
     .db A5
@@ -1763,6 +1764,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db AE
     .db AD
     .db AE
+CB_AO: ; 04:078D, 0x00878D
     .db AD
     .db AE
     .db AD
@@ -1922,6 +1924,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 1C
     .db 1D
     .db 1E
+CB_AP: ; 04:082C, 0x00882C
     .db 1F
     .db FF
     .db 05
@@ -2218,271 +2221,148 @@ RTN_UNK_B: ; 04:08B2, 0x0088B2
     .db 60
     .db 18
     .db 60
-    .db A9
-    .db EF
-    .db 20
-    .db 6E
-    .db 89
-    .db A5
-    .db 87
-    .db D0
-    .db 3A
-    .db A9
-    .db 01
-    .db 4C
-    .db 2D
-    .db 86
-    .db A9
-    .db F6
-    .db 20
-    .db 6E
-    .db 89
-    .db A5
-    .db 87
-    .db D0
-    .db 2C
-    .db A9
-    .db 02
-    .db 4C
-    .db 2D
-    .db 86
-    .db 85
-    .db 00
-    .db A5
-    .db 88
-    .db F0
-    .db 03
-    .db C6
-    .db 88
-    .db 60
-    .db A5
-    .db 87
-    .db 18
-    .db 65
-    .db 00
-    .db 20
-    .db 46
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 07
-    .db F0
-    .db 05
-    .db A9
-    .db 01
-    .db 85
-    .db 88
-    .db 60
+CB_A: ; 04:0952, 0x008952
+    LDA #$EF
+    JSR 04:096E
+    LDA 87_UNK
+    BNE 04:0995
+    LDA #$01
+    JMP FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
+CB_B: ; 04:0960, 0x008960
+    LDA #$F6
+    JSR 04:096E
+    LDA 87_UNK
+    BNE 04:0995
+    LDA #$02
+    JMP FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
+    STA TMP_00
+    LDA 88_UNK_SWITCH?
+    BEQ 04:0977
+    DEC 88_UNK_SWITCH?
+    RTS
+    LDA 87_UNK
+    CLC
+    ADC TMP_00
+    JSR RTN_UNK_B_PAIR
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$07
+    BEQ L_04:098C
+    LDA #$01
+    STA 88_UNK_SWITCH?
+    RTS
 L_04:098C: ; 04:098C, 0x00898C
-    .db A9
-    .db 00
-    .db 85
-    .db 87
-    .db 85
-    .db 88
-    .db 8D
-    .db 0A
-    .db 06
-    .db 60
-    .db A9
-    .db 04
-    .db A0
-    .db 11
-    .db D0
-    .db 10
-    .db A9
-    .db 05
-    .db A0
-    .db 13
-    .db D0
-    .db 0A
-    .db A9
-    .db 06
-    .db A0
-    .db 15
-    .db D0
-    .db 04
-    .db A9
-    .db 07
-    .db A0
-    .db 13
-    .db 48
-    .db 98
-    .db 48
-    .db 20
-    .db 46
-    .db 88
-    .db 68
-    .db A8
-    .db C8
-    .db 98
-    .db 20
-    .db 46
-    .db 88
-    .db 68
-    .db 20
-    .db 2D
-    .db 86
-    .db 4C
-    .db 8C
-    .db 89
-    .db A9
-    .db 03
-    .db 20
-    .db 44
-    .db 86
-    .db A9
-    .db 10
-    .db 20
-    .db 46
-    .db 88
-    .db 4C
-    .db 8C
-    .db 89
-    .db A5
-    .db 87
-    .db D0
-    .db 04
-    .db A9
-    .db 1D
-    .db 85
-    .db 87
-    .db A5
-    .db 87
-    .db 20
-    .db 46
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 20
-    .db D0
-    .db B3
-    .db 4C
-    .db 8C
-    .db 89
-    .db A9
-    .db 20
-    .db 20
-    .db 46
-    .db 88
-    .db 4C
-    .db 8C
-    .db 89
-    .db AD
-    .db 0A
-    .db 06
-    .db 20
-    .db C8
-    .db 85
-    .db AD
-    .db 0A
-    .db 06
-    .db 18
-    .db 69
-    .db 18
-    .db 20
-    .db 46
-    .db 88
-    .db 4C
-    .db 8C
-    .db 89
-    .db AD
-    .db 0A
-    .db 06
-    .db 18
-    .db 69
-    .db 18
-    .db 20
-    .db 46
-    .db 88
-    .db 4C
-    .db 8C
-    .db 89
-    .db A5
-    .db 87
-    .db D0
-    .db 04
-    .db A9
-    .db 29
-    .db 85
-    .db 87
-    .db A5
-    .db 88
-    .db F0
-    .db 03
-    .db C6
-    .db 88
-    .db 60
-    .db A5
-    .db 87
-    .db 20
-    .db 46
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 2F
-    .db F0
-    .db 05
-    .db A9
-    .db 20
-    .db 85
-    .db 88
+    LDA #$00
+    STA 87_UNK
+    STA 88_UNK_SWITCH?
+    STA 60A_SWITCH_WHICH?
+    RTS
+CB_C: ; 04:0996, 0x008996
+    LDA #$04
+    LDY #$11
+    BNE 04:09AC
+CB_D: ; 04:099C, 0x00899C
+    LDA #$05
+    LDY #$13
+    BNE 04:09AC
+CB_E: ; 04:09A2, 0x0089A2
+    LDA #$06
+    LDY #$15
+    BNE 04:09AC
+CB_F: ; 04:09A8, 0x0089A8
+    LDA #$07
+    LDY #$13
+    PHA
+    TYA
+    PHA
+    JSR RTN_UNK_B_PAIR
+    PLA
+    TAY
+    INY
+    TYA
+    JSR RTN_UNK_B_PAIR
+    PLA
+    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
+    JMP L_04:098C
+CB_G: ; 04:09C0, 0x0089C0
+    LDA #$03
+    JSR L_04:0644
+    LDA #$10
+    JSR RTN_UNK_B_PAIR
+    JMP L_04:098C
+CB_H: ; 04:09CD, 0x0089CD
+    LDA 87_UNK
+    BNE 04:09D5
+    LDA #$1D
+    STA 87_UNK
+    LDA 87_UNK
+    JSR RTN_UNK_B_PAIR
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$20
+    BNE 04:0995
+    JMP L_04:098C
+CB_I: ; 04:09E5, 0x0089E5
+    LDA #$20
+    JSR RTN_UNK_B_PAIR
+    JMP L_04:098C
+CB_J: ; 04:09ED, 0x0089ED
+    LDA 60A_SWITCH_WHICH?
+    JSR L_04:05C8
+    LDA 60A_SWITCH_WHICH?
+    CLC
+    ADC #$18
+    JSR RTN_UNK_B_PAIR
+    JMP L_04:098C
+CB_K: ; 04:09FF, 0x0089FF
+    LDA 60A_SWITCH_WHICH?
+    CLC
+    ADC #$18
+    JSR RTN_UNK_B_PAIR
+    JMP L_04:098C
+CB_L: ; 04:0A0B, 0x008A0B
+    LDA 87_UNK
+    BNE 04:0A13
+    LDA #$29
+    STA 87_UNK
+    LDA 88_UNK_SWITCH?
+    BEQ 04:0A1A
+    DEC 88_UNK_SWITCH?
+    RTS
+    LDA 87_UNK
+    JSR RTN_UNK_B_PAIR
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$2F
+    BEQ 04:0A2C
+    LDA #$20
+    STA 88_UNK_SWITCH?
 L_04:0A2B: ; 04:0A2B, 0x008A2B
-    .db 60
-    .db 4C
-    .db 8C
-    .db 89
-    .db A9
-    .db 12
-    .db A0
-    .db 2F
-    .db 4C
-    .db 3A
-    .db 8A
-    .db A9
-    .db 13
-    .db A0
-    .db 33
-    .db 85
-    .db 00
-    .db 84
-    .db 01
-    .db AD
-    .db 0A
-    .db 06
-    .db 38
-    .db E5
-    .db 00
-    .db 18
-    .db 65
-    .db 01
-    .db 65
-    .db 87
-    .db 20
-    .db 46
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 02
-    .db D0
-    .db D7
+    RTS
+    JMP L_04:098C
+CB_M: ; 04:0A2F, 0x008A2F
+    LDA #$12
+    LDY #$2F
+    JMP 04:0A3A
+CB_N: ; 04:0A36, 0x008A36
+    LDA #$13
+    LDY #$33
+    STA TMP_00
+    STY TMP_01
+    LDA 60A_SWITCH_WHICH?
+    SEC
+    SBC TMP_00
+    CLC
+    ADC TMP_01
+    ADC 87_UNK
+    JSR RTN_UNK_B_PAIR
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$02
+    BNE L_04:0A2B
 L_04:0A54: ; 04:0A54, 0x008A54
-    .db 4C
-    .db 8C
-    .db 89
-BANK_4_RTN_UNK: ; 04:0A57, 0x008A57
+    JMP L_04:098C
+CB_O: ; 04:0A57, 0x008A57
     LDA 88_UNK_SWITCH? ; Load
     BEQ TIMER_EXPIRED ; == 0,  run routine.
     DEC 88_UNK_SWITCH? ; -- otherwise.
@@ -2494,16 +2374,17 @@ TIMER_EXPIRED: ; 04:0A5E, 0x008A5E
     CLC
     ADC #$21
     ADC 87_UNK
-    JSR $8846
+    JSR RTN_UNK_B_PAIR
     INC 87_UNK
     LDA 87_UNK
     CMP #$03
     BNE L_04:0A2B
     LDA 60A_SWITCH_WHICH?
-    JSR $85C8
-    JSR $898C
+    JSR L_04:05C8
+    JSR L_04:098C
     LDA #$08
-    JMP $862D
+    JMP FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
+CB_P: ; 04:0A83, 0x008A83
     LDA 88_UNK_SWITCH?
     BEQ L_04:0A8A
     DEC 88_UNK_SWITCH?
@@ -2527,6 +2408,7 @@ L_04:0A8A: ; 04:0A8A, 0x008A8A
     BEQ L_04:0A54
     LDA #$32
     JMP SND_BANKED_DISPATCH
+CB_Q: ; 04:0AAE, 0x008AAE
     LDA 60A_SWITCH_WHICH?
     SEC
     SBC #$1C
@@ -2534,6 +2416,7 @@ L_04:0A8A: ; 04:0A8A, 0x008A8A
     ADC #$09
     JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
     JMP L_04:098C
+CB_R: ; 04:0ABD, 0x008ABD
     LDA 88_UNK_SWITCH?
     BEQ L_04:0AC4
     DEC 88_UNK_SWITCH?
@@ -2576,11 +2459,13 @@ L_04:0B02: ; 04:0B02, 0x008B02
     LDA 60A_SWITCH_WHICH?
     JSR L_04:0259
     JMP L_04:098C
+CB_S: ; 04:0B0B, 0x008B0B
     LDA 60A_SWITCH_WHICH?
     CLC
     ADC #$4B
     JSR RTN_UNK_B_PAIR
     JMP L_04:098C
+CB_T: ; 04:0B17, 0x008B17
     LDA 60A_SWITCH_WHICH?
     SEC
     SBC #$21
@@ -2593,8 +2478,10 @@ L_04:0B02: ; 04:0B02, 0x008B02
     JSR RTN_UNK_B_PAIR
 L_04:0B2C: ; 04:0B2C, 0x008B2C
     JMP L_04:098C
+CB_U: ; 04:0B2F, 0x008B2F
     LDA #$00
     JMP L_04:0B36
+CB_V: ; 04:0B34, 0x008B34
     LDA #$70
 L_04:0B36: ; 04:0B36, 0x008B36
     LDY 88_UNK_SWITCH?
@@ -2615,6 +2502,7 @@ L_04:0B3D: ; 04:0B3D, 0x008B3D
     STA 88_UNK_SWITCH?
 L_04:0B53: ; 04:0B53, 0x008B53
     RTS
+CB_W: ; 04:0B54, 0x008B54
     LDA 88_UNK_SWITCH?
     BEQ L_04:0B5B
     DEC 88_UNK_SWITCH?
@@ -2638,11 +2526,13 @@ L_04:0B74: ; 04:0B74, 0x008B74
     LDA #$0B
     JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
     JMP L_04:098C
+CB_X: ; 04:0B7C, 0x008B7C
     LDA #$0B
     JSR L_04:0644
     LDA #$80
     JSR RTN_UNK_B_PAIR
     JMP L_04:098C
+CB_Y: ; 04:0B89, 0x008B89
     LDA 87_UNK
     BNE L_04:0BAC
     INC 87_UNK
@@ -2696,14 +2586,17 @@ L_04:0BD5: ; 04:0BD5, 0x008BD5
     LDA #$01
     STA 660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK
     JMP L_04:098C
+CB_Z: ; 04:0BF2, 0x008BF2
     LDA 60A_SWITCH_WHICH?
     CLC
     ADC #$57
     JSR RTN_UNK_B_PAIR
 L_04:0BFB: ; 04:0BFB, 0x008BFB
     JMP L_04:098C
+CB_AA: ; 04:0BFE, 0x008BFE
     LDA #$84
     BNE L_04:0C04
+CB_AB: ; 04:0C02, 0x008C02
     LDA #$88
 L_04:0C04: ; 04:0C04, 0x008C04
     LDY 88_UNK_SWITCH?
@@ -2722,11 +2615,13 @@ L_04:0C0B: ; 04:0C0B, 0x008C0B
     STA 88_UNK_SWITCH?
     LDA #$32
     JMP SND_BANKED_DISPATCH
+CB_AC: ; 04:0C22, 0x008C22
     LDA 60A_SWITCH_WHICH?
     CLC
     ADC #$5D
     JSR RTN_UNK_B_PAIR
     JMP L_04:098C
+CB_AD: ; 04:0C2E, 0x008C2E
     LDA 60A_SWITCH_WHICH?
     SEC
     SBC #$32
@@ -2743,6 +2638,7 @@ L_04:0C0B: ; 04:0C0B, 0x008C0B
     ADC #$03
     JSR RTN_UNK_B_PAIR
     JMP L_04:098C
+CB_AE: ; 04:0C4E, 0x008C4E
     LDA 87_UNK
     BNE L_04:0C56
     LDA #$95
@@ -2755,9 +2651,11 @@ L_04:0C56: ; 04:0C56, 0x008C56
     CMP #$98
     BEQ L_04:0BFB
     RTS
+CB_AF: ; 04:0C64, 0x008C64
     LDA #$98
     JSR RTN_UNK_B_PAIR
     JMP L_04:098C
+CB_AG: ; 04:0C6C, 0x008C6C
     LDA 60A_SWITCH_WHICH?
     SEC
     SBC #$37
@@ -2767,9 +2665,11 @@ L_04:0C56: ; 04:0C56, 0x008C56
     JSR L_04:098C
     LDA #$0B
     JMP SND_BANKED_DISPATCH
+CB_AH: ; 04:0C80, 0x008C80
     LDA #$10
     JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
     JMP L_04:098C
+CB_AI: ; 04:0C88, 0x008C88
     LDA 87_UNK
     BNE L_04:0C95
     LDA #$10
@@ -2785,8 +2685,10 @@ L_04:0C97: ; 04:0C97, 0x008C97
     CMP #$02
     BNE L_04:0CBC
     JMP L_04:098C
+CB_AJ: ; 04:0CA5, 0x008CA5
     LDA #$11
     BNE L_04:0CAB
+CB_AK: ; 04:0CA9, 0x008CA9
     LDA #$12
 L_04:0CAB: ; 04:0CAB, 0x008CAB
     JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
@@ -2794,6 +2696,7 @@ L_04:0CAB: ; 04:0CAB, 0x008CAB
     JSR SND_BANKED_DISPATCH
 L_04:0CB3: ; 04:0CB3, 0x008CB3
     JMP L_04:098C
+CB_AL: ; 04:0CB6, 0x008CB6
     LDA 88_UNK_SWITCH?
     BEQ L_04:0CBD
     DEC 88_UNK_SWITCH?
@@ -2812,6 +2715,7 @@ L_04:0CBD: ; 04:0CBD, 0x008CBD
     STA 88_UNK_SWITCH?
 L_04:0CD1: ; 04:0CD1, 0x008CD1
     RTS
+CB_AM: ; 04:0CD2, 0x008CD2
     LDA #$D6
     CLC
     ADC 87_UNK
@@ -2825,6 +2729,7 @@ L_04:0CD1: ; 04:0CD1, 0x008CD1
     LDA #$18
     JSR LEVEL_RELATED_DATA_A_PASSED?
     JMP L_04:098C
+CB_BG: ; 04:0CF0, 0x008CF0
     LDA #$40
     JSR L_04:0259
     JMP L_04:098C
@@ -2884,428 +2789,228 @@ L_04:0D18: ; 04:0D18, 0x008D18
     .db 33
     .db 33
     .db FF
-    .db A5
-    .db 87
-    .db D0
-    .db 34
-    .db E6
-    .db 87
-    .db A9
-    .db 98
-    .db 85
-    .db 2A
-    .db A9
-    .db 9A
-    .db 85
-    .db 2B
-    .db A9
-    .db 21
-    .db 20
-    .db 13
-    .db D4
-    .db A9
-    .db 06
-    .db 85
-    .db DA
-    .db A9
-    .db 09
-    .db 85
-    .db B6
-    .db A9
-    .db E0
-    .db 85
-    .db B3
-    .db A9
-    .db 90
-    .db 85
-    .db 7D
-    .db A9
-    .db 02
-    .db 85
-    .db BC
-    .db A9
-    .db 80
-    .db 85
-    .db B9
-    .db A9
-    .db 00
-    .db 85
-    .db C5
-    .db A9
-    .db 01
-    .db 85
-    .db A7
-    .db A9
-    .db 53
-    .db 4C
-    .db 2D
-    .db 86
-    .db AD
-    .db 0A
-    .db 06
-    .db A0
-    .db 04
-    .db 20
-    .db FD
-    .db 85
-    .db BD
-    .db 78
-    .db 06
-    .db C9
-    .db 04
-    .db B0
-    .db 15
-    .db A9
-    .db FF
-    .db 9D
-    .db 78
-    .db 06
-    .db BD
-    .db 84
-    .db 06
-    .db F0
-    .db 06
-    .db 10
-    .db 09
-    .db A9
-    .db 01
-    .db D0
-    .db 02
-    .db A9
-    .db 80
-    .db 9D
-    .db 84
-    .db 06
-    .db BD
-    .db 84
-    .db 06
-    .db 10
-    .db 0B
-    .db A5
-    .db 1B
-    .db 29
-    .db 0F
-    .db D0
-    .db 05
-    .db A9
-    .db 0A
-    .db 20
-    .db 52
-    .db DB
-    .db A5
-    .db B6
-    .db C9
-    .db 0C
-    .db 90
-    .db 2F
-    .db A5
-    .db B3
-    .db C9
-    .db 04
-    .db B0
-    .db 05
-    .db A9
-    .db 53
-    .db 4C
-    .db 44
-    .db 86
-    .db A5
-    .db B3
-    .db C9
-    .db C0
-    .db 90
-    .db 1E
-    .db 20
-    .db 41
-    .db 82
-    .db A9
-    .db 94
-    .db 85
-    .db 2A
-    .db A9
-    .db 96
-    .db 85
-    .db 2B
-    .db A9
-    .db 20
-    .db 20
-    .db 13
-    .db D4
-    .db A9
-    .db 00
-    .db 85
-    .db B9
-    .db 85
-    .db BC
-    .db A9
-    .db 01
-    .db 8D
-    .db 60
-    .db 06
-    .db 4C
-    .db 8C
-    .db 89
-    .db 60
-    .db A9
-    .db 5A
-    .db 20
-    .db 2D
-    .db 86
-    .db 4C
-    .db 8C
-    .db 89
-    .db A9
-    .db 28
-    .db D0
-    .db 02
-    .db A9
-    .db 2A
-    .db 18
-    .db 65
-    .db 87
-    .db 20
-    .db B2
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 02
-    .db D0
-    .db E3
-    .db 4C
-    .db 8C
-    .db 89
-    .db A5
-    .db 88
-    .db F0
-    .db 03
-    .db C6
-    .db 88
-    .db 60
-    .db A9
-    .db 2C
-    .db 18
-    .db 65
-    .db 87
-    .db 20
-    .db B2
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 06
-    .db F0
-    .db E6
-    .db A9
-    .db 04
-    .db 85
-    .db 88
-    .db 60
-    .db A9
-    .db 39
-    .db D0
-    .db 02
-    .db A9
-    .db 32
-    .db A4
-    .db 88
-    .db F0
-    .db 03
-    .db C6
-    .db 88
-    .db 60
-    .db 18
-    .db 65
-    .db 87
-    .db 20
-    .db B2
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 07
-    .db F0
-    .db C6
-    .db A9
-    .db 03
-    .db 85
-    .db 88
-    .db 60
-    .db A5
-    .db 87
-    .db 18
-    .db 69
-    .db 40
-    .db 20
-    .db B2
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 02
-    .db F0
-    .db B1
-    .db 60
-    .db A9
-    .db 42
-    .db D0
-    .db 02
-    .db A9
-    .db 4A
-    .db A4
-    .db 88
-    .db F0
-    .db 03
-    .db C6
-    .db 88
-    .db 60
-    .db 18
-    .db 65
-    .db 87
-    .db 20
-    .db B2
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 08
-    .db F0
-    .db 95
-    .db C9
-    .db 05
-    .db D0
-    .db 00
-    .db A9
-    .db 0E
-    .db 85
-    .db 88
-    .db 60
-    .db A4
-    .db 88
-    .db F0
-    .db 03
-    .db C6
-    .db 88
-    .db 60
-    .db AD
-    .db 0A
-    .db 06
-    .db 38
-    .db E9
-    .db 53
-    .db 85
-    .db 00
-    .db 0A
-    .db 18
-    .db 65
-    .db 00
-    .db 18
-    .db 69
-    .db 52
-    .db 18
-    .db 65
-    .db 87
-    .db 20
-    .db B2
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 03
-    .db F0
-    .db 05
-    .db A9
-    .db 03
-    .db 85
-    .db 88
-    .db 60
-    .db AD
-    .db 0A
-    .db 06
-    .db 20
-    .db C8
-    .db 85
-    .db 4C
-    .db 8C
-    .db 89
-    .db A4
-    .db 88
-    .db F0
-    .db 03
-    .db C6
-    .db 88
-    .db 60
-    .db AD
-    .db 0A
-    .db 06
-    .db 38
-    .db E9
-    .db 57
-    .db 0A
-    .db 0A
-    .db 18
-    .db 69
-    .db 5E
-    .db 18
-    .db 65
-    .db 87
-    .db 20
-    .db B2
-    .db 88
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 04
-    .db D0
-    .db 03
-    .db 4C
-    .db 8C
-    .db 89
-    .db A9
-    .db 04
-    .db 85
-    .db 88
-    .db 60
-    .db A4
-    .db 88
-    .db F0
-    .db 03
-    .db C6
-    .db 88
-    .db 60
-    .db A4
-    .db 87
-    .db B9
-    .db E1
-    .db 8E
-    .db C9
-    .db FF
-    .db F0
-    .db E8
-    .db 20
-    .db B2
-    .db 88
-    .db E6
-    .db 87
-    .db A9
-    .db 0C
-    .db 85
-    .db 88
-    .db 60
+CB_AQ: ; 04:0D3B, 0x008D3B
+    LDA 87_UNK
+    BNE 04:0D73
+    INC 87_UNK
+    LDA #$98
+    STA IRQ_BANK_VALUES_R[0/1][2]
+    LDA #$9A
+    STA IRQ_BANK_VALUES_R[0/1]+1
+    LDA #$21
+    JSR LEVEL_RELATED_DATA_A_PASSED?
+    LDA #$06
+    STA DA_FLAG?_UNK
+    LDA #$09
+    STA B6_NAMETABLE_FOCUS_UNK
+    LDA #$E0
+    STA B3_SCROLL_X_IRQ_J
+    LDA #$90
+    STA FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE
+    LDA #$02
+    STA BC_UNK
+    LDA #$80
+    STA B9_UNK
+    LDA #$00
+    STA C5_UNK
+    LDA #$01
+    STA A7_IRQ_REPLACE_SECONDARY_INDEX
+    LDA #$53
+    JMP FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
+    LDA 60A_SWITCH_WHICH?
+    LDY #$04
+    JSR L_04:05FD
+    LDA 678_UNK,X
+    CMP #$04
+    BCS 04:0D97
+    LDA #$FF
+    STA 678_UNK,X
+    LDA 684_UNK,X
+    BEQ 04:0D92
+    BPL 04:0D97
+    LDA #$01
+    BNE 04:0D94
+    LDA #$80
+    STA 684_UNK,X
+    LDA 684_UNK,X
+    BPL 04:0DA7
+    LDA IRQ/SCRIPT_RUN_COUNT?
+    AND #$0F
+    BNE 04:0DA7
+    LDA #$0A
+    JSR SND_BANKED_DISPATCH
+    LDA B6_NAMETABLE_FOCUS_UNK
+    CMP #$0C
+    BCC 04:0DDC
+    LDA B3_SCROLL_X_IRQ_J
+    CMP #$04
+    BCS 04:0DB8
+    LDA #$53
+    JMP L_04:0644
+    LDA B3_SCROLL_X_IRQ_J
+    CMP #$C0
+    BCC 04:0DDC
+    JSR ZERO_ALL_INDEX
+    LDA #$94
+    STA IRQ_BANK_VALUES_R[0/1][2]
+    LDA #$96
+    STA IRQ_BANK_VALUES_R[0/1]+1
+    LDA #$20
+    JSR LEVEL_RELATED_DATA_A_PASSED?
+    LDA #$00
+    STA B9_UNK
+    STA BC_UNK
+    LDA #$01
+    STA 660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK
+    JMP L_04:098C
+    RTS
+CB_AR: ; 04:0DDD, 0x008DDD
+    LDA #$5A
+    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
+    JMP L_04:098C
+CB_AS: ; 04:0DE5, 0x008DE5
+    LDA #$28
+    BNE 04:0DEB
+CB_AT: ; 04:0DE9, 0x008DE9
+    LDA #$2A
+    CLC
+    ADC 87_UNK
+    JSR RTN_UNK_B
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$02
+    BNE 04:0DDC
+    JMP L_04:098C
+CB_AU: ; 04:0DFC, 0x008DFC
+    LDA 88_UNK_SWITCH?
+    BEQ 04:0E03
+    DEC 88_UNK_SWITCH?
+    RTS
+    LDA #$2C
+    CLC
+    ADC 87_UNK
+    JSR RTN_UNK_B
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$06
+    BEQ 04:0DF9
+    LDA #$04
+    STA 88_UNK_SWITCH?
+    RTS
+CB_AW: ; 04:0E18, 0x008E18
+    LDA #$39
+    BNE 04:0E1E
+CB_AV: ; 04:0E1C, 0x008E1C
+    LDA #$32
+    LDY 88_UNK_SWITCH?
+    BEQ 04:0E25
+    DEC 88_UNK_SWITCH?
+    RTS
+    CLC
+    ADC 87_UNK
+    JSR RTN_UNK_B
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$07
+    BEQ 04:0DF9
+    LDA #$03
+    STA 88_UNK_SWITCH?
+    RTS
+CB_AX: ; 04:0E38, 0x008E38
+    LDA 87_UNK
+    CLC
+    ADC #$40
+    JSR RTN_UNK_B
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$02
+    BEQ 04:0DF9
+    RTS
+CB_AY: ; 04:0E49, 0x008E49
+    LDA #$42
+    BNE 04:0E4F
+CB_AZ: ; 04:0E4D, 0x008E4D
+    LDA #$4A
+    LDY 88_UNK_SWITCH?
+    BEQ 04:0E56
+    DEC 88_UNK_SWITCH?
+    RTS
+    CLC
+    ADC 87_UNK
+    JSR RTN_UNK_B
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$08
+    BEQ 04:0DF9
+    CMP #$05
+    BNE 04:0E68
+    LDA #$0E
+    STA 88_UNK_SWITCH?
+    RTS
+CB_BA: ; 04:0E6D, 0x008E6D
+    LDY 88_UNK_SWITCH?
+    BEQ 04:0E74
+    DEC 88_UNK_SWITCH?
+    RTS
+    LDA 60A_SWITCH_WHICH?
+    SEC
+    SBC #$53
+    STA TMP_00
+    ASL A
+    CLC
+    ADC TMP_00
+    CLC
+    ADC #$52
+    CLC
+    ADC 87_UNK
+    JSR RTN_UNK_B
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$03
+    BEQ 04:0E96
+    LDA #$03
+    STA 88_UNK_SWITCH?
+    RTS
+    LDA 60A_SWITCH_WHICH?
+    JSR L_04:05C8
+    JMP L_04:098C
+CB_BB: ; 04:0E9F, 0x008E9F
+    LDY 88_UNK_SWITCH?
+    BEQ 04:0EA6
+    DEC 88_UNK_SWITCH?
+    RTS
+    LDA 60A_SWITCH_WHICH?
+    SEC
+    SBC #$57
+    ASL A
+    ASL A
+    CLC
+    ADC #$5E
+    CLC
+    ADC 87_UNK
+    JSR RTN_UNK_B
+    INC 87_UNK
+    LDA 87_UNK
+    CMP #$04
+    BNE 04:0EC2
+    JMP L_04:098C
+    LDA #$04
+    STA 88_UNK_SWITCH?
+    RTS
+CB_BC: ; 04:0EC7, 0x008EC7
+    LDY 88_UNK_SWITCH?
+    BEQ 04:0ECE
+    DEC 88_UNK_SWITCH?
+    RTS
+    LDY 87_UNK
+    LDA 04:0EE1,Y
+    CMP #$FF
+    BEQ 04:0EBF
+    JSR RTN_UNK_B
+    INC 87_UNK
+    LDA #$0C
+    STA 88_UNK_SWITCH?
+    RTS
     .db 78
     .db 76
     .db 77
@@ -3315,30 +3020,18 @@ L_04:0D18: ; 04:0D18, 0x008D18
     .db 77
     .db 76
     .db FF
-    .db A9
-    .db 79
-    .db 20
-    .db B2
-    .db 88
-    .db 4C
-    .db 8C
-    .db 89
-    .db A9
-    .db 5B
-    .db 20
-    .db 2D
-    .db 86
-    .db 4C
-    .db 8C
-    .db 89
-    .db A9
-    .db 5B
-    .db 20
-    .db 44
-    .db 86
-    .db 4C
-    .db 8C
-    .db 89
+CB_BD: ; 04:0EEA, 0x008EEA
+    LDA #$79
+    JSR RTN_UNK_B
+    JMP L_04:098C
+CB_BE: ; 04:0EF2, 0x008EF2
+    LDA #$5B
+    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
+    JMP L_04:098C
+CB_BF: ; 04:0EFA, 0x008EFA
+    LDA #$5B
+    JSR L_04:0644
+    JMP L_04:098C
     .db A4
     .db 57
     .db A5

@@ -175,7 +175,7 @@ FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE:        .rs 1
 
 
           .rsset 0x008A
-R_**:$008A:                                   .rs 1
+FLAG_8A_UNK_ROCKSTEADY?:                      .rs 1
 8B_UNK:                                       .rs 1
 8C_UNK:                                       .rs 1
 8D_UNK:                                       .rs 1
@@ -515,10 +515,10 @@ OBJ_ENABLED_STATE+MORE?:                      .rs 18
 OBJ_STATE_DIR_RELATED_C:                      .rs 18
 OBJ_ANIM_HOLD_TIMER?:                         .rs 18
 45A_OBJ_DATA_ENTRY?STATE_STEP?:               .rs 18
-OBJ_POS_Y:                                    .rs 18
+OBJ_POS_Y??:                                  .rs 18
 OBJ_POS_X?:                                   .rs 18
 OBJ_POS_X_SUBPIXEL?:                          .rs 18
-OBJ_POS_Y?:                                   .rs 18
+OBJ_POS_X??:                                  .rs 18
 4B4_OBJ_SPEED?:                               .rs 18
 4C6_OBJ_UNK:                                  .rs 18
 4D8_OBJ_UNK:                                  .rs 18
@@ -716,15 +716,11 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 
           .rsset 0x070C
 70C_UNK:                                      .rs 1
-
-
-          .rsset 0x070E
+70D_UNK:                                      .rs 1
 70E_OBJ_UNK:                                  .rs 1
 R_**:$070F:                                   .rs 1
 710_UNK:                                      .rs 1
-
-
-          .rsset 0x0712
+711_UNK:                                      .rs 1
 712_FLAG_PALETTE_UNK:                         .rs 1
 
 

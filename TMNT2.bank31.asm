@@ -276,9 +276,9 @@ LOOP_STREAM_SHIFTS: ; 1F:017D, 0x03E17D
     JMP LOOP_PREP_SHIFTS
 RTS_EOF: ; 1F:01D2, 0x03E1D2
     LDA #$FF
-    STA PPU_UPDATE_BUFFER[20],X
-    INX
-    STX PPU_UPDATE_BUF_INDEX
+    STA PPU_UPDATE_BUFFER[20],X ; Set index.
+    INX ; ++
+    STX PPU_UPDATE_BUF_INDEX ; Store index.
     RTS
 BANK_SWITCH_BASED_ON_SCREEN/LEVEL: ; 1F:01DB, 0x03E1DB
     LDY LEVEL/SCREEN_ON ; Load index.
@@ -298,319 +298,344 @@ BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
     .db 2E
     .db 2E ; Guessing this is the end as the data past looks like ptrs.
 FILE_PTRS_POSITIVE_L: ; 1F:01EF, 0x03E1EF
-    .db 1F
+    LOW(AAAAAA)
 FILE_PTRS_POSITIVE_H: ; 1F:01F0, 0x03E1F0
-    .db E2
-    .db 24
-    .db E2
-    .db 29
-    .db E2
-    .db 2E
-    .db E2
-    .db 33
-    .db E2
-    .db 38
-    .db E2
-    .db 3D
-    .db E2
-    .db 42
-    .db E2
-    .db 47
-    .db E2
-    .db 4C
-    .db E2
-    .db 51
-    .db E2
-    .db 56
-    .db E2
-    .db 5B
-    .db E2
-    .db 60
-    .db E2
-    .db 65
-    .db E2
-    .db 6A
-    .db E2
-    .db 6F
-    .db E2
-    .db 74
-    .db E2
-    .db 79
-    .db E2
-    .db 7E
-    .db E2
-    .db 83
-    .db E2
-    .db 88
-    .db E2
-    .db 8D
-    .db E2
-    .db 92
-    .db E2
+    HIGH(AAAAAA)
+    LOW(BBBBBB)
+    HIGH(BBBBBB)
+    LOW(CCCCCC)
+    HIGH(CCCCCC)
+    LOW(DDDDDD)
+    HIGH(DDDDDD)
+    LOW(EEEEEE)
+    HIGH(EEEEEE)
+    LOW(FFFFFF)
+    HIGH(FFFFFF)
+    LOW(GGGGGG)
+    HIGH(GGGGGG)
+    LOW(HHHHHH)
+    HIGH(HHHHHH)
+    LOW(IIIIII)
+    HIGH(IIIIII)
+    LOW(JJJJJJ)
+    HIGH(JJJJJJ)
+    LOW(KKKKKK)
+    HIGH(KKKKKK)
+    LOW(LLLLLL)
+    HIGH(LLLLLL)
+    LOW(MMMMMM)
+    HIGH(MMMMMM)
+    LOW(NNNNNN)
+    HIGH(NNNNNN)
+    LOW(OOOOOO)
+    HIGH(OOOOOO)
+    LOW(PPPPPP)
+    HIGH(PPPPPP)
+    LOW(QQQQQQ)
+    HIGH(QQQQQQ)
+    LOW(RRRRRR)
+    HIGH(RRRRRR)
+    LOW(SSSSSS)
+    HIGH(SSSSSS)
+    LOW(TTTTTT)
+    HIGH(TTTTTT)
+    LOW(UUUUUU)
+    HIGH(UUUUUU)
+    LOW(VVVVVV)
+    HIGH(VVVVVV)
+    LOW(WWWWWW)
+    HIGH(WWWWWW)
+    LOW(XXXXXX)
+    HIGH(XXXXXX)
+AAAAAA: ; 1F:021F, 0x03E21F
     .db 08
     .db 08
     .db 00
     .db 20
     .db 0E
+BBBBBB: ; 1F:0224, 0x03E224
     .db 10
     .db 10
     .db 00
     .db 28
     .db 0E
+CCCCCC: ; 1F:0229, 0x03E229
     .db 08
     .db 08
     .db 00
     .db 10
     .db 0E
+DDDDDD: ; 1F:022E, 0x03E22E
     .db 14
     .db 14
     .db 00
     .db 40
     .db 0E
+EEEEEE: ; 1F:0233, 0x03E233
     .db 20
     .db 00
     .db 00
     .db 30
     .db 10
+FFFFFF: ; 1F:0238, 0x03E238
     .db 20
     .db 20
     .db 00
     .db 30
     .db 0E
+GGGGGG: ; 1F:023D, 0x03E23D
     .db 14
     .db 10
     .db 00
     .db 40
     .db 0E
+HHHHHH: ; 1F:0242, 0x03E242
     .db 18
     .db 18
     .db 00
     .db 40
     .db 18
+IIIIII: ; 1F:0247, 0x03E247
     .db 10
     .db 10
     .db 00
     .db 20
     .db 0E
+JJJJJJ: ; 1F:024C, 0x03E24C
     .db 03
     .db 03
     .db 00
     .db 30
     .db 0E
+KKKKKK: ; 1F:0251, 0x03E251
     .db 10
     .db 10
     .db 00
     .db 30
     .db 0E
+LLLLLL: ; 1F:0256, 0x03E256
     .db 04
     .db 04
     .db 00
     .db 20
     .db 0E
+MMMMMM: ; 1F:025B, 0x03E25B
     .db 0C
     .db 0C
     .db 00
     .db 14
     .db 14
+NNNNNN: ; 1F:0260, 0x03E260
     .db 0A
     .db 0A
     .db 00
     .db 30
     .db 0E
+OOOOOO: ; 1F:0265, 0x03E265
     .db 1C
     .db 00
     .db 00
     .db 30
     .db 0E
+PPPPPP: ; 1F:026A, 0x03E26A
     .db 18
     .db 08
     .db 00
     .db 40
     .db 0E
+QQQQQQ: ; 1F:026F, 0x03E26F
     .db 18
     .db 18
     .db 00
     .db 20
     .db 0E
+RRRRRR: ; 1F:0274, 0x03E274
     .db 14
     .db 14
     .db 00
     .db 18
     .db 0E
+SSSSSS: ; 1F:0279, 0x03E279
     .db 0C
     .db 0C
     .db 00
     .db 30
     .db 0E
+TTTTTT: ; 1F:027E, 0x03E27E
     .db 10
     .db 10
     .db 00
     .db 30
     .db 0E
+UUUUUU: ; 1F:0283, 0x03E283
     .db 14
     .db 0C
     .db 00
     .db 18
     .db 0E
+VVVVVV: ; 1F:0288, 0x03E288
     .db 08
     .db 08
     .db 00
     .db 20
     .db 0E
+WWWWWW: ; 1F:028D, 0x03E28D
     .db 06
     .db 06
     .db 00
     .db 20
     .db 0E
+XXXXXX: ; 1F:0292, 0x03E292
     .db 10
     .db 10
     .db 00
     .db 40
     .db 0E
 DATA_PTRS_NEGATIVE_L: ; 1F:0297, 0x03E297
-    .db 25
+    LOW(AAA)
 DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
-    .db E3
-    .db 2C
-    .db E3
-    .db 33
-    .db E3
-    .db 3A
-    .db E3
-    .db 41
-    .db E3
-    .db 48
-    .db E3
-    .db 4F
-    .db E3
-    .db 56
-    .db E3
-    .db 5D
-    .db E3
-    .db 64
-    .db E3
-    .db 6B
-    .db E3
-    .db 72
-    .db E3
-    .db 79
-    .db E3
-    .db 80
-    .db E3
-    .db 87
-    .db E3
-    .db 8E
-    .db E3
-    .db 95
-    .db E3
-    .db 9C
-    .db E3
-    .db A3
-    .db E3
-    .db AA
-    .db E3
-    .db B1
-    .db E3
-    .db B8
-    .db E3
-    .db BF
-    .db E3
-    .db C6
-    .db E3
-    .db CD
-    .db E3
-    .db D4
-    .db E3
-    .db DB
-    .db E3
-    .db E2
-    .db E3
-    .db E9
-    .db E3
-    .db F0
-    .db E3
-    .db F7
-    .db E3
-    .db FE
-    .db E3
-    .db 05
-    .db E4
-    .db 0C
-    .db E4
-    .db 13
-    .db E4
-    .db 1A
-    .db E4
-    .db 21
-    .db E4
-    .db 28
-    .db E4
-    .db 2F
-    .db E4
-    .db 36
-    .db E4
-    .db 3D
-    .db E4
-    .db 44
-    .db E4
-    .db 4B
-    .db E4
-    .db 52
-    .db E4
-    .db 59
-    .db E4
-    .db 60
-    .db E4
-    .db 67
-    .db E4
-    .db 6E
-    .db E4
-    .db 75
-    .db E4
-    .db 7C
-    .db E4
-    .db 83
-    .db E4
-    .db 8A
-    .db E4
-    .db 91
-    .db E4
-    .db 98
-    .db E4
-    .db 9F
-    .db E4
-    .db A6
-    .db E4
-    .db AD
-    .db E4
-    .db B4
-    .db E4
-    .db BB
-    .db E4
-    .db C2
-    .db E4
-    .db C9
-    .db E4
-    .db D0
-    .db E4
-    .db D7
-    .db E4
-    .db DE
-    .db E4
-    .db E5
-    .db E4
-    .db EC
-    .db E4
-    .db F3
-    .db E4
-    .db FA
-    .db E4
-    .db 01
-    .db E5
-    .db 08
-    .db E5
-    .db 0F
-    .db E5
+    HIGH(AAA)
+    LOW(BBB)
+    HIGH(BBB)
+    LOW(CCC)
+    HIGH(CCC)
+    LOW(DDD)
+    HIGH(DDD)
+    LOW(EEE)
+    HIGH(EEE)
+    LOW(FFF)
+    HIGH(FFF)
+    LOW(GGG)
+    HIGH(GGG)
+    LOW(HHH)
+    HIGH(HHH)
+    LOW(III)
+    HIGH(III)
+    LOW(JJJ)
+    HIGH(JJJ)
+    LOW(KKK)
+    HIGH(KKK)
+    LOW(CC)
+    HIGH(CC)
+    LOW(LLL)
+    HIGH(LLL)
+    LOW(MMM)
+    HIGH(MMM)
+    LOW(NNN)
+    HIGH(NNN)
+    LOW(OOO)
+    HIGH(OOO)
+    LOW(PPP)
+    HIGH(PPP)
+    LOW(QQQ)
+    HIGH(QQQ)
+    LOW(RRR)
+    HIGH(RRR)
+    LOW(SSS)
+    HIGH(SSS)
+    LOW(TTT)
+    HIGH(TTT)
+    LOW(UUU)
+    HIGH(UUU)
+    LOW(VVV)
+    HIGH(VVV)
+    LOW(WWW)
+    HIGH(WWW)
+    LOW(XXX)
+    HIGH(XXX)
+    LOW(YYY)
+    HIGH(YYY)
+    LOW(ZZZ)
+    HIGH(ZZZ)
+    LOW(AAAA)
+    HIGH(AAAA)
+    LOW(BBBB)
+    HIGH(BBBB)
+    LOW(CCCC)
+    HIGH(CCCC)
+    LOW(DDDD)
+    HIGH(DDDD)
+    LOW(EEEE)
+    HIGH(EEEE)
+    LOW(FFFF)
+    HIGH(FFFF)
+    LOW(GGGG)
+    HIGH(GGGG)
+    LOW(HHHH)
+    HIGH(HHHH)
+    LOW(IIII)
+    HIGH(IIII)
+    LOW(JJJJ)
+    HIGH(JJJJ)
+    LOW(KKKK)
+    HIGH(KKKK)
+    LOW(LLLL)
+    HIGH(LLLL)
+    LOW(MMMM)
+    HIGH(MMMM)
+    LOW(NNNN)
+    HIGH(NNNN)
+    LOW(OOOO)
+    HIGH(OOOO)
+    LOW(PPPP)
+    HIGH(PPPP)
+    LOW(QQQQ)
+    HIGH(QQQQ)
+    LOW(RRRR)
+    HIGH(RRRR)
+    LOW(SSSS)
+    HIGH(SSSS)
+    LOW(TTTT)
+    HIGH(TTTT)
+    LOW(DD)
+    HIGH(DD)
+    LOW(UUUU)
+    HIGH(UUUU)
+    LOW(VVVV)
+    HIGH(VVVV)
+    LOW(WWWW)
+    HIGH(WWWW)
+    LOW(XXXX)
+    HIGH(XXXX)
+    LOW(YYYY)
+    HIGH(YYYY)
+    LOW(ZZZZ)
+    HIGH(ZZZZ)
+    LOW(AAAAA)
+    HIGH(AAAAA)
+    LOW(BBBBB)
+    HIGH(BBBBB)
+    LOW(CCCCC)
+    HIGH(CCCCC)
+    LOW(DDDDD)
+    HIGH(DDDDD)
+    LOW(EEEEE)
+    HIGH(EEEEE)
+    LOW(FFFFF)
+    HIGH(FFFFF)
+    LOW(GGGGG)
+    HIGH(GGGGG)
+    LOW(HHHHHH)
+    HIGH(HHHHHH)
+    LOW(IIIII)
+    HIGH(IIIII)
+    LOW(JJJJJ)
+    HIGH(JJJJJ)
+    LOW(KKKKK)
+    HIGH(KKKKK)
+    LOW(LLLLL)
+    HIGH(LLLLL)
+    LOW(MMMMM)
+    HIGH(MMMMM)
+    LOW(NNNNN)
+    HIGH(NNNNN)
+    LOW(OOOOO)
+    HIGH(OOOOO)
+    LOW(PPPPP)
+    HIGH(PPPPP)
+    LOW(QQQQQ)
+    HIGH(QQQQQ)
+AAA: ; 1F:0325, 0x03E325
     .db 04
     .db 38
     .db F8
@@ -618,6 +643,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 00
     .db 10
+BBB: ; 1F:032C, 0x03E32C
     .db 00
     .db 18
     .db F0
@@ -625,6 +651,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 01
     .db 41
+CCC: ; 1F:0333, 0x03E333
     .db 08
     .db 10
     .db 00
@@ -632,6 +659,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 01
     .db 41
+DDD: ; 1F:033A, 0x03E33A
     .db 02
     .db 02
     .db 02
@@ -639,6 +667,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 83
     .db 41
+EEE: ; 1F:0341, 0x03E341
     .db 05
     .db 05
     .db 00
@@ -646,6 +675,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 01
     .db 01
+FFF: ; 1F:0348, 0x03E348
     .db 04
     .db 38
     .db F4
@@ -653,6 +683,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 00
     .db 11
+GGG: ; 1F:034F, 0x03E34F
     .db 08
     .db 08
     .db 06
@@ -660,6 +691,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 00
     .db 41
+HHH: ; 1F:0356, 0x03E356
     .db 10
     .db 10
     .db 00
@@ -667,6 +699,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 10
     .db 00
     .db 48
+III: ; 1F:035D, 0x03E35D
     .db 08
     .db 08
     .db 00
@@ -674,6 +707,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 02
     .db 21
+JJJ: ; 1F:0364, 0x03E364
     .db 08
     .db 08
     .db 00
@@ -681,6 +715,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 89
     .db 44
+KKK: ; 1F:036B, 0x03E36B
     .db 18
     .db 18
     .db 00
@@ -688,6 +723,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 8A
     .db 44
+CC: ; 1F:0372, 0x03E372
     .db 18
     .db 18
     .db 10
@@ -695,6 +731,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 16
     .db 8B
     .db 44
+LLL: ; 1F:0379, 0x03E379
     .db 10
     .db 20
     .db 00
@@ -702,6 +739,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 03
     .db 44
+MMM: ; 1F:0380, 0x03E380
     .db 00
     .db 20
     .db F0
@@ -709,6 +747,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 03
     .db 44
+NNN: ; 1F:0387, 0x03E387
     .db 00
     .db 1C
     .db 00
@@ -716,6 +755,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 04
     .db 44
+OOO: ; 1F:038E, 0x03E38E
     .db 00
     .db 1C
     .db 00
@@ -723,6 +763,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 04
     .db 44
+PPP: ; 1F:0395, 0x03E395
     .db 00
     .db 20
     .db 00
@@ -730,6 +771,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 90
     .db 44
+QQQ: ; 1F:039C, 0x03E39C
     .db 20
     .db 20
     .db 00
@@ -737,6 +779,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 91
     .db 44
+RRR: ; 1F:03A3, 0x03E3A3
     .db 30
     .db 18
     .db 18
@@ -744,6 +787,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 92
     .db 44
+SSS: ; 1F:03AA, 0x03E3AA
     .db 04
     .db 04
     .db 04
@@ -751,6 +795,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 93
     .db 42
+TTT: ; 1F:03B1, 0x03E3B1
     .db 00
     .db 20
     .db 00
@@ -758,6 +803,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 94
     .db 44
+UUU: ; 1F:03B8, 0x03E3B8
     .db 05
     .db 05
     .db 05
@@ -765,6 +811,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 95
     .db A4
+VVV: ; 1F:03BF, 0x03E3BF
     .db 04
     .db 04
     .db 06
@@ -772,6 +819,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 03
     .db 41
+WWW: ; 1F:03C6, 0x03E3C6
     .db 00
     .db 20
     .db 00
@@ -779,6 +827,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 97
     .db 44
+XXX: ; 1F:03CD, 0x03E3CD
     .db 03
     .db 03
     .db 03
@@ -786,6 +835,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 98
     .db 44
+YYY: ; 1F:03D4, 0x03E3D4
     .db 04
     .db 24
     .db E0
@@ -793,6 +843,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 03
     .db 44
+ZZZ: ; 1F:03DB, 0x03E3DB
     .db 05
     .db 05
     .db 05
@@ -800,6 +851,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 03
     .db 42
+AAAA: ; 1F:03E2, 0x03E3E2
     .db 05
     .db 05
     .db 07
@@ -807,6 +859,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 03
     .db 42
+BBBB: ; 1F:03E9, 0x03E3E9
     .db 05
     .db 05
     .db 0A
@@ -814,6 +867,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 03
     .db 42
+CCCC: ; 1F:03F0, 0x03E3F0
     .db 06
     .db 06
     .db 10
@@ -821,6 +875,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 03
     .db 42
+DDDD: ; 1F:03F7, 0x03E3F7
     .db 05
     .db 05
     .db 05
@@ -828,6 +883,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 9E
     .db 44
+EEEE: ; 1F:03FE, 0x03E3FE
     .db 03
     .db 20
     .db 00
@@ -835,6 +891,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 09
     .db 84
+FFFF: ; 1F:0405, 0x03E405
     .db 03
     .db 03
     .db 03
@@ -842,6 +899,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db A0
     .db 42
+GGGG: ; 1F:040C, 0x03E40C
     .db 06
     .db 06
     .db 06
@@ -849,6 +907,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db A1
     .db 70
+HHHH: ; 1F:0413, 0x03E413
     .db 02
     .db 02
     .db 00
@@ -856,6 +915,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db A2
     .db 44
+IIII: ; 1F:041A, 0x03E41A
     .db 00
     .db 30
     .db E8
@@ -863,6 +923,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db A3
     .db 31
+JJJJ: ; 1F:0421, 0x03E421
     .db 08
     .db 08
     .db 70
@@ -870,6 +931,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db A4
     .db 44
+KKKK: ; 1F:0428, 0x03E428
     .db 03
     .db 03
     .db 03
@@ -877,6 +939,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db A5
     .db 42
+LLLL: ; 1F:042F, 0x03E42F
     .db 20
     .db 00
     .db 00
@@ -884,6 +947,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db A6
     .db 44
+MMMM: ; 1F:0436, 0x03E436
     .db 00
     .db 20
     .db E0
@@ -891,6 +955,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 0F
     .db 44
+NNNN: ; 1F:043D, 0x03E43D
     .db 00
     .db 30
     .db 00
@@ -898,6 +963,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 0F
     .db 44
+OOOO: ; 1F:0444, 0x03E444
     .db 1C
     .db 1C
     .db 1C
@@ -905,6 +971,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 18
     .db A9
     .db 48
+PPPP: ; 1F:044B, 0x03E44B
     .db 04
     .db 04
     .db FC
@@ -912,6 +979,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db AA
     .db 42
+QQQQ: ; 1F:0452, 0x03E452
     .db 08
     .db 08
     .db FE
@@ -919,6 +987,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db AB
     .db 42
+RRRR: ; 1F:0459, 0x03E459
     .db 04
     .db 04
     .db FC
@@ -926,6 +995,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db AC
     .db 44
+SSSS: ; 1F:0460, 0x03E460
     .db 00
     .db 28
     .db 00
@@ -933,6 +1003,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 01
     .db 44
+TTTT: ; 1F:0467, 0x03E467
     .db 00
     .db 0C
     .db F0
@@ -940,6 +1011,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 01
     .db 44
+DD: ; 1F:046E, 0x03E46E
     .db 18
     .db 18
     .db 10
@@ -947,6 +1019,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db AF
     .db 46
+UUUU: ; 1F:0475, 0x03E475
     .db 10
     .db 10
     .db 00
@@ -954,6 +1027,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 10
     .db B0
     .db 48
+VVVV: ; 1F:047C, 0x03E47C
     .db 0E
     .db 0E
     .db 04
@@ -961,6 +1035,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0A
     .db B1
     .db 46
+WWWW: ; 1F:0483, 0x03E483
     .db 04
     .db 04
     .db 00
@@ -968,6 +1043,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db B2
     .db 46
+XXXX: ; 1F:048A, 0x03E48A
     .db 04
     .db 04
     .db 00
@@ -975,6 +1051,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db B3
     .db 46
+YYYY: ; 1F:0491, 0x03E491
     .db 04
     .db 04
     .db 00
@@ -982,6 +1059,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db B4
     .db 46
+ZZZZ: ; 1F:0498, 0x03E498
     .db 04
     .db 04
     .db 00
@@ -989,6 +1067,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db B5
     .db 46
+AAAAA: ; 1F:049F, 0x03E49F
     .db 04
     .db 04
     .db 00
@@ -996,6 +1075,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db B6
     .db 46
+BBBBB: ; 1F:04A6, 0x03E4A6
     .db 18
     .db 1C
     .db 00
@@ -1003,6 +1083,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 11
     .db 44
+CCCCC: ; 1F:04AD, 0x03E4AD
     .db 00
     .db 18
     .db F0
@@ -1010,6 +1091,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 12
     .db 41
+DDDDD: ; 1F:04B4, 0x03E4B4
     .db 04
     .db 04
     .db 04
@@ -1017,6 +1099,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db B9
     .db 41
+EEEEE: ; 1F:04BB, 0x03E4BB
     .db 18
     .db 18
     .db 00
@@ -1024,6 +1107,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 11
     .db 42
+FFFFF: ; 1F:04C2, 0x03E4C2
     .db 01
     .db 01
     .db 01
@@ -1031,6 +1115,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db BB
     .db 44
+GGGGG: ; 1F:04C9, 0x03E4C9
     .db 00
     .db 40
     .db 00
@@ -1038,6 +1123,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 13
     .db 44
+HHHHHH: ; 1F:04D0, 0x03E4D0
     .db 08
     .db 08
     .db 10
@@ -1045,6 +1131,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 14
     .db 42
+IIIII: ; 1F:04D7, 0x03E4D7
     .db 08
     .db 20
     .db 10
@@ -1052,6 +1139,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 14
     .db 42
+JJJJJ: ; 1F:04DE, 0x03E4DE
     .db 08
     .db 08
     .db FA
@@ -1059,6 +1147,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db BF
     .db 43
+KKKKK: ; 1F:04E5, 0x03E4E5
     .db 0E
     .db 0E
     .db 00
@@ -1066,6 +1155,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db C0
     .db 44
+LLLLL: ; 1F:04EC, 0x03E4EC
     .db 01
     .db 01
     .db 01
@@ -1073,6 +1163,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db C1
     .db 41
+MMMMM: ; 1F:04F3, 0x03E4F3
     .db 04
     .db 04
     .db 00
@@ -1080,6 +1171,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db 15
     .db 44
+NNNNN: ; 1F:04FA, 0x03E4FA
     .db 00
     .db 24
     .db 10
@@ -1087,6 +1179,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 10
     .db 17
     .db 44
+OOOOO: ; 1F:0501, 0x03E501
     .db 18
     .db 18
     .db 00
@@ -1094,6 +1187,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 0E
     .db C4
     .db 48
+PPPPP: ; 1F:0508, 0x03E508
     .db 10
     .db 10
     .db 10
@@ -1101,6 +1195,7 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db 10
     .db C5
     .db 48
+QQQQQ: ; 1F:050F, 0x03E50F
     .db 14
     .db 14
     .db 14
@@ -1109,19 +1204,20 @@ DATA_PTRS_NEGATIVE_H: ; 1F:0298, 0x03E298
     .db C6
     .db 46
 DPTRS_UNK_L: ; 1F:0516, 0x03E516
-    .db 22
+    LOW(AA)
 DPTRS_UNK_H: ; 1F:0517, 0x03E517
-    .db E5
-    .db 22
-    .db E5
-    .db 22
-    .db E5
-    .db 36
-    .db E5
-    .db 72
-    .db E3
-    .db 6E
-    .db E4
+    HIGH(AA)
+    LOW(AA)
+    HIGH(AA)
+    LOW(AA)
+    HIGH(AA)
+    LOW(BB)
+    HIGH(BB)
+    LOW(CC)
+    HIGH(CC)
+    LOW(DD)
+    HIGH(DD)
+AA: ; 1F:0522, 0x03E522
     .db 0C
     .db 0C
     .db 00
@@ -1142,6 +1238,7 @@ DPTRS_UNK_H: ; 1F:0517, 0x03E517
     .db 08
     .db 00
     .db 28
+BB: ; 1F:0536, 0x03E536
     .db 0C
     .db 0C
     .db 00
@@ -1162,112 +1259,115 @@ DPTRS_UNK_H: ; 1F:0517, 0x03E517
     .db 0C
     .db 00
     .db 28
-DATA_UNK_A: ; 1F:054A, 0x03E54A
-    .db AC
-DATA_UNK_B: ; 1F:054B, 0x03E54B
-    .db E5
-    .db AC
-    .db E5
-    .db AA
-    .db E5
-    .db AA
-    .db E5
-    .db DA
-    .db E5
-    .db DA
-    .db E5
-    .db B2
-    .db E5
-    .db B2
-    .db E5
-    .db BA
-    .db E5
-    .db BA
-    .db E5
-    .db C4
-    .db E5
-    .db C4
-    .db E5
-    .db D2
-    .db E5
-    .db D2
-    .db E5
-    .db E6
-    .db E5
-    .db E6
-    .db E5
-    .db E6
-    .db E5
-    .db E6
-    .db E5
-    .db EA
-    .db E5
-    .db EA
-    .db E5
-    .db AA
-    .db E5
-    .db AA
-    .db E5
-    .db F2
-    .db E5
-    .db F2
-    .db E5
-    .db FA
-    .db E5
-    .db FA
-    .db E5
-    .db 02
-    .db E6
-    .db 02
-    .db E6
-    .db 16
-    .db E6
-    .db 16
-    .db E6
-    .db EE
-    .db E5
-    .db AA
-    .db E5
-    .db 08
-    .db E6
-    .db 08
-    .db E6
-    .db 10
-    .db E6
-    .db 10
-    .db E6
-    .db 26
-    .db E6
-    .db 26
-    .db E6
-    .db 26
-    .db E6
-    .db 26
-    .db E6
-    .db 2A
-    .db E6
-    .db 2A
-    .db E6
-    .db 1E
-    .db E6
-    .db 1E
-    .db E6
-    .db 22
-    .db E6
-    .db 22
-    .db E6
-    .db AA
-    .db E5
-    .db AA
-    .db E5
+PTR_UNK_L: ; 1F:054A, 0x03E54A
+    LOW(A)
+PTR_UNK_H: ; 1F:054B, 0x03E54B
+    HIGH(A)
+    LOW(A)
+    HIGH(A)
+    LOW(B)
+    HIGH(B)
+    LOW(B)
+    HIGH(B)
+    LOW(C)
+    HIGH(C)
+    LOW(C)
+    HIGH(C)
+    LOW(D)
+    HIGH(D)
+    LOW(D)
+    HIGH(D)
+    LOW(E)
+    HIGH(E)
+    LOW(E)
+    HIGH(E)
+    LOW(F)
+    HIGH(F)
+    LOW(F)
+    HIGH(F)
+    LOW(G)
+    HIGH(G)
+    LOW(G)
+    HIGH(G)
+    LOW(H)
+    HIGH(H)
+    LOW(H)
+    HIGH(H)
+    LOW(H)
+    HIGH(H)
+    LOW(H)
+    HIGH(H)
+    LOW(I)
+    HIGH(I)
+    LOW(I)
+    HIGH(I)
+    LOW(B)
+    HIGH(B)
+    LOW(B)
+    HIGH(B)
+    LOW(J)
+    HIGH(J)
+    LOW(J)
+    HIGH(J)
+    LOW(K)
+    HIGH(K)
+    LOW(K)
+    HIGH(K)
+    LOW(L)
+    HIGH(L)
+    LOW(L)
+    HIGH(L)
+    LOW(M)
+    HIGH(M)
+    LOW(M)
+    HIGH(M)
+    LOW(N)
+    HIGH(N)
+    LOW(B)
+    HIGH(B)
+    LOW(O)
+    HIGH(O)
+    LOW(O)
+    HIGH(O)
+    LOW(P)
+    HIGH(P)
+    LOW(P)
+    HIGH(P)
+    LOW(Q)
+    HIGH(Q)
+    LOW(Q)
+    HIGH(Q)
+    LOW(Q)
+    HIGH(Q)
+    LOW(Q)
+    HIGH(Q)
+    LOW(R)
+    HIGH(R)
+    LOW(R)
+    HIGH(R)
+    LOW(S)
+    HIGH(S)
+    LOW(S)
+    HIGH(S)
+    LOW(T)
+    HIGH(T)
+    LOW(T)
+    HIGH(T)
+    LOW(B)
+    HIGH(B)
+    LOW(B)
+    HIGH(B)
+B: ; 1F:05AA, 0x03E5AA
     .db FF
     .db 00
+A: ; 1F:05AC, 0x03E5AC
     .db BF
     .db 01
     .db FA
     .db 03
     .db FD
     .db 03
+D: ; 1F:05B2, 0x03E5B2
     .db CF
     .db 01
     .db F9
@@ -1276,6 +1376,7 @@ DATA_UNK_B: ; 1F:054B, 0x03E54B
     .db 01
     .db FD
     .db 03
+E: ; 1F:05BA, 0x03E5BA
     .db 4F
     .db 01
     .db 52
@@ -1286,6 +1387,7 @@ DATA_UNK_B: ; 1F:054B, 0x03E54B
     .db 03
     .db FD
     .db 03
+F: ; 1F:05C4, 0x03E5C4
     .db A8
     .db 01
     .db DF
@@ -1300,6 +1402,7 @@ DATA_UNK_B: ; 1F:054B, 0x03E54B
     .db 03
     .db FD
     .db 03
+G: ; 1F:05D2, 0x03E5D2
     .db A8
     .db 01
     .db F4
@@ -1308,6 +1411,7 @@ DATA_UNK_B: ; 1F:054B, 0x03E54B
     .db 01
     .db FD
     .db 03
+C: ; 1F:05DA, 0x03E5DA
     .db 00
     .db 01
     .db 3A
@@ -1320,18 +1424,22 @@ DATA_UNK_B: ; 1F:054B, 0x03E54B
     .db 06
     .db FD
     .db 05
+H: ; 1F:05E6, 0x03E5E6
     .db ED
     .db 01
     .db FD
     .db 03
+I: ; 1F:05EA, 0x03E5EA
     .db 59
     .db 01
     .db FD
     .db 03
+N: ; 1F:05EE, 0x03E5EE
     .db 47
     .db 01
     .db 7F
     .db 03
+J: ; 1F:05F2, 0x03E5F2
     .db D9
     .db 01
     .db F6
@@ -1340,6 +1448,7 @@ DATA_UNK_B: ; 1F:054B, 0x03E54B
     .db 05
     .db FD
     .db 03
+K: ; 1F:05FA, 0x03E5FA
     .db D9
     .db 01
     .db F6
@@ -1348,12 +1457,14 @@ DATA_UNK_B: ; 1F:054B, 0x03E54B
     .db 05
     .db FD
     .db 03
+L: ; 1F:0602, 0x03E602
     .db D4
     .db 01
     .db FC
     .db 03
     .db FD
     .db 03
+O: ; 1F:0608, 0x03E608
     .db C2
     .db 01
     .db D8
@@ -1362,12 +1473,14 @@ DATA_UNK_B: ; 1F:054B, 0x03E54B
     .db 01
     .db FD
     .db 03
+P: ; 1F:0610, 0x03E610
     .db C8
     .db 01
     .db F8
     .db 03
     .db FD
     .db 03
+M: ; 1F:0616, 0x03E616
     .db 8F
     .db 01
     .db D8
@@ -1376,18 +1489,22 @@ DATA_UNK_B: ; 1F:054B, 0x03E54B
     .db 01
     .db FD
     .db 03
+S: ; 1F:061E, 0x03E61E
     .db BF
     .db 01
     .db FF
     .db 03
+T: ; 1F:0622, 0x03E622
     .db 3F
     .db 01
     .db FF
     .db 03
+Q: ; 1F:0626, 0x03E626
     .db 9C
     .db 01
     .db FF
     .db 03
+R: ; 1F:062A, 0x03E62A
     .db 7E
     .db 01
     .db F9
@@ -1410,7 +1527,7 @@ RTN_UNK_RTS_CARRY_SET_FAIL?: ; 1F:0630, 0x03E630
     PHA
     TYA
     PHA
-    LDA OBJ_POS_Y[18],X ; Load obj val.
+    LDA OBJ_POS_Y??[18],X ; Load obj val.
     LDY 8E_UNK ; Y from.
     BPL 8E_VAL_POSITIVE ; If positive, goto.
     LDA OBJ_SECONDARY_SWITCH?[18],X ; Load
@@ -1419,10 +1536,10 @@ RTN_UNK_RTS_CARRY_SET_FAIL?: ; 1F:0630, 0x03E630
     LDY TMP_08 ; Get player focus.
     LDA A0_PLAYER_UNK[2],Y ; Load
     CLC
-    ADC OBJ_POS_Y?[18],X ; += Obj.
+    ADC OBJ_POS_X??[18],X ; += Obj.
     JMP 8E_VAL_POSITIVE ; Goto.
 NONE_SET: ; 1F:0662, 0x03E662
-    LDA OBJ_POS_Y?[18],X ; Load val.
+    LDA OBJ_POS_X??[18],X ; Load val.
 8E_VAL_POSITIVE: ; 1F:0665, 0x03E665
     STA 8E_UNK ; A to 8E.
     LDA 8C_UNK ; Load 8C.
@@ -1623,7 +1740,7 @@ RTN_UNK: ; 1F:0721, 0x03E721
     SEC
     SBC 8E_UNK
     CLC
-    ADC OBJ_POS_Y?[18],X
+    ADC OBJ_POS_X??[18],X
     STA 8E_UNK
     LDA 8C_UNK
     ASL A
@@ -1915,7 +2032,7 @@ ADD_NO_OVERFLOW: ; 1F:0936, 0x03E936
     LDA #$04 ; Seed
 SUB_NO_UNDERFLOW: ; 1F:0942, 0x03E942
     STA TMP_01 ; Store.
-    LDA OBJ_POS_Y?[18],X ; Load
+    LDA OBJ_POS_X??[18],X ; Load
     STA TMP_07 ; Store to TMP.
     JSR SUB_UNK_HIT_DETECT_CC_TRUE_CS_FALSE?
     BCS CS_RET ; CS ret, goto.
@@ -1985,14 +2102,14 @@ COPY_FROM_YOBJ_TO_XOBJ: ; 1F:09B0, 0x03E9B0
     STA OBJ_ANIM_HOLD_TIMER?[18],X
     LDA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],Y
     STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
-    LDA OBJ_POS_Y[18],Y
-    STA OBJ_POS_Y[18],X
+    LDA OBJ_POS_Y??[18],Y
+    STA OBJ_POS_Y??[18],X
     LDA OBJ_POS_X?[18],Y
     STA OBJ_POS_X?[18],X
     LDA OBJ_POS_X_SUBPIXEL?[18],Y
     STA OBJ_POS_X_SUBPIXEL?[18],X
-    LDA OBJ_POS_Y?[18],Y
-    STA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],Y
+    STA OBJ_POS_X??[18],X
     LDA 4B4_OBJ_SPEED?[18],Y
     STA 4B4_OBJ_SPEED?[18],X
     LDA 4C6_OBJ_UNK[18],Y
@@ -2153,7 +2270,7 @@ SKIP_SEED: ; 1F:0B27, 0x03EB27
     INY ; Stream++
     LDA [FILE_PLAYER_OBJ_USE_A[2]],Y ; Load from file.
     STA TMP_0A ; Store to.
-    LDA OBJ_POS_Y?[18],X ; Load obj.
+    LDA OBJ_POS_X??[18],X ; Load obj.
     STA TMP_07 ; Store to.
     LDX TMP_09 ; Load object higher.
     LDA OBJECT_DATA_EXTRA_B?[18],X ; Get data from.
@@ -2323,7 +2440,7 @@ HIGHER_LT_0x04: ; 1F:0C68, 0x03EC68
     LDA DPTRS_UNK_H,Y
     STA TMP_05
 RTN_START_UNK: ; 1F:0C80, 0x03EC80
-    LDA OBJ_POS_Y?[18],X ; Load
+    LDA OBJ_POS_X??[18],X ; Load
     SEC ; Prep sub.
     SBC TMP_07 ; Sub with.
     BPL SUB_POSITIVE
@@ -2895,7 +3012,7 @@ CROSS_BANK_INTERFACE_UNKNOWN: ; 1F:0ED4, 0x03EED4
     TYA ; Save Y.
     PHA
     LDA TMP_00 ; Load
-    BMI VAL_NEGATIVE
+    BMI VAL_NEGATIVE ; TODO: Any ever do this? I'm thinking no because of table size and no clear.
     LDA #$24 ; Bank A.
     BNE BANK_SEEDED ; Always taken.
 VAL_NEGATIVE: ; 1F:0EE2, 0x03EEE2
@@ -2954,203 +3071,203 @@ VAL_NOT_FF: ; 1F:0F29, 0x03EF29
     STA TMP_00 ; Clear.
     RTS ; RTS.
 SWITCH_RTN: ; 1F:0F35, 0x03EF35
-    JSR SWITCH_CODE_PTRS_PAST_JSR
-    .db 52 ; 0x00. TODO: Table. These are banks 0x12 and 0x15.
-    .db 89
-    .db 60 ; 0x01
-    .db 89
-    .db 96 ; 0x02
-    .db 89
-    .db 9C ; 0x03
-    .db 89
-    .db A2 ; 0x04
-    .db 89
-    .db A8 ; 0x05
-    .db 89
-    .db C0 ; 0x06
-    .db 89
-    .db CD ; 0x07
-    .db 89
-    .db E5 ; 0x08
-    .db 89
-    .db ED ; 0x09
-    .db 89
-    .db ED ; 0x0A
-    .db 89
-    .db ED ; 0x0B
-    .db 89
-    .db FF ; 0x0C
-    .db 89
-    .db FF ; 0x0D
-    .db 89
-    .db FF ; 0x0E
-    .db 89
-    .db FF ; 0x0F
-    .db 89
-    .db FF ; 0x10
-    .db 89
-    .db 0B ; 0x11
-    .db 8A
-    .db 2F ; 0x12
-    .db 8A
-    .db 36 ; 0x13
-    .db 8A
-    .db 2F ; 0x14
-    .db 8A
-    .db 36 ; 0x15
-    .db 8A
-    .db 57 ; 0x16
-    .db 8A
-    .db 83 ; 0x17
-    .db 8A
-    .db 83 ; 0x18
-    .db 8A
-    .db 83 ; 0x19
-    .db 8A
-    .db 83 ; 0x1A
-    .db 8A
-    .db 83 ; 0x1B
-    .db 8A
-    .db AE ; 0x1C
-    .db 8A
-    .db AE ; 0x1D
-    .db 8A
-    .db BD ; 0x1E
-    .db 8A
-    .db 0B ; 0x1F
-    .db 8B
-    .db 0B ; 0x20
-    .db 8B
-    .db 17 ; 0x21
-    .db 8B
-    .db 17 ; 0x22
-    .db 8B
-    .db 17 ; 0x23
-    .db 8B
-    .db 17 ; 0x24
-    .db 8B
-    .db 2F ; 0x25
-    .db 8B
-    .db 34 ; 0x26
-    .db 8B
-    .db 54 ; 0x27
-    .db 8B
-    .db 7C ; 0x28
-    .db 8B
-    .db 89 ; 0x29
-    .db 8B
-    .db F2 ; 0x2A
-    .db 8B
-    .db F2 ; 0x2B
-    .db 8B
-    .db F2 ; 0x2C
-    .db 8B
-    .db FE ; 0x2D
-    .db 8B
-    .db 02 ; 0x2E
-    .db 8C
-    .db 22 ; 0x2F
-    .db 8C
-    .db 22 ; 0x30
-    .db 8C
-    .db 22 ; 0x31
-    .db 8C
-    .db 2E ; 0x32
-    .db 8C
-    .db 2E ; 0x33
-    .db 8C
-    .db 2E ; 0x34
-    .db 8C
-    .db 4E ; 0x35
-    .db 8C
-    .db 64 ; 0x36
-    .db 8C
-    .db 6C ; 0x37
-    .db 8C
-    .db 6C ; 0x38
-    .db 8C
-    .db 6C ; 0x39
-    .db 8C
-    .db 6C ; 0x3A
-    .db 8C
-    .db 80 ; 0x3B
-    .db 8C
-    .db 88 ; 0x3C
-    .db 8C
-    .db A5 ; 0x3D
-    .db 8C
-    .db A9 ; 0x3E
-    .db 8C
-    .db B6 ; 0x3F
-    .db 8C
-    .db D2 ; 0x40
-    .db 8C
-    .db 4B ; 0x41
-    .db 87
-    .db 8D ; 0x42
-    .db 87
-    .db 8D ; 0x43
-    .db 87
-    .db 8D ; 0x44
-    .db 87
-    .db 8D ; 0x45
-    .db 87
-    .db 8D ; 0x46
-    .db 87
-    .db 8D ; 0x47
-    .db 87
-    .db 2C ; 0x48
-    .db 88
-    .db 3B ; 0x49
-    .db 8D
-    .db DD ; 0x4A
-    .db 8D
-    .db E5 ; 0x4B
-    .db 8D
-    .db E9 ; 0x4C
-    .db 8D
-    .db FC ; 0x4D
-    .db 8D
-    .db 1C ; 0x4E
-    .db 8E
-    .db 18 ; 0x4F
-    .db 8E
-    .db 38 ; 0x50
-    .db 8E
-    .db 49 ; 0x51
-    .db 8E
-    .db 4D ; 0x52
-    .db 8E
-    .db 6D ; 0x53
-    .db 8E
-    .db 6D ; 0x54
-    .db 8E
-    .db 6D ; 0x55
-    .db 8E
-    .db 6D ; 0x56
-    .db 8E
-    .db 9F ; 0x57
-    .db 8E
-    .db 9F ; 0x58
-    .db 8E
-    .db 9F ; 0x59
-    .db 8E
-    .db 9F ; 0x5A
-    .db 8E
-    .db 9F ; 0x5B
-    .db 8E
-    .db 9F ; 0x5C
-    .db 8E
-    .db C7 ; 0x5D
-    .db 8E
-    .db EA ; 0x5E
-    .db 8E
-    .db F2 ; 0x5F
-    .db 8E
-    .db FA ; 0x60
-    .db 8E
-    .db F0 ; 0x61
-    .db 8C
+    JSR SWITCH_CODE_PTRS_PAST_JSR ; CB = Cross Bank.
+    LOW(CB_A) ; 0x00
+    HIGH(CB_A)
+    LOW(CB_B) ; 0x01
+    HIGH(CB_B)
+    LOW(CB_C) ; 0x02
+    HIGH(CB_C)
+    LOW(CB_D) ; 0x03
+    HIGH(CB_D)
+    LOW(CB_E) ; 0x04
+    HIGH(CB_E)
+    LOW(CB_F) ; 0x05
+    HIGH(CB_F)
+    LOW(CB_G) ; 0x06
+    HIGH(CB_G)
+    LOW(CB_H) ; 0x07
+    HIGH(CB_H)
+    LOW(CB_I) ; 0x08
+    HIGH(CB_I)
+    LOW(CB_J) ; 0x09
+    HIGH(CB_J)
+    LOW(CB_J) ; 0x0A
+    HIGH(CB_J)
+    LOW(CB_J) ; 0x0B
+    HIGH(CB_J)
+    LOW(CB_K) ; 0x0C
+    HIGH(CB_K)
+    LOW(CB_K) ; 0x0D
+    HIGH(CB_K)
+    LOW(CB_K) ; 0x0E
+    HIGH(CB_K)
+    LOW(CB_K) ; 0x0F
+    HIGH(CB_K)
+    LOW(CB_K) ; 0x10
+    HIGH(CB_K)
+    LOW(CB_L) ; 0x11
+    HIGH(CB_L)
+    LOW(CB_M) ; 0x12
+    HIGH(CB_M)
+    LOW(CB_N) ; 0x13
+    HIGH(CB_N)
+    LOW(CB_M) ; 0x14
+    HIGH(CB_M)
+    LOW(CB_N) ; 0x15
+    HIGH(CB_N)
+    LOW(CB_O) ; 0x16
+    HIGH(CB_O)
+    LOW(CB_P) ; 0x17
+    HIGH(CB_P)
+    LOW(CB_P) ; 0x18
+    HIGH(CB_P)
+    LOW(CB_P) ; 0x19
+    HIGH(CB_P)
+    LOW(CB_P) ; 0x1A
+    HIGH(CB_P)
+    LOW(CB_P) ; 0x1B
+    HIGH(CB_P)
+    LOW(CB_Q) ; 0x1C
+    HIGH(CB_Q)
+    LOW(CB_Q) ; 0x1D
+    HIGH(CB_Q)
+    LOW(CB_R) ; 0x1E
+    HIGH(CB_R)
+    LOW(CB_S) ; 0x1F
+    HIGH(CB_S)
+    LOW(CB_S) ; 0x20
+    HIGH(CB_S)
+    LOW(CB_T) ; 0x21
+    HIGH(CB_T)
+    LOW(CB_T) ; 0x22
+    HIGH(CB_T)
+    LOW(CB_T) ; 0x23
+    HIGH(CB_T)
+    LOW(CB_T) ; 0x24
+    HIGH(CB_T)
+    LOW(CB_U) ; 0x25
+    HIGH(CB_U)
+    LOW(CB_V) ; 0x26
+    HIGH(CB_V)
+    LOW(CB_W) ; 0x27
+    HIGH(CB_W)
+    LOW(CB_X) ; 0x28
+    HIGH(CB_X)
+    LOW(CB_Y) ; 0x29
+    HIGH(CB_Y)
+    LOW(CB_Z) ; 0x2A
+    HIGH(CB_Z)
+    LOW(CB_Z) ; 0x2B
+    HIGH(CB_Z)
+    LOW(CB_Z) ; 0x2C
+    HIGH(CB_Z)
+    LOW(CB_AA) ; 0x2D
+    HIGH(CB_AA)
+    LOW(CB_AB) ; 0x2E
+    HIGH(CB_AB)
+    LOW(CB_AC) ; 0x2F
+    HIGH(CB_AC)
+    LOW(CB_AC) ; 0x30
+    HIGH(CB_AC)
+    LOW(CB_AC) ; 0x31
+    HIGH(CB_AC)
+    LOW(CB_AD) ; 0x32
+    HIGH(CB_AD)
+    LOW(CB_AD) ; 0x33
+    HIGH(CB_AD)
+    LOW(CB_AD) ; 0x34
+    HIGH(CB_AD)
+    LOW(CB_AE) ; 0x35
+    HIGH(CB_AE)
+    LOW(CB_AF) ; 0x36
+    HIGH(CB_AF)
+    LOW(CB_AG) ; 0x37
+    HIGH(CB_AG)
+    LOW(CB_AG) ; 0x38
+    HIGH(CB_AG)
+    LOW(CB_AG) ; 0x39
+    HIGH(CB_AG)
+    LOW(CB_AG) ; 0x3A
+    HIGH(CB_AG)
+    LOW(CB_AH) ; 0x3B
+    HIGH(CB_AH)
+    LOW(CB_AI) ; 0x3C
+    HIGH(CB_AI)
+    LOW(CB_AJ) ; 0x3D
+    HIGH(CB_AJ)
+    LOW(CB_AK) ; 0x3E
+    HIGH(CB_AK)
+    LOW(CB_AL) ; 0x3F
+    HIGH(CB_AL)
+    LOW(CB_AM) ; 0x40
+    HIGH(CB_AM)
+    LOW(CB_AN) ; 0x41
+    HIGH(CB_AN)
+    LOW(CB_AO) ; 0x42
+    HIGH(CB_AO)
+    LOW(CB_AO) ; 0x43
+    HIGH(CB_AO)
+    LOW(CB_AO) ; 0x44
+    HIGH(CB_AO)
+    LOW(CB_AO) ; 0x45
+    HIGH(CB_AO)
+    LOW(CB_AO) ; 0x46
+    HIGH(CB_AO)
+    LOW(CB_AO) ; 0x47
+    HIGH(CB_AO)
+    LOW(CB_AP) ; 0x48
+    HIGH(CB_AP)
+    LOW(CB_AQ) ; 0x49
+    HIGH(CB_AQ)
+    LOW(CB_AR) ; 0x4A
+    HIGH(CB_AR)
+    LOW(CB_AS) ; 0x4B
+    HIGH(CB_AS)
+    LOW(CB_AT) ; 0x4C
+    HIGH(CB_AT)
+    LOW(CB_AU) ; 0x4D
+    HIGH(CB_AU)
+    LOW(CB_AV) ; 0x4E
+    HIGH(CB_AV)
+    LOW(CB_AW) ; 0x4F
+    HIGH(CB_AW)
+    LOW(CB_AX) ; 0x50
+    HIGH(CB_AX)
+    LOW(CB_AY) ; 0x51
+    HIGH(CB_AY)
+    LOW(CB_AZ) ; 0x52
+    HIGH(CB_AZ)
+    LOW(CB_BA) ; 0x53
+    HIGH(CB_BA)
+    LOW(CB_BA) ; 0x54
+    HIGH(CB_BA)
+    LOW(CB_BA) ; 0x55
+    HIGH(CB_BA)
+    LOW(CB_BA) ; 0x56
+    HIGH(CB_BA)
+    LOW(CB_BB) ; 0x57
+    HIGH(CB_BB)
+    LOW(CB_BB) ; 0x58
+    HIGH(CB_BB)
+    LOW(CB_BB) ; 0x59
+    HIGH(CB_BB)
+    LOW(CB_BB) ; 0x5A
+    HIGH(CB_BB)
+    LOW(CB_BB) ; 0x5B
+    HIGH(CB_BB)
+    LOW(CB_BB) ; 0x5C
+    HIGH(CB_BB)
+    LOW(CB_BC) ; 0x5D
+    HIGH(CB_BC)
+    LOW(CB_BD) ; 0x5E
+    HIGH(CB_BD)
+    LOW(CB_BE) ; 0x5F
+    HIGH(CB_BE)
+    LOW(CB_BF) ; 0x60
+    HIGH(CB_BF)
+    LOW(CB_BG) ; 0x61
+    HIGH(CB_BG)
 WAIT_UPDATES_AND_???: ; 1F:0FFC, 0x03EFFC
     LDA PLAYER?_UNK[2] ; Load P1 unk.
     ORA PPU_UPDATE_BUF_INDEX ; Combine with BG updates.
@@ -3489,18 +3606,18 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     LOW(OBJ_STATE_0x50_HANDLER) ; 0x50
     HIGH(OBJ_STATE_0x50_HANDLER)
     LOW(OBJ_STATE_0x51_HANDLER) ; 0x51. Seem to get more complex here. Bosses/advanced enemies here?
-    HIGH(OBJ_STATE_0x51_HANDLER) ; <<< T.T :'(
+    HIGH(OBJ_STATE_0x51_HANDLER) ; This seems to be rocksteady.
     LOW(OBJ_STATE_0x52_HANDLER) ; 0x52
-    HIGH(OBJ_STATE_0x52_HANDLER)
+    HIGH(OBJ_STATE_0x52_HANDLER) ; Rocksteady's gunshots?
     LOW(OBJ_STATE_0x53_HANDLER) ; 0x53
     HIGH(OBJ_STATE_0x53_HANDLER)
     LOW(OBJ_STATE_0x54_HANDLER) ; 0x54
     HIGH(OBJ_STATE_0x54_HANDLER)
     LOW(OBJ_STATE_0x55_HANDLER) ; 0x55
-    HIGH(OBJ_STATE_0x55_HANDLER)
+    HIGH(OBJ_STATE_0x55_HANDLER) ; Odd stuff dealing with one-off script vars. Complex as fuck, too.
     LOW(OBJ_STATE_0x56_HANDLER) ; 0x56
     HIGH(OBJ_STATE_0x56_HANDLER)
-    LOW(OBJ_STATE_0x57_HANDLER) ; 0x57
+    LOW(OBJ_STATE_0x57_HANDLER) ; 0x57 <<<
     HIGH(OBJ_STATE_0x57_HANDLER)
     LOW(OBJ_STATE_0x58_HANDLER) ; 0x58
     HIGH(OBJ_STATE_0x58_HANDLER)
@@ -3513,9 +3630,9 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     LOW(OBJ_STATE_0x5C_HANDLER) ; 0x5C
     HIGH(OBJ_STATE_0x5C_HANDLER)
     LOW(OBJ_STATE_0x5D_HANDLER) ; 0x5D
-    HIGH(OBJ_STATE_0x5D_HANDLER)
+    HIGH(OBJ_STATE_0x5D_HANDLER) ; Large.
     LOW(OBJ_STATE_0x5E_HANDLER) ; 0x5E
-    HIGH(OBJ_STATE_0x5E_HANDLER)
+    HIGH(OBJ_STATE_0x5E_HANDLER) ; Old type, large.
     LOW(OBJ_STATE_0x5F_HANDLER) ; 0x5F
     HIGH(OBJ_STATE_0x5F_HANDLER)
     LOW(OBJ_STATE_0x60_HANDLER) ; 0x60
@@ -3533,12 +3650,12 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     LOW(OBJ_STATE_0x65_HANDLER) ; 0x66
     HIGH(OBJ_STATE_0x65_HANDLER)
     LOW(OBJ_STATE_0x67_HANDLER) ; 0x67
-    HIGH(OBJ_STATE_0x67_HANDLER)
+    HIGH(OBJ_STATE_0x67_HANDLER) ; Old type, large.
     LOW(OBJ_STATE_0x68_HANDLER) ; 0x68
     HIGH(OBJ_STATE_0x68_HANDLER)
     LOW(OBJ_STATE_0x69_HANDLER) ; 0x69
     HIGH(OBJ_STATE_0x69_HANDLER)
-    LOW(OBJ_STATE_0x6A_HANDLER) ; 0x6A
+    LOW(OBJ_STATE_0x6A_HANDLER) ; 0x6A RTS
     HIGH(OBJ_STATE_0x6A_HANDLER)
     LOW(OBJ_STATE_0x6B_HANDLER) ; 0x6B
     HIGH(OBJ_STATE_0x6B_HANDLER)
@@ -3551,7 +3668,7 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     LOW(OBJ_STATE_0x6F_HANDLER) ; 0x6F
     HIGH(OBJ_STATE_0x6F_HANDLER)
     LOW(OBJ_STATE_0x70_HANDLER) ; 0x70
-    HIGH(OBJ_STATE_0x70_HANDLER)
+    HIGH(OBJ_STATE_0x70_HANDLER) ; Old, large.
     LOW(OBJ_STATE_0x71_HANDLER) ; 0x71
     HIGH(OBJ_STATE_0x71_HANDLER)
     LOW(OBJ_STATE_0x72_HANDLER) ; 0x72
@@ -3561,7 +3678,7 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     LOW(OBJ_STATE_0x74_HANDLER) ; 0x74
     HIGH(OBJ_STATE_0x74_HANDLER)
     LOW(OBJ_STATE_0x75_HANDLER) ; 0x75
-    HIGH(OBJ_STATE_0x75_HANDLER)
+    HIGH(OBJ_STATE_0x75_HANDLER) ; Boss?
     LOW(OBJ_STATE_0x76_HANDLER) ; 0x76
     HIGH(OBJ_STATE_0x76_HANDLER)
     LOW(OBJ_STATE_0x77_HANDLER) ; 0x77
@@ -3569,13 +3686,13 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     LOW(OBJ_STATE_0x78_HANDLER) ; 0x78
     HIGH(OBJ_STATE_0x78_HANDLER)
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x79
-    HIGH(OBJ_STATE_0x79_HANDLER)
+    HIGH(OBJ_STATE_0x79_HANDLER) ; Old, large.
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x7A
     HIGH(OBJ_STATE_0x79_HANDLER)
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x7B
     HIGH(OBJ_STATE_0x79_HANDLER)
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x7C
-    HIGH(OBJ_STATE_0x79_HANDLER)
+    HIGH(OBJ_STATE_0x79_HANDLER) ; Old, large.
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x7D
     HIGH(OBJ_STATE_0x79_HANDLER)
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x7E
@@ -3743,7 +3860,7 @@ INIT_LEVEL_AND_OBJ[7]_STUFF: ; 1F:12C9, 0x03F2C9
     LDA #$E8
     STA OBJ_POS_X?+7 ; Set unk.
     LDA #$D0
-    STA OBJ_POS_Y?+7 ; Set unk.
+    STA OBJ_POS_X??+7 ; Set unk.
     LDA #$40
     STA OBJ_ENABLED_STATE+MORE?+7 ; Set obj 7 state.
     LDA #$02
@@ -3893,7 +4010,7 @@ EXIT_MOVE_TERT: ; 1F:13C5, 0x03F3C5
 EXIT_X_MOVE: ; 1F:13C8, 0x03F3C8
     JMP OBJECT_X_MOVE? ; Finalize. Abuse RTS.
 OBJ_POS_BASED_INIT_CLEAR: ; 1F:13CB, 0x03F3CB
-    LDA OBJ_POS_Y[18],X ; Load.
+    LDA OBJ_POS_Y??[18],X ; Load.
     CMP #$30 ; If _ #$30
     BCC EXIT_REINIT ; <, goto.
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
@@ -4004,15 +4121,15 @@ RTN_OBJ_MOVE?_UNK: ; 1F:1494, 0x03F494
     LDA 4B4_OBJ_SPEED?[18],X ; Load from OBJ.
     ADC TMP_02 ; Add with.
     STA 4B4_OBJ_SPEED?[18],X ; Store back.
-    LDA OBJ_POS_Y?[18],X ; Load
+    LDA OBJ_POS_X??[18],X ; Load
     ADC TMP_03 ; Add with.
-    STA OBJ_POS_Y?[18],X ; Store back.
+    STA OBJ_POS_X??[18],X ; Store back.
     CLC ; Prep add.
     LDA 4B4_OBJ_SPEED?[18],X ; Load from obj.
     ADC 4D8_OBJ_UNK[18],X ; Add with. Carry adjust stuff?
-    LDA OBJ_POS_Y?[18],X ; Load
+    LDA OBJ_POS_X??[18],X ; Load
     ADC 4C6_OBJ_UNK[18],X ; Add with.
-    STA OBJ_POS_Y[18],X ; Store to.
+    STA OBJ_POS_Y??[18],X ; Store to.
 RTS: ; 1F:14C6, 0x03F4C6
     RTS ; Leave.
 TEST_OBJ_UPDATE_FLAG_INIT: ; 1F:14C7, 0x03F4C7
@@ -4024,9 +4141,9 @@ INIT_OBJECT[X]_DATA_FULL: ; 1F:14D1, 0x03F4D1
     LDA #$00
     STA 556_OBJ_STATUS_FLAGS_A[18],X
     STA OBJ_POS_X?[18],X
-    STA OBJ_POS_Y?[18],X
+    STA OBJ_POS_X??[18],X
     STA 4C6_OBJ_UNK[18],X
-    STA OBJ_POS_Y[18],X
+    STA OBJ_POS_Y??[18],X
     STA OBJ_ANIMATION_DISPLAY[18],X
     STA OBJ_ENABLED_STATE+MORE?[18],X
 INT_OBJECT[X]_DATA_SMOL: ; 1F:14E8, 0x03F4E8
@@ -4159,9 +4276,9 @@ EXIT_SET_SEC_CLEAR_TERT/EXTRA: ; 1F:15D2, 0x03F5D2
 FIND_YPOS_DIFF_OBJY/OBJS_TMP_10_FLAG_XVAL_GT_YVAL: ; 1F:15E0, 0x03F5E0
     LDA #$00
     STA TMP_10 ; Clear TMP. Used as a flag for negative.
-    LDA OBJ_POS_Y?[18],Y ; Load from Yobj.
+    LDA OBJ_POS_X??[18],Y ; Load from Yobj.
     SEC ; Prep sub.
-    SBC OBJ_POS_Y?[18],X ; Sub with Xobj.
+    SBC OBJ_POS_X??[18],X ; Sub with Xobj.
     BCS RTS ; Yobj >= Xobj, leave as is.
     INC TMP_10 ; Set flag. This means Xobj > Yobj.
     EOR #$FF ; Compliment for ABS value.
@@ -4182,35 +4299,35 @@ FIND_XPOS_DIFF_OBJY/OBJX_TMP_12_FLAG_XVAL_GT_YVAL: ; 1F:15F5, 0x03F5F5
     ADC #$01 ; Fix compliment.
 RTS: ; 1F:1609, 0x03F609
     RTS ; Leave. A is ABS(DIFF), TMP_12 is Y-X < 0 flag. AKA Yobj val >= Xobj val.
-SUB_CONDITIONALLY_SET_FLAG_UNK: ; 1F:160A, 0x03F60A
+SET_FOCUS_LEFT/RIGHT_FLAG_FOR_OBJ_X->Y: ; 1F:160A, 0x03F60A
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load.
     AND #$FB ; Keep 1111.1011 bits.
     STA 556_OBJ_STATUS_FLAGS_A[18],X ; Store back, unset bits.
     JSR FIND_XPOS_DIFF_OBJY/OBJX_TMP_12_FLAG_XVAL_GT_YVAL ; Do
-    LDA TMP_12 ; Load
-    BNE RTS ; != 0, leave.
+    LDA TMP_12 ; Load flag.
+    BNE RTS ; != 0, set, leave.
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Set flag.
     ORA #$04
     STA 556_OBJ_STATUS_FLAGS_A[18],X
 RTS: ; 1F:1621, 0x03F621
     RTS ; Leave.
-SUB_ALT_ATTR_2P_UNK: ; 1F:1622, 0x03F622
+FIND_PLAYER_FOCUS_HELPER: ; 1F:1622, 0x03F622
     LDA TWO_PLAYERS_FLAG ; Load 2P flag.
-    BEQ EXIT_ATTR_CLEAR ; Not set, 1P, goto.
-    LDA OBJ_ANIMATION_DISPLAY[18] ; Load display.
-    BEQ EXIT_ATTR_SEED_0x02 ; == 0, goto.
-    LDA OBJ_ANIMATION_DISPLAY+2 ; Load. TODO: Why this val?
-    BEQ EXIT_ATTR_CLEAR ; == 0, goto.
+    BEQ EXIT_FOCUS_P1 ; Not set, 1P, goto.
+    LDA OBJ_ANIMATION_DISPLAY[18] ; Load display P1.
+    BEQ EXIT_FOCUS_P2 ; == 0, seed P2, goto.
+    LDA OBJ_ANIMATION_DISPLAY+2 ; Load P2 display.
+    BEQ EXIT_FOCUS_P1 ; == 0, seed P1, goto.
     TXA ; Xobj to A.
     LSR A ; >> 1, /2.
     CLC ; Prep add.
     ADC INF_LOOP_COUNTER ; Add with count.
     AND #$01 ; Keep 0000.0001
-    BEQ EXIT_ATTR_CLEAR ; == 0, goto.
-EXIT_ATTR_SEED_0x02: ; 1F:1639, 0x03F639
+    BEQ EXIT_FOCUS_P1 ; == 0, goto.
+EXIT_FOCUS_P2: ; 1F:1639, 0x03F639
     LDA #$02 ; Attr val.
     BNE EXIT_ATTR_SEEDED ; Always taken.
-EXIT_ATTR_CLEAR: ; 1F:163D, 0x03F63D
+EXIT_FOCUS_P1: ; 1F:163D, 0x03F63D
     LDA #$00
 EXIT_ATTR_SEEDED: ; 1F:163F, 0x03F63F
     STA STATUS_FLAGS_B/OBJ_FOCUS[18],X
@@ -4237,15 +4354,16 @@ UPDATE_PALETTE[0x1C]_WITH_Y_SAVING_XOBJ: ; 1F:1655, 0x03F655
     STA OBJ_ENABLED_STATE+MORE?+1,X
     LDA OBJ_POS_X?[18],X
     STA OBJ_POS_X?+1,X
-    LDA OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y?+1,X
-    STA OBJ_POS_Y+1,X
+    LDA OBJ_POS_X??[18],X
+    STA OBJ_POS_X??+1,X
+    STA OBJ_POS_Y??+1,X
     RTS
-    LDA #$22
-    JSR BANK_PAIR_USE_A
-    JSR $B3C3
-    LDA #$2C
-    JMP BANK_PAIR_USE_A
+CROSSBANK_SPAWN_OBJECT_RTN: ; 1F:1673, 0x03F673
+    LDA #$22 ; Bank 0x02/0x03.
+    JSR BANK_PAIR_USE_A ; Get pair in.
+    JSR SPAWN_OBJECT_RTN ; Do other bank rtn.
+    LDA #$2C ; Bank 0x0C/0x0D.
+    JMP BANK_PAIR_USE_A ; Goto, abuse RTS.
 L_1F:1680: ; 1F:1680, 0x03F680
     PHA
     LDA #$2A
@@ -4365,7 +4483,7 @@ RTN_BOX_DETECT?: ; 1F:1742, 0x03F742
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Load index from OBJ.
     LDA OBJ_POS_X?[18],Y ; Load from Yobj.
     STA TMP_14 ; Store to.
-    LDA OBJ_POS_Y?[18],Y ; Move
+    LDA OBJ_POS_X??[18],Y ; Move
     STA TMP_15
 HIT_DETECT_HELPER_UNK: ; 1F:174F, 0x03F74F
     LDA OBJ_POS_X?[18],X ; Load
@@ -4378,7 +4496,7 @@ HIT_DETECT_HELPER_UNK: ; 1F:174F, 0x03F74F
     ADC #$01
 NO_UNDERFLOW_A: ; 1F:175E, 0x03F75E
     STA TMP_10 ; Store result.
-    LDA OBJ_POS_Y?[18],X ; Load
+    LDA OBJ_POS_X??[18],X ; Load
     SEC ; Prep sub.
     SBC TMP_15 ; Sub with.
     STA TMP_13 ; Store result.
@@ -4403,8 +4521,8 @@ DONT_MOD_DIRECTION: ; 1F:1784, 0x03F784
 MOVE_Y_FINALIZE: ; 1F:1788, 0x03F788
     CLC ; Prep add.
     LDA 4C6_OBJ_UNK[18],X ; Load
-    ADC OBJ_POS_Y?[18],X ; Add with.
-    STA OBJ_POS_Y[18],X ; Store.
+    ADC OBJ_POS_X??[18],X ; Add with.
+    STA OBJ_POS_Y??[18],X ; Store.
     RTS ; Leave.
 SUB_OBJ_SPEED_AND_XPOS_STUFF: ; 1F:1793, 0x03F793
     SEC ; Prep sub.
@@ -4459,12 +4577,12 @@ FIND_PLAYER_TO_FOCUS_ON_TO_OBJ: ; 1F:17E6, 0x03F7E6
     LDA 4B4_OBJ_SPEED?[18],X ; Load
     SBC 83_UNK ; Sub.
     STA 4B4_OBJ_SPEED?[18],X ; Store back.
-    LDA OBJ_POS_Y?[18],X ; Load
+    LDA OBJ_POS_X??[18],X ; Load
     SBC 84_UNK ; Sub.
     BCS NO_UNDERFLOW ; No underflow, skip.
     LDA #$00 ; Min.
 NO_UNDERFLOW: ; 1F:17F8, 0x03F7F8
-    STA OBJ_POS_Y?[18],X ; Store.
+    STA OBJ_POS_X??[18],X ; Store.
     RTS ; Leave.
     LDA TWO_PLAYERS_FLAG ; Load
     BEQ RTS_FOCUS_P1 ; If not set, one player game, set obj and leave.
@@ -4505,21 +4623,21 @@ RTS_FOCUS_P1: ; 1F:183B, 0x03F83B
 RTS_STORE_FOCUS_TO_OBJ: ; 1F:183D, 0x03F83D
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Clear.
     RTS
-XOBJ_WRITE_UNK: ; 1F:1841, 0x03F841
+XOBJ_WRITE_PLAYER_FOCUS: ; 1F:1841, 0x03F841
     LDA TWO_PLAYERS_FLAG ; Load 2P flag.
-    BEQ 1P_GAME
-    LDA TMP_0D ; Load
+    BEQ 1P_GAME ; Not set, goto.
+    LDA TMP_0D ; Load.
     LSR A ; >> 1, /2.
-    LDY #$02 ; P2 data index?
-    BCS 2P_SHIFTED_ONE ; If shifted off 1, goto.
+    LDY #$02 ; P2 obj index.
+    BCS USE_INDEX ; If shifted off 1, goto.
 1P_GAME: ; 1F:184C, 0x03F84C
-    LDY #$00
-2P_SHIFTED_ONE: ; 1F:184E, 0x03F84E
-    TYA ; To A.
+    LDY #$00 ; P1 Index if shifted off zero.
+USE_INDEX: ; 1F:184E, 0x03F84E
+    TYA ; Index val to A.
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Store to OBJ.
     RTS ; leave.
-    LDA #$40
-    BNE MOVE_UNK_RET_??
+    LDA #$40 ; Val.
+    BNE MOVE_UNK_RET_?? ; Always taken. Mistake, next line lol.
 MOVE_UNK_RET_??: ; 1F:1857, 0x03F857
     CLC ; Prep add.
     ADC 544_OBJ_UNK_POS_DELTA?[18],X ; Add
@@ -4558,8 +4676,8 @@ MOVE_UNK_RET_??: ; 1F:1895, 0x03F895
     ADC 4B4_OBJ_SPEED?[18],X ; Add with.
     STA 4B4_OBJ_SPEED?[18],X ; Store back.
     LDA 503_OBJ_POS_X_LARGEST?[18],X ; Load
-    ADC OBJ_POS_Y?[18],X ; Add with.
-    STA OBJ_POS_Y?[18],X ; Store back.
+    ADC OBJ_POS_X??[18],X ; Add with.
+    STA OBJ_POS_X??[18],X ; Store back.
     ROR A ; Shift value final.
     EOR 503_OBJ_POS_X_LARGEST?[18],X ; Exclusive or with.
     ASL A ; Shift back.

@@ -2382,7 +2382,7 @@ SET_OBJECT_STATE/ENABLED: ; 09:09B0, 0x0129B0
     STA OBJ_POS_X?[18],X ; Store to object.
     INY ; Stream++
     LDA [TMP_00],Y ; Load from stream.
-    STA OBJ_POS_Y?[18],X ; Store to obj. Y pos, guessing?
+    STA OBJ_POS_X??[18],X ; Store to obj. Y pos, guessing?
     INC 7E_STREAM_UNK ; ++
     RTS ; Leave.
 DATA_PTR_UNK_L: ; 09:09D4, 0x0129D4
@@ -5465,7 +5465,7 @@ DO_SECONDARY_SWITCH: ; 09:15E5, 0x0135E5
     LOW(UNK_SWITCH3_F)
     HIGH(UNK_SWITCH3_F)
 UNK_SWITCH3_B: ; 09:15F7, 0x0135F7
-    JSR SUB_ALT_ATTR_2P_UNK ; Do sub.
+    JSR FIND_PLAYER_FOCUS_HELPER ; Do sub.
     INC OBJ_SECONDARY_SWITCH?[18],X ; Move secondary.
     JMP OBJECT_X_MOVE? ; Exit, abuse RTS.
 UNK_SWITCH3_A: ; 09:1600, 0x013600
@@ -5754,8 +5754,8 @@ REENTER: ; 09:181F, 0x01381F
     LDA [TMP_0A],Y
     STA TMP_12
     LDY TMP_00 ; Load YObj got earlier.
-    LDA OBJ_POS_Y?[18],X ; Load from Xobj.
-    STA OBJ_POS_Y?[18],Y ; Store to Yobj.
+    LDA OBJ_POS_X??[18],X ; Load from Xobj.
+    STA OBJ_POS_X??[18],Y ; Store to Yobj.
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Do again.
     STA 556_OBJ_STATUS_FLAGS_A[18],Y
     LDA OBJ_POS_X?[18],X ; Load from Xobj.
@@ -5962,10 +5962,10 @@ STATUS_SEEDED_A: ; 09:19F8, 0x0139F8
     CLC ; Prep add.
     ADC 4C6_OBJ_UNK[18],X ; += Xobj attr.
     STA 4C6_OBJ_UNK[18],Y ; Store to Yobj.
-    LDA OBJ_POS_Y?[18],X ; Load from Xobj.
+    LDA OBJ_POS_X??[18],X ; Load from Xobj.
     CLC ; Prep add.
     ADC #$01 ; Add.
-    STA OBJ_POS_Y?[18],Y ; Store to Yobj.
+    STA OBJ_POS_X??[18],Y ; Store to Yobj.
     LDA OBJ_POS_X_DELTA?[18],X ; Move from Xobj to Yobj.
     STA OBJ_POS_X_DELTA?[18],Y
     LDA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
@@ -6125,8 +6125,8 @@ SECONDARY_NONZERO: ; 09:1B11, 0x013B11
     LDA #$00
     STA 4C6_OBJ_UNK[18],X ; Clear
     LDA OBJ_POS_X_SUBPIXEL?+17,X ; Move to Xobj. TODO: Why 17th object?
-    STA OBJ_POS_Y?[18],X
-    LDA OBJ_POS_Y+17,X ; Move from Obj[17]
+    STA OBJ_POS_X??[18],X
+    LDA OBJ_POS_Y??+17,X ; Move from Obj[17]
     STA OBJ_POS_X?[18],X
     LDA 544_OBJ_UNK_POS_DELTA?+17,X ; Move from Obj[17]
     STA 556_OBJ_STATUS_FLAGS_A[18],X

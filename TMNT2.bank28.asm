@@ -342,7 +342,7 @@ KEEP_PRIMARY_SET: ; 1C:017C, 0x03817C
     LDA DATA_UNK_A,Y
     STA OBJ_POS_X?[18],X
     LDA DATA_UNK_B,Y
-    STA OBJ_POS_Y?[18],X
+    STA OBJ_POS_X??[18],X
     LDA #$00
     STA OBJ_SECONDARY_SWITCH?[18],X ; Clear state.
     STA OBJECT_DATA_EXTRA_B?[18],X ; Clear.
@@ -366,8 +366,8 @@ KEEP_PRIMARY_SET: ; 1C:017C, 0x03817C
     STA OBJ_POS_X?+1,X
     LDA 4B4_OBJ_SPEED?[18],X
     STA 4B4_OBJ_SPEED?+1,X
-    LDA OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y?+1,X
+    LDA OBJ_POS_X??[18],X
+    STA OBJ_POS_X??+1,X
     LDA 4C6_OBJ_UNK[18],X
     STA 4C6_OBJ_UNK+1,X
     LDA OBJ_STATE_DIR_RELATED_C[18],X
@@ -663,8 +663,8 @@ L_1C:03D8: ; 1C:03D8, 0x0383D8
     STA OBJ_POS_X?+1,X
     LDA 4B4_OBJ_SPEED?[18],X
     STA 4B4_OBJ_SPEED?+1,X
-    LDA OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y?+1,X
+    LDA OBJ_POS_X??[18],X
+    STA OBJ_POS_X??+1,X
     LDA 4C6_OBJ_UNK[18],X
     STA 4C6_OBJ_UNK+1,X
     LDA LEVEL/SCREEN_ON
@@ -924,17 +924,17 @@ L_1C:0605: ; 1C:0605, 0x038605
     LDA LEVEL/SCREEN_ON
     CMP #$07
     BNE L_1C:0618
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     CMP #$97
     BCC L_1C:0645
 L_1C:0618: ; 1C:0618, 0x038618
     LDA 601_IRQ_FLAG_DELAY_MOD_+
     BPL L_1C:0624
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     CMP #$9A
     BCC L_1C:0645
 L_1C:0624: ; 1C:0624, 0x038624
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     CMP #$58
     BCC L_1C:0645
     LDY TMP_08
@@ -964,7 +964,7 @@ L_1C:064E: ; 1C:064E, 0x03864E
     JSR RTN_UNK_RTS_CARRY_SET_FAIL?
     BCS L_1C:0686
 L_1C:0660: ; 1C:0660, 0x038660
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     CMP #$C8
     BCC RTN_STATE_BIT_0x08
     LDA 601_IRQ_FLAG_DELAY_MOD_+
@@ -979,7 +979,7 @@ L_1C:0660: ; 1C:0660, 0x038660
     ORA #$07
     STA TMP_02
 L_1C:067F: ; 1C:067F, 0x03867F
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     CMP #$E0
     BCC RTN_STATE_BIT_0x08
 L_1C:0686: ; 1C:0686, 0x038686
@@ -1037,7 +1037,7 @@ COMMIT_A_TO_OBJ: ; 1C:06E7, 0x0386E7
     ADC #$00
     STA 532_OBJ_UNK_POS_DELTA?[18],X ; Store 
     BPL VAL_CARRY_POSITIVE ; If positive after carry, goto.
-    LDA OBJ_POS_Y[18],X ; Load
+    LDA OBJ_POS_Y??[18],X ; Load
     CMP #$2C ; If _ #$2C
     BCS VAR_ABOVE_2C ; >=, goto.
     LDY TMP_08 ; Get player focus.
@@ -1072,14 +1072,14 @@ VAL_CARRY_POSITIVE: ; 1C:0737, 0x038737
     LDY TMP_08 ; Get player focus.
     LDA 60_PLAYER_UNK[1],Y ; Load val.
     BEQ P_VAL_60_ZERO ; Not set, goto.
-    LDA OBJ_POS_Y[18],X ; Load val.
+    LDA OBJ_POS_Y??[18],X ; Load val.
     BMI RTS ; If negative, leave.
     CMP #$2C ; If _ #$2C
     BCC RTS ; <, goto. Leave.
     LDA #$00 ; Clear.
     STA 60_PLAYER_UNK[1],Y
 P_VAL_60_ZERO: ; 1C:074C, 0x03874C
-    LDA OBJ_POS_Y?[18],X ; Load object val.
+    LDA OBJ_POS_X??[18],X ; Load object val.
     CMP #$CF ; If _ #$CF
     BCS RTN_RETURNED_CC ; >=, goto.
     LDA #$03 ; Goto state.
@@ -1103,11 +1103,11 @@ L_1C:077B: ; 1C:077B, 0x03877B
     LDA #$0D ; Val?
     JSR RTN_UNK_RTS_CARRY_SET_FAIL?
     BCS L_1C:0792
-    INC OBJ_POS_Y?[18],X
-    LDA OBJ_POS_Y?[18],X
+    INC OBJ_POS_X??[18],X
+    LDA OBJ_POS_X??[18],X
     CLC
     ADC 4C6_OBJ_UNK[18],X
-    STA OBJ_POS_Y[18],X
+    STA OBJ_POS_Y??[18],X
     JMP $877B
 L_1C:0792: ; 1C:0792, 0x038792
     LDA LEVEL/SCREEN_ON
@@ -2054,8 +2054,8 @@ L_1C:0C31: ; 1C:0C31, 0x038C31
     STA OBJ_POS_X?+1,X
     LDA 4B4_OBJ_SPEED?[18],X
     STA 4B4_OBJ_SPEED?+1,X
-    LDA OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y?+1,X
+    LDA OBJ_POS_X??[18],X
+    STA OBJ_POS_X??+1,X
     LDA OBJ_SECONDARY_SWITCH?[18],X
     AND #$09
     BNE L_1C:0C5C
@@ -2189,7 +2189,7 @@ L_1C:0D5F: ; 1C:0D5F, 0x038D5F
     LDY TMP_08
     LDA 60_PLAYER_UNK[1],Y
     BEQ L_1C:0D74
-    LDA OBJ_POS_Y[18],X
+    LDA OBJ_POS_Y??[18],X
     BMI L_1C:0D1B
     CMP #$2C
     BCC L_1C:0D1B
@@ -2275,7 +2275,7 @@ L_1C:0E15: ; 1C:0E15, 0x038E15
     JMP $9627
 L_1C:0E1A: ; 1C:0E1A, 0x038E1A
     LDY TMP_08
-    LDA OBJ_POS_Y[18],X
+    LDA OBJ_POS_Y??[18],X
     CMP #$2C
     BCS L_1C:0E28
     LDA #$01
@@ -2289,7 +2289,7 @@ SWITCH_RTN_A: ; 1C:0E31, 0x038E31
     LDY TMP_08
     LDA 85_PLAYER_UNK?[2],Y
     BNE L_1C:0E9F
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     CMP #$E0
     BCS L_1C:0EB0
     LDA OBJ_POS_X?[18],X
@@ -2326,10 +2326,10 @@ L_1C:0E86: ; 1C:0E86, 0x038E86
     SEC
     SBC #$08
     STA OBJ_POS_X?[18],X
-    LDA OBJ_POS_Y?[18],Y
+    LDA OBJ_POS_X??[18],Y
     CLC
     ADC #$04
-    STA OBJ_POS_Y?[18],X
+    STA OBJ_POS_X??[18],X
     LDA 4C6_OBJ_UNK[18],Y
     STA 4C6_OBJ_UNK[18],X
     RTS
@@ -2412,11 +2412,11 @@ L_1C:0F2A: ; 1C:0F2A, 0x038F2A
     ADC TMP_02
     ADC TMP_03
     STA OBJ_POS_X?[18],X
-    LDA OBJ_POS_Y?[18],Y
+    LDA OBJ_POS_X??[18],Y
     CLC
     ADC #$01
-    STA OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y[18],X
+    STA OBJ_POS_X??[18],X
+    STA OBJ_POS_Y??[18],X
     LDA #$41
     JSR SND_BANKED_DISPATCH
     LDA #$0B
@@ -2633,11 +2633,11 @@ L_1C:10D1: ; 1C:10D1, 0x0390D1
     SEC
     SBC TMP_03
     STA 4C6_OBJ_UNK[18],Y
-    LDA OBJ_POS_Y?[18],X
-    STA OBJ_POS_Y?[18],Y
+    LDA OBJ_POS_X??[18],X
+    STA OBJ_POS_X??[18],Y
     CLC
     ADC 4C6_OBJ_UNK[18],Y
-    STA OBJ_POS_Y[18],Y
+    STA OBJ_POS_Y??[18],Y
     LDA TMP_04
     STA OBJ_ANIMATION_DISPLAY[18],Y
     LDA TMP_05
@@ -3221,7 +3221,7 @@ RTN_SETUP_OBJECT?: ; 1C:150C, 0x03950C
     LDA TSELECT_CURSOR_POS_X,Y ; Load val
     STA OBJ_POS_X?[18],X ; Store to...
     LDA TSELECT_CURSOR_POS_Y,Y ; Load val
-    STA OBJ_POS_Y[18],X ; Store to...
+    STA OBJ_POS_Y??[18],X ; Store to...
     LDA TSELECT_DATA_UNK,X ; Load val
     STA OBJ_ANIMATION_DISPLAY[18],X ; Store to...
 RTS: ; 1C:1520, 0x039520
@@ -3319,9 +3319,9 @@ VALUES_NOT_SET_B: ; 1C:15C7, 0x0395C7
     CLC ; Prep add.
     ADC 520_OBJ_POS_X_LARGE?[18],X ; Add val.
     STA 4B4_OBJ_SPEED?[18],X ; Store.
-    LDA OBJ_POS_Y?[18],X ; Load
+    LDA OBJ_POS_X??[18],X ; Load
     ADC 503_OBJ_POS_X_LARGEST?[18],X ; Add
-    STA OBJ_POS_Y?[18],X ; Store.
+    STA OBJ_POS_X??[18],X ; Store.
 VALUES_NOT_SET_C: ; 1C:15E2, 0x0395E2
     LDA LEVEL/SCREEN_ON ; Load
     CMP #$07 ; If _ #$07
@@ -3344,16 +3344,16 @@ VALUES_NOT_SET_D: ; 1C:15FF, 0x0395FF
     SEC ; Prep sub.
     SBC 83_UNK ; Subtract with.
     STA 4B4_OBJ_SPEED?[18],X ; Store.
-    LDA OBJ_POS_Y?[18],X ; Load
+    LDA OBJ_POS_X??[18],X ; Load
     SBC 84_UNK ; Subtract.
-    STA OBJ_POS_Y?[18],X ; Store.
+    STA OBJ_POS_X??[18],X ; Store.
 VALUES_NOT_SET_E: ; 1C:1616, 0x039616
     LDA 4D8_OBJ_UNK[18],X ; Load value.
     CLC ; Prep add.
     ADC 4B4_OBJ_SPEED?[18],X ; Add with.
     LDA 4C6_OBJ_UNK[18],X ; Load
-    ADC OBJ_POS_Y?[18],X ; Add.
-    STA OBJ_POS_Y[18],X ; Store.
+    ADC OBJ_POS_X??[18],X ; Add.
+    STA OBJ_POS_Y??[18],X ; Store.
     RTS
 OBJECT_TO_STATE_A_COMPLEX?: ; 1C:1627, 0x039627
     CMP #$80 ; If val _ #$80

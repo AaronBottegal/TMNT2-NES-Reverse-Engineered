@@ -2829,7 +2829,7 @@ NO_CONTROLLER_NEWLY_PRESSED: ; 1E:0B65, 0x03CB65
     STA ZP_R2-R5_BANK_VALUES[4] ; To.
     LDX TITLE_PLAYERS_COUNT_CURSOR_0/1 ; X=
     LDA TITLE_DATA_Y_POS,X
-    STA OBJ_POS_Y[18] ; To here
+    STA OBJ_POS_Y??[18] ; To here
     LDA CTRL_NEWLY_PRESSED_B[2] ; Load pressed.
     AND #$20 ; Test select?
     BEQ SELECT_NOT_PRESSED
@@ -3257,7 +3257,7 @@ OBJECT_ANIM_DECIDED?: ; 1E:0E71, 0x03CE71
     STA TMP_06 ; Store to.
     LDA OBJ_ANIMATION_DISPLAY[18],X
     BEQ SKIP_UPDATE? ; ==, goto.
-    LDY OBJ_POS_Y[18],X ; Load from.
+    LDY OBJ_POS_Y??[18],X ; Load from.
     STY TMP_01 ; To temp.
     LDY OBJ_POS_X?[18],X ; Same
     STY TMP_02
@@ -3527,7 +3527,7 @@ CHANGED_GT_4: ; 1E:106C, 0x03D06C
     CMP #$04 ; Obj _ #$04
     BEQ OBJ_EQ_4 ; ==, goto.
 OBJ_MOD_0/2: ; 1E:1070, 0x03D070
-    LDA OBJ_POS_Y?[18],X ; Load
+    LDA OBJ_POS_X??[18],X ; Load
     STA TMP_00,Y ; Store to.
     STX C6_SPR_ARR_UNK[2],Y ; Obj to array.
     INY ; Arr++
@@ -6455,9 +6455,9 @@ LT_E0: ; 1E:1FCD, 0x03DFCD
     SBC #$40 ; -= 40
 USE_AS_INDEX: ; 1E:1FD4, 0x03DFD4
     TAX ; To X.
-    LDA DATA_UNK_A,X ; Move
+    LDA PTR_UNK_L,X ; Move
     STA TMP_0C
-    LDA DATA_UNK_B,X ; Move
+    LDA PTR_UNK_H,X ; Move
     STA TMP_0D
     LDY #$00 ; Stream init.
 LOOP_LOAD_DATA: ; 1E:1FE1, 0x03DFE1

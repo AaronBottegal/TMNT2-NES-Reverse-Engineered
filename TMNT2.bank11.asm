@@ -308,8 +308,8 @@ RTN_J: ; 0B:021D, 0x01621D
 RTN_K: ; 0B:0238, 0x016238
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
     SEC
-    LDA OBJ_POS_Y?[18],X
-    SBC OBJ_POS_Y?[18],Y
+    LDA OBJ_POS_X??[18],X
+    SBC OBJ_POS_X??[18],Y
     BPL 0B:0249
     EOR #$FF
     CLC
@@ -353,7 +353,7 @@ RTN_M: ; 0B:0271, 0x016271
     JMP 0A:1FB6
     RTS
 HEALTH_NONZERO: ; 0B:029E, 0x01629E
-    JSR XOBJ_WRITE_UNK
+    JSR XOBJ_WRITE_PLAYER_FOCUS
     LDA #$00
     STA ARR_SPRITE_OBJ_TIMER?+1 ; Set for pair.
     LDA #$04
@@ -413,7 +413,7 @@ OBJ_DATA_UNK_B: ; 0B:030B, 0x01630B
 HEALTH_ZERO: ; 0B:030C, 0x01630C
     LDA TMP_09 ; Load
     PHA ; Save
-    JSR XOBJ_WRITE_UNK ; Do.
+    JSR XOBJ_WRITE_PLAYER_FOCUS ; Do.
     LDA OBJECT_DATA_HEALTH?[18],X ; Load health.
     BNE HEALTH_NONZERO
     CLC ; Prep add
@@ -534,7 +534,7 @@ XPOS_RTN_CC: ; 0B:03E9, 0x0163E9
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load flag.
     BNE RTS ; If set, leave.
     LDY OBJ_POS_X?[18],X ; Load
-    LDA OBJ_POS_Y?[18],X ; Load from obj.
+    LDA OBJ_POS_X??[18],X ; Load from obj.
     CLC ; Prep add.
     ADC 4C6_OBJ_UNK+1,X ; Add with pair.
     JSR UNK_SUB_B ; Do rtn.
@@ -665,10 +665,10 @@ RTN_NEW_OBJ_UNK: ; 0B:04FD, 0x0164FD
     STA OBJ_POS_X?[18],X
     LDA OBJ_POS_X_SUBPIXEL?[18],Y
     STA OBJ_POS_X_SUBPIXEL?[18],X
-    LDA OBJ_POS_Y?[18],Y
-    STA OBJ_POS_Y?[18],X
-    LDA OBJ_POS_Y[18],Y
-    STA OBJ_POS_Y[18],X
+    LDA OBJ_POS_X??[18],Y
+    STA OBJ_POS_X??[18],X
+    LDA OBJ_POS_Y??[18],Y
+    STA OBJ_POS_Y??[18],X
     LDA OBJ_STATE_DIR_RELATED_C[18],Y
     STA OBJ_STATE_DIR_RELATED_C[18],X
     LDA OBJ_POS_X_DELTA?[18],Y
@@ -802,8 +802,8 @@ LOAD_ZERO_A: ; 0B:0611, 0x016611
     LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],Y ; Load from that obj.
     TAY ; Put that value to Y.
     SEC ; Prep sub.
-    LDA OBJ_POS_Y?[18],X ; Load from Xobj.
-    SBC OBJ_POS_Y?[18],Y ; Sub with Yobj.
+    LDA OBJ_POS_X??[18],X ; Load from Xobj.
+    SBC OBJ_POS_X??[18],Y ; Sub with Yobj.
     STA TMP_03 ; Store to TMP.
     BPL RESULT_POSITIVE ; If positive, skip comp.
     EOR #$FF ; Compliment.
@@ -986,9 +986,9 @@ UNUSED_OBJ_EXISTS: ; 0B:073B, 0x01673B
     LDY OBJ_HANDLER_FOCUS_SCRATCHPAD ; Y again.
     LDA OBJ_POS_X?[18],Y ; YOBJ to XOBJ
     STA OBJ_POS_X?[18],X
-    LDA OBJ_POS_Y?[18],Y
-    STA OBJ_POS_Y?[18],X
-    INC OBJ_POS_Y?[18],X ; ++ on X
+    LDA OBJ_POS_X??[18],Y
+    STA OBJ_POS_X??[18],X
+    INC OBJ_POS_X??[18],X ; ++ on X
     LDA 4C6_OBJ_UNK[18],Y
     STA 4C6_OBJ_UNK[18],X
     STA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; To different in X.
@@ -1537,7 +1537,7 @@ SUB_UNK: ; 0B:0B0B, 0x016B0B
     LDA #$06
     STA TMP_06
     LDY OBJ_POS_X?[18],X
-    LDA OBJ_POS_Y?[18],X
+    LDA OBJ_POS_X??[18],X
     CLC
     ADC 4C6_OBJ_UNK+1,X
     JSR RTN_BACKGROUND_TILE_RELATED?
