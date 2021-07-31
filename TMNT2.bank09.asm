@@ -2278,7 +2278,7 @@ OBJ_7_PAIR_UNAVAILABLE: ; 09:0912, 0x012912
     LDA TMP_12 ; Load
     AND #$40 ; Test 0100.0000
     BEQ RTS ; Not set, leave.
-    INC 8B_UNK ; ++
+    INC 8B_BOSS?_UNK ; ++
 RTS: ; 09:0920, 0x012920
     RTS
 OBJECT_4_START?: ; 09:0921, 0x012921
@@ -2301,7 +2301,7 @@ OBJECT_AVAILABLE_4: ; 09:0938, 0x012938
     LDA TMP_12 ; Load
     AND #$40 ; Test bit.
     BEQ DONT_INC_VARS ; Not set, goto.
-    INC 8B_UNK ; ++
+    INC 8B_BOSS?_UNK ; ++
     INC 5FA_UNK ; ++
 DONT_INC_VARS: ; 09:0943, 0x012943
     INY ; Stream++

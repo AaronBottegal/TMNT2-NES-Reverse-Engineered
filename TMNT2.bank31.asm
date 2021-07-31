@@ -3019,7 +3019,7 @@ VAL_NEGATIVE: ; 1F:0EE2, 0x03EEE2
     LDA #$30 ; Bank B.
 BANK_SEEDED: ; 1F:0EE4, 0x03EEE4
     JSR BANK_PAIRED ; Bank in.
-    JSR RTN_UNK_RET_0xFF? ; Do
+    JSR RTN_CROSS_BANK_UNK ; Do
     JSR RESTORE_BANK_PAIRED ; Restore bank.
     PLA
     TAY
@@ -3032,13 +3032,13 @@ RTN_SWITCH_UNK: ; 1F:0EF2, 0x03EEF2
     PHA
     TYA ; Save Y.
     PHA
-    JSR RTN_UNK_RET_0xFF?
+    JSR RTN_CROSS_BANK_UNK
     PLA ; Restore Y.
     TAY
     PLA ; Restore X.
     TAX
     RTS
-RTN_UNK_RET_0xFF?: ; 1F:0F00, 0x03EF00
+RTN_CROSS_BANK_UNK: ; 1F:0F00, 0x03EF00
     LDA TMP_00 ; Load val.
     PHA ; Save.
     LDY 60A_SWITCH_WHICH? ; Load
@@ -3617,22 +3617,22 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     HIGH(OBJ_STATE_0x55_HANDLER) ; Odd stuff dealing with one-off script vars. Complex as fuck, too.
     LOW(OBJ_STATE_0x56_HANDLER) ; 0x56
     HIGH(OBJ_STATE_0x56_HANDLER)
-    LOW(OBJ_STATE_0x57_HANDLER) ; 0x57 <<<
+    LOW(OBJ_STATE_0x57_HANDLER) ; 0x57
     HIGH(OBJ_STATE_0x57_HANDLER)
     LOW(OBJ_STATE_0x58_HANDLER) ; 0x58
     HIGH(OBJ_STATE_0x58_HANDLER)
     LOW(OBJ_STATE_0x59_HANDLER) ; 0x59
-    HIGH(OBJ_STATE_0x59_HANDLER)
+    HIGH(OBJ_STATE_0x59_HANDLER) ; Pretty simple.
     LOW(OBJ_STATE_0x5A_HANDLER) ; 0x5A
-    HIGH(OBJ_STATE_0x5A_HANDLER)
+    HIGH(OBJ_STATE_0x5A_HANDLER) ; Large. I think this is flying guy? Idk maybe not.
     LOW(OBJ_STATE_0x5B_HANDLER) ; 0x5B
     HIGH(OBJ_STATE_0x5B_HANDLER)
     LOW(OBJ_STATE_0x5C_HANDLER) ; 0x5C
     HIGH(OBJ_STATE_0x5C_HANDLER)
     LOW(OBJ_STATE_0x5D_HANDLER) ; 0x5D
-    HIGH(OBJ_STATE_0x5D_HANDLER) ; Large.
+    HIGH(OBJ_STATE_0x5D_HANDLER) ; Large. Mainly copy of 0x51 with 1 unique routine.
     LOW(OBJ_STATE_0x5E_HANDLER) ; 0x5E
-    HIGH(OBJ_STATE_0x5E_HANDLER) ; Old type, large.
+    HIGH(OBJ_STATE_0x5E_HANDLER) ; Old type, large. Some shit code at the end, interesting.
     LOW(OBJ_STATE_0x5F_HANDLER) ; 0x5F
     HIGH(OBJ_STATE_0x5F_HANDLER)
     LOW(OBJ_STATE_0x60_HANDLER) ; 0x60
@@ -3640,25 +3640,25 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     LOW(OBJ_STATE_0x61_HANDLER) ; 0x61
     HIGH(OBJ_STATE_0x61_HANDLER)
     LOW(OBJ_STATE_0x62_HANDLER) ; 0x62
-    HIGH(OBJ_STATE_0x62_HANDLER)
+    HIGH(OBJ_STATE_0x62_HANDLER) ; Not too big.
     LOW(OBJ_STATE_0x63_HANDLER) ; 0x63
-    HIGH(OBJ_STATE_0x63_HANDLER)
+    HIGH(OBJ_STATE_0x63_HANDLER) ; Pretty small.
     LOW(OBJ_STATE_0x64_HANDLER) ; 0x64
-    HIGH(OBJ_STATE_0x64_HANDLER)
+    HIGH(OBJ_STATE_0x64_HANDLER) ; Pretty small.
     LOW(OBJ_STATE_0x65_HANDLER) ; 0x65
-    HIGH(OBJ_STATE_0x65_HANDLER)
+    HIGH(OBJ_STATE_0x65_HANDLER) ; Pretty small.
     LOW(OBJ_STATE_0x65_HANDLER) ; 0x66
     HIGH(OBJ_STATE_0x65_HANDLER)
-    LOW(OBJ_STATE_0x67_HANDLER) ; 0x67
+    LOW(OBJ_STATE_0x67_HANDLER) ; 0x67 <<<
     HIGH(OBJ_STATE_0x67_HANDLER) ; Old type, large.
     LOW(OBJ_STATE_0x68_HANDLER) ; 0x68
-    HIGH(OBJ_STATE_0x68_HANDLER)
+    HIGH(OBJ_STATE_0x68_HANDLER) ; Seems small.
     LOW(OBJ_STATE_0x69_HANDLER) ; 0x69
-    HIGH(OBJ_STATE_0x69_HANDLER)
+    HIGH(OBJ_STATE_0x69_HANDLER) ; Seems small.
     LOW(OBJ_STATE_0x6A_HANDLER) ; 0x6A RTS
     HIGH(OBJ_STATE_0x6A_HANDLER)
     LOW(OBJ_STATE_0x6B_HANDLER) ; 0x6B
-    HIGH(OBJ_STATE_0x6B_HANDLER)
+    HIGH(OBJ_STATE_0x6B_HANDLER) ; Very small.
     LOW(OBJ_STATE_0x6A_HANDLER) ; 0x6C, RTS.
     HIGH(OBJ_STATE_0x6A_HANDLER)
     LOW(OBJ_STATE_0x6D_HANDLER) ; 0x6D, Also fucked up, but -1. This is shredder.
@@ -3666,25 +3666,25 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     LOW(OBJ_STATE_0x6E_HANDLER) ; 0x6E RTS RTS. lol.
     HIGH(OBJ_STATE_0x6E_HANDLER)
     LOW(OBJ_STATE_0x6F_HANDLER) ; 0x6F
-    HIGH(OBJ_STATE_0x6F_HANDLER)
+    HIGH(OBJ_STATE_0x6F_HANDLER) ; Small.
     LOW(OBJ_STATE_0x70_HANDLER) ; 0x70
     HIGH(OBJ_STATE_0x70_HANDLER) ; Old, large.
     LOW(OBJ_STATE_0x71_HANDLER) ; 0x71
-    HIGH(OBJ_STATE_0x71_HANDLER)
+    HIGH(OBJ_STATE_0x71_HANDLER) ; Large.
     LOW(OBJ_STATE_0x72_HANDLER) ; 0x72
-    HIGH(OBJ_STATE_0x72_HANDLER)
+    HIGH(OBJ_STATE_0x72_HANDLER) ; Small.
     LOW(OBJ_STATE_0x73_HANDLER) ; 0x73
-    HIGH(OBJ_STATE_0x73_HANDLER)
+    HIGH(OBJ_STATE_0x73_HANDLER) ; Seems small.
     LOW(OBJ_STATE_0x74_HANDLER) ; 0x74
-    HIGH(OBJ_STATE_0x74_HANDLER)
+    HIGH(OBJ_STATE_0x74_HANDLER) ; Seems small.
     LOW(OBJ_STATE_0x75_HANDLER) ; 0x75
     HIGH(OBJ_STATE_0x75_HANDLER) ; Boss?
     LOW(OBJ_STATE_0x76_HANDLER) ; 0x76
-    HIGH(OBJ_STATE_0x76_HANDLER)
+    HIGH(OBJ_STATE_0x76_HANDLER) ; Large.
     LOW(OBJ_STATE_0x77_HANDLER) ; 0x77
-    HIGH(OBJ_STATE_0x77_HANDLER)
+    HIGH(OBJ_STATE_0x77_HANDLER) ; Medium.
     LOW(OBJ_STATE_0x78_HANDLER) ; 0x78
-    HIGH(OBJ_STATE_0x78_HANDLER)
+    HIGH(OBJ_STATE_0x78_HANDLER) ; Very small.
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x79
     HIGH(OBJ_STATE_0x79_HANDLER) ; Old, large.
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x7A
@@ -3692,7 +3692,7 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x7B
     HIGH(OBJ_STATE_0x79_HANDLER)
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x7C
-    HIGH(OBJ_STATE_0x79_HANDLER) ; Old, large.
+    HIGH(OBJ_STATE_0x79_HANDLER)
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x7D
     HIGH(OBJ_STATE_0x79_HANDLER)
     LOW(OBJ_STATE_0x79_HANDLER) ; 0x7E
@@ -4405,33 +4405,33 @@ OBJ_STATE_0x98_HANDLER: ; 1F:16B2, 0x03F6B2
     CMP #$04
     BCC 1F:16B1
     JMP INIT_OBJECT[X]_DATA_FULL
-XOBJ_MANIP_BASED_ON_LIVES_UNK: ; 1F:16CE, 0x03F6CE
+FOCUS_EITHER_PLAYER_HELPER_RET_CS_FAIL_TO_FOCUS: ; 1F:16CE, 0x03F6CE
     LDA TWO_PLAYERS_FLAG ; Load flag.
     BNE TWO_PLAYERS ; != 0, goto.
     LDA #$00
-    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Write clear if one player.
+    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Force to P1 focus if only one player.
 TWO_PLAYERS: ; 1F:16D7, 0x03F6D7
-    LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Load
-    LSR A ; >> 1, /2.
-    TAY ; To Y index.
+    LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Load player focus.
+    LSR A ; >> 1, /2. Index val of 0/1.
+    TAY ; To index.
     LDA NUM_PLAYER_LIVES[2],Y ; Load lives for player.
-    BPL RTS_CC ; If has, goto.
+    BPL RTS_CC ; If has, goto. Pass.
     LDA TWO_PLAYERS_FLAG ; Load flag
-    BEQ RTS_CS ; == 0, false, goto.
-    TYA ; Y to A.
-    EOR #$01 ; Invert 0000.0001
-    TAY ; To Y index.
+    BEQ RTS_CS ; 1P only, forced but no lives, fail.
+    TYA ; Y to A. Attempting other player here.
+    EOR #$01 ; Invert player.
+    TAY ; Back to index.
     LDA NUM_PLAYER_LIVES[2],Y ; Get other players lives.
-    BMI RTS_CS ; If none, goto.
+    BMI RTS_CS ; If negative, goto. No lives. Fail.
     TYA ; Index to A.
-    ASL A ; << 1, *2.
-    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Store to obj.
-    JMP RTS_CC ; Leave CC.
+    ASL A ; << 1, *2. Focus 0/2.
+    STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Set focus.
+    JMP RTS_CC ; Leave CC, pass.
 RTS_CS: ; 1F:16F6, 0x03F6F6
-    SEC
+    SEC ; Fail, nobody to target.
     RTS
 RTS_CC: ; 1F:16F8, 0x03F6F8
-    CLC
+    CLC ; Pass. Target exists.
     RTS
 FOCUS_FIND_SEED_0x00: ; 1F:16FA, 0x03F6FA
     LDA #$00 ; Seed.
@@ -4451,7 +4451,7 @@ A_SEED_ENTER: ; 1F:1700, 0x03F700
     SBC OBJ_POS_X?[18] ; Sub P1.Xpos
     BCS DONT_INVERT_P1 ; Xobj.xpos >= P1.xpos
     EOR #$FF ; Compliment to find positive difference.
-    CLC ; Carry was already clear, lol. Macro, probably.
+    CLC ; Carry was already clear, lol. Macro, probably. Mistake not mistake.
     ADC #$01
 DONT_INVERT_P1: ; 1F:171B, 0x03F71B
     STA TMP_00 ; Store to TMP.
@@ -4584,6 +4584,7 @@ FIND_PLAYER_TO_FOCUS_ON_TO_OBJ: ; 1F:17E6, 0x03F7E6
 NO_UNDERFLOW: ; 1F:17F8, 0x03F7F8
     STA OBJ_POS_X??[18],X ; Store.
     RTS ; Leave.
+FOCUS_CLOSEST_PLAYER: ; 1F:17FC, 0x03F7FC
     LDA TWO_PLAYERS_FLAG ; Load
     BEQ RTS_FOCUS_P1 ; If not set, one player game, set obj and leave.
     LDA NUM_PLAYER_LIVES[2] ; Load P1 lives.
@@ -4636,6 +4637,7 @@ USE_INDEX: ; 1F:184E, 0x03F84E
     TYA ; Index val to A.
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Store to OBJ.
     RTS ; leave.
+MOVE_UNK_RET_??_SEEDED_VAL: ; 1F:1853, 0x03F853
     LDA #$40 ; Val.
     BNE MOVE_UNK_RET_?? ; Always taken. Mistake, next line lol.
 MOVE_UNK_RET_??: ; 1F:1857, 0x03F857
@@ -4652,7 +4654,7 @@ MOVE?_RTN_IDK: ; 1F:1863, 0x03F863
     LDA 532_OBJ_UNK_POS_DELTA?[18],X ; Load
     ADC 4C6_OBJ_UNK[18],X ; Add
     STA 4C6_OBJ_UNK[18],X ; Store.
-    BPL CARRY_SET_RET ; If positive result...?
+    BPL CARRY_SET_RET ; If positive result, ret CS.
     CLC ; Carry cleared.
     RTS
 CARRY_SET_RET: ; 1F:187A, 0x03F87A

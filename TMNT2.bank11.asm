@@ -860,7 +860,7 @@ SKIP_INVERTATION_OF_OBJ_THINGS: ; 0B:067A, 0x01667A
     TAY ; To Y index.
     LDA DATA_WORDS,Y ; Load
     STA OBJ_ANIMATION_DISPLAY[18],X ; Set from index.
-    INC 707_UNK ; ++
+    INC 707_SWITCHED_ON?? ; ++
     AND #$01 ; Keep 0x01 from animation.
     STA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Store to.
     LDA #$02

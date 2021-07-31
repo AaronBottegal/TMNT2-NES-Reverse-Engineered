@@ -176,7 +176,7 @@ FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE:        .rs 1
 
           .rsset 0x008A
 FLAG_8A_UNK_ROCKSTEADY?:                      .rs 1
-8B_UNK:                                       .rs 1
+8B_BOSS?_UNK:                                 .rs 1
 8C_UNK:                                       .rs 1
 8D_UNK:                                       .rs 1
 8E_UNK:                                       .rs 1
@@ -709,7 +709,7 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 704_OBJ_USE_UNK:                              .rs 1
 705_UNK:                                      .rs 1
 706_UNK:                                      .rs 1
-707_UNK:                                      .rs 1
+707_SWITCHED_ON??:                            .rs 1
 708_UNK:                                      .rs 1
 709_UNK:                                      .rs 1
 
@@ -719,7 +719,7 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 70D_UNK:                                      .rs 1
 70E_OBJ_UNK:                                  .rs 1
 R_**:$070F:                                   .rs 1
-710_UNK:                                      .rs 1
+710_BOSS?_UNK:                                .rs 1
 711_UNK:                                      .rs 1
 712_FLAG_PALETTE_UNK:                         .rs 1
 

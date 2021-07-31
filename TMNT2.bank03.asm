@@ -3919,7 +3919,7 @@ NEXT_OBJ_PAIR: ; 03:13B5, 0x0073B5
     CPY #$11 ; End obj.
     BCC LOOP_OBJS ; <, no, loop.
     LDA #$00
-    STA 8B_UNK ; Clear if all done.
+    STA 8B_BOSS?_UNK ; Clear if all done.
     JMP INIT_OBJECT[X]_DATA_FULL ; Init Xobj.
 OBJ_HAS_STATE: ; 03:13C2, 0x0073C2
     RTS
