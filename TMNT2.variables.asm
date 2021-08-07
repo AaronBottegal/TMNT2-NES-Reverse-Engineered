@@ -512,7 +512,7 @@ SCORES_BCD_XX0000:                            .rs 1
 OBJ_ANIMATION_DISPLAY:                        .rs 18
 OBJ_SECONDARY_SWITCH?:                        .rs 18
 OBJ_ENABLED_STATE+MORE?:                      .rs 18
-OBJ_STATE_DIR_RELATED_C:                      .rs 18
+OBJ_STATE_DIR_RELATED_C_SPR_DATA?:            .rs 18
 OBJ_ANIM_HOLD_TIMER?:                         .rs 18
 45A_OBJ_DATA_ENTRY?STATE_STEP?:               .rs 18
 OBJ_POS_Y??:                                  .rs 18
@@ -551,7 +551,7 @@ STATUS_FLAGS_B/OBJ_FOCUS:                     .rs 18
 5F5_UNK:                                      .rs 1
 5F6_UNK:                                      .rs 1
 5F7_UNK:                                      .rs 1
-5F8_UNK:                                      .rs 1
+5F8_OBJ_SETS_UNK:                             .rs 1
 ZP_13_INDEX_VAL_UNK:                          .rs 1
 5FA_UNK:                                      .rs 1
 5FB_TIMER_ALL_FINISHED?:                      .rs 1

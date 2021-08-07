@@ -3221,10 +3221,10 @@ SKIP_OTHER_LOAD: ; 1E:0E2F, 0x03CE2F
 PPU_FLAG_NOT_SET: ; 1E:0E31, 0x03CE31
     TAX ; A val to X.
     STX TMP_0B ; Store to.
-    LDA OBJ_STATE_DIR_RELATED_C[18],X ; A from
+    LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; A from
     AND #$03 ; Get bits 0000.0011 from val.
     STA TMP_0C ; Store them here.
-    LDA OBJ_STATE_DIR_RELATED_C[18],X
+    LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X
     AND #$E0 ; Get bits 1110.0000
     STA TMP_07 ; Store here.
     LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load value.
