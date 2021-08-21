@@ -3862,7 +3862,7 @@ STATE_0x34_SUBSWITCH_A: ; 03:1331, 0x007331
     JSR CROSS_BANK_INTERFACE_UNKNOWN ; Do.
     PLA
     TAX ; Restore Xobj. TODO: Could have used X scratchpad?
-    LDA 87_UNK ; Load
+    LDA 87_CB_INDEX? ; Load
     BNE EXIT_NO_SPECIAL_MOD
     INC 7F_OBJ_SPECIAL_INDEX? ; ++
     INC OBJ_SECONDARY_SWITCH?[18],X ; ++

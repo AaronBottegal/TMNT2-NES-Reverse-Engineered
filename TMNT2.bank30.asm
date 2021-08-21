@@ -2945,7 +2945,7 @@ COUNTER_RANDOMNESS_BAD: ; 1E:0C34, 0x03CC34
     STA INF_LOOP_COUNTER ; Store back.
     INC INF_LOOP_COUNTER ; Inc again.
     RTS ; Leave.
-RANDOMNESS?: ; 1E:0C40, 0x03CC40
+RANDOMNESS: ; 1E:0C40, 0x03CC40
     INC RANDOM_VALS?+1 ; ++
     CLC ; Prep add.
     LDA RANDOM_VALS?+1 ; Load
@@ -3002,7 +3002,7 @@ CLEAR_3XX-3C0: ; 1E:0C8F, 0x03CC8F
     BCC CLEAR_3XX-3C0 ; <, goto.
     RTS
 SWITCH_CODE_PTRS_PAST_JSR: ; 1E:0C98, 0x03CC98
-    ASL A ; A to index.
+    ASL A ; A to index. Important as > 0x80 get the data thrown out. Abused in code. :)
     STY TMP_03 ; Y to TMP.
     TAY ; Index to Y.
     INY ; Adjust for return offset.
@@ -3884,7 +3884,7 @@ UPDATE_HEALTH_AND_SCORE_FOR_PLAYER: ; 1E:12C3, 0x03D2C3
     JMP UPDATE_SCORE ; Abuse RTS.
 SWITCH_3C_RTN_D: ; 1E:12C9, 0x03D2C9
     INC RANDOM_VALS?[2] ; ++ ?
-    JSR RANDOMNESS? ; Random number making?
+    JSR RANDOMNESS ; Random number making?
     JSR RTN_STREAM_UNK ; Do..?
     LDA #$3C ; Bank 1C/1D.
     JSR BANK_PAIR_USE_A

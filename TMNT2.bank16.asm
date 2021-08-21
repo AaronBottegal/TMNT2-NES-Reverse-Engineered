@@ -9,134 +9,93 @@
     .db 07
     .db F0
     .db 34
-    .db A5
-    .db 42
-    .db 0A
-    .db A8
-    .db B9
-    .db 72
-    .db 80
-    .db 85
-    .db 00
-    .db B9
-    .db 73
-    .db 80
-    .db 85
-    .db 01
-    .db AC
-    .db 0B
-    .db 06
-    .db B1
-    .db 00
-    .db C9
+MAP_ARRAYS_UPDATE?: ; 10:000B, 0x02000B
+    LDA LEVEL/SCREEN_ON ; Load screen.
+    ASL A ; << 1
+    TAY ; To Y index.
+    LDA OBJ_DATA_A,Y ; Move file ptr.
+    STA TMP_00
+    LDA OBJ_DATA_B,Y
+    STA TMP_01
+    LDY 60B_STREAM_INDEX_MAP? ; Index from.
+    LDA [TMP_00],Y ; Data from file.
+    CMP #$FF ; If _ #$FF
+    BEQ RTS_EXTRA ; ==, goto.
+    LDA NAMETABLE_FOCUS_VAL?[2] ; Load
+    CMP [TMP_00],Y ; If _ Data
+    BEQ VAL_EQ ; ==, goto.
+    BCS VAL_GTE ; >=, goto.
+    BCC RTS_EXTRA ; <, goto.
+VAL_EQ: ; 10:002C, 0x02002C
+    LDA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load val.
+    INY ; Index++
+    CMP [TMP_00],Y ; If _ fdata
+    BCC RTS_EXTRA ; <, goto.
+VAL_GTE: ; 10:0033, 0x020033
+    LDX #$00 ; Index.
+VAL_NE_0x4: ; 10:0035, 0x020035
+    LDA 670_MAP_DATA_A,X ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    INX ; Index++
+    CPX #$04 ; If _ #$04
+    BNE VAL_NE_0x4 ; !=, goto.
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 10:0040, 0x020040
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load from file.
+    STA 670_MAP_DATA_A,X ; Store to index.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load from file.
+    STA 688_MAP_DATA_G,X ; Store to.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load.
+    STA 678_MAP_DATA_C,X ; Store to.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load
+    STA 680_MAP_DATA_E,X ; Store to.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load.
+    STA 68C_MAP_DATA_H,X ; Store to.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load
+    STA 684_MAP_DATA_F,X ; Store to.
+    LDA #$00
+    STA 67C_MAP_DATA_D,X ; Clear attrs.
+    STA 674_MAP_DATA_B,X
+    INY ; Stream++
+    STY 60B_STREAM_INDEX_MAP? ; Store index.
+    RTS ; Leave.
+RTS_EXTRA: ; 10:0071, 0x020071
+    .db 60 ; Leave.
+OBJ_DATA_A: ; 10:0072, 0x020072
+    LOW(FILE_A)
+OBJ_DATA_B: ; 10:0073, 0x020073
+    HIGH(FILE_A)
+    LOW(FILE_A)
+    HIGH(FILE_A)
+    LOW(FILE_B)
+    HIGH(FILE_B)
+    LOW(FILE_C)
+    HIGH(FILE_C)
+    LOW(FILE_D)
+    HIGH(FILE_D)
+    LOW(FILE_E)
+    HIGH(FILE_E)
+    LOW(FILE_F)
+    HIGH(FILE_F)
+    LOW(FILE_A)
+    HIGH(FILE_A)
+    LOW(FILE_G)
+    HIGH(FILE_G)
+    LOW(FILE_H)
+    HIGH(FILE_H)
+    LOW(FILE_I)
+    HIGH(FILE_I)
+    LOW(FILE_J)
+    HIGH(FILE_J)
+FILE_A: ; 10:008A, 0x02008A
     .db FF
-    .db F0
-    .db 4F
-    .db A5
-    .db B4
-    .db D1
-    .db 00
-    .db F0
-    .db 04
-    .db B0
-    .db 09
-    .db 90
-    .db 45
-    .db A5
-    .db B1
-    .db C8
-    .db D1
-    .db 00
-    .db 90
-    .db 3E
-    .db A2
-    .db 00
-    .db BD
-    .db 70
-    .db 06
-    .db F0
-    .db 06
-    .db E8
-    .db E0
-    .db 04
-    .db D0
-    .db F6
-    .db 60
-    .db C8
-    .db B1
-    .db 00
-    .db 9D
-    .db 70
-    .db 06
-    .db C8
-    .db B1
-    .db 00
-    .db 9D
-    .db 88
-    .db 06
-    .db C8
-    .db B1
-    .db 00
-    .db 9D
-    .db 78
-    .db 06
-    .db C8
-    .db B1
-    .db 00
-    .db 9D
-    .db 80
-    .db 06
-    .db C8
-    .db B1
-    .db 00
-    .db 9D
-    .db 8C
-    .db 06
-    .db C8
-    .db B1
-    .db 00
-    .db 9D
-    .db 84
-    .db 06
-    .db A9
-    .db 00
-    .db 9D
-    .db 7C
-    .db 06
-    .db 9D
-    .db 74
-    .db 06
-    .db C8
-    .db 8C
-    .db 0B
-    .db 06
-    .db 60
-    .db 60
-    .db 8A
-    .db 80
-    .db 8A
-    .db 80
-    .db 8B
-    .db 80
-    .db AC
-    .db 80
-    .db 8A
-    .db 81
-    .db B5
-    .db 80
-    .db EE
-    .db 80
-    .db 8A
-    .db 80
-    .db 07
-    .db 81
-    .db CB
-    .db 81
-    .db 40
-    .db 81
-    .db 59
-    .db 81
-    .db FF
+FILE_B: ; 10:008B, 0x02008B
     .db 00
     .db 00
     .db 01
@@ -170,6 +129,7 @@
     .db FF
     .db 00
     .db FF
+FILE_C: ; 10:00AC, 0x0200AC
     .db 03
     .db 30
     .db 03
@@ -179,6 +139,7 @@
     .db 88
     .db 80
     .db FF
+FILE_E: ; 10:00B5, 0x0200B5
     .db 00
     .db C5
     .db 06
@@ -236,6 +197,7 @@
     .db E0
     .db 80
     .db FF
+FILE_F: ; 10:00EE, 0x0200EE
     .db 01
     .db 00
     .db 07
@@ -261,6 +223,7 @@
     .db E0
     .db 00
     .db FF
+FILE_G: ; 10:0107, 0x020107
     .db 00
     .db D2
     .db 08
@@ -318,6 +281,7 @@
     .db E0
     .db 80
     .db FF
+FILE_I: ; 10:0140, 0x020140
     .db 01
     .db 16
     .db 0B
@@ -343,6 +307,7 @@
     .db C0
     .db 00
     .db FF
+FILE_J: ; 10:0159, 0x020159
     .db 00
     .db 00
     .db 09
@@ -392,6 +357,7 @@
     .db E0
     .db 80
     .db FF
+FILE_D: ; 10:018A, 0x02018A
     .db 01
     .db C0
     .db 0D
@@ -457,6 +423,7 @@
     .db D8
     .db 00
     .db FF
+FILE_H: ; 10:01CB, 0x0201CB
     .db 02
     .db 70
     .db 0F
@@ -575,30 +542,16 @@
     .db 4C
     .db 35
     .db 82
-    .db A9
-    .db 00
-    .db 9D
-    .db 70
-    .db 06
-    .db 9D
-    .db 88
-    .db 06
-    .db 9D
-    .db 74
-    .db 06
-    .db 9D
-    .db 78
-    .db 06
-    .db 9D
-    .db 7C
-    .db 06
-    .db 9D
-    .db 80
-    .db 06
-    .db 9D
-    .db 84
-    .db 06
-    .db 60
+CLEAR_MANY_ARR_THINGIES: ; 10:0241, 0x020241
+    LDA #$00
+    STA 670_MAP_DATA_A,X ; Clear attrs.
+    STA 688_MAP_DATA_G,X
+    STA 674_MAP_DATA_B,X
+    STA 678_MAP_DATA_C,X
+    STA 67C_MAP_DATA_D,X
+    STA 680_MAP_DATA_E,X
+    STA 684_MAP_DATA_F,X
+    RTS ; Leave.
     .db 85
     .db 07
     .db 8A
@@ -1654,370 +1607,216 @@ DATA_PLAYER_PTR_UNK_H_ALT: ; 10:0662, 0x020662
     .db C1
     .db FF
 RTN_UNK_A: ; 10:0675, 0x020675
-    .db 85
-    .db 00
-    .db A5
-    .db 00
-    .db 10
-    .db 0E
-    .db 0A
-    .db AA
-    .db BD
-    .db 06
-    .db 8B
-    .db 85
-    .db 00
-    .db BD
-    .db 07
-    .db 8B
-    .db 30
-    .db 1D
-    .db 10
-    .db 0C
-    .db 0A
-    .db AA
-    .db BD
-    .db 06
-    .db 8A
-    .db 85
-    .db 00
-    .db BD
-    .db 07
-    .db 8A
-    .db 30
-    .db 0F
-    .db 0A
-    .db AA
-    .db BD
-    .db 40
-    .db 8D
-    .db 85
-    .db 04
-    .db BD
-    .db 41
-    .db 8D
-    .db 85
-    .db 05
-    .db 4C
-    .db B0
-    .db 86
-    .db 0A
-    .db AA
-    .db BD
-    .db 08
-    .db 8E
-    .db 85
-    .db 04
-    .db BD
-    .db 09
-    .db 8E
-    .db 85
-    .db 05
-    .db A0
-    .db 00
-    .db B1
-    .db 04
-    .db 85
-    .db 08
-    .db C8
-    .db B1
-    .db 04
-    .db 85
-    .db 01
-    .db C8
-    .db A5
-    .db 00
-    .db 10
-    .db 0F
-    .db 0A
-    .db AA
-    .db BD
-    .db 7E
-    .db 8C
-    .db 85
-    .db 02
-    .db BD
-    .db 7F
-    .db 8C
-    .db 85
-    .db 03
-    .db 4C
-    .db DB
-    .db 86
-    .db 0A
-    .db AA
-    .db BD
-    .db 06
-    .db 8C
-    .db 85
-    .db 02
-    .db BD
-    .db 07
-    .db 8C
-    .db 85
-    .db 03
-    .db 20
-    .db E1
-    .db 86
-    .db B0
-    .db D2
-    .db 60
-    .db A6
-    .db 1E
-    .db A5
-    .db 01
-    .db 85
-    .db 06
-    .db A5
-    .db 08
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A5
-    .db 02
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A5
-    .db 03
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db B1
-    .db 04
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db C8
-    .db C6
-    .db 06
-    .db D0
-    .db F5
-    .db A9
-    .db FF
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db 86
-    .db 1E
-    .db B1
-    .db 04
-    .db C9
-    .db FD
-    .db 90
-    .db 1B
-    .db C9
-    .db FF
-    .db F0
-    .db 33
-    .db C9
-    .db FE
-    .db F0
-    .db 27
-    .db C8
-    .db B1
-    .db 04
-    .db 48
-    .db C8
-    .db B1
-    .db 04
-    .db 85
-    .db 08
-    .db C8
-    .db B1
-    .db 04
-    .db 85
-    .db 01
-    .db C8
-    .db 68
-    .db 4C
-    .db 39
-    .db 87
-    .db A5
-    .db 08
-    .db C9
-    .db 01
-    .db F0
-    .db 04
-    .db A9
-    .db 01
-    .db D0
-    .db 02
-    .db A9
-    .db 20
-    .db A2
-    .db 02
-    .db 20
-    .db B1
-    .db CC
-    .db 4C
-    .db E1
-    .db 86
-    .db C8
-    .db B1
-    .db 04
-    .db 85
-    .db 00
-    .db C8
-    .db 38
-    .db 60
-    .db 18
-    .db 60
-    .db A5
-    .db 88
-    .db F0
-    .db 03
-    .db C6
-    .db 88
-    .db 60
-    .db A9
-    .db 84
-    .db 18
-    .db 65
-    .db 87
-    .db 20
-    .db 75
-    .db 86
-    .db E6
-    .db 87
-    .db A9
-    .db 84
-    .db 18
-    .db 65
-    .db 87
-    .db 20
-    .db 75
-    .db 86
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db 30
-    .db F0
-    .db 15
-    .db C9
-    .db 08
-    .db F0
-    .db 0C
-    .db C9
-    .db 10
-    .db F0
-    .db 08
-    .db C9
-    .db 18
-    .db F0
-    .db 04
-    .db C9
-    .db 24
-    .db D0
-    .db 04
-    .db A9
-    .db 05
-    .db 85
-    .db 88
-    .db 60
-    .db A9
-    .db 4B
-    .db 20
-    .db 52
-    .db DB
-    .db A9
-    .db 00
-    .db 8D
-    .db 36
-    .db 06
-    .db F0
-    .db 44
-    .db A5
-    .db 87
-    .db D0
-    .db 0F
-    .db AD
-    .db 0A
-    .db 06
-    .db 38
-    .db E9
-    .db C2
-    .db 0A
-    .db 0A
-    .db 0A
-    .db 8D
-    .db 0B
-    .db 06
-    .db 20
-    .db 0B
-    .db 80
-    .db A4
-    .db 87
-    .db B9
-    .db E1
-    .db 87
-    .db C9
-    .db FF
-    .db F0
-    .db 16
-    .db AD
-    .db 0A
-    .db 06
-    .db 38
-    .db E9
-    .db C2
-    .db A8
-    .db B9
-    .db DB
-    .db 87
-    .db A4
-    .db 87
-    .db 18
-    .db 79
-    .db E1
-    .db 87
-    .db 20
-    .db 75
-    .db 86
-    .db E6
-    .db 87
-    .db 60
-    .db A2
-    .db 00
-    .db BD
-    .db 88
-    .db 06
-    .db CD
-    .db 0A
-    .db 06
-    .db F0
-    .db 05
-    .db E8
-    .db E0
-    .db 03
-    .db 90
-    .db F3
-    .db 20
-    .db 41
-    .db 82
-    .db A9
-    .db 00
-    .db 85
-    .db 87
-    .db 85
-    .db 88
-    .db 8D
-    .db 0A
-    .db 06
-    .db 60
+    STA TMP_00 ; Store val.
+    LDA TMP_00 ; Load
+    BPL VAL_POSITIVE ; If positive, goto.
+    ASL A ; << 1
+    TAX ; To X index.
+    LDA DATA_A,X ; Load
+    STA TMP_00 ; Store.
+    LDA DATA_B,X ; Load
+    BMI PTR_SET_A ; If negative, goto.
+    BPL PTR_SET_B ; If positive, goto.
+VAL_POSITIVE: ; 10:0689, 0x020689
+    ASL A ; << 1
+    TAX ; To index.
+    LDA DATA_C,X ; Move data.
+    STA TMP_00
+    LDA DATA_D,X
+    BMI PTR_SET_A
+PTR_SET_B: ; 10:0695, 0x020695
+    ASL A ; << 1
+    TAX ; To X.
+    LDA DATA_E,X ; Load data.
+    STA TMP_04 ; Store.
+    LDA DATA_F,X ; Load data.
+    STA TMP_05 ; Store.
+    JMP STREAM_THINGY ; Goto.
+PTR_SET_A: ; 10:06A4, 0x0206A4
+    ASL A ; << 1
+    TAX ; To X.
+    LDA DATA_G,X ; Load
+    STA TMP_04 ; Set TMP.
+    LDA DATA_H,X ; Load.
+    STA TMP_05 ; Set TMP.
+STREAM_THINGY: ; 10:06B0, 0x0206B0
+    LDY #$00 ; Reset stream.
+CONTINUE: ; 10:06B2, 0x0206B2
+    LDA [TMP_04],Y ; Load.
+    STA TMP_08 ; Store to.
+    INY ; Stream++
+    LDA [TMP_04],Y ; Load.
+    STA TMP_01 ; Store to.
+    INY ; Stream++
+    LDA TMP_00 ; Load
+    BPL DATA_SET_B ; If positive, goto.
+    ASL A ; << 1
+    TAX ; To X index.
+    LDA DATA_G,X ; Move from index.
+    STA TMP_02
+    LDA DATA_H,X
+    STA TMP_03
+    JMP ENTER ; Goto.
+DATA_SET_B: ; 10:06CF, 0x0206CF
+    ASL A ; << 1
+    TAX ; To index.
+    LDA DATA_I,X ; Move data to TMP.
+    STA TMP_02
+    LDA DATA_J,X
+    STA TMP_03
+ENTER: ; 10:06DB, 0x0206DB
+    JSR MAKE_OTHER_BUFFER ; Do. CC= finished.
+    BCS CONTINUE ; Ret CS, continue.
+    RTS ; Leave.
+MAKE_OTHER_BUFFER: ; 10:06E1, 0x0206E1
+    LDX PPU_UPDATE_BUF_INDEX ; Index.
+    LDA TMP_01 ; Load
+    STA TMP_06 ; Store to.
+    LDA TMP_08 ; Load
+    STA PPU_UPDATE_BUFFER[20],X ; Store to buf.
+    INX ; Index++
+    LDA TMP_02 ; Load
+    STA PPU_UPDATE_BUFFER[20],X ; Store to.
+    INX ; Index++
+    LDA TMP_03 ; Load
+    STA PPU_UPDATE_BUFFER[20],X ; Store to.
+    INX ; Index++
+LOOP_FILE: ; 10:06F9, 0x0206F9
+    LDA [TMP_04],Y ; Load from file.
+    STA PPU_UPDATE_BUFFER[20],X ; Store to.
+    INX ; Index++
+    INY ; Stream++
+    DEC TMP_06 ; --
+    BNE LOOP_FILE ; != 0, goto.
+    LDA #$FF
+    STA PPU_UPDATE_BUFFER[20],X ; Store EOF.
+    INX ; Index++
+    STX PPU_UPDATE_BUF_INDEX ; Store buf.
+    LDA [TMP_04],Y ; Load from file.
+    CMP #$FD ; If _ #$FD
+    BCC VAL_LT_0xFD ; <, goto.
+    CMP #$FF ; If _ #$FF
+    BEQ RET_CC ; ==, goto.
+    CMP #$FE ; If _ #$FE
+    BEQ VAL_0xFE ; ==, goto.
+    INY ; Stream++
+    LDA [TMP_04],Y ; Load
+    PHA ; Save.
+    INY ; Stream++
+    LDA [TMP_04],Y ; Load.
+    STA TMP_08 ; Store to.
+    INY ; Stream++
+    LDA [TMP_04],Y ; Load
+    STA TMP_01 ; Store to.
+    INY ; Stream++
+    PLA ; Pull value.
+    JMP INC_TMP_02_AND_REENTER ; Inc with val.
+VAL_LT_0xFD: ; 10:072D, 0x02072D
+    LDA TMP_08 ; Load
+    CMP #$01 ; If _ #$01
+    BEQ VAL_EQ_0x1 ; ==, goto.
+    LDA #$01 ; Load. Inc amount.
+    BNE INC_TMP_02_AND_REENTER ; Always taken. Goto.
+VAL_EQ_0x1: ; 10:0737, 0x020737
+    LDA #$20
+INC_TMP_02_AND_REENTER: ; 10:0739, 0x020739
+    LDX #$02 ; Index.
+    JSR FORWARD_TMP[X]_BY_A ; Forward TMP_02
+    JMP MAKE_OTHER_BUFFER ; Goto.
+VAL_0xFE: ; 10:0741, 0x020741
+    INY ; Stream++
+    LDA [TMP_04],Y ; Load from stream.
+    STA TMP_00 ; Store to.
+    INY ; Stream++
+    SEC ; Ret CS.
+    RTS ; Leave.
+RET_CC: ; 10:0749, 0x020749
+    CLC ; Ret CC.
+    RTS ; Leave.
+    LDA 88_UNK_SWITCH?
+    BEQ 10:0752
+    DEC 88_UNK_SWITCH?
+    RTS
+    LDA #$84
+    CLC
+    ADC 87_CB_INDEX?
+    JSR RTN_UNK_A
+    INC 87_CB_INDEX?
+    LDA #$84
+    CLC
+    ADC 87_CB_INDEX?
+    JSR RTN_UNK_A
+    INC 87_CB_INDEX?
+    LDA 87_CB_INDEX?
+    CMP #$30
+    BEQ 10:0781
+    CMP #$08
+    BEQ 10:077C
+    CMP #$10
+    BEQ 10:077C
+    CMP #$18
+    BEQ 10:077C
+    CMP #$24
+    BNE 10:0780
+    LDA #$05
+    STA 88_UNK_SWITCH?
+    RTS
+    LDA #$4B
+    JSR SND_BANKED_DISPATCH ; Play sound.
+    LDA #$00
+    STA 636_UNK ; Clear.
+    BEQ 10:07D1 ; Always taken.
+BOSS_RTN: ; 10:078D, 0x02078D
+    LDA 87_CB_INDEX? ; Load
+    BNE VAL_SEEDED ; != 0, goto.
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    SEC ; Prep sub.
+    SBC #$C2 ; -= 0xC2. Getting original index used.
+    ASL A ; << 3, *8.
+    ASL A
+    ASL A
+    STA 60B_STREAM_INDEX_MAP? ; Store to.
+    JSR MAP_ARRAYS_UPDATE? ; Do.
+VAL_SEEDED: ; 10:07A0, 0x0207A0
+    LDY 87_CB_INDEX? ; Index from.
+    LDA DATA_UNK,Y ; Load
+    CMP #$FF ; If _ #$FF
+    BEQ VAL_EQ_EOF ; ==, goto.
+    LDA 60A_CB_SWITCH_WHICH? ; Load.
+    SEC ; Prep sub.
+    SBC #$C2 ; -= base index.
+    TAY ; To Y index. Zero based.
+    LDA WHICH_RTN_INDEX,Y ; Load from index.
+    LDY 87_CB_INDEX? ; Load index.
+    CLC ; Prep add.
+    ADC DATA_UNK,Y ; Add with.
+    JSR RTN_UNK_A ; Do rtn.
+    INC 87_CB_INDEX? ; ++
+    RTS ; Leave.
+VAL_EQ_EOF: ; 10:07BF, 0x0207BF
+    LDX #$00 ; Index init.
+VAL_LT: ; 10:07C1, 0x0207C1
+    LDA 688_MAP_DATA_G,X ; Load
+    CMP 60A_CB_SWITCH_WHICH? ; If _ Var
+    BEQ VAL_EQ ; ==, goto.
+    INX ; Next index.
+    CPX #$03 ; If _ #$03
+    BCC VAL_LT ; <, goto.
+VAL_EQ: ; 10:07CE, 0x0207CE
+    JSR CLEAR_MANY_ARR_THINGIES ; Do.
+    LDA #$00
+    STA 87_CB_INDEX? ; Clear these.
+    STA 88_UNK_SWITCH?
+    STA 60A_CB_SWITCH_WHICH?
+    RTS ; Leave.
+WHICH_RTN_INDEX: ; 10:07DB, 0x0207DB
     .db 00
     .db 16
     .db 2C
     .db 42
     .db 58
     .db 6E
+DATA_UNK: ; 10:07E1, 0x0207E1
     .db 00
     .db 01
     .db 02
@@ -2093,177 +1892,83 @@ RTN_UNK_A: ; 10:0675, 0x020675
     .db 07
     .db 15
     .db FF
-    .db A5
-    .db 88
-    .db F0
-    .db 03
-    .db C6
-    .db 88
-    .db 60
-    .db A5
-    .db 87
-    .db D0
-    .db 12
-    .db A9
-    .db 1A
-    .db 20
-    .db 52
-    .db DB
-    .db A9
-    .db 00
-    .db 8D
-    .db 36
-    .db 06
-    .db A9
-    .db 01
-    .db 8D
-    .db 61
-    .db 06
-    .db 20
-    .db B5
-    .db 88
-    .db A5
-    .db 87
-    .db C9
-    .db F7
-    .db B0
-    .db 0A
-    .db AD
-    .db 0E
-    .db 01
-    .db D0
-    .db 05
-    .db A9
-    .db 1B
-    .db 20
-    .db 52
-    .db DB
-    .db A4
-    .db 87
-    .db B9
-    .db 0A
-    .db 89
-    .db C9
-    .db FF
-    .db F0
-    .db 43
-    .db C9
-    .db FE
-    .db D0
-    .db 23
-    .db EE
-    .db 17
-    .db 06
-    .db C8
-    .db E6
-    .db 87
-    .db B9
-    .db 0A
-    .db 89
-    .db CD
-    .db 17
-    .db 06
-    .db F0
-    .db 09
-    .db C8
-    .db B9
-    .db 0A
-    .db 89
-    .db 85
-    .db 87
-    .db 4C
-    .db 49
-    .db 88
-    .db A9
-    .db 00
-    .db 8D
-    .db 17
-    .db 06
-    .db E6
-    .db 87
-    .db E6
-    .db 87
-    .db 4C
-    .db 49
-    .db 88
-    .db B9
-    .db 0A
-    .db 89
-    .db 85
-    .db 88
-    .db C8
-    .db E6
-    .db 87
-    .db B9
-    .db 0A
-    .db 89
-    .db 20
-    .db 75
-    .db 86
-    .db E6
-    .db 87
-    .db A5
-    .db 87
-    .db C9
-    .db F7
-    .db D0
-    .db 05
-    .db A9
-    .db 4B
-    .db 20
-    .db 52
-    .db DB
-    .db 60
-    .db 20
-    .db B9
-    .db 88
-    .db 20
-    .db D1
-    .db 87
-    .db A9
-    .db 00
-    .db 8D
-    .db 61
-    .db 06
-    .db A9
-    .db 16
-    .db 4C
-    .db 13
-    .db D4
-    .db A0
-    .db 00
-    .db F0
-    .db 02
-    .db A0
-    .db 1F
-    .db B9
-    .db D7
-    .db 88
-    .db C9
-    .db FF
-    .db F0
-    .db E2
-    .db C9
-    .db FE
-    .db D0
-    .db 09
-    .db C8
-    .db B9
-    .db D7
-    .db 88
-    .db AA
-    .db C8
-    .db B9
-    .db D7
-    .db 88
-    .db 9D
-    .db A0
-    .db 07
-    .db C8
-    .db E8
-    .db 4C
-    .db BB
-    .db 88
+    LDA 88_UNK_SWITCH?
+    BEQ 10:0833
+    DEC 88_UNK_SWITCH?
+    RTS
+    LDA 87_CB_INDEX?
+    BNE 10:0849
+    LDA #$1A
+    JSR SND_BANKED_DISPATCH
+    LDA #$00
+    STA 636_UNK
+    LDA #$01
+    STA 661_UNK_LEVEL_A_SETS
+    JSR 10:08B5
+    LDA 87_CB_INDEX?
+    CMP #$F7
+    BCS 10:0859
+    LDA R_**:$010E
+    BNE 10:0859
+    LDA #$1B
+    JSR SND_BANKED_DISPATCH
+    LDY 87_CB_INDEX?
+    LDA 10:090A,Y
+    CMP #$FF
+    BEQ 10:08A5
+    CMP #$FE
+    BNE 10:0889
+    INC **:$0617
+    INY
+    INC 87_CB_INDEX?
+    LDA 10:090A,Y
+    CMP **:$0617
+    BEQ 10:087D
+    INY
+    LDA 10:090A,Y
+    STA 87_CB_INDEX?
+    JMP 10:0849
+    LDA #$00
+    STA **:$0617
+    INC 87_CB_INDEX?
+    INC 87_CB_INDEX?
+    JMP 10:0849
+    LDA 10:090A,Y
+    STA 88_UNK_SWITCH?
+    INY
+    INC 87_CB_INDEX?
+    LDA 10:090A,Y
+    JSR RTN_UNK_A
+    INC 87_CB_INDEX?
+    LDA 87_CB_INDEX?
+    CMP #$F7
+    BNE 10:08A4
+    LDA #$4B
+    JSR SND_BANKED_DISPATCH
+    RTS
+    JSR 10:08B9
+    JSR 10:07D1
+    LDA #$00
+    STA 661_UNK_LEVEL_A_SETS
+    LDA #$16
+    JMP LEVEL_RELATED_DATA_A_PASSED?
+    LDY #$00
+    BEQ 10:08BB
+    LDY #$1F
+    LDA 10:08D7,Y
+    CMP #$FF
+    BEQ 10:08A4
+    CMP #$FE
+    BNE 10:08CF
+    INY
+    LDA 10:08D7,Y
+    TAX
+    INY
+    LDA 10:08D7,Y
+    STA **:$07A0,X
+    INY
+    INX
+    JMP 10:08BB
     .db FE
     .db 30
     .db 11
@@ -2567,7 +2272,9 @@ RTN_UNK_A: ; 10:0675, 0x020675
     .db 20
     .db F8
     .db FF
+DATA_C: ; 10:0A06, 0x020A06
     .db 00
+DATA_D: ; 10:0A07, 0x020A07
     .db 00
     .db 01
     .db 01
@@ -2823,7 +2530,9 @@ RTN_UNK_A: ; 10:0675, 0x020675
     .db 42
     .db 3B
     .db 43
+DATA_A: ; 10:0B06, 0x020B06
     .db 39
+DATA_B: ; 10:0B07, 0x020B07
     .db 61
     .db 37
     .db 62
@@ -3079,7 +2788,9 @@ RTN_UNK_A: ; 10:0675, 0x020675
     .db E5
     .db C4
     .db E5
+DATA_I: ; 10:0C06, 0x020C06
     .db 50
+DATA_J: ; 10:0C07, 0x020C07
     .db 21
     .db D0
     .db 21
@@ -3199,7 +2910,9 @@ RTN_UNK_A: ; 10:0675, 0x020675
     .db 22
     .db 30
     .db 23
+DATA_G: ; 10:0C7E, 0x020C7E
     .db E6
+DATA_H: ; 10:0C7F, 0x020C7F
     .db 20
     .db C9
     .db 23
@@ -3393,7 +3106,9 @@ RTN_UNK_A: ; 10:0675, 0x020675
     .db 25
     .db 0D
     .db 25
+DATA_E: ; 10:0D40, 0x020D40
     .db D4
+DATA_F: ; 10:0D41, 0x020D41
     .db 8E
     .db FB
     .db 8E
@@ -3593,7 +3308,9 @@ RTN_UNK_A: ; 10:0675, 0x020675
     .db A3
     .db D3
     .db A3
+DATA_G: ; 10:0E08, 0x020E08
     .db 16
+DATA_H: ; 10:0E09, 0x020E09
     .db A4
     .db 23
     .db A4

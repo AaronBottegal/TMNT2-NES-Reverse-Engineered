@@ -1230,7 +1230,7 @@ SWITCH_0x02_RTN_G: ; 0A:07E8, 0x0147E8
     LDA #$00
     STA 556_OBJ_STATUS_FLAGS_A[18],X ; Clear
     JSR XPOS_RANDOMNESS ; Xpos from randomness.
-    JSR RANDOMNESS? ; More
+    JSR RANDOMNESS ; More
     AND #$07 ; Keep bottom bits.
     TAY ; To Y index.
     LDA ALT_RTN+DATA,Y ; NOTE: Table in this routine, didn't need specific data?
@@ -1258,13 +1258,13 @@ SET_UNK_AND_DO_SWITCHES+MORE: ; 0A:082B, 0x01482B
     STA 4C6_OBJ_UNK[18],X ; Set val.
     JMP SET_PAIR_SECONDARY|0x01_SCREEN_3_DIFFER ; Do.
 XPOS_RANDOMNESS: ; 0A:0833, 0x014833
-    JSR RANDOMNESS? ; Randomness?
+    JSR RANDOMNESS ; Randomness?
     ADC RANDOM_VALS?[2] ; More random.
     LSR A ; >> 1, /2.
     AND #$0F ; Keep bottom bits.
     CMP #$0C ; If _ #$0C
     BCC LESS_THAN_0x0C ; <, goto.
-    JSR RANDOMNESS? ; More randomness?
+    JSR RANDOMNESS ; More randomness?
     ADC RANDOM_VALS?[2] ; Add val.
     LSR A ; >> 1, /2.
     AND #$0F ; Keep bottom bits.
@@ -1357,7 +1357,7 @@ SWITCH_0x02_RTN_J: ; 0A:08B5, 0x0148B5
     STA OBJ_TERTIARY_SWITCH?[18],X
     LDA #$01
     STA OBJECT_DATA_HEALTH?[18],X ; Set health.
-    JSR RANDOMNESS? ; Do randomness.
+    JSR RANDOMNESS ; Do randomness.
     AND #$3F ; Keep bottom.
     ADC #$20 ; Add
     STA OBJ_ANIM_HOLD_TIMER?[18],X ; Set as hold.
@@ -1426,7 +1426,7 @@ S01_MSC_RTN_B: ; 0A:091C, 0x01491C
     BCC CC_RET ; Ret CC, goto.
     LDA #$00
     STA 556_OBJ_STATUS_FLAGS_A[18],X ; Clear
-    JSR RANDOMNESS? ; Do.
+    JSR RANDOMNESS ; Do.
     AND #$0F ; Keep 0000.1111
     ORA #$10 ; Set 0001.0000
     STA OBJ_ANIM_HOLD_TIMER?+1,X ; Store to hold.
@@ -1444,7 +1444,7 @@ CC_RET: ; 0A:0938, 0x014938
 ANY_FLAGS_SET: ; 0A:0951, 0x014951
     JMP MOVE_Y_FINALIZE ; Goto.
 PAIR_HOLD_NEGATIVE: ; 0A:0954, 0x014954
-    JSR FOCUS_FIND_SEED_0x00 ; Focus
+    JSR FOCUS_FIND_CLOSEST_SEED_0x00 ; Focus
     LDA 712_FLAG_PALETTE_UNK ; Load
     BNE PALETTE_FLAG_SET ; If set, goto.
     LDY OBJ_ENABLED_STATE+MORE?[18],X ; Load from Xobj.
@@ -1454,7 +1454,7 @@ PAIR_HOLD_NEGATIVE: ; 0A:0954, 0x014954
 PALETTE_FLAG_SET: ; 0A:0967, 0x014967
     JMP OBJ_STATE_MOVE_TO_S02_T00 ; Goto state.
 FIND_FOCUS_AND_STATE_MOVE: ; 0A:096A, 0x01496A
-    JSR FOCUS_FIND_SEED_0x00 ; Find.
+    JSR FOCUS_FIND_CLOSEST_SEED_0x00 ; Find.
     JMP OBJ_STATE_MOVE_TO_S02_T00 ; Goto state.
 SET_SECONDARY/TERTIARY_DIRECTION_MORE: ; 0A:0970, 0x014970
     LDA #$02
@@ -1518,7 +1518,7 @@ PAIR_RTN_A: ; 0A:09D3, 0x0149D3
     BCC RET_CC ; If carry not set, goto.
     LDA #$00
     STA 556_OBJ_STATUS_FLAGS_A[18],X ; No update.
-    JSR RANDOMNESS? ; Get random.
+    JSR RANDOMNESS ; Get random.
     AND #$3F ; Range 0x00 - 0x3F, 0 to 64 frames.
     ADC #$20 ; += 0x20, 32 frames.
     STA OBJ_ANIM_HOLD_TIMER?+1,X ; Set hold for pair.
@@ -1552,7 +1552,7 @@ PAIR_RTN_C: ; 0A:0A1A, 0x014A1A
     STA 532_OBJ_UNK_POS_DELTA?[18],X ; Store to.
 HOLD_NONZERO: ; 0A:0A2E, 0x014A2E
     LDA #$30
-    JSR MOVE_UNK_RET_?? ; Move
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Move
     BCC OBJ_FINALIZE ; If CC, finalize.
     LDA #$00
     STA 4C6_OBJ_UNK[18],X ; Clear these.
@@ -1603,7 +1603,7 @@ S01_MSB_RTN_H: ; 0A:0A87, 0x014A87
     STA OBJECT_DATA_EXTRA_B?[18],X ; Clear
     JSR MOVE_UNK_RET_?? ; Move
     LDA #$40
-    JSR MOVE_UNK_RET_?? ; Move
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Move
     BCC MOVE_CC ; If CC, goto.
     LDA #$00
     STA 4C6_OBJ_UNK[18],X ; Clear these.
@@ -1706,7 +1706,7 @@ PAIR_VAL_NEG: ; 0A:0B60, 0x014B60
     STA OBJ_POS_X??[18],X ; Set max.
 UNDER_MAX: ; 0A:0B6F, 0x014B6F
     LDA #$40
-    JSR MOVE_UNK_RET_?? ; Move
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Move
     BCC JMP_TO_Y_FINALIZE ; Ret CC, finalize.
     LDA #$00
     STA 4C6_OBJ_UNK[18],X ; Clear
@@ -1870,7 +1870,7 @@ Y_HAS_VAL: ; 0A:0CAE, 0x014CAE
     STA OBJ_POS_X??[18],X ; Store max.
 DONT_CAP: ; 0A:0CBD, 0x014CBD
     LDA #$40 ; Val?
-    JSR MOVE_UNK_RET_?? ; Do.
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Do.
     BCC FINALIZE_OBJECT ; If carry clear, finalize.
     LDA #$00
     STA 4C6_OBJ_UNK[18],X ; Clear these.
@@ -1921,7 +1921,7 @@ NE_THREE: ; 0A:0D1D, 0x014D1D
 OBJ_DATA_NONZERO: ; 0A:0D20, 0x014D20
     JSR XPOS_RTN_RET_?? ; Do..
     LDA #$40
-    JSR MOVE_UNK_RET_?? ; Do..
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Do..
     BCS CARRY_SET ; If carry set, goto.
     LDA #$85 ; Animation A.
     LDY 532_OBJ_UNK_POS_DELTA?[18],X ; Y from.
@@ -1959,7 +1959,7 @@ S01_MSB_RTN_B: ; 0A:0D55, 0x014D55
     LDA 4C6_OBJ_UNK[18],X ; Load pre-routine.
     PHA ; Save
     LDA #$20
-    JSR MOVE_UNK_RET_?? ; Do...
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Do...
     PLA ; Restore.
     BPL 4C6_ORIGINAL_POSITIVE ; If was positive, goto.
     LDA 4C6_OBJ_UNK[18],X ; Load now.
@@ -2116,7 +2116,7 @@ ANIMATION_ASIS: ; 0A:0E8E, 0x014E8E
     STA OBJ_POS_X??[18],X ; Set 0xE0
 LT_0xE0: ; 0A:0EA3, 0x014EA3
     LDA #$40
-    JSR MOVE_UNK_RET_?? ; Do
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Do
     BCC RET_CC ; CC, goto.
     LDA #$00
     STA OBJ_TERTIARY_SWITCH?+1,X ; Clear pair.
@@ -2224,7 +2224,7 @@ SKIP_OTHER_ANIMATION: ; 0A:0F50, 0x014F50
     INC OBJ_POS_X??[18],X ; ++
 SKIP_UNK: ; 0A:0F67, 0x014F67
     LDA #$40
-    JSR MOVE_UNK_RET_?? ; Do.
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Do.
     LDA 532_OBJ_UNK_POS_DELTA?[18],X ; Load
     BMI SKIP_UNK ; Negative, goto.
     LDA 4D8_OBJ_UNK+1,X ; Load from pair.
@@ -3584,7 +3584,7 @@ S01_MSD_RTN_A: ; 0A:18B4, 0x0158B4
     BMI YOBJ_NEGATIVE ; If negative, skip alt val.
     LDA #$20 ; Alt val.
 YOBJ_NEGATIVE: ; 0A:18C0, 0x0158C0
-    JSR MOVE_UNK_RET_??
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE
     LDA OBJ_TERTIARY_SWITCH?+1,X ; Load pair tert.
     BNE PAIR_TERT_HAS_VAL ; If tert val, skip branches.
     BCS RTN_UPDATE_PAIR_MOD_ANIM/STATE/RETARGET/MORE ; Branch on RTN ret.
@@ -3670,7 +3670,7 @@ S01_MSD_RTN_B: ; 0A:196D, 0x01596D
     BMI LOADED_NEGATIVE ; Negative, use val.
     LDA #$20 ; Alt val.
 LOADED_NEGATIVE: ; 0A:1979, 0x015979
-    JSR MOVE_UNK_RET_?? ; Do.
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Do.
     LDA OBJ_TERTIARY_SWITCH?+1,X ; Load pair tert.
     BNE PAIR_TERT_NONZERO ; Nonezero, skip branches.
     BCS RTN_UPDATE_PAIR_MOD_ANIM/STATE/RETARGET/MORE ; Do.
@@ -3759,7 +3759,7 @@ RTN_ANIM/STATE_RETARGET_CHANCE_MORE: ; 0A:1A1B, 0x015A1B
     LDA #$00
     STA OBJ_POS_X_DELTA?[18],X ; Clear.
     STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
-    JSR RANDOMNESS? ; Get random.
+    JSR RANDOMNESS ; Get random.
     AND #$1F ; Keep 0001.1111.
     BNE HAS_VAL ; If val after, do.
     JMP FOCUS_FIND_SEED_0x80 ; Do. 1 in 0x20 chance to re-target closest?
@@ -4223,7 +4223,7 @@ ANIM_EXTRA_DATA: ; 0A:1CA1, 0x015CA1
     .db 00
 S01_MSD_RTN_I: ; 0A:1D02, 0x015D02
     LDA #$20
-    JSR MOVE_UNK_RET_?? ; Do..
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Do..
     LDA OBJ_TERTIARY_SWITCH?+1,X ; Load from pair.
     BNE PAIR_TERT_VALUE ; Has val, skip branches.
     BCS SUB_PAIR_MOD_MISC_CHANGES_SEC0x03_TERT0x0C_HOLD0x00 ; Branch on sub ret.

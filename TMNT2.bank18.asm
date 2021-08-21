@@ -581,7 +581,7 @@ L_12:03FD: ; 12:03FD, 0x0243FD
 L_12:0407: ; 12:0407, 0x024407
     STA OBJ_ANIMATION_DISPLAY[18],X
     LDA #$08
-    JSR MOVE_UNK_RET_??
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE
     JSR MOVE_Y_FINALIZE
     JSR XPOS_RTN_RET_??
     LDA OBJ_POS_X?[18],X
@@ -4325,7 +4325,7 @@ LOOP_ALL_OBJECTS: ; 12:151C, 0x02551C
     BNE LOADED_NZERO ; != 0, goto.
     JSR XPOS_RTN_RET_?? ; Do sub.
     LDA #$18 ; Move val?
-    JSR MOVE_UNK_RET_??
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE
     JSR MOVE_Y_FINALIZE
     LDA OBJ_POS_Y??[18],X ; Load
     CMP #$B8 ; If A _ #$B8
@@ -4499,7 +4499,7 @@ INTRO_FALLING_RTN_B: ; 12:1658, 0x025658
     STA ZP_R2-R5_BANK_VALUES[4],X ; Store new bank in R2-R5.
     JSR XPOS_RTN_RET_?? ; Do...
     LDA #$18 ; Move val?
-    JSR MOVE_UNK_RET_??
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE
     BCC CCLEARED ; If return has carry cleared, goto.
     LDA #$4C
     JSR SND_BANKED_DISPATCH ; Do sound. Landing?

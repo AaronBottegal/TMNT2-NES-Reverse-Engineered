@@ -170,7 +170,7 @@ FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE:        .rs 1
 83_UNK:                                       .rs 1
 84_UNK:                                       .rs 1
 85_PLAYER_UNK?:                               .rs 2
-87_UNK:                                       .rs 1
+87_CB_INDEX?:                                 .rs 1
 88_UNK_SWITCH?:                               .rs 1
 
 
@@ -571,8 +571,8 @@ R_**:$05FC:                                   .rs 1
 607_UNK:                                      .rs 1
 608_UNK:                                      .rs 1
 609_UNK:                                      .rs 1
-60A_SWITCH_WHICH?:                            .rs 1
-60B_STREAM_INDEX_UNK:                         .rs 1
+60A_CB_SWITCH_WHICH?:                         .rs 1
+60B_STREAM_INDEX_MAP?:                        .rs 1
 60C_UNK_INDEX:                                .rs 1
 R2_TO_R5_BANK_DATA:                           .rs 4
 611_SWITCH_UNK:                               .rs 1
@@ -652,35 +652,35 @@ IRQ_CONFIG_CHANGE_INDEX:                      .rs 1
 
 
           .rsset 0x0670
-670_UNK:                                      .rs 1
+670_MAP_DATA_A:                               .rs 1
 
 
           .rsset 0x0674
-674_UNK:                                      .rs 1
+674_MAP_DATA_B:                               .rs 1
 
 
           .rsset 0x0678
-678_UNK:                                      .rs 1 ; 678_UNK
+678_MAP_DATA_C:                               .rs 1 ; 678_UNK
 
 
           .rsset 0x067C
-67C_UNK:                                      .rs 1
+67C_MAP_DATA_D:                               .rs 1
 
 
           .rsset 0x0680
-680_UNK:                                      .rs 1
+680_MAP_DATA_E:                               .rs 1
 
 
           .rsset 0x0684
-684_UNK:                                      .rs 1
+684_MAP_DATA_F:                               .rs 1
 
 
           .rsset 0x0688
-688_UNK:                                      .rs 1
+688_MAP_DATA_G:                               .rs 1
 
 
           .rsset 0x068C
-68C_UNK:                                      .rs 1
+68C_MAP_DATA_H:                               .rs 1
 
 
           .rsset 0x0694
@@ -711,7 +711,7 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 706_UNK:                                      .rs 1
 707_SWITCHED_ON??:                            .rs 1
 708_UNK:                                      .rs 1
-709_UNK:                                      .rs 1
+709_UNK_CB_INDEX:                             .rs 1
 
 
           .rsset 0x070C
@@ -719,7 +719,7 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2
 70D_UNK:                                      .rs 1
 70E_OBJ_UNK:                                  .rs 1
 R_**:$070F:                                   .rs 1
-710_BOSS?_UNK:                                .rs 1
+710_BOSS_WHICH_HIT?:                          .rs 1
 711_UNK:                                      .rs 1
 712_FLAG_PALETTE_UNK:                         .rs 1
 

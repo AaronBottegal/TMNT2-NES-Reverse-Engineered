@@ -18,13 +18,13 @@ OBJ_STATE_0x6D_HANDLER: ; 0C:0003, 0x018003
     LDA 708_UNK ; Load
     ADC #$01 ; ++
     STA 708_UNK ; Store back.
-    LDA 709_UNK ; Load
+    LDA 709_UNK_CB_INDEX ; Load
     ADC #$00 ; Carry add.
-    STA 709_UNK ; Store back.
+    STA 709_UNK_CB_INDEX ; Store back.
     CMP #$08 ; If _ #$08
     BCC RTS ; <, leave.
     LDA #$00
-    STA 709_UNK ; Clear top.
+    STA 709_UNK_CB_INDEX ; Clear top.
 RTS: ; 0C:0026, 0x018026
     RTS ; Leave.
 BOISS_BLINKING_HANDLER: ; 0C:0027, 0x018027
@@ -508,7 +508,7 @@ STATE_0x51_SUB_0x0E_SWITCH_B: ; 0C:03C1, 0x0183C1
 RTS: ; 0C:03CF, 0x0183CF
     RTS ; Leave.
 STATE_0x51_SUB_0x0E_SWITCH_C: ; 0C:03D0, 0x0183D0
-    LDA 709_UNK ; Load val.
+    LDA 709_UNK_CB_INDEX ; Load val.
     AND #$07 ; Keep 0000.0111
     STA TMP_00 ; Store to TMP.
     CMP #$02 ; If _ #$02
@@ -1288,13 +1288,13 @@ LT_0x04: ; 0C:09DE, 0x0189DE
     JSR FOCUS_PLAYER_CLOSER ; Do.
     LDY STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Load which.
     JSR SET_FOCUS_LEFT/RIGHT_FLAG_FOR_OBJ_X->Y ; Set flag.
-    LDA 709_UNK ; Load
+    LDA 709_UNK_CB_INDEX ; Load
     CMP #$03 ; If _ #$03
     BEQ SKIP_VAL_SET ; ==, goto.
     CMP #$04 ; If _ #$04
     BEQ SKIP_VAL_SET ; ==, goto.
     LDA #$03
-    STA 709_UNK ; Set vals. TODO: Wtf vals.
+    STA 709_UNK_CB_INDEX ; Set vals. TODO: Wtf vals.
     LDA #$00
     STA 708_UNK
 SKIP_VAL_SET: ; 0C:0A0D, 0x018A0D
@@ -1713,7 +1713,7 @@ STATE_0x53_SUB_0x02_SWITCH_B: ; 0C:0D08, 0x018D08
     JSR CLEAR_OBJ_ATTRS_UNK_154F
     LDY STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Get obj focus.
     JSR SET_FOCUS_LEFT/RIGHT_FLAG_FOR_OBJ_X->Y
-    LDA 709_UNK ; Load
+    LDA 709_UNK_CB_INDEX ; Load
     AND #$02 ; Keep bit.
     BNE BIT_SET ; Set, goto.
     LDA 708_UNK ; Load
@@ -2538,7 +2538,7 @@ RTN_A: ; 0C:12B0, 0x0192B0
     LDA #$00
     STA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Clear these. Ugh, why not done above, avoid extra LDA. :(
     STA 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X
-    STA 710_BOSS?_UNK
+    STA 710_BOSS_WHICH_HIT?
     STA 711_UNK
     LDA #$00 ; Mistake for 3rd time, LDA #$00 AGAIN.
     STA ARR_SPRITE_OBJ_TIMER?+1
@@ -2875,7 +2875,7 @@ EXIT_MOVE_STATE: ; 0C:15A8, 0x0195A8
     LDA #$02
     STA OBJ_TERTIARY_SWITCH?[18],X ; Set tert.
     LDA #$12
-    STA 710_BOSS?_UNK ; Set ??
+    STA 710_BOSS_WHICH_HIT? ; Set ??
     LDA #$01
     STA 711_UNK ; Set ??
     LDA #$00
@@ -2900,8 +2900,8 @@ VAL_NEG: ; 0C:15DD, 0x0195DD
     BCS RTS ; >=, goto.
     LDA #$00 ; Seed invert.
     SEC ; Prep sub.
-    SBC 710_BOSS?_UNK ; Sub with, inverting.
-    STA 710_BOSS?_UNK ; Store to.
+    SBC 710_BOSS_WHICH_HIT? ; Sub with, inverting.
+    STA 710_BOSS_WHICH_HIT? ; Store to.
     JSR POS_RTN_UNK ; Do pos. Not JMP abused, ugh.
 RTS: ; 0C:15F0, 0x0195F0
     RTS ; Leave.
@@ -2914,7 +2914,7 @@ POS_RTN_UNK: ; 0C:15F7, 0x0195F7
     STA TMP_06 ; Store to.
     LDA #$00 ; Val.
     STA TMP_07 ; Set.
-    LDA 710_BOSS?_UNK ; Load
+    LDA 710_BOSS_WHICH_HIT? ; Load
     BPL 710_POSITIVE ; If positive, goto.
     DEC TMP_07 ; --
 710_POSITIVE: ; 0C:1607, 0x019607
@@ -3391,7 +3391,7 @@ LT_0xE0: ; 0C:1921, 0x019921
     LDA 532_OBJ_UNK_POS_DELTA?[18],X ; Load
     SBC #$00 ; Carry sub.
     STA 532_OBJ_UNK_POS_DELTA?[18],X ; Store back.
-    JSR MOVE?_RTN_IDK ; Do.
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG ; Do.
     LDA 4C6_OBJ_UNK[18],X ; Load
     CMP #$C6 ; If _ #$C6
     BCS VAL_GTE_0xC6 ; >=, goto.
@@ -3421,7 +3421,7 @@ EXIT_GFX: ; 0C:1958, 0x019958
 RTN_A: ; 0C:1975, 0x019975
     DEC 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X ; --
     BPL EXIT_ANIM_DISP ; If positive, goto.
-    JSR RANDOMNESS? ; Random.
+    JSR RANDOMNESS ; Random.
     AND #$01 ; Keep bit.
     BNE ALT_EXIT
     JMP STATE/GFX/EXTENSION_EXIT ; Exit A
@@ -3770,7 +3770,7 @@ DONT_MIN: ; 0C:1C03, 0x019C03
     STA 544_OBJ_UNK_POS_DELTA?[18],X
     BCC 0C:1C17
     INC 532_OBJ_UNK_POS_DELTA?[18],X
-    JMP MOVE?_RTN_IDK
+    JMP MOVE_UNK_RET_CS_POS_CS_NEG
 STATE/GFX/EXTENSION_EXIT: ; 0C:1C1A, 0x019C1A
     LDA #$02
     STA OBJ_SECONDARY_SWITCH?[18],X ; Set secondary.
@@ -3832,7 +3832,7 @@ DISP_ALT_SOUND/NO_MOD: ; 0C:1C87, 0x019C87
 OBJ_STATE_0x59_HANDLER: ; 0C:1C92, 0x019C92
     LDA OBJ_TERTIARY_SWITCH?[18],X ; Load
     BNE SIMPLE_HOLD_OR_DIE ; != 0, goto.
-    JSR MOVE?_RTN_IDK ; Do.
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG ; Do.
     BCS ANIM_HOLD/DISP/TERT_HELPER ; Ret CS, positive result, goto.
     JSR XPOS_RTN_RET_?? ; Do.
     BCS EXIT_DIE ; Ret CS, die.

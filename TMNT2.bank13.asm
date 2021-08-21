@@ -118,7 +118,7 @@ STATE_NOT_0x01: ; 0D:00E4, 0x01A0E4
     BCS EXIT_UNK ; Ret CS, goto.
     JSR MOVE_UNK_RET_??
     BCS EXIT_UNK ; Ret CS, goto.
-    JSR MOVE?_RTN_IDK ; Do.
+    JSR MOVE_UNK_RET_CS_POS_CS_NEG ; Do.
     BCS ALT ; Ret CS, alt routine.
     JSR MOVE_Y_FINALIZE ; Do.
     LDA IRQ/SCRIPT_RUN_COUNT? ; Load
@@ -328,7 +328,7 @@ LOOP_TO_COUNT: ; 0D:0248, 0x01A248
     BNE LOOP_TO_COUNT ; != 0, goto.
     TAY ; Val to Y.
     BNE RTS ; Some enabled, continue by leaving now.
-    DEC 710_BOSS?_UNK ; --
+    DEC 710_BOSS_WHICH_HIT? ; --
     BMI 710_NEGATIVE ; Negative, goto.
     JMP OBJ_CREATION_RTN_UNK ; Waiting, goto.
 RTS: ; 0D:025B, 0x01A25B
@@ -393,7 +393,7 @@ FILE_D: ; 0D:029E, 0x01A29E
     HIGH(RTN_B)
 L_0D:02A2: ; 0D:02A2, 0x01A2A2
     LDA #$01
-    STA 710_BOSS?_UNK
+    STA 710_BOSS_WHICH_HIT?
 OBJ_CREATION_RTN_UNK: ; 0D:02A7, 0x01A2A7
     LDA #$07
     STA TMP_08 ; Set to 0x07. Used for Obj indexes, but 0x07, idk.
@@ -1739,7 +1739,7 @@ SET_GFX/ANIM_HELPER: ; 0D:0C1B, 0x01AC1B
 FOCUS_CHANGE: ; 0D:0C29, 0x01AC29
     LDA TWO_PLAYERS_FLAG ; Load 2P flag.
     BEQ 1P_GAME ; 1P, goto.
-    JSR RANDOMNESS? ; Do.
+    JSR RANDOMNESS ; Do.
     AND #$01 ; Test bit.
     BEQ BIT_UNSET ; Unset, goto.
 1P_GAME: ; 0D:0C34, 0x01AC34
@@ -1956,7 +1956,7 @@ RTN_A: ; 0D:0D93, 0x01AD93
     BNE HOLD_EXTEND ; != 0, goto.
     LDA #$61
     JSR CROSS_BANK_INTERFACE_UNKNOWN ; Do rtn.
-    LDA 87_UNK ; Load from 0x87.
+    LDA 87_CB_INDEX? ; Load from 0x87.
     BNE HOLD_EXTEND ; != 0, goto.
     LDA #$01
     STA STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Set attr.
@@ -2685,7 +2685,7 @@ RTN_B: ; 0D:1318, 0x01B318
     BNE VAL_NE_ZERO ; != 0, goto.
     LDA #$40
     JSR CROSS_BANK_INTERFACE_UNKNOWN ; Do.
-    LDA 87_UNK ; Load
+    LDA 87_CB_INDEX? ; Load
     BNE VAL_NONZERO
     INC OBJ_TERTIARY_SWITCH?[18],X ; Move tert.
 VAL_NONZERO: ; 0D:132E, 0x01B32E
@@ -3479,7 +3479,7 @@ ALL_SETTLED: ; 0D:191E, 0x01B91E
     BNE GTE_0x30 ; != 0, goto.
     JSR FIND_OBJ_STATE_0x68_RET_CS_FOUND ; Do.
     BCS GTE_0x30 ; Found, goto.
-    JSR RANDOMNESS? ; Do.
+    JSR RANDOMNESS ; Do.
     AND #$03 ; Keep bits.
     BEQ 1_IN_4_RTN ; 1 in 4, goto.
     LDA #$00

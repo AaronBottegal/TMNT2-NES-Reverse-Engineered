@@ -3012,11 +3012,11 @@ CROSS_BANK_INTERFACE_UNKNOWN: ; 1F:0ED4, 0x03EED4
     TYA ; Save Y.
     PHA
     LDA TMP_00 ; Load
-    BMI VAL_NEGATIVE ; TODO: Any ever do this? I'm thinking no because of table size and no clear.
-    LDA #$24 ; Bank A.
+    BMI VAL_NEGATIVE ; Is taken at times.
+    LDA #$24 ; Bank A. 0x04
     BNE BANK_SEEDED ; Always taken.
 VAL_NEGATIVE: ; 1F:0EE2, 0x03EEE2
-    LDA #$30 ; Bank B.
+    LDA #$30 ; Bank B. 0x10
 BANK_SEEDED: ; 1F:0EE4, 0x03EEE4
     JSR BANK_PAIRED ; Bank in.
     JSR RTN_CROSS_BANK_UNK ; Do
@@ -3041,34 +3041,34 @@ RTN_SWITCH_UNK: ; 1F:0EF2, 0x03EEF2
 RTN_CROSS_BANK_UNK: ; 1F:0F00, 0x03EF00
     LDA TMP_00 ; Load val.
     PHA ; Save.
-    LDY 60A_SWITCH_WHICH? ; Load
+    LDY 60A_CB_SWITCH_WHICH? ; Load
     BEQ 60A_EQ_ZERO ; == 0, goto.
-    CMP 60A_SWITCH_WHICH? ; If A _ var
+    CMP 60A_CB_SWITCH_WHICH? ; If A _ var
     BNE RTS_WITH_FF ; !=, goto.
 60A_EQ_ZERO: ; 1F:0F0D, 0x03EF0D
     LDA PLAYER?_UNK[2] ; Load val.
     BEQ UNK_OTHER ; ==, goto.
-    LDA 87_UNK ; Load
+    LDA 87_CB_INDEX? ; Load
     BNE RTS_WITH_FF ; != 0, RTS.
     LDA #$FF
-    STA 87_UNK ; Set to 0xFF.
+    STA 87_CB_INDEX? ; Set to 0xFF.
 RTS_WITH_FF: ; 1F:0F19, 0x03EF19
     PLA ; Fix stack.
     LDA #$FF
     STA TMP_00 ; Set to 0xFF.
     RTS ; Leave.
 UNK_OTHER: ; 1F:0F1F, 0x03EF1F
-    LDA 87_UNK ; Load
+    LDA 87_CB_INDEX? ; Load
     CMP #$FF ; If _ #$FF
     BNE VAL_NOT_FF ; !=, goto.
     LDA #$00
-    STA 87_UNK ; Clear if not FF.
+    STA 87_CB_INDEX? ; Clear if not FF.
 VAL_NOT_FF: ; 1F:0F29, 0x03EF29
     PLA ; Pull A.
-    STA 60A_SWITCH_WHICH? ; Store to.
+    STA 60A_CB_SWITCH_WHICH? ; Store to.
     JSR SWITCH_RTN ; Do switch.
     LDA #$00
-    STA TMP_00 ; Clear.
+    STA TMP_00 ; Clear after switch.
     RTS ; RTS.
 SWITCH_RTN: ; 1F:0F35, 0x03EF35
     JSR SWITCH_CODE_PTRS_PAST_JSR ; CB = Cross Bank.
@@ -3204,18 +3204,18 @@ SWITCH_RTN: ; 1F:0F35, 0x03EF35
     HIGH(CB_AM)
     LOW(CB_AN) ; 0x41
     HIGH(CB_AN)
-    LOW(CB_AO) ; 0x42
-    HIGH(CB_AO)
-    LOW(CB_AO) ; 0x43
-    HIGH(CB_AO)
-    LOW(CB_AO) ; 0x44
-    HIGH(CB_AO)
-    LOW(CB_AO) ; 0x45
-    HIGH(CB_AO)
-    LOW(CB_AO) ; 0x46
-    HIGH(CB_AO)
-    LOW(CB_AO) ; 0x47
-    HIGH(CB_AO)
+    LOW(BOSS_RTN) ; 0x42
+    HIGH(BOSS_RTN)
+    LOW(BOSS_RTN) ; 0x43
+    HIGH(BOSS_RTN)
+    LOW(BOSS_RTN) ; 0x44
+    HIGH(BOSS_RTN)
+    LOW(BOSS_RTN) ; 0x45
+    HIGH(BOSS_RTN)
+    LOW(BOSS_RTN) ; 0x46
+    HIGH(BOSS_RTN)
+    LOW(BOSS_RTN) ; 0x47
+    HIGH(BOSS_RTN)
     LOW(CB_AP) ; 0x48
     HIGH(CB_AP)
     LOW(CB_AQ) ; 0x49
@@ -3433,7 +3433,7 @@ OBJECT_HANDLER_RUN: ; 1F:110A, 0x03F10A
     LDA OBJ_HANDLERS_NEGATIVE_L,Y ; Negative here.
     STA TMP_00 ; Store low.
     LDA OBJ_HANDLERS_NEGATIVE_H,Y
-    JMP STORE_HANDLER_HIGH_AND_INDIR_JMP ; STore high and JMP.
+    JMP STORE_HANDLER_HIGH_AND_INDIR_JMP ; Store high and JMP.
 POSITIVE_STATE: ; 1F:111C, 0x03F11C
     LDA OBJ_HANDLERS_POSITIVE_L,Y
     STA TMP_00
@@ -3669,7 +3669,7 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     HIGH(OBJ_STATE_0x6F_HANDLER) ; Small.
     LOW(OBJ_STATE_0x70_HANDLER) ; 0x70
     HIGH(OBJ_STATE_0x70_HANDLER) ; Old, large.
-    LOW(OBJ_STATE_0x71_HANDLER) ; 0x71 <<<
+    LOW(OBJ_STATE_0x71_HANDLER) ; 0x71
     HIGH(OBJ_STATE_0x71_HANDLER) ; Large.
     LOW(OBJ_STATE_0x72_HANDLER) ; 0x72
     HIGH(OBJ_STATE_0x72_HANDLER) ; Small.
@@ -3677,10 +3677,10 @@ OBJ_HANDLERS_POSITIVE_H: ; 1F:112A, 0x03F12A
     HIGH(OBJ_STATE_0x73_HANDLER) ; Seems small.
     LOW(OBJ_STATE_0x74_HANDLER) ; 0x74
     HIGH(OBJ_STATE_0x74_HANDLER) ; Seems small.
-    LOW(OBJ_STATE_0x75_HANDLER) ; 0x75 <<<
-    HIGH(OBJ_STATE_0x75_HANDLER) ; Boss?
+    LOW(OBJ_STATE_0x75_HANDLER) ; 0x75
+    HIGH(OBJ_STATE_0x75_HANDLER) ; Boss? I think THIS might be shredder, idk.
     LOW(OBJ_STATE_0x76_HANDLER) ; 0x76
-    HIGH(OBJ_STATE_0x76_HANDLER) ; Large.
+    HIGH(OBJ_STATE_0x76_HANDLER)
     LOW(OBJ_STATE_0x77_HANDLER) ; 0x77
     HIGH(OBJ_STATE_0x77_HANDLER) ; Medium.
     LOW(OBJ_STATE_0x78_HANDLER) ; 0x78
@@ -4031,14 +4031,14 @@ RTS: ; 1F:13ED, 0x03F3ED
 EXIT_REINIT: ; 1F:13EE, 0x03F3EE
     JMP INIT_OBJECT[X]_DATA_FULL ; Init.
 OBJECT_X_MOVE?: ; 1F:13F1, 0x03F3F1
-    LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Load from X obj.
-    AND #$BF ; Keep 1011.1111
+    LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Load from X obj. TODO: Important to really solve.
+    AND #$BF ; Keep all but Hflip.
     STA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Store back.
-    LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
-    AND #$04 ; Test 0000.0100
-    BEQ BIT_0x04_NOT_SET
+    LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load attr.
+    AND #$04 ; Test 0000.0100 bit.
+    BEQ BIT_0x04_NOT_SET ; Not set, goto.
     LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Load
-    ORA #$40 ; Set bit.
+    ORA #$40 ; Set bit when other set.
     STA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Store back.
 BIT_0x04_NOT_SET: ; 1F:1408, 0x03F408
     SEC ; Prep sub.
@@ -4046,14 +4046,14 @@ BIT_0x04_NOT_SET: ; 1F:1408, 0x03F408
     SBC 83_UNK ; -= Val
     STA TMP_02 ; Store to TMP.
     LDA 503_OBJ_POS_X_LARGEST?[18],X ; Load
-    SBC 84_UNK ; -= Val. TODO: Carry?
+    SBC 84_UNK ; -= Val. Carry sub.
     STA TMP_03 ; Store to TMP.
     SEC ; Prep sub.
     LDA OBJ_POS_X_SUBPIXEL_DELTA?[18],X ; Load
     SBC OBJ_POS_X_SUBPIXEL_DELTA? ; -= Val
     STA TMP_00 ; Store to TMP.
     LDA OBJ_POS_X_DELTA?[18],X ; Load
-    SBC OBJ_POS_X_DELTA? ; -= val. TODO: Carry?
+    SBC OBJ_POS_X_DELTA? ; -= val. Carry sub.
     STA TMP_01 ; Store to TMP.
     LDA OBJ_POS_X?[18],X ; Load POS.
     STA TMP_08 ; Store to TMP.
@@ -4126,9 +4126,9 @@ RTN_OBJ_MOVE?_UNK: ; 1F:1494, 0x03F494
     STA OBJ_POS_X??[18],X ; Store back.
     CLC ; Prep add.
     LDA 4B4_OBJ_SPEED?[18],X ; Load from obj.
-    ADC 4D8_OBJ_UNK[18],X ; Add with. Carry adjust stuff?
+    ADC 4D8_OBJ_UNK[18],X ; Add with.
     LDA OBJ_POS_X??[18],X ; Load
-    ADC 4C6_OBJ_UNK[18],X ; Add with.
+    ADC 4C6_OBJ_UNK[18],X ; Add with. Carry add.
     STA OBJ_POS_Y??[18],X ; Store to.
 RTS: ; 1F:14C6, 0x03F4C6
     RTS ; Leave.
@@ -4211,7 +4211,7 @@ CLEAR_OBJ_ATTRS_DELTAS?: ; 1F:1558, 0x03F558
     STA 544_OBJ_UNK_POS_DELTA?[18],X
     STA 532_OBJ_UNK_POS_DELTA?[18],X
     RTS
-    JSR SUB_INVERT_X_DELTA?
+    JSR SUB_INVERT_X_DELTA? ; Mistake line?
 SUB_INVERT_X_POS?: ; 1F:1564, 0x03F564
     SEC ; Prep sub.
     LDA #$00 ; Seed inversion.
@@ -4433,7 +4433,7 @@ RTS_CS: ; 1F:16F6, 0x03F6F6
 RTS_CC: ; 1F:16F8, 0x03F6F8
     CLC ; Pass. Target exists.
     RTS
-FOCUS_FIND_SEED_0x00: ; 1F:16FA, 0x03F6FA
+FOCUS_FIND_CLOSEST_SEED_0x00: ; 1F:16FA, 0x03F6FA
     LDA #$00 ; Seed.
     BEQ A_SEED_ENTER ; Always taken.
 FOCUS_FIND_SEED_0x80: ; 1F:16FE, 0x03F6FE
@@ -4639,14 +4639,14 @@ USE_INDEX: ; 1F:184E, 0x03F84E
     RTS ; leave.
 MOVE_UNK_RET_??_SEEDED_VAL: ; 1F:1853, 0x03F853
     LDA #$40 ; Val.
-    BNE MOVE_UNK_RET_?? ; Always taken. Mistake, next line lol.
-MOVE_UNK_RET_??: ; 1F:1857, 0x03F857
+    BNE MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE ; Always taken. Mistake, next line lol.
+MOVE_UNK_RET_CS_POS_CS_NEG_ADD_USE: ; 1F:1857, 0x03F857
     CLC ; Prep add.
     ADC 544_OBJ_UNK_POS_DELTA?[18],X ; Add
     STA 544_OBJ_UNK_POS_DELTA?[18],X ; Store.
-    BCC MOVE?_RTN_IDK
+    BCC MOVE_UNK_RET_CS_POS_CS_NEG
     INC 532_OBJ_UNK_POS_DELTA?[18],X ; Inc if overflow.
-MOVE?_RTN_IDK: ; 1F:1863, 0x03F863
+MOVE_UNK_RET_CS_POS_CS_NEG: ; 1F:1863, 0x03F863
     CLC ; Prep add.
     LDA 544_OBJ_UNK_POS_DELTA?[18],X ; Load
     ADC 4D8_OBJ_UNK[18],X ; Add
@@ -4655,10 +4655,10 @@ MOVE?_RTN_IDK: ; 1F:1863, 0x03F863
     ADC 4C6_OBJ_UNK[18],X ; Add
     STA 4C6_OBJ_UNK[18],X ; Store.
     BPL CARRY_SET_RET ; If positive result, ret CS.
-    CLC ; Carry cleared.
+    CLC ; Carry cleared if negative.
     RTS
 CARRY_SET_RET: ; 1F:187A, 0x03F87A
-    SEC ; Carry set.
+    SEC ; Carry set if positive.
     RTS
 XPOS_RTN_RET_??: ; 1F:187C, 0x03F87C
     CLC ; Prep add.
