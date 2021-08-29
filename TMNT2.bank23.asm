@@ -1946,7 +1946,7 @@ STATE_0x3B_SUB_0x00_SWITCH_B: ; 17:0E1D, 0x02EE1D
     LDA 5FE_UNK ; Load
     CLC ; Prep add.
     ADC #$4B ; Add val. Val?
-    JSR CROSS_BANK_INTERFACE_UNKNOWN ; Do.
+    JSR BACKGROUND_UPDATING_INTERFACE ; Do.
     PLA ; Pull saved Xobj val.
     TAX ; Back to X.
     LDA 87_CB_INDEX? ; Load

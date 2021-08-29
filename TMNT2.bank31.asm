@@ -3005,7 +3005,7 @@ DATA_UNK_D: ; 1F:0EBF, 0x03EEBF
     .db A5
     .db 73
     .db A4
-CROSS_BANK_INTERFACE_UNKNOWN: ; 1F:0ED4, 0x03EED4
+BACKGROUND_UPDATING_INTERFACE: ; 1F:0ED4, 0x03EED4
     STA TMP_00 ; Store loaded.
     TXA ; Save X.
     PHA
@@ -3019,7 +3019,7 @@ VAL_NEGATIVE: ; 1F:0EE2, 0x03EEE2
     LDA #$30 ; Bank B. 0x10
 BANK_SEEDED: ; 1F:0EE4, 0x03EEE4
     JSR BANK_PAIRED ; Bank in.
-    JSR RTN_CROSS_BANK_UNK ; Do
+    JSR RTN_CROSS_BANK ; Do
     JSR RESTORE_BANK_PAIRED ; Restore bank.
     PLA
     TAY
@@ -3032,13 +3032,13 @@ RTN_SWITCH_UNK: ; 1F:0EF2, 0x03EEF2
     PHA
     TYA ; Save Y.
     PHA
-    JSR RTN_CROSS_BANK_UNK
+    JSR RTN_CROSS_BANK
     PLA ; Restore Y.
     TAY
     PLA ; Restore X.
     TAX
     RTS
-RTN_CROSS_BANK_UNK: ; 1F:0F00, 0x03EF00
+RTN_CROSS_BANK: ; 1F:0F00, 0x03EF00
     LDA TMP_00 ; Load val.
     PHA ; Save.
     LDY 60A_CB_SWITCH_WHICH? ; Load
@@ -3162,7 +3162,7 @@ SWITCH_RTN: ; 1F:0F35, 0x03EF35
     HIGH(CB_Z)
     LOW(CB_Z) ; 0x2C
     HIGH(CB_Z)
-    LOW(CB_AA) ; 0x2D
+    LOW(CB_AA) ; 0x2D <<<
     HIGH(CB_AA)
     LOW(CB_AB) ; 0x2E
     HIGH(CB_AB)
@@ -3202,8 +3202,8 @@ SWITCH_RTN: ; 1F:0F35, 0x03EF35
     HIGH(CB_AL)
     LOW(CB_AM) ; 0x40
     HIGH(CB_AM)
-    LOW(CB_AN) ; 0x41
-    HIGH(CB_AN)
+    LOW(CB_0x10_A) ; 0x41
+    HIGH(CB_0x10_A)
     LOW(BOSS_RTN) ; 0x42
     HIGH(BOSS_RTN)
     LOW(BOSS_RTN) ; 0x43
@@ -3216,8 +3216,8 @@ SWITCH_RTN: ; 1F:0F35, 0x03EF35
     HIGH(BOSS_RTN)
     LOW(BOSS_RTN) ; 0x47
     HIGH(BOSS_RTN)
-    LOW(CB_AP) ; 0x48
-    HIGH(CB_AP)
+    LOW(CB_0x10_B) ; 0x48
+    HIGH(CB_0x10_B)
     LOW(CB_AQ) ; 0x49
     HIGH(CB_AQ)
     LOW(CB_AR) ; 0x4A
@@ -3276,26 +3276,26 @@ WAIT_UPDATES_AND_???: ; 1F:0FFC, 0x03EFFC
 GAME_STATE_SETTLED: ; 1F:1003, 0x03F003
     LDX #$00 ; P1 object.
 LOOP_PLAYER_OBJS: ; 1F:1005, 0x03F005
-    LDA 694_OBJ/PLAYER_UNK?[4],X ; Load
+    LDA 694_PLAYER_UNK[4],X ; Load
     BNE P1_SET ; != 0, goto.
     JMP NEXT_OBJ
 P1_SET: ; 1F:100D, 0x03F00D
     BMI P1_NEG ; If negative, goto.
     LDA #$24
     JSR BANK_PAIR_USE_A ; Bank 4/5
-    LDA 694_OBJ/PLAYER_UNK?[4],X ; Load
+    LDA 694_PLAYER_UNK[4],X ; Load
     CMP #$09 ; If _ #$09
     BEQ VAL_EQ_9/A ; ==, goto.
     CMP #$0A ; If _ #$0A
     BNE VAL_NE_9/A ; !=, goto.
 VAL_EQ_9/A: ; 1F:101F, 0x03F01F
-    LDA PLAYER_UNK_698[4],X ; Load
+    LDA 698_PLAYER_UNK[4],X ; Load
     CMP #$10 ; If _ #$10
     BNE VAL_NE_9/A ; !=, goto.
     LDA #$4A
     JSR SND_BANKED_DISPATCH ; Play sound.
 VAL_NE_9/A: ; 1F:102B, 0x03F02B
-    LDA 694_OBJ/PLAYER_UNK?[4],X ; Load
+    LDA 694_PLAYER_UNK[4],X ; Load
     AND #$3F ; Isolate 0011.1111
     TAY ; A -= 1, but fancy.
     DEY
@@ -3310,7 +3310,7 @@ VAL_NE_9/A: ; 1F:102B, 0x03F02B
 P1_NEG: ; 1F:1042, 0x03F042
     LDA #$30
     JSR BANK_PAIR_USE_A ; Bank in bank 10/11.
-    LDA 694_OBJ/PLAYER_UNK?[4],X ; Load val.
+    LDA 694_PLAYER_UNK[4],X ; Load val.
     AND #$7F ; Isolate 0111.1111
     TAY ; A -= 1, but fancy.
     DEY
@@ -3331,15 +3331,15 @@ PLAYER_DATA_PTR_SETUP: ; 1F:105B, 0x03F05B
     CMP [TMP_02],Y ; If _ Stream
     BCS OBJECT_CLEAR_UNK_AND_NEXT_OBJ ; >=, goto.
 STREAM_LESS: ; 1F:106A, 0x03F06A
-    LDA PLAYER_UNK_69C[4],X ; Load
+    LDA 69C_PLAYER_UNK[4],X ; Load
     BEQ P_VAL_ZERO ; No value, goto.
-    DEC PLAYER_UNK_69C[4],X ; --
+    DEC 69C_PLAYER_UNK[4],X ; --
     BNE NEXT_OBJ ; Next object.
 P_VAL_ZERO: ; 1F:1074, 0x03F074
     INY ; Stream++
     LDA [TMP_02],Y ; Load val.
-    STA PLAYER_UNK_69C[4],X ; Store to player.
-    LDA PLAYER_UNK_698[4],X ; Load other val.
+    STA 69C_PLAYER_UNK[4],X ; Store to player.
+    LDA 698_PLAYER_UNK[4],X ; Load other val.
     CLC
     ADC #$03 ; += 3
     TAY ; To Y index.
@@ -3350,25 +3350,25 @@ P_VAL_ZERO: ; 1F:1074, 0x03F074
     BEQ OBJECT_LIMITED_CLEAR_AND_NEXT_OBJ ; ==, goto. Clear less.
     TXA ; Save X.
     PHA
-    LDA 694_OBJ/PLAYER_UNK?[4],X ; Load val.
+    LDA 694_PLAYER_UNK[4],X ; Load val.
     BPL VAL_POSITIVE
     LDA [TMP_02],Y ; Load from stream.
-    JSR RTN_UNK_A ; Do sub from bank 10.
+    JSR MULTI-UPDATES_RTN ; Do sub from bank 10.
     JMP RESTORE_SAVED_INC_PLAYER_VAR
 VAL_POSITIVE: ; 1F:109A, 0x03F09A
-    LDA 694_OBJ/PLAYER_UNK?[4],X ; Load val from player.
+    LDA 694_PLAYER_UNK[4],X ; Load val from player.
     AND #$40 ; Test 0100.0000
     BEQ BIT_NOT_SET ; Not set, goto.
     LDA [TMP_02],Y ; Load from stream.
-    JSR RTN_UNK_B ; Do sub other bank.
+    JSR MULTIUPDATE_BUF_RTN ; Do sub other bank.
     JMP RESTORE_SAVED_INC_PLAYER_VAR
 BIT_NOT_SET: ; 1F:10A9, 0x03F0A9
     LDA [TMP_02],Y ; Load val from stream.
-    JSR RTN_UNK_B_PAIR
+    JSR UPDATE_BUF_MAKER
 RESTORE_SAVED_INC_PLAYER_VAR: ; 1F:10AE, 0x03F0AE
     PLA ; Pull saved val.
     TAX ; To X.
-    INC PLAYER_UNK_698[4],X ; ++ val.
+    INC 698_PLAYER_UNK[4],X ; ++ val.
 NEXT_OBJ: ; 1F:10B3, 0x03F0B3
     INX ; Obj++
     CPX #$04 ; If Obj _ #$04
@@ -3378,11 +3378,11 @@ RTS: ; 1F:10BB, 0x03F0BB
     RTS
 OBJECT_CLEAR_UNK_AND_NEXT_OBJ: ; 1F:10BC, 0x03F0BC
     LDA #$00
-    STA 694_OBJ/PLAYER_UNK?[4],X ; Clear
+    STA 694_PLAYER_UNK[4],X ; Clear
 OBJECT_LIMITED_CLEAR_AND_NEXT_OBJ: ; 1F:10C1, 0x03F0C1
     LDA #$00
-    STA PLAYER_UNK_698[4],X ; Clear
-    STA PLAYER_UNK_69C[4],X
+    STA 698_PLAYER_UNK[4],X ; Clear
+    STA 69C_PLAYER_UNK[4],X
     BEQ NEXT_OBJ ; Next object, always taken.
 OBJ[0x4-0x11]_RUN_STATE_HANDLERS: ; 1F:10CB, 0x03F0CB
     LDX #$04 ; Obj start.
@@ -4684,14 +4684,14 @@ MOVE_UNK_RET_??: ; 1F:1895, 0x03F895
     EOR 503_OBJ_POS_X_LARGEST?[18],X ; Exclusive or with.
     ASL A ; Shift back.
     RTS ; Leave.
-L_1F:18AE: ; 1F:18AE, 0x03F8AE
+DATA_A: ; 1F:18AE, 0x03F8AE
     .db 02
     .db 03
     .db 04
     .db 05
     .db 01
     .db 00
-L_1F:18B4: ; 1F:18B4, 0x03F8B4
+DATA_B: ; 1F:18B4, 0x03F8B4
     .db 09
     .db 0C
     .db 11
@@ -4705,56 +4705,57 @@ L_1F:18B4: ; 1F:18B4, 0x03F8B4
     .db 14
     .db 15
     .db 0B
-L_1F:18C1: ; 1F:18C1, 0x03F8C1
+DATA_C: ; 1F:18C1, 0x03F8C1
     .db 17
     .db 18
     .db 17
     .db 1C
     .db 1B
-L_1F:18C6: ; 1F:18C6, 0x03F8C6
+DATA_D: ; 1F:18C6, 0x03F8C6
     .db 1E
     .db 1E
     .db 25
     .db 26
     .db 27
-L_1F:18CB: ; 1F:18CB, 0x03F8CB
+DATA_E: ; 1F:18CB, 0x03F8CB
     .db 29
     .db 29
     .db 29
     .db 2A
     .db 2B
     .db 2C
+DATA_F: ; 1F:18D1, 0x03F8D1
     .db 2D
     .db 2E
     .db 2F
     .db 30
     .db 31
 OBJ_DATA_A_LOW: ; 1F:18D6, 0x03F8D6
-    LOW(L_1F:18AE)
+    LOW(DATA_A)
 OBJ_DATA_A_HIGH: ; 1F:18D7, 0x03F8D7
-    HIGH(L_1F:18AE)
-    LOW(L_1F:18AE)
-    HIGH(L_1F:18AE)
-    LOW(L_1F:18B4)
-    HIGH(L_1F:18B4)
-    LOW(L_1F:18C1)
-    HIGH(L_1F:18C1)
-    LOW(OBJ_DATA_A_LOW)
+    HIGH(DATA_A)
+    LOW(DATA_A)
+    HIGH(DATA_A)
+    LOW(DATA_B)
+    HIGH(DATA_B)
+    LOW(DATA_C)
+    HIGH(DATA_C)
+    LOW(OBJ_DATA_A_LOW) ; Pre-named?
     HIGH(OBJ_DATA_A_LOW)
-    LOW(L_1F:18C6)
-    HIGH(L_1F:18C6)
-    LOW(L_1F:18CB)
-    HIGH(L_1F:18CB)
-    LOW(L_1F:18CB)
-    HIGH(L_1F:18CB)
-    LOW(1F:18D1)
-    HIGH(1F:18D1)
-    LOW(OBJ_DATA_A_LOW)
+    LOW(DATA_D)
+    HIGH(DATA_D)
+    LOW(DATA_E)
+    HIGH(DATA_E)
+    LOW(DATA_E)
+    HIGH(DATA_E)
+    LOW(DATA_F)
+    HIGH(DATA_F)
+    LOW(OBJ_DATA_A_LOW) ; Pre-named?
     HIGH(OBJ_DATA_A_LOW)
-    LOW(1F:18D1)
-    HIGH(1F:18D1)
-    LOW(1F:18D1)
-    HIGH(1F:18D1)
+    LOW(DATA_F)
+    HIGH(DATA_F)
+    LOW(DATA_F)
+    HIGH(DATA_F)
 DISABLE_MAPPER_IRQ+SOUND: ; 1F:18EE, 0x03F8EE
     LDA #$00
     STA MMC3_BANK_CFG ; MMC3 config.
@@ -5063,7 +5064,7 @@ DELAY_LOOP: ; 1F:1A93, 0x03FA93
     LDA RTN_EXTRA_DATA,X
     STA IRQ_EXTENDED/HANDLER/SECONDARY
 RTI_AND_RESTORE_BANK_CFG: ; 1F:1AD4, 0x03FAD4
-    LDX 28_BANK_CFG_INDEX? ; X from.
+    LDX BANK_CFG_RESTORE_INDEX ; X from.
     LDA COPY_BANK_CFG_F5,X ; Bank config.
     STA MMC3_BANK_CFG ; Set config.
     PLA ; Restore Y
@@ -5321,7 +5322,7 @@ WAIT_LOOP: ; 1F:1C65, 0x03FC65
     STX MMC3_BANK_CFG ; R1.
     LDA IRQ_BANK_VALUES_R[0/1]+1 ; Load R1.
     STA MMC3_BANK_DATA ; Store.
-    LDX 28_BANK_CFG_INDEX? ; Set previous CFG.
+    LDX BANK_CFG_RESTORE_INDEX ; Set previous CFG.
     LDA COPY_BANK_CFG_F5,X
     STA MMC3_BANK_CFG
     PLA ; Restore Y.
@@ -5498,15 +5499,15 @@ INFINITE_LOOP: ; 1F:1DE7, 0x03FDE7
     ADC IRQ/SCRIPT_RUN_COUNT? ; Add with...
     STA INF_LOOP_COUNTER ; Store back.
     JMP INFINITE_LOOP ; Loop forever.
-ALT_NMI_CODE: ; 1F:1DF3, 0x03FDF3
+FRAME_OVERRUN_NMI: ; 1F:1DF3, 0x03FDF3
     JSR SET_PPU_ADDR/SCROLL/CTRL ; Set scroll.
     JSR IRQ_UPDATING_RTN
     JSR BANKSWITCH_R0/R1
     JSR WRITE_R2-R5_FROM_RAM
     JSR SOUND_FORWARD
-    LDX 28_BANK_CFG_INDEX? ; Load
-    LDA COPY_BANK_CFG_F5,X ; A from.
-    STA MMC3_BANK_CFG ; Restore config.
+    LDX BANK_CFG_RESTORE_INDEX ; Load
+    LDA COPY_BANK_CFG_F5,X ; Load from index.
+    STA MMC3_BANK_CFG ; Restore config set.
     JMP RTI_RESTORE_AXY ; Leave NMI.
 NMI_HANDLER: ; 1F:1E0C, 0x03FE0C
     PHA ; Save A.
@@ -5515,9 +5516,9 @@ NMI_HANDLER: ; 1F:1E0C, 0x03FE0C
     TYA
     PHA ; Save Y.
     LDA PPU_STATUS ; Reset latch.
-    LDY FLAG_GAME_SCREEN_UNFINISHED ; Y from.
-    BNE ALT_NMI_CODE ; If set, do other.
-    INC FLAG_GAME_SCREEN_UNFINISHED ; Set to true.
+    LDY FLAG_FRAME_UNFINISHED ; Load flag.
+    BNE FRAME_OVERRUN_NMI ; If set, do this instead. No scripty things, as not completed previously.
+    INC FLAG_FRAME_UNFINISHED ; Set to true.
     LDA #$00
     STA PPU_OAM_ADDR ; Set addr.
     LDY #$02
@@ -5561,7 +5562,7 @@ LOOP_MOVE_3DATA: ; 1F:1E49, 0x03FE49
     STA PPU_UPDATE_BUFFER[20],X ; Store EOF in buf.
     INX ; X++
     STX PPU_UPDATE_BUF_INDEX ; Store index past EOF.
-    STA FLAG_GAME_SCREEN_UNFINISHED ; Clear.
+    STA FLAG_FRAME_UNFINISHED ; Clear.
 RTI_RESTORE_AXY: ; 1F:1E81, 0x03FE81
     PLA
     TAY ; Restore Y
@@ -5580,15 +5581,15 @@ SET_PPU_ADDR/SCROLL/CTRL: ; 1F:1E87, 0x03FE87
     STA PPU_SCROLL
     LDA PPU_SCROLL_Y_COPY_IRQ
     STA PPU_SCROLL
-WRITE_PPU_CTRL_COPY: ; 1F:1EA1, 0x03FEA1
+WRITE_PPU_COPY_TO_CTRL: ; 1F:1EA1, 0x03FEA1
     LDA PPU_CTRL_RAM_COPY ; Set CTRL.
     STA PPU_CTRL
     RTS
 SET_APU_STATUS+SEQUENCE_F_C0: ; 1F:1EA7, 0x03FEA7
     LDA #$0F
-    STA APU_STATUS
+    STA APU_STATUS ; Set status.
     LDA #$C0
-    STA APU_FSEQUENCE
+    STA APU_FSEQUENCE ; Set sequence.
     RTS
 ENABLE_NMI+INIT_UNK: ; 1F:1EB2, 0x03FEB2
     LDA #$A8 ; Load. NMI, LSprites, Sprites table 1.
@@ -5611,24 +5612,24 @@ DISABLE_PPU_RENDERING: ; 1F:1EC2, 0x03FEC2
     STA PPU_MASK ; Store.
     RTS
 CTRL_READ_SAFE: ; 1F:1ED9, 0x03FED9
-    LDX #$00 ; X=
+    LDX #$00 ; Index to store ctrl bits.
     JSR LATCH_READ_CTRL
     LDX #$02 ; Index to store other ctrl bits.
     JSR LATCH_READ_CTRL
     LDA TMP_00 ; Load first bits.
     CMP TMP_02 ; Compare to 2nd read.
     BNE CTRL_FAIL_NO_NEW_PRESSES ; !=, goto.
-    LDA TMP_01
-    CMP TMP_03
+    LDA TMP_01 ; Load first bits.
+    CMP TMP_03 ; Compare to 2nd read.
     BNE CTRL_FAIL_NO_NEW_PRESSES ; Same idea.
     LDX #$00 ; P1 index.
     JSR CTRL_X_PROCESS ; Process
     INX ; P2 index.
 CTRL_X_PROCESS: ; 1F:1EF5, 0x03FEF5
-    LDA TMP_00,X ; Load CTRL buttons.
+    LDA TMP_00,X ; Load CTRL buttons now.
     TAY ; To Y
-    EOR CTRL_PREV_B[2],X ; Get newly pressed only.
-    AND TMP_00,X ; Newly pressed only.
+    EOR CTRL_PREV_B[2],X ; Get newly pressed only. Turns off pressed previously.
+    AND TMP_00,X ; Newly pressed only by anding with pressed now.
     STA CTRL_NEWLY_PRESSED_A[2],X
     STA CTRL_NEWLY_PRESSED_B[2],X
     STY CTRL_PREV_A[2],X
@@ -5636,7 +5637,7 @@ CTRL_X_PROCESS: ; 1F:1EF5, 0x03FEF5
     RTS
 CTRL_FAIL_NO_NEW_PRESSES: ; 1F:1F05, 0x03FF05
     LDA #$00
-    STA CTRL_NEWLY_PRESSED_A[2]
+    STA CTRL_NEWLY_PRESSED_A[2] ; Clear all newly pressed.
     STA CTRL_NEWLY_PRESSED_B[2]
     STA CTRL_NEWLY_PRESSED_A+1
     STA CTRL_NEWLY_PRESSED_B+1
@@ -5661,8 +5662,8 @@ LOOP_READ_CTRL: ; 1F:1F1B, 0x03FF1B
     LSR A ; Shift
     ROL TMP_01,X ; P2 bits/
     DEY ; Loop--
-    BNE LOOP_READ_CTRL
-    RTS
+    BNE LOOP_READ_CTRL ; != 0, loop more buttons.
+    RTS ; Done, leave.
     .db FF
     .db FF
     .db FF

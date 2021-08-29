@@ -911,10 +911,10 @@ L_06:0535: ; 06:0535, 0x00C535
     STY TMP_07 ; Y to.
     LDA 603_unk ; Load val.
     LDX #$04
-    JSR FORWARD_TMP[X]_BY_A ; Add A to TMP_04
+    JSR FORWARD_PTR_TMP[X]_BY_A ; Add A to TMP_04
     LDA 9C_UNK ; Load
     LDX #$06
-    JSR FORWARD_TMP[X]_BY_A ; Add A to TMP_06
+    JSR FORWARD_PTR_TMP[X]_BY_A ; Add A to TMP_06
     JSR BG_UPDATE_RELATED? ; Do thingy.
     LDA 609_UNK ; Load
     BNE RTS ; If set, leave.

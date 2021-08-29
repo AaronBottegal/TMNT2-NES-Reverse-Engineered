@@ -1214,6 +1214,7 @@
     .db 99
     .db F9
     .db FF
+FILE_A: ; 05:04C0, 0x00A4C0
     .db 01
     .db 03
     .db B1
@@ -1253,6 +1254,7 @@
     .db F4
     .db F2
     .db FF
+FILE_B: ; 05:04E7, 0x00A4E7
     .db 01
     .db 01
     .db 69
@@ -1297,6 +1299,7 @@
     .db F4
     .db F2
     .db FF
+FILE_C: ; 05:0513, 0x00A513
     .db 01
     .db 01
     .db A2
@@ -1342,6 +1345,7 @@
     .db F4
     .db F2
     .db FF
+FILE_D: ; 05:0540, 0x00A540
     .db 01
     .db 03
     .db DA
@@ -1354,6 +1358,7 @@
     .db FB
     .db 80
     .db FF
+FILE_E: ; 05:054C, 0x00A54C
     .db 01
     .db 03
     .db 58
@@ -1366,6 +1371,7 @@
     .db 5F
     .db 6F
     .db FF
+FILE_F: ; 05:0558, 0x00A558
     .db 01
     .db 04
     .db D4
@@ -1377,6 +1383,7 @@
     .db E6
     .db E7
     .db FF
+FILE_G: ; 05:0563, 0x00A563
     .db 01
     .db 04
     .db D8
@@ -1388,6 +1395,7 @@
     .db EA
     .db EB
     .db FF
+FILE_H: ; 05:056E, 0x00A56E
     .db 01
     .db 04
     .db DC
@@ -1399,6 +1407,7 @@
     .db EE
     .db EF
     .db FF
+FILE_I: ; 05:0579, 0x00A579
     .db 01
     .db 04
     .db C8
@@ -1410,6 +1419,7 @@
     .db F8
     .db F9
     .db FF
+FILE_J: ; 05:0584, 0x00A584
     .db 01
     .db 04
     .db C8
@@ -1421,6 +1431,7 @@
     .db CE
     .db CF
     .db FF
+FILE_K: ; 05:058F, 0x00A58F
     .db 01
     .db 04
     .db 68
@@ -1440,6 +1451,7 @@
     .db A9
     .db 93
     .db FF
+FILE_L: ; 05:05A2, 0x00A5A2
     .db 01
     .db 04
     .db 60
@@ -1459,6 +1471,7 @@
     .db 92
     .db 93
     .db FF
+FILE_M: ; 05:05B5, 0x00A5B5
     .db 01
     .db 04
     .db 64
@@ -1478,6 +1491,7 @@
     .db 96
     .db 97
     .db FF
+FILE_N: ; 05:05C8, 0x00A5C8
     .db 01
     .db 04
     .db DD
@@ -1489,6 +1503,7 @@
     .db A0
     .db EE
     .db FF
+FILE_O: ; 05:05D3, 0x00A5D3
     .db 01
     .db 04
     .db A1
@@ -1500,6 +1515,7 @@
     .db A7
     .db EE
     .db FF
+FILE_P: ; 05:05DE, 0x00A5DE
     .db 01
     .db 04
     .db A8
@@ -1511,6 +1527,7 @@
     .db AE
     .db AF
     .db FF
+FILE_Q: ; 05:05E9, 0x00A5E9
     .db 02
     .db 08
     .db 00
@@ -1546,6 +1563,7 @@
     .db 64
     .db 74
     .db FF
+FILE_R: ; 05:060C, 0x00A60C
     .db 02
     .db 08
     .db 00
@@ -1581,6 +1599,7 @@
     .db 64
     .db 74
     .db FF
+FILE_S: ; 05:062F, 0x00A62F
     .db 02
     .db 08
     .db 00
@@ -1616,6 +1635,7 @@
     .db 63
     .db 73
     .db FF
+FILE_T: ; 05:0652, 0x00A652
     .db 02
     .db 08
     .db 00
@@ -1651,6 +1671,7 @@
     .db 00
     .db 00
     .db FF
+FILE_U: ; 05:0675, 0x00A675
     .db 02
     .db 08
     .db 61
@@ -1661,33 +1682,6 @@
     .db 03
     .db 64
     .db 74
-    .db 61
-    .db 03
-    .db 03
-    .db 03
-    .db 03
-    .db 03
-    .db 64
-    .db 74
-    .db 62
-    .db 72
-    .db 72
-    .db 35
-    .db 45
-    .db 72
-    .db 65
-    .db 75
-    .db 00
-    .db 00
-    .db 00
-    .db 00
-    .db 00
-    .db 00
-    .db 00
-    .db 00
-    .db FF
-    .db 02
-    .db 08
     .db 61
     .db 03
     .db 03
@@ -1712,6 +1706,34 @@
     .db 00
     .db 00
     .db 00
+    .db FF
+FILE_V: ; 05:0698, 0x00A698
+    .db 02
+    .db 08
+    .db 61
+    .db 03
+    .db 03
+    .db 03
+    .db 03
+    .db 03
+    .db 64
+    .db 74
+    .db 62
+    .db 72
+    .db 72
+    .db 35
+    .db 45
+    .db 72
+    .db 65
+    .db 75
+    .db 00
+    .db 00
+    .db 00
+    .db 00
+    .db 00
+    .db 00
+    .db 00
+    .db 00
     .db 00
     .db 00
     .db 00
@@ -1721,6 +1743,7 @@
     .db 00
     .db 00
     .db FF
+FILE_W: ; 05:06BB, 0x00A6BB
     .db 02
     .db 08
     .db 62
@@ -1756,6 +1779,7 @@
     .db 00
     .db 00
     .db FF
+FILE_X: ; 05:06DE, 0x00A6DE
     .db 01
     .db 08
     .db 60
@@ -1791,6 +1815,7 @@
     .db 71
     .db 35
     .db FF
+FILE_Y: ; 05:0701, 0x00A701
     .db 01
     .db 08
     .db 1F
@@ -1826,6 +1851,7 @@
     .db 0D
     .db 0E
     .db FF
+FILE_Z: ; 05:0724, 0x00A724
     .db 02
     .db 08
     .db 0E
@@ -1861,6 +1887,7 @@
     .db 2F
     .db 3F
     .db FF
+FILE_AA: ; 05:0747, 0x00A747
     .db 02
     .db 08
     .db 49
@@ -1896,6 +1923,7 @@
     .db 6A
     .db 7A
     .db FF
+FILE_AB: ; 05:076A, 0x00A76A
     .db 02
     .db 08
     .db 00
@@ -1931,6 +1959,7 @@
     .db 00
     .db 00
     .db FF
+FILE_AC: ; 05:078D, 0x00A78D
     .db 02
     .db 08
     .db 00
@@ -1966,6 +1995,7 @@
     .db 00
     .db 00
     .db FF
+FILE_AD: ; 05:07B0, 0x00A7B0
     .db 02
     .db 08
     .db 00
@@ -2001,6 +2031,7 @@
     .db 00
     .db 00
     .db FF
+FILE_AE: ; 05:07D3, 0x00A7D3
     .db 02
     .db 08
     .db 5C
@@ -2036,6 +2067,7 @@
     .db 07
     .db 3A
     .db FF
+FILE_AF: ; 05:07F6, 0x00A7F6
     .db 02
     .db 08
     .db 0E
@@ -2071,6 +2103,7 @@
     .db 2F
     .db 3F
     .db FF
+FILE_AG: ; 05:0819, 0x00A819
     .db 02
     .db 08
     .db 12
@@ -2106,6 +2139,7 @@
     .db 11
     .db 76
     .db FF
+FILE_AH: ; 05:083C, 0x00A83C
     .db 01
     .db 09
     .db 7F
@@ -2157,6 +2191,7 @@
     .db 8A
     .db 8B
     .db FF
+FILE_AI: ; 05:086F, 0x00A86F
     .db 01
     .db 09
     .db 8C
@@ -2208,6 +2243,7 @@
     .db 97
     .db 8B
     .db FF
+FILE_AJ: ; 05:08A2, 0x00A8A2
     .db 01
     .db 09
     .db 98
@@ -2259,6 +2295,7 @@
     .db 9F
     .db A0
     .db FF
+FILE_AK: ; 05:08D5, 0x00A8D5
     .db 01
     .db 09
     .db A1
@@ -2310,6 +2347,7 @@
     .db F0
     .db 87
     .db FF
+FILE_AL: ; 05:0908, 0x00A908
     .db 01
     .db 09
     .db A8
@@ -2361,6 +2399,7 @@
     .db F0
     .db 87
     .db FF
+FILE_AM: ; 05:093B, 0x00A93B
     .db 01
     .db 09
     .db AD
@@ -2412,6 +2451,7 @@
     .db F0
     .db 87
     .db FF
+FILE_AN: ; 05:096E, 0x00A96E
     .db 01
     .db 09
     .db 2C
@@ -2474,6 +2514,7 @@
     .db 01
     .db 5F
     .db FF
+FILE_AO: ; 05:09AC, 0x00A9AC
     .db 01
     .db 09
     .db 40
@@ -2537,6 +2578,7 @@
     .db 1E
     .db 79
     .db FF
+FILE_AP: ; 05:09EB, 0x00A9EB
     .db 01
     .db 09
     .db 41
@@ -2600,6 +2642,7 @@
     .db 1E
     .db 79
     .db FF
+FILE_AQ: ; 05:0A2A, 0x00AA2A
     .db 01
     .db 09
     .db 42
@@ -2663,6 +2706,7 @@
     .db 1E
     .db 79
     .db FF
+FILE_AR: ; 05:0A69, 0x00AA69
     .db 01
     .db 09
     .db 5F
@@ -2726,6 +2770,7 @@
     .db 1E
     .db 79
     .db FF
+FILE_AS: ; 05:0AA8, 0x00AAA8
     .db 01
     .db 09
     .db 5F
@@ -2789,6 +2834,7 @@
     .db 1E
     .db 79
     .db FF
+FILE_AT: ; 05:0AE7, 0x00AAE7
     .db 01
     .db 09
     .db 5F
@@ -2852,6 +2898,7 @@
     .db 1E
     .db 79
     .db FF
+FILE_AU: ; 05:0B26, 0x00AB26
     .db 01
     .db 09
     .db 5F
@@ -2920,6 +2967,7 @@
     .db 1E
     .db 79
     .db FF
+FILE_AV: ; 05:0B6A, 0x00AB6A
     .db 01
     .db 09
     .db 00
@@ -2973,6 +3021,7 @@
     .db 00
     .db 00
     .db FF
+FILE_AW: ; 05:0B9F, 0x00AB9F
     .db 01
     .db 0C
     .db 10
@@ -3037,6 +3086,7 @@
     .db A1
     .db A2
     .db FF
+FILE_AX: ; 05:0BDF, 0x00ABDF
     .db 01
     .db 03
     .db 22
@@ -3055,6 +3105,7 @@
     .db 43
     .db 44
     .db FF
+FILE_AY: ; 05:0BF1, 0x00ABF1
     .db 01
     .db 03
     .db 50
@@ -3073,6 +3124,7 @@
     .db 6C
     .db 44
     .db FF
+FILE_AZ: ; 05:0C03, 0x00AC03
     .db 01
     .db 03
     .db 22
@@ -3091,6 +3143,7 @@
     .db 6C
     .db 44
     .db FF
+FILE_BA: ; 05:0C15, 0x00AC15
     .db 01
     .db 04
     .db 8A
@@ -3157,6 +3210,7 @@
     .db F4
     .db ED
     .db FF
+FILE_BB: ; 05:0C57, 0x00AC57
     .db 01
     .db 01
     .db 91
@@ -3167,6 +3221,7 @@
     .db B1
     .db B2
     .db FF
+FILE_BC: ; 05:0C61, 0x00AC61
     .db 01
     .db 01
     .db 21
@@ -3177,102 +3232,56 @@
     .db 02
     .db 03
     .db FF
-    .db 85
-    .db AC
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db A2
-    .db 04
-    .db BD
-    .db 00
-    .db 04
-    .db F0
-    .db 09
-    .db E8
-    .db E0
-    .db 07
-    .db D0
-    .db F6
-    .db A2
-    .db 00
-    .db F0
-    .db 43
-    .db A5
-    .db AC
-    .db 0A
-    .db A8
-    .db B9
-    .db CB
-    .db AC
-    .db 85
-    .db AC
-    .db B9
-    .db CC
-    .db AC
-    .db 85
-    .db AD
-    .db A0
-    .db 00
-    .db B1
-    .db AC
-    .db 9D
-    .db 24
-    .db 04
-    .db C8
-    .db B1
-    .db AC
-    .db 9D
-    .db EA
-    .db 04
-    .db C8
-    .db B1
-    .db AC
-    .db 9D
-    .db FC
-    .db 04
-    .db C8
-    .db B1
-    .db AC
-    .db 9D
-    .db 0E
-    .db 05
-    .db C8
-    .db B1
-    .db AC
-    .db 9D
-    .db 20
-    .db 05
-    .db C8
-    .db B1
-    .db AC
-    .db 9D
-    .db 7A
-    .db 05
-    .db A9
-    .db FF
-    .db 9D
-    .db 68
-    .db 05
-    .db A9
-    .db 00
-    .db 9D
-    .db 12
-    .db 04
-    .db 9D
-    .db 44
-    .db 05
-    .db 9D
-    .db 32
-    .db 05
-    .db 86
-    .db AC
-    .db 68
-    .db A8
-    .db 68
-    .db AA
-    .db 60
+    STA **:$00AC ; Not marked yet. TODO: Unused/old?
+    TXA
+    PHA
+    TYA
+    PHA
+    LDX #$04
+    LDA OBJ_ANIMATION_DISPLAY[18],X
+    BEQ 05:0C81
+    INX
+    CPX #$07
+    BNE 05:0C73
+    LDX #$00
+    BEQ 05:0CC4
+    LDA **:$00AC
+    ASL A
+    TAY
+    LDA 05:0CCB,Y
+    STA **:$00AC
+    LDA 05:0CCC,Y
+    STA R_**:$00AD
+    LDY #$00
+    LDA [**:$00AC],Y
+    STA OBJ_ENABLED_STATE+MORE?[18],X
+    INY
+    LDA [**:$00AC],Y
+    STA OBJ_POS_X_DELTA?[18],X
+    INY
+    LDA [**:$00AC],Y
+    STA OBJ_POS_X_SUBPIXEL_DELTA?[18],X
+    INY
+    LDA [**:$00AC],Y
+    STA 503_OBJ_POS_X_LARGEST?[18],X
+    INY
+    LDA [**:$00AC],Y
+    STA 520_OBJ_POS_X_LARGE?[18],X
+    INY
+    LDA [**:$00AC],Y
+    STA OBJECT_DATA_EXTRA_B?[18],X
+    LDA #$FF
+    STA OBJECT_DATA_HEALTH?[18],X
+    LDA #$00
+    STA OBJ_SECONDARY_SWITCH?[18],X
+    STA 544_OBJ_UNK_POS_DELTA?[18],X
+    STA 532_OBJ_UNK_POS_DELTA?[18],X
+    STX **:$00AC
+    PLA
+    TAY
+    PLA
+    TAX
+    RTS
     .db D1
     .db AC
     .db D7

@@ -3859,7 +3859,7 @@ STATE_0x34_SUBSWITCH_A: ; 03:1331, 0x007331
     LDA OBJ_DATA_A_HIGH,X
     STA TMP_01
     LDA [TMP_00],Y ; Load from stream.
-    JSR CROSS_BANK_INTERFACE_UNKNOWN ; Do.
+    JSR BACKGROUND_UPDATING_INTERFACE ; Do.
     PLA
     TAX ; Restore Xobj. TODO: Could have used X scratchpad?
     LDA 87_CB_INDEX? ; Load

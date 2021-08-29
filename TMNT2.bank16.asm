@@ -542,7 +542,7 @@ FILE_H: ; 10:01CB, 0x0201CB
     .db 4C
     .db 35
     .db 82
-CLEAR_MANY_ARR_THINGIES: ; 10:0241, 0x020241
+CLEAR_MAP_COLUMN?: ; 10:0241, 0x020241
     LDA #$00
     STA 670_MAP_DATA_A,X ; Clear attrs.
     STA 688_MAP_DATA_G,X
@@ -1606,7 +1606,7 @@ DATA_PLAYER_PTR_UNK_H_ALT: ; 10:0662, 0x020662
     .db C0
     .db C1
     .db FF
-RTN_UNK_A: ; 10:0675, 0x020675
+MULTI-UPDATES_RTN: ; 10:0675, 0x020675
     STA TMP_00 ; Store val.
     LDA TMP_00 ; Load
     BPL VAL_POSITIVE ; If positive, goto.
@@ -1665,10 +1665,10 @@ DATA_SET_B: ; 10:06CF, 0x0206CF
     LDA DATA_J,X
     STA TMP_03
 ENTER: ; 10:06DB, 0x0206DB
-    JSR MAKE_OTHER_BUFFER ; Do. CC= finished.
+    JSR MAKE_PPU_UPDATE_BUFFER ; Do. CC= finished.
     BCS CONTINUE ; Ret CS, continue.
     RTS ; Leave.
-MAKE_OTHER_BUFFER: ; 10:06E1, 0x0206E1
+MAKE_PPU_UPDATE_BUFFER: ; 10:06E1, 0x0206E1
     LDX PPU_UPDATE_BUF_INDEX ; Index.
     LDA TMP_01 ; Load
     STA TMP_06 ; Store to.
@@ -1721,8 +1721,8 @@ VAL_EQ_0x1: ; 10:0737, 0x020737
     LDA #$20
 INC_TMP_02_AND_REENTER: ; 10:0739, 0x020739
     LDX #$02 ; Index.
-    JSR FORWARD_TMP[X]_BY_A ; Forward TMP_02
-    JMP MAKE_OTHER_BUFFER ; Goto.
+    JSR FORWARD_PTR_TMP[X]_BY_A ; Forward TMP_02
+    JMP MAKE_PPU_UPDATE_BUFFER ; Goto.
 VAL_0xFE: ; 10:0741, 0x020741
     INY ; Stream++
     LDA [TMP_04],Y ; Load from stream.
@@ -1733,39 +1733,44 @@ VAL_0xFE: ; 10:0741, 0x020741
 RET_CC: ; 10:0749, 0x020749
     CLC ; Ret CC.
     RTS ; Leave.
-    LDA 88_UNK_SWITCH?
-    BEQ 10:0752
-    DEC 88_UNK_SWITCH?
-    RTS
-    LDA #$84
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_A
-    INC 87_CB_INDEX?
-    LDA #$84
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_A
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$30
-    BEQ 10:0781
-    CMP #$08
-    BEQ 10:077C
-    CMP #$10
-    BEQ 10:077C
-    CMP #$18
-    BEQ 10:077C
-    CMP #$24
-    BNE 10:0780
+CB_0x10_A: ; 10:074B, 0x02074B
+    LDA 88_UNK_SWITCH? ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 10:0752, 0x020752
+    LDA #$84 ; Load
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR MULTI-UPDATES_RTN ; Do.
+    INC 87_CB_INDEX? ; ++
+    LDA #$84 ; Load
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR MULTI-UPDATES_RTN ; Do.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$30 ; If _ #$30
+    BEQ VAL_EQ_0x30 ; == 0, goto.
+    CMP #$08 ; If _ #$08
+    BEQ EXIT_RESET ; ==, goto.
+    CMP #$10 ; If _ #$10
+    BEQ EXIT_RESET ; ==, goto.
+    CMP #$18 ; If _ #$18
+    BEQ EXIT_RESET ; ==, goto.
+    CMP #$24 ; If _ #$24
+    BNE EXIT ; !=, goto.
+EXIT_RESET: ; 10:077C, 0x02077C
     LDA #$05
-    STA 88_UNK_SWITCH?
+    STA 88_UNK_SWITCH? ; Set var.
+EXIT: ; 10:0780, 0x020780
     RTS
+VAL_EQ_0x30: ; 10:0781, 0x020781
     LDA #$4B
     JSR SND_BANKED_DISPATCH ; Play sound.
     LDA #$00
     STA 636_UNK ; Clear.
-    BEQ 10:07D1 ; Always taken.
+    BEQ BG_MULTIUPDATE_TERMINATE ; Always taken.
 BOSS_RTN: ; 10:078D, 0x02078D
     LDA 87_CB_INDEX? ; Load
     BNE VAL_SEEDED ; != 0, goto.
@@ -1790,7 +1795,7 @@ VAL_SEEDED: ; 10:07A0, 0x0207A0
     LDY 87_CB_INDEX? ; Load index.
     CLC ; Prep add.
     ADC DATA_UNK,Y ; Add with.
-    JSR RTN_UNK_A ; Do rtn.
+    JSR MULTI-UPDATES_RTN ; Do rtn.
     INC 87_CB_INDEX? ; ++
     RTS ; Leave.
 VAL_EQ_EOF: ; 10:07BF, 0x0207BF
@@ -1803,7 +1808,8 @@ VAL_LT: ; 10:07C1, 0x0207C1
     CPX #$03 ; If _ #$03
     BCC VAL_LT ; <, goto.
 VAL_EQ: ; 10:07CE, 0x0207CE
-    JSR CLEAR_MANY_ARR_THINGIES ; Do.
+    JSR CLEAR_MAP_COLUMN? ; Do.
+BG_MULTIUPDATE_TERMINATE: ; 10:07D1, 0x0207D1
     LDA #$00
     STA 87_CB_INDEX? ; Clear these.
     STA 88_UNK_SWITCH?
@@ -1892,83 +1898,96 @@ DATA_UNK: ; 10:07E1, 0x0207E1
     .db 07
     .db 15
     .db FF
-    LDA 88_UNK_SWITCH?
-    BEQ 10:0833
-    DEC 88_UNK_SWITCH?
-    RTS
-    LDA 87_CB_INDEX?
-    BNE 10:0849
+CB_0x10_B: ; 10:082C, 0x02082C
+    LDA 88_UNK_SWITCH? ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 10:0833, 0x020833
+    LDA 87_CB_INDEX? ; Load
+    BNE VAL_NONZERO
     LDA #$1A
-    JSR SND_BANKED_DISPATCH
+    JSR SND_BANKED_DISPATCH ; Play sound.
     LDA #$00
-    STA 636_UNK
+    STA 636_UNK ; Set.
     LDA #$01
-    STA 661_UNK_LEVEL_A_SETS
-    JSR 10:08B5
-    LDA 87_CB_INDEX?
-    CMP #$F7
-    BCS 10:0859
-    LDA R_**:$010E
-    BNE 10:0859
+    STA 661_UNK_LEVEL_A_SETS ; Set.
+    JSR DATA_MOD_SEED_0x00 ; Do.
+VAL_NONZERO: ; 10:0849, 0x020849
+    LDA 87_CB_INDEX? ; Load
+    CMP #$F7 ; If _ #$F7
+    BCS VAL_GTE_0xF7 ; >=, goto.
+    LDA 10E_UNK ; Load
+    BNE VAL_GTE_0xF7 ; != 0, goto.
     LDA #$1B
-    JSR SND_BANKED_DISPATCH
-    LDY 87_CB_INDEX?
-    LDA 10:090A,Y
-    CMP #$FF
-    BEQ 10:08A5
-    CMP #$FE
-    BNE 10:0889
-    INC **:$0617
-    INY
-    INC 87_CB_INDEX?
-    LDA 10:090A,Y
-    CMP **:$0617
-    BEQ 10:087D
-    INY
-    LDA 10:090A,Y
-    STA 87_CB_INDEX?
-    JMP 10:0849
+    JSR SND_BANKED_DISPATCH ; Play sound.
+VAL_GTE_0xF7: ; 10:0859, 0x020859
+    LDY 87_CB_INDEX? ; Y from.
+    LDA DATA_A,Y ; Load from data.
+    CMP #$FF ; If _ #$FF
+    BEQ VAL_EQ_0xFF ; ==, goto.
+    CMP #$FE ; If _ #$FE
+    BNE VAL_NE_0xFE ; !=, goto.
+    INC 617_UNK ; ++
+    INY ; Index++
+    INC 87_CB_INDEX? ; ++
+    LDA DATA_A,Y ; Load
+    CMP 617_UNK ; If _ var
+    BEQ DATA_EQ_617 ; ==, goto.
+    INY ; Index++
+    LDA DATA_A,Y ; Load data.
+    STA 87_CB_INDEX? ; Store to.
+    JMP VAL_NONZERO ; Goto.
+DATA_EQ_617: ; 10:087D, 0x02087D
     LDA #$00
-    STA **:$0617
+    STA 617_UNK ; Reset.
+    INC 87_CB_INDEX? ; += 2
     INC 87_CB_INDEX?
-    INC 87_CB_INDEX?
-    JMP 10:0849
-    LDA 10:090A,Y
-    STA 88_UNK_SWITCH?
-    INY
-    INC 87_CB_INDEX?
-    LDA 10:090A,Y
-    JSR RTN_UNK_A
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$F7
-    BNE 10:08A4
+    JMP VAL_NONZERO ; Goto.
+VAL_NE_0xFE: ; 10:0889, 0x020889
+    LDA DATA_A,Y ; Load
+    STA 88_UNK_SWITCH? ; Store to.
+    INY ; Index++
+    INC 87_CB_INDEX? ; ++
+    LDA DATA_A,Y ; Load data.
+    JSR MULTI-UPDATES_RTN ; Do updates.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$F7 ; If _ #$F7
+    BNE RTS ; !=, goto.
     LDA #$4B
-    JSR SND_BANKED_DISPATCH
-    RTS
-    JSR 10:08B9
-    JSR 10:07D1
+    JSR SND_BANKED_DISPATCH ; Play sound.
+RTS: ; 10:08A4, 0x0208A4
+    RTS ; Leave.
+VAL_EQ_0xFF: ; 10:08A5, 0x0208A5
+    JSR DATA_MOD_SEED_0x1F ; Do.
+    JSR BG_MULTIUPDATE_TERMINATE ; Done.
     LDA #$00
-    STA 661_UNK_LEVEL_A_SETS
-    LDA #$16
-    JMP LEVEL_RELATED_DATA_A_PASSED?
-    LDY #$00
-    BEQ 10:08BB
-    LDY #$1F
-    LDA 10:08D7,Y
-    CMP #$FF
-    BEQ 10:08A4
-    CMP #$FE
-    BNE 10:08CF
-    INY
-    LDA 10:08D7,Y
-    TAX
-    INY
-    LDA 10:08D7,Y
-    STA **:$07A0,X
-    INY
-    INX
-    JMP 10:08BB
+    STA 661_UNK_LEVEL_A_SETS ; Clear.
+    LDA #$16 ; Val?
+    JMP LEVEL_RELATED_DATA_A_PASSED? ; Do, abuse RTS.
+DATA_MOD_SEED_0x00: ; 10:08B5, 0x0208B5
+    LDY #$00 ; Index.
+    BEQ LOOP_DATA_MOVE ; == 0, goto. Always taken.
+DATA_MOD_SEED_0x1F: ; 10:08B9, 0x0208B9
+    LDY #$1F ; Alt seed.
+LOOP_DATA_MOVE: ; 10:08BB, 0x0208BB
+    LDA UPDATE_DATA,Y ; Load data.
+    CMP #$FF ; If _ #$FF
+    BEQ RTS ; ==, EOF, leave.
+    CMP #$FE ; If _ #$FE, index reset.
+    BNE VAL_NE_0xFE ; !=, goto. Data, store direct.
+    INY ; Index++
+    LDA UPDATE_DATA,Y ; Load.
+    TAX ; Mod X index.
+    INY ; Index++
+    LDA UPDATE_DATA,Y ; Load
+VAL_NE_0xFE: ; 10:08CF, 0x0208CF
+    STA 7A0_ARR_UNK[1],X ; Store to arr.
+    INY ; Data++
+    INX ; Array++
+    JMP LOOP_DATA_MOVE ; Move, goto.
+UPDATE_DATA: ; 10:08D7, 0x0208D7
     .db FE
     .db 30
     .db 11
@@ -2020,6 +2039,7 @@ DATA_UNK: ; 10:07E1, 0x0207E1
     .db 33
     .db 33
     .db FF
+DATA_A: ; 10:090A, 0x02090A
     .db 00
     .db B4
     .db 20

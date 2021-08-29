@@ -2401,11 +2401,11 @@ L_1E:0943: ; 1E:0943, 0x03C943
     .db 5C
 SOUND_FORWARD_BANKED?: ; 1E:095C, 0x03C95C
     JSR SAVE_UP/LOW_AND_SWITCH_BANKS_18/19
-    JSR $81BF
+    JSR 18:01BF
     LDX #$00
     LDY #$00
-    STX R_**:$00EE
-    STY R_**:$00EF
+    STX EE_SND_UNK
+    STY EF_SND_UNK
     LDA 10A_ARR_UNK,X
     BEQ 1E:097F
     CMP #$6D
@@ -2413,7 +2413,7 @@ SOUND_FORWARD_BANKED?: ; 1E:095C, 0x03C95C
     JSR 1E:1B8F
     JMP 1E:097C
     JSR 1E:1BB3
-    JSR $81DB
+    JSR 18:01DB
     INX
     CPX #$06
     BEQ 1E:098B
@@ -2697,7 +2697,7 @@ SWITCH_18_RTN_FIRST_SCREEN: ; 1E:0A96, 0x03CA96
     JSR BANK_PAIR_SAVE+PPU_FILE_BANK_14/15
     JSR SET_TIMER_40_0x256
     INC SUBSTATE_SWITCH_MENUS ; Next state.
-    JMP WRITE_PPU_CTRL_COPY ; Enable rendering.
+    JMP WRITE_PPU_COPY_TO_CTRL ; Enable rendering.
 19_NOT_ZERO: ; 1E:0AB8, 0x03CAB8
     JSR SUB_40/41_TIMER_RET_FLAG ; Do timer.
     BNE RTS ; If timer is ongoing, goto.
@@ -3017,7 +3017,7 @@ SWITCH_CODE_PTRS_PAST_JSR: ; 1E:0C98, 0x03CC98
     LDY TMP_03 ; Y from TMP[3]
     STA TMP_03 ; Data to TMP[3]
     JMP [TMP_02] ; Goto code ptr.
-FORWARD_TMP[X]_BY_A: ; 1E:0CB1, 0x03CCB1
+FORWARD_PTR_TMP[X]_BY_A: ; 1E:0CB1, 0x03CCB1
     CLC ; Prep add.
     ADC TMP_00,X ; Add val to A.
     STA TMP_00,X ; Store result.
@@ -3777,7 +3777,7 @@ NOT_2P_GAME: ; 1E:11FC, 0x03D1FC
     JSR RTN_NAME_TURTLES_OVERLAY
     LDA #$08
     STA DISABLE_RENDERING_X_FRAMES ; Stop rendering.
-    JMP WRITE_PPU_CTRL_COPY ; Abuse RTS.
+    JMP WRITE_PPU_COPY_TO_CTRL ; Abuse RTS.
 SWITCH_3C_RTN_C: ; 1E:120E, 0x03D20E
     LDA #$22
     STA DISABLE_RENDERING_X_FRAMES ; Stop rendering.
@@ -3831,7 +3831,7 @@ NOT_SCREEN_8: ; 1E:1257, 0x03D257
     LDA #$24
     JSR BANK_PAIR_USE_A ; Swap to bank 4/5.
     LDA #$03 ; Val?
-    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE ; Do..?
+    JSR WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Do..?
 NOT_LEVEL_1: ; 1E:1273, 0x03D273
     LDA LEVEL/SCREEN_ON ; Load again.
     CMP #$07 ; If _ #$07
@@ -5802,37 +5802,37 @@ SOUND_RESET/INIT_RTN?: ; 1E:1B28, 0x03DB28
     TXA
     PHA ; Save X
     LDY #$01
-    STY 28_BANK_CFG_INDEX? ; Unsure why
+    STY BANK_CFG_RESTORE_INDEX ; Unsure why
     JSR SAVE_UP/LOW_AND_SWITCH_BANKS_18/19
     JSR SOUND_INIT
     JSR RESTORE_UPPER/LOWER
     LDY #$00
-    STY 28_BANK_CFG_INDEX?
+    STY BANK_CFG_RESTORE_INDEX
     PLA
     TAX ; Restore X
     PLA
     TAY ; Restore Y.
     RTS
 SOUND_FORWARD: ; 1E:1B42, 0x03DB42
-    LDY 28_BANK_CFG_INDEX? ; Get flag.
+    LDY BANK_CFG_RESTORE_INDEX ; Get flag.
     BNE RTS ; != 0, goto.
     LDY #$01
-    STY 28_BANK_CFG_INDEX? ; Set bank config for sound.
+    STY BANK_CFG_RESTORE_INDEX ; Set bank config for sound.
     JSR SOUND_FORWARD_BANKED?
     LDY #$00
-    STY 28_BANK_CFG_INDEX? ; Set bank config for game.
+    STY BANK_CFG_RESTORE_INDEX ; Set bank config for game.
 RTS: ; 1E:1B51, 0x03DB51
     RTS
 SND_BANKED_DISPATCH: ; 1E:1B52, 0x03DB52
     STA SOUND_VALUE ; A to.
-    LDA 28_BANK_CFG_INDEX? ; Load val.
+    LDA BANK_CFG_RESTORE_INDEX ; Load val.
     BNE RTS ; If data, leave?
     TYA ; Save Y
     PHA
     TXA ; Save X
     PHA
     LDY #$01
-    STY 28_BANK_CFG_INDEX? ; Now val.
+    STY BANK_CFG_RESTORE_INDEX ; Now val.
     LDA SOUND_VALUE ; Load val.
     CMP #$6D ; If A _ 6D
     BCS BANK_SET_1A/1B ; >=, goto.
@@ -5845,7 +5845,7 @@ BANK_SET_CHOSEN: ; 1E:1B71, 0x03DB71
     JSR 18:003B ; 18 OR 1A, doing 18 first.
     JSR RESTORE_UPPER/LOWER ; Restore previous.
     LDY #$00
-    STY 28_BANK_CFG_INDEX? ; No more index.
+    STY BANK_CFG_RESTORE_INDEX ; No more index.
     PLA ; Restore X+Y
     TAX
     PLA
@@ -6333,10 +6333,10 @@ SKIP_OTHER_Y: ; 1E:1ED8, 0x03DED8
     ASL A ; << 2, *4.
     ASL A
     LDX #$04 ; X = 
-    JSR FORWARD_TMP[X]_BY_A ; Forward TMP_04 by A.
+    JSR FORWARD_PTR_TMP[X]_BY_A ; Forward TMP_04 by A.
     LDX #$06 ; TMP_06
     LDA 9C_UNK ; With val.
-    JSR FORWARD_TMP[X]_BY_A ; Forward.
+    JSR FORWARD_PTR_TMP[X]_BY_A ; Forward.
     LDA #$04 ; A=
     STA TMP_00
 MAKE_MORE_ROWS_UPDATE: ; 1E:1F07, 0x03DF07
@@ -6364,7 +6364,7 @@ LOOP_FOUR_BYTES: ; 1E:1F1D, 0x03DF1D
     STX PPU_UPDATE_BUF_INDEX ; Save index.
     LDX #$02
     LDA #$04
-    JSR FORWARD_TMP[X]_BY_A ; Forward TMP_02
+    JSR FORWARD_PTR_TMP[X]_BY_A ; Forward TMP_02
     LDA #$20 ; PPU_ADDR forward.
     CLC
     ADC TMP_04 ; Forward lower.
@@ -6390,7 +6390,7 @@ LOOP_FOUR_BYTES: ; 1E:1F1D, 0x03DF1D
     JSR BG_BUF_RTN? ; Do..
     LDX #$06
     LDA #$08
-    JSR FORWARD_TMP[X]_BY_A ; Forward TMP_06 by 8.
+    JSR FORWARD_PTR_TMP[X]_BY_A ; Forward TMP_06 by 8.
     LDA [76_UNK],Y ; Load from stream.
     LSR A ; >> 4, /16.
     LSR A

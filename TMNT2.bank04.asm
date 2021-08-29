@@ -494,9 +494,9 @@ NEXT_INDEX: ; 04:0235, 0x008235
     BNE LOOP_INDEXES ; !=, loop.
     RTS ; Leave.
 CLEAR_INDEX_DATA: ; 04:023B, 0x00823B
-    JSR ZERO_ALL_INDEX ; Zero all.
+    JSR ZERO_ALL_MAP_INDEX_ROW? ; Zero all.
     JMP NEXT_INDEX ; Next index.
-ZERO_ALL_INDEX: ; 04:0241, 0x008241
+ZERO_ALL_MAP_INDEX_ROW?: ; 04:0241, 0x008241
     LDA #$00 ; Clear val.
     STA 670_MAP_DATA_A,X ; Clear all at index.
     STA 688_MAP_DATA_G,X
@@ -506,28 +506,29 @@ ZERO_ALL_INDEX: ; 04:0241, 0x008241
     STA 680_MAP_DATA_E,X
     STA 684_MAP_DATA_F,X
     RTS ; Leave.
-L_04:0259: ; 04:0259, 0x008259
-    STA TMP_07
-    TXA
+MAP_COLUMN_INDEX_CLEAR_RTN?: ; 04:0259, 0x008259
+    STA TMP_07 ; Store to.
+    TXA ; Save X,Y
     PHA
     TYA
     PHA
-    LDX #$00
-L_04:0261: ; 04:0261, 0x008261
-    LDA 688_MAP_DATA_G,X
-    CMP TMP_07
-    BNE L_04:026E
-    JSR ZERO_ALL_INDEX
-    JMP 04:0273
-L_04:026E: ; 04:026E, 0x00826E
-    INX
-    CPX #$04
-    BNE L_04:0261
-    PLA
+    LDX #$00 ; Index reset.
+LOOP_NOT_COMPLETE: ; 04:0261, 0x008261
+    LDA 688_MAP_DATA_G,X ; Load
+    CMP TMP_07 ; If _ Var
+    BNE VAL_NE_VAR ; !=, goto.
+    JSR ZERO_ALL_MAP_INDEX_ROW? ; Zero row.
+    JMP EXIT_ESTORE ; Done, leave.
+VAL_NE_VAR: ; 04:026E, 0x00826E
+    INX ; Index++
+    CPX #$04 ; If _ #$04
+    BNE LOOP_NOT_COMPLETE ; !=, loop.
+EXIT_ESTORE: ; 04:0273, 0x008273
+    PLA ; Restore X,Y
     TAY
     PLA
     TAX
-    RTS
+    RTS ; Leave.
 RTN_UNK: ; 04:0278, 0x008278
     LDA LEVEL/SCREEN_ON ; Load val.
     CMP #$07 ; If _ #$07
@@ -1325,44 +1326,32 @@ L_04:0307: ; 04:0307, 0x008307
     .db 54
     .db 06
     .db 60
-L_04:05C8: ; 04:05C8, 0x0085C8
-    .db 85
-    .db 07
-    .db 8A
-    .db 48
-    .db 98
-    .db 48
-    .db A2
-    .db 00
-    .db BD
-    .db 88
-    .db 06
-    .db C5
-    .db 07
-    .db D0
-    .db 0C
-    .db BC
-    .db 70
-    .db 06
-    .db B9
-    .db ED
-    .db 85
-    .db 9D
-    .db 84
-    .db 06
-    .db 4C
-    .db E8
-    .db 85
-    .db E8
-    .db E0
-    .db 04
-    .db D0
-    .db E8
-    .db 68
-    .db A8
-    .db 68
-    .db AA
-    .db 60
+MAP_DATA_OVERRIDE_RTN: ; 04:05C8, 0x0085C8
+    STA TMP_07 ; Val to.
+    TXA ; Save X/Y.
+    PHA
+    TYA
+    PHA
+    LDX #$00
+INDEX_NE_0x4: ; 04:05D0, 0x0085D0
+    LDA 688_MAP_DATA_G,X ; Load
+    CMP TMP_07 ; If _ #$07
+    BNE VAL_NE_PASSED ; !=, goto.
+    LDY 670_MAP_DATA_A,X ; Y index from X index.
+    LDA DATA_OVERRIDE_A,Y ; Load override.
+    STA 684_MAP_DATA_F,X ; Store to at X index.
+    JMP EXIT_RESTORE_XY ; Goto, leave.
+VAL_NE_PASSED: ; 04:05E3, 0x0085E3
+    INX ; Next
+    CPX #$04 ; If _ #$04
+    BNE INDEX_NE_0x4 ; !=, goto.
+EXIT_RESTORE_XY: ; 04:05E8, 0x0085E8
+    PLA ; Restore Y/X.
+    TAY
+    PLA
+    TAX
+    RTS ; Leave.
+DATA_OVERRIDE_A: ; 04:05ED, 0x0085ED
     .db 00
     .db 80
     .db 00
@@ -1379,63 +1368,47 @@ L_04:05C8: ; 04:05C8, 0x0085C8
     .db 80
     .db 80
     .db 80
-L_04:05FD: ; 04:05FD, 0x0085FD
-    .db 85
-    .db 07
-    .db A2
-    .db 00
-    .db BD
-    .db 88
-    .db 06
-    .db C5
-    .db 07
-    .db F0
-    .db 06
-    .db E8
-    .db E0
-    .db 04
-    .db D0
-    .db F4
-    .db 60
-    .db BD
-    .db 80
-    .db 06
-    .db 18
-    .db 79
-    .db 28
-    .db 86
-    .db 9D
-    .db 80
-    .db 06
-    .db BD
-    .db 78
-    .db 06
-    .db 18
-    .db 79
-    .db 23
-    .db 86
-    .db 9D
-    .db 78
-    .db 06
-    .db 60
+MAP_DATA_MOD_RTN: ; 04:05FD, 0x0085FD
+    STA TMP_07 ; Store val.
+    LDX #$00 ; Index reset.
+INDEX_NOT_EQ: ; 04:0601, 0x008601
+    LDA 688_MAP_DATA_G,X ; Load
+    CMP TMP_07 ; If _ var
+    BEQ MAP_DATA_EQ_VAR ; ==, goto.
+    INX ; Index++
+    CPX #$04 ; If _ #$04
+    BNE INDEX_NOT_EQ ; !=, goto.
+    RTS ; Leave. None.
+MAP_DATA_EQ_VAR: ; 04:060E, 0x00860E
+    LDA 680_MAP_DATA_E,X ; Load
+    CLC ; Prep add.
+    ADC MOD_DATA_A,Y ; Delta.
+    STA 680_MAP_DATA_E,X ; Store to map.
+    LDA 678_MAP_DATA_C,X ; Load
+    CLC ; Prep add.
+    ADC MOD_DATA_B,Y ; Add with val.
+    STA 678_MAP_DATA_C,X ; Store to map.
+    RTS ; Leave.
+MOD_DATA_B: ; 04:0623, 0x008623
     .db 20
     .db 30
     .db 10
     .db FC
     .db FE
+MOD_DATA_A: ; 04:0628, 0x008628
     .db 20
     .db 30
     .db 10
     .db 00
     .db 00
-FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE: ; 04:062D, 0x00862D
+WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS: ; 04:062D, 0x00862D
     STA TMP_00 ; Passed to TMP.
     LDX #$00 ; X reset.
 LOOP_FIND_OBJ_SLOT: ; 04:0631, 0x008631
-    LDA 694_OBJ/PLAYER_UNK?[4],X ; Load val.
+    LDA 694_PLAYER_UNK[4],X ; Load val.
     BNE NEXT_OBJ ; If set, goto.
-    LDA TMP_00 ; Load val.
-    STA 694_OBJ/PLAYER_UNK?[4],X ; Store passed to.
+    LDA TMP_00 ; Load val passed.
+    STA 694_PLAYER_UNK[4],X ; Store passed to slot.
     CLC ; Set CC, object made.
     RTS
 NEXT_OBJ: ; 04:063D, 0x00863D
@@ -1444,79 +1417,80 @@ NEXT_OBJ: ; 04:063D, 0x00863D
     BNE LOOP_FIND_OBJ_SLOT ; !=, goto.
     SEC ; Set for failure, no object made/found.
     RTS ; Leave.
-L_04:0644: ; 04:0644, 0x008644
-    STA TMP_00
-    LDX #$00
-L_04:0648: ; 04:0648, 0x008648
-    LDA 694_OBJ/PLAYER_UNK?[4],X
-    CMP TMP_00
-    BEQ L_04:0655
-    INX
-    CPX #$04
-    BCC L_04:0648
-    RTS
-L_04:0655: ; 04:0655, 0x008655
+CLEAR_SLOT_EQ_A: ; 04:0644, 0x008644
+    STA TMP_00 ; Val to. TODO once player stuff better known.
+    LDX #$00 ; Index reset.
+FIND_LOOP: ; 04:0648, 0x008648
+    LDA 694_PLAYER_UNK[4],X ; Load
+    CMP TMP_00 ; If _ Val
+    BEQ VAL_EQ ; ==, goto.
+    INX ; Slot++
+    CPX #$04 ; If _ #$04
+    BCC FIND_LOOP ; <, goto.
+    RTS ; Leave, none found.
+VAL_EQ: ; 04:0655, 0x008655
     LDA #$00
-    STA 694_OBJ/PLAYER_UNK?[4],X
-    STA PLAYER_UNK_698[4],X
-    STA PLAYER_UNK_69C[4],X
-    RTS
+    STA 694_PLAYER_UNK[4],X ; Clear these attrs for slot.
+    STA 698_PLAYER_UNK[4],X
+    STA 69C_PLAYER_UNK[4],X
+    RTS ; Leave.
 DATA_PLAYER_PTR_UNK_L: ; 04:0661, 0x008661
-    .db 97
+    LOW(FILE_A)
 DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
-    .db 86
-    .db 9E
-    .db 86
-    .db A5
-    .db 86
-    .db AB
-    .db 86
-    .db B2
-    .db 86
-    .db B9
-    .db 86
-    .db C0
-    .db 86
-    .db C7
-    .db 86
-    .db CE
-    .db 86
-    .db F0
-    .db 86
-    .db 12
-    .db 87
-    .db 18
-    .db 87
-    .db 42
-    .db 87
-    .db 6C
-    .db 87
-    .db 96
-    .db 87
-    .db C0
-    .db 87
-    .db C6
-    .db 87
-    .db DD
-    .db 87
-    .db F4
-    .db 87
-    .db 01
-    .db 88
-    .db 0A
-    .db 88
-    .db 13
-    .db 88
-    .db 1C
-    .db 88
-    .db 25
-    .db 88
-    .db 2E
-    .db 88
-    .db 37
-    .db 88
-    .db 3E
-    .db 88
+    HIGH(FILE_A)
+    LOW(FILE_B)
+    HIGH(FILE_B)
+    LOW(FILE_C)
+    HIGH(FILE_C)
+    LOW(FILE_D)
+    HIGH(FILE_D)
+    LOW(FILE_E)
+    HIGH(FILE_E)
+    LOW(FILE_F)
+    HIGH(FILE_F)
+    LOW(FILE_G)
+    HIGH(FILE_G)
+    LOW(FILE_H)
+    HIGH(FILE_H)
+    LOW(FILE_I)
+    HIGH(FILE_I)
+    LOW(FILE_J)
+    HIGH(FILE_J)
+    LOW(FILE_K)
+    HIGH(FILE_K)
+    LOW(FILE_L)
+    HIGH(FILE_L)
+    LOW(FILE_M)
+    HIGH(FILE_M)
+    LOW(FILE_N)
+    HIGH(FILE_N)
+    LOW(FILE_O)
+    HIGH(FILE_O)
+    LOW(FILE_P)
+    HIGH(FILE_P)
+    LOW(FILE_Q)
+    HIGH(FILE_Q)
+    LOW(FILE_R)
+    HIGH(FILE_R)
+    LOW(FILE_S)
+    HIGH(FILE_S)
+    LOW(FILE_T)
+    HIGH(FILE_T)
+    LOW(FILE_U)
+    HIGH(FILE_U)
+    LOW(FILE_V)
+    HIGH(FILE_V)
+    LOW(FILE_W)
+    HIGH(FILE_W)
+    LOW(FILE_X)
+    HIGH(FILE_X)
+    LOW(FILE_Y)
+    HIGH(FILE_Y)
+    LOW(FILE_Z)
+    HIGH(FILE_Z)
+    LOW(FILE_AA)
+    HIGH(FILE_AA)
+FILE_A: ; 04:0697, 0x008697
     .db 05
     .db C0
     .db 06
@@ -1524,6 +1498,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 09
     .db 0A
     .db FE
+FILE_B: ; 04:069E, 0x00869E
     .db 06
     .db 40
     .db 06
@@ -1531,12 +1506,14 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 0C
     .db 0D
     .db FE
+FILE_C: ; 04:06A5, 0x0086A5
     .db FF
     .db FF
     .db 14
     .db 0E
     .db 0F
     .db FE
+FILE_D: ; 04:06AB, 0x0086AB
     .db 01
     .db C0
     .db 06
@@ -1544,6 +1521,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 09
     .db 0A
     .db FE
+FILE_E: ; 04:06B2, 0x0086B2
     .db 03
     .db 40
     .db 06
@@ -1551,6 +1529,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 18
     .db 19
     .db FE
+FILE_F: ; 04:06B9, 0x0086B9
     .db 04
     .db C0
     .db 06
@@ -1558,6 +1537,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 1B
     .db 1C
     .db FE
+FILE_G: ; 04:06C0, 0x0086C0
     .db 05
     .db 40
     .db 06
@@ -1565,6 +1545,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 18
     .db 19
     .db FE
+FILE_H: ; 04:06C7, 0x0086C7
     .db 02
     .db 10
     .db 06
@@ -1572,6 +1553,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 3B
     .db 3C
     .db FE
+FILE_I: ; 04:06CE, 0x0086CE
     .db 04
     .db 38
     .db 03
@@ -1606,6 +1588,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 68
     .db 69
     .db FE
+FILE_J: ; 04:06F0, 0x0086F0
     .db 06
     .db 38
     .db 03
@@ -1640,12 +1623,14 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db 68
     .db 69
     .db FE
+FILE_K: ; 04:0712, 0x008712
     .db FF
     .db FF
     .db 14
     .db 7E
     .db 7F
     .db FE
+FILE_L: ; 04:0718, 0x008718
     .db 01
     .db E0
     .db 03
@@ -1688,6 +1673,7 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db A0
     .db 9E
     .db FF
+FILE_M: ; 04:0742, 0x008742
     .db 02
     .db 40
     .db 03
@@ -1697,7 +1683,6 @@ DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
     .db A4
     .db A5
     .db A6
-CB_AN: ; 04:074B, 0x00874B
     .db A5
     .db A6
     .db A5
@@ -1731,6 +1716,7 @@ CB_AN: ; 04:074B, 0x00874B
     .db A8
     .db A6
     .db FF
+FILE_N: ; 04:076C, 0x00876C
     .db 02
     .db A0
     .db 03
@@ -1764,7 +1750,6 @@ CB_AN: ; 04:074B, 0x00874B
     .db AE
     .db AD
     .db AE
-CB_AO: ; 04:078D, 0x00878D
     .db AD
     .db AE
     .db AD
@@ -1774,6 +1759,7 @@ CB_AO: ; 04:078D, 0x00878D
     .db B0
     .db AE
     .db FF
+FILE_O: ; 04:0796, 0x008796
     .db 03
     .db 00
     .db 03
@@ -1816,12 +1802,14 @@ CB_AO: ; 04:078D, 0x00878D
     .db B8
     .db B6
     .db FF
+FILE_P: ; 04:07C0, 0x0087C0
     .db FF
     .db FF
     .db 14
     .db B9
     .db BA
     .db FE
+FILE_Q: ; 04:07C6, 0x0087C6
     .db 02
     .db 18
     .db 02
@@ -1845,6 +1833,7 @@ CB_AO: ; 04:078D, 0x00878D
     .db C5
     .db C6
     .db FF
+FILE_R: ; 04:07DD, 0x0087DD
     .db 07
     .db A0
     .db 02
@@ -1868,6 +1857,7 @@ CB_AO: ; 04:078D, 0x00878D
     .db D0
     .db D1
     .db FF
+FILE_S: ; 04:07F4, 0x0087F4
     .db 0C
     .db C0
     .db 01
@@ -1881,6 +1871,7 @@ CB_AO: ; 04:078D, 0x00878D
     .db 02
     .db 02
     .db FE
+FILE_T: ; 04:0801, 0x008801
     .db 03
     .db 40
     .db 02
@@ -1890,6 +1881,7 @@ CB_AO: ; 04:078D, 0x00878D
     .db 0A
     .db 0B
     .db FF
+FILE_U: ; 04:080A, 0x00880A
     .db 03
     .db C0
     .db 02
@@ -1899,6 +1891,7 @@ CB_AO: ; 04:078D, 0x00878D
     .db 0F
     .db 10
     .db FF
+FILE_V: ; 04:0813, 0x008813
     .db 04
     .db 40
     .db 02
@@ -1908,6 +1901,7 @@ CB_AO: ; 04:078D, 0x00878D
     .db 14
     .db 15
     .db FF
+FILE_W: ; 04:081C, 0x00881C
     .db 04
     .db C0
     .db 02
@@ -1917,6 +1911,7 @@ CB_AO: ; 04:078D, 0x00878D
     .db 19
     .db 1A
     .db FF
+FILE_X: ; 04:0825, 0x008825
     .db 05
     .db 80
     .db 02
@@ -1924,9 +1919,9 @@ CB_AO: ; 04:078D, 0x00878D
     .db 1C
     .db 1D
     .db 1E
-CB_AP: ; 04:082C, 0x00882C
     .db 1F
     .db FF
+FILE_Y: ; 04:082E, 0x00882E
     .db 05
     .db A0
     .db 02
@@ -1936,6 +1931,7 @@ CB_AP: ; 04:082C, 0x00882C
     .db 23
     .db 24
     .db FF
+FILE_Z: ; 04:0837, 0x008837
     .db FF
     .db FF
     .db 08
@@ -1943,6 +1939,7 @@ CB_AP: ; 04:082C, 0x00882C
     .db 26
     .db 27
     .db FE
+FILE_AA: ; 04:083E, 0x00883E
     .db FF
     .db FF
     .db 02
@@ -1951,417 +1948,313 @@ CB_AP: ; 04:082C, 0x00882C
     .db 7B
     .db 7D
     .db FE
-RTN_UNK_B_PAIR: ; 04:0846, 0x008846
-    .db 85
-    .db 00
-    .db A5
-    .db 00
-    .db 10
-    .db 0E
-    .db 0A
-    .db AA
-    .db BD
-    .db 02
-    .db 90
-    .db 85
-    .db 00
-    .db BD
-    .db 03
-    .db 90
-    .db 30
-    .db 1D
-    .db 10
-    .db 0C
-    .db 0A
-    .db AA
-    .db BD
-    .db 02
-    .db 8F
-    .db 85
-    .db 00
-    .db BD
-    .db 03
-    .db 8F
-    .db 30
-    .db 0F
-    .db 0A
-    .db AA
-    .db BD
-    .db B8
-    .db 92
-    .db 85
-    .db 04
-    .db BD
-    .db B9
-    .db 92
-    .db 85
-    .db 05
-    .db 4C
-    .db 81
-    .db 88
-    .db 0A
-    .db AA
-    .db BD
-    .db B8
-    .db 93
-    .db 85
-    .db 04
-    .db BD
-    .db B9
-    .db 93
-    .db 85
-    .db 05
-    .db A0
-    .db 00
-    .db B1
-    .db 04
-    .db 85
-    .db 08
-    .db C8
-    .db B1
-    .db 04
-    .db 85
-    .db 01
-    .db C8
-    .db A5
-    .db 00
-    .db 10
-    .db 0F
-    .db 0A
-    .db AA
-    .db BD
-    .db FC
-    .db 91
-    .db 85
-    .db 02
-    .db BD
-    .db FD
-    .db 91
-    .db 85
-    .db 03
-    .db 4C
-    .db AC
-    .db 88
-    .db 0A
-    .db AA
-    .db BD
-    .db FC
-    .db 90
-    .db 85
-    .db 02
-    .db BD
-    .db FD
-    .db 90
-    .db 85
-    .db 03
-    .db 20
-    .db E8
-    .db 88
-    .db B0
-    .db D2
-    .db 60
-RTN_UNK_B: ; 04:08B2, 0x0088B2
-    .db 0A
-    .db AA
-    .db BD
-    .db EC
-    .db 93
-    .db 85
-    .db 00
-    .db BD
-    .db ED
-    .db 93
-    .db 0A
-    .db AA
-    .db BD
-    .db 3A
-    .db 95
-    .db 85
-    .db 04
-    .db BD
-    .db 3B
-    .db 95
-    .db 85
-    .db 05
-    .db A0
-    .db 00
-    .db B1
-    .db 04
-    .db 85
-    .db 08
-    .db C8
-    .db B1
-    .db 04
-    .db 85
-    .db 01
-    .db C8
-    .db A5
-    .db 00
-    .db 0A
-    .db AA
-    .db BD
-    .db E8
-    .db 94
-    .db 85
-    .db 02
-    .db BD
-    .db E9
-    .db 94
-    .db 85
-    .db 03
-    .db 20
-    .db E8
-    .db 88
-    .db B0
-    .db E3
-    .db 60
-    .db A6
-    .db 1E
-    .db A5
-    .db 01
-    .db 85
-    .db 06
-    .db A5
-    .db 08
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A5
-    .db 02
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A5
-    .db 03
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db B1
-    .db 04
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db C8
-    .db C6
-    .db 06
-    .db D0
-    .db F5
-    .db A9
-    .db FF
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db 86
-    .db 1E
-    .db B1
-    .db 04
-    .db C9
-    .db FD
-    .db 90
-    .db 1B
-    .db C9
-    .db FF
-    .db F0
-    .db 33
-    .db C9
-    .db FE
-    .db F0
-    .db 27
-    .db C8
-    .db B1
-    .db 04
-    .db 48
-    .db C8
-    .db B1
-    .db 04
-    .db 85
-    .db 08
-    .db C8
-    .db B1
-    .db 04
-    .db 85
-    .db 01
-    .db C8
-    .db 68
-    .db 4C
-    .db 40
-    .db 89
-    .db A5
-    .db 08
-    .db C9
-    .db 01
-    .db F0
-    .db 04
-    .db A9
-    .db 01
-    .db D0
-    .db 02
-    .db A9
-    .db 20
-    .db A2
-    .db 02
-    .db 20
-    .db B1
-    .db CC
-    .db 4C
-    .db E8
-    .db 88
-    .db C8
-    .db B1
-    .db 04
-    .db 85
-    .db 00
-    .db C8
-    .db 38
-    .db 60
-    .db 18
-    .db 60
+UPDATE_BUF_MAKER: ; 04:0846, 0x008846
+    STA TMP_00 ; Store val.
+    LDA TMP_00 ; Load, ugh, rofl. Bad code.
+    BPL VAL_POSITIVE ; Positive, goto.
+    ASL A ; << 1
+    TAX ; To index.
+    LDA DATA_A,X ; Load.
+    STA TMP_00 ; Store to.
+    LDA DATA_B,X ; Load.
+    BMI RTN_NEGATIVE ; Negative.
+    BPL RTN_POSITIVE ; Positive.
+VAL_POSITIVE: ; 04:085A, 0x00885A
+    ASL A ; << 1
+    TAX ; To index.
+    LDA DATA_C,X ; Load.
+    STA TMP_00 ; Store to.
+    LDA DATA_D,X ; Load.
+    BMI RTN_NEGATIVE ; Store to.
+RTN_POSITIVE: ; 04:0866, 0x008866
+    ASL A ; << 1
+    TAX ; To index.
+    LDA DATA_E_PTR,X ; Ptr to.
+    STA TMP_04
+    LDA DATA_F_PTR,X
+    STA TMP_05
+    JMP RTN_ENTER ; Goto.
+RTN_NEGATIVE: ; 04:0875, 0x008875
+    ASL A ; << 1
+    TAX ; To index.
+    LDA DATA_G_PTR,X ; Ptr to.
+    STA TMP_04
+    LDA DATA_H_PTR,X
+    STA TMP_05
+RTN_ENTER: ; 04:0881, 0x008881
+    LDY #$00 ; Index.
+RTN_CONTINUE: ; 04:0883, 0x008883
+    LDA [TMP_04],Y ; From file.
+    STA TMP_08 ; Store data.
+    INY ; Stream++
+    LDA [TMP_04],Y ; From file.
+    STA TMP_01 ; Store data.
+    INY ; Stream++
+    LDA TMP_00 ; Load
+    BPL TMP_00_POSITIVE ; Positive, goto.
+    ASL A ; << 1
+    TAX ; To index.
+    LDA DATA_I,X ; Set data.
+    STA TMP_02
+    LDA DATA_J,X
+    STA TMP_03
+    JMP REENTER ; Run rtn.
+TMP_00_POSITIVE: ; 04:08A0, 0x0088A0
+    ASL A ; << 1
+    TAX ; To index.
+    LDA DATA_K,X ; Set data.
+    STA TMP_02
+    LDA DATA_L,X
+    STA TMP_03
+REENTER: ; 04:08AC, 0x0088AC
+    JSR PPU_UPDATE_BUF_MAKER
+    BCS RTN_CONTINUE ; Ret CS, goto.
+    RTS ; Leave.
+MULTIUPDATE_BUF_RTN: ; 04:08B2, 0x0088B2
+    ASL A ; To word index.
+    TAX ; To X index.
+    LDA DATA_A,X ; Load.
+    STA TMP_00 ; Store to.
+    LDA DATA_B,X ; Load
+    ASL A ; To word index.
+    TAX ; To index.
+    LDA DATA_C_PTR_L,X ; Move ptr.
+    STA TMP_04
+    LDA DATA_D_PTR_H,X
+    STA TMP_05
+    LDY #$00 ; Stream reset.
+RET_CS: ; 04:08CA, 0x0088CA
+    LDA [TMP_04],Y ; Load.
+    STA TMP_08 ; Seed buf maker.
+    INY ; Stream++
+    LDA [TMP_04],Y ; Load
+    STA TMP_01 ; Seed buf maker.
+    INY ; Stream++
+    LDA TMP_00 ; Load
+    ASL A ; << 1
+    TAX ; To X index.
+    LDA DATA_E,X ; Move data for buf maker.
+    STA TMP_02
+    LDA DATA_F,X
+    STA TMP_03
+    JSR PPU_UPDATE_BUF_MAKER ; Do.
+    BCS RET_CS ; Ret CS, continue.
+    RTS ; Leave, done.
+PPU_UPDATE_BUF_MAKER: ; 04:08E8, 0x0088E8
+    LDX PPU_UPDATE_BUF_INDEX ; Load index.
+    LDA TMP_01 ; Load
+    STA TMP_06 ; Store to.
+    LDA TMP_08 ; Load
+    STA PPU_UPDATE_BUFFER[20],X ; Set to buffer.
+    INX ; Buf++
+    LDA TMP_02 ; Load
+    STA PPU_UPDATE_BUFFER[20],X ; Store to buf.
+    INX ; Buf++
+    LDA TMP_03 ; Load
+    STA PPU_UPDATE_BUFFER[20],X ; Store to buffer.
+    INX ; Buf++
+LOOP_DATA: ; 04:0900, 0x008900
+    LDA [TMP_04],Y ; Load from file.
+    STA PPU_UPDATE_BUFFER[20],X ; Store to buffer.
+    INX ; Buf++
+    INY ; Stream++
+    DEC TMP_06 ; Count--
+    BNE LOOP_DATA ; != 0, loop.
+    LDA #$FF
+    STA PPU_UPDATE_BUFFER[20],X ; Buffer EOF.
+    INX ; Buf++
+    STX PPU_UPDATE_BUF_INDEX ; Save.
+    LDA [TMP_04],Y ; Load from file.
+    CMP #$FD ; If _ #$FD
+    BCC LT_0xFD ; <, goto.
+    CMP #$FF
+    BEQ RTS_CC ; ==, leave. Completed.
+    CMP #$FE
+    BEQ VAL_EQ_0xFE ; ==, goto.
+    INY ; Stream++
+    LDA [TMP_04],Y
+    PHA ; Save forward count.
+    INY ; Stream++
+    LDA [TMP_04],Y
+    STA TMP_08
+    INY ; Stream++
+    LDA [TMP_04],Y
+    STA TMP_01
+    INY ; Stream++
+    PLA ; Pull forward.
+    JMP FORWARD_A ; Goto.
+LT_0xFD: ; 04:0934, 0x008934
+    LDA TMP_08 ; Load
+    CMP #$01 ; If _ #$01
+    BEQ FORWARD_0x20 ; ==, goto.
+    LDA #$01 ; Seed val.
+    BNE FORWARD_A ; Always taken.
+FORWARD_0x20: ; 04:093E, 0x00893E
+    LDA #$20 ; 0x32
+FORWARD_A: ; 04:0940, 0x008940
+    LDX #$02 ; TMP_02 PTR.
+    JSR FORWARD_PTR_TMP[X]_BY_A ; Forward TMP[2] ptr.
+    JMP PPU_UPDATE_BUF_MAKER ; Loop.
+VAL_EQ_0xFE: ; 04:0948, 0x008948
+    INY ; Stream++
+    LDA [TMP_04],Y ; Load from file.
+    STA TMP_00 ; Store.
+    INY ; Stream++
+    SEC ; Ret CS, continue.
+    RTS ; Leave.
+RTS_CC: ; 04:0950, 0x008950
+    CLC ; Ret CC. Finished.
+    RTS ; Leave.
 CB_A: ; 04:0952, 0x008952
-    LDA #$EF
-    JSR 04:096E
-    LDA 87_CB_INDEX?
-    BNE 04:0995
-    LDA #$01
-    JMP FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
+    LDA #$EF ; Val?
+    JSR RTN_EVENTUALLY_MAKE_PPU_UPDATE_BUF ; Do.
+    LDA 87_CB_INDEX? ; Load
+    BNE RTS ; != 0, leave.
+    LDA #$01 ; Val to store in slot.
+    JMP WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS
 CB_B: ; 04:0960, 0x008960
-    LDA #$F6
-    JSR 04:096E
-    LDA 87_CB_INDEX?
-    BNE 04:0995
-    LDA #$02
-    JMP FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
-    STA TMP_00
-    LDA 88_UNK_SWITCH?
-    BEQ 04:0977
-    DEC 88_UNK_SWITCH?
-    RTS
-    LDA 87_CB_INDEX?
-    CLC
-    ADC TMP_00
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$07
-    BEQ CLEAR_87/88/60A_HELPER
+    LDA #$F6 ; Val?
+    JSR RTN_EVENTUALLY_MAKE_PPU_UPDATE_BUF
+    LDA 87_CB_INDEX? ; Load.
+    BNE RTS ; != 0, leave.
+    LDA #$02 ; Val to store in slot.
+    JMP WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS
+RTN_EVENTUALLY_MAKE_PPU_UPDATE_BUF: ; 04:096E, 0x00896E
+    STA TMP_00 ; Store val.
+    LDA 88_UNK_SWITCH? ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; Timer--
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0977, 0x008977
+    LDA 87_CB_INDEX? ; Load
+    CLC ; Prep add.
+    ADC TMP_00 ; Add with.
+    JSR UPDATE_BUF_MAKER ; Do.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$07 ; If _ #$07
+    BEQ BG_UPDATER_TERMINATE ; ==, goto.
     LDA #$01
-    STA 88_UNK_SWITCH?
-    RTS
-CLEAR_87/88/60A_HELPER: ; 04:098C, 0x00898C
+    STA 88_UNK_SWITCH? ; Set attr.
+    RTS ; Leave.
+BG_UPDATER_TERMINATE: ; 04:098C, 0x00898C
     LDA #$00
-    STA 87_CB_INDEX?
+    STA 87_CB_INDEX? ; Clear vals.
     STA 88_UNK_SWITCH?
     STA 60A_CB_SWITCH_WHICH?
-    RTS
+RTS: ; 04:0995, 0x008995
+    RTS ; Leave.
 CB_C: ; 04:0996, 0x008996
-    LDA #$04
+    LDA #$04 ; Seed
     LDY #$11
-    BNE 04:09AC
+    BNE RTN_ENTER
 CB_D: ; 04:099C, 0x00899C
-    LDA #$05
+    LDA #$05 ; Seed
     LDY #$13
-    BNE 04:09AC
+    BNE RTN_ENTER
 CB_E: ; 04:09A2, 0x0089A2
-    LDA #$06
+    LDA #$06 ; Seed
     LDY #$15
-    BNE 04:09AC
+    BNE RTN_ENTER
 CB_F: ; 04:09A8, 0x0089A8
-    LDA #$07
+    LDA #$07 ; Seed
     LDY #$13
-    PHA
+RTN_ENTER: ; 04:09AC, 0x0089AC
+    PHA ; Save A,Y
     TYA
     PHA
-    JSR RTN_UNK_B_PAIR
-    PLA
+    JSR UPDATE_BUF_MAKER ; Do update.
+    PLA ; Restore Y
     TAY
-    INY
-    TYA
-    JSR RTN_UNK_B_PAIR
-    PLA
-    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
-    JMP CLEAR_87/88/60A_HELPER
+    INY ; Y++
+    TYA ; Y val to A.
+    JSR UPDATE_BUF_MAKER ; Do update, Y+1
+    PLA ; Restore A.
+    JSR WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Do.
+    JMP BG_UPDATER_TERMINATE ; Goto.
 CB_G: ; 04:09C0, 0x0089C0
-    LDA #$03
-    JSR L_04:0644
-    LDA #$10
-    JSR RTN_UNK_B_PAIR
-    JMP CLEAR_87/88/60A_HELPER
+    LDA #$03 ; Val?
+    JSR CLEAR_SLOT_EQ_A ; Do.
+    LDA #$10 ; Data.
+    JSR UPDATE_BUF_MAKER ; Do.
+    JMP BG_UPDATER_TERMINATE ; Goto.
 CB_H: ; 04:09CD, 0x0089CD
-    LDA 87_CB_INDEX?
-    BNE 04:09D5
+    LDA 87_CB_INDEX? ; Load
+    BNE NONZERO ; != 0, goto.
     LDA #$1D
-    STA 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$20
-    BNE 04:0995
-    JMP CLEAR_87/88/60A_HELPER
+    STA 87_CB_INDEX? ; Set if zero.
+NONZERO: ; 04:09D5, 0x0089D5
+    LDA 87_CB_INDEX? ; Load
+    JSR UPDATE_BUF_MAKER ; Update with val.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$20 ; If _ #$20
+    BNE RTS ; !=, leave.
+    JMP BG_UPDATER_TERMINATE ; ==, clear these.
 CB_I: ; 04:09E5, 0x0089E5
     LDA #$20
-    JSR RTN_UNK_B_PAIR
-    JMP CLEAR_87/88/60A_HELPER
+    JSR UPDATE_BUF_MAKER ; Update.
+    JMP BG_UPDATER_TERMINATE ; Done.
 CB_J: ; 04:09ED, 0x0089ED
-    LDA 60A_CB_SWITCH_WHICH?
-    JSR L_04:05C8
-    LDA 60A_CB_SWITCH_WHICH?
-    CLC
-    ADC #$18
-    JSR RTN_UNK_B_PAIR
-    JMP CLEAR_87/88/60A_HELPER
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    JSR MAP_DATA_OVERRIDE_RTN ; Override.
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    CLC ; Prep add.
+    ADC #$18 ; + val.
+    JSR UPDATE_BUF_MAKER ; Map from.
+    JMP BG_UPDATER_TERMINATE ; Goto, abuse RTS.
 CB_K: ; 04:09FF, 0x0089FF
-    LDA 60A_CB_SWITCH_WHICH?
-    CLC
-    ADC #$18
-    JSR RTN_UNK_B_PAIR
-    JMP CLEAR_87/88/60A_HELPER
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    CLC ; Prep add.
+    ADC #$18 ; Add with.
+    JSR UPDATE_BUF_MAKER ; Make update.
+    JMP BG_UPDATER_TERMINATE ; Goto.
 CB_L: ; 04:0A0B, 0x008A0B
-    LDA 87_CB_INDEX?
-    BNE 04:0A13
+    LDA 87_CB_INDEX? ; Load
+    BNE VAL_NONZERO ; != 0, goto.
     LDA #$29
-    STA 87_CB_INDEX?
-    LDA 88_UNK_SWITCH?
-    BEQ 04:0A1A
-    DEC 88_UNK_SWITCH?
-    RTS
-    LDA 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$2F
-    BEQ 04:0A2C
+    STA 87_CB_INDEX? ; If zero, reset.
+VAL_NONZERO: ; 04:0A13, 0x008A13
+    LDA 88_UNK_SWITCH? ; Load.
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0A1A, 0x008A1A
+    LDA 87_CB_INDEX? ; Load
+    JSR UPDATE_BUF_MAKER ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$2F ; If _ #$2F
+    BEQ VAL_EQ_2F ; ==, goto.
     LDA #$20
-    STA 88_UNK_SWITCH?
-L_04:0A2B: ; 04:0A2B, 0x008A2B
-    RTS
-    JMP CLEAR_87/88/60A_HELPER
+    STA 88_UNK_SWITCH? ; Set value.
+RTS: ; 04:0A2B, 0x008A2B
+    RTS ; Leave.
+VAL_EQ_2F: ; 04:0A2C, 0x008A2C
+    JMP BG_UPDATER_TERMINATE ; Clear helper.
 CB_M: ; 04:0A2F, 0x008A2F
-    LDA #$12
+    LDA #$12 ; Seed.
     LDY #$2F
-    JMP 04:0A3A
+    JMP VAL_SEEDED
 CB_N: ; 04:0A36, 0x008A36
-    LDA #$13
+    LDA #$13 ; Seed.
     LDY #$33
-    STA TMP_00
+VAL_SEEDED: ; 04:0A3A, 0x008A3A
+    STA TMP_00 ; Store seed.
     STY TMP_01
-    LDA 60A_CB_SWITCH_WHICH?
-    SEC
-    SBC TMP_00
-    CLC
-    ADC TMP_01
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$02
-    BNE L_04:0A2B
-L_04:0A54: ; 04:0A54, 0x008A54
-    JMP CLEAR_87/88/60A_HELPER
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    SEC ; Prep sub.
+    SBC TMP_00 ; Sub with.
+    CLC ; Prep add.
+    ADC TMP_01 ; Add with.
+    ADC 87_CB_INDEX? ; Also add with.
+    JSR UPDATE_BUF_MAKER ; Do update.
+    INC 87_CB_INDEX? ; Move index.
+    LDA 87_CB_INDEX? ; Load
+    CMP #$02 ; If _ #$02
+    BNE RTS ; !=, leave.
+EXIT_TERMINATE: ; 04:0A54, 0x008A54
+    JMP BG_UPDATER_TERMINATE ; End.
 CB_O: ; 04:0A57, 0x008A57
     LDA 88_UNK_SWITCH? ; Load
     BEQ TIMER_EXPIRED ; == 0,  run routine.
@@ -2369,649 +2262,677 @@ CB_O: ; 04:0A57, 0x008A57
     RTS
 TIMER_EXPIRED: ; 04:0A5E, 0x008A5E
     LDA #$06
-    STA 88_UNK_SWITCH?
-    LDA 60A_CB_SWITCH_WHICH?
-    CLC
-    ADC #$21
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$03
-    BNE L_04:0A2B
-    LDA 60A_CB_SWITCH_WHICH?
-    JSR L_04:05C8
-    JSR CLEAR_87/88/60A_HELPER
-    LDA #$08
-    JMP FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
+    STA 88_UNK_SWITCH? ; Set attr.
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    CLC ; Prep add.
+    ADC #$21 ; Add with.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR UPDATE_BUF_MAKER ; Update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$03 ; If _ #$03
+    BNE RTS ; !=, leave.
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    JSR MAP_DATA_OVERRIDE_RTN ; Map data mod.
+    JSR BG_UPDATER_TERMINATE ; Terminate.
+    LDA #$08 ; Val?
+    JMP WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Goto.
 CB_P: ; 04:0A83, 0x008A83
-    LDA 88_UNK_SWITCH?
-    BEQ L_04:0A8A
-    DEC 88_UNK_SWITCH?
-    RTS
-L_04:0A8A: ; 04:0A8A, 0x008A8A
-    LDA 60A_CB_SWITCH_WHICH?
-    SEC
-    SBC #$17
-    STA TMP_00
-    ASL A
-    CLC
-    ADC TMP_00
-    ADC #$3D
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
+    LDA 88_UNK_SWITCH? ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0A8A, 0x008A8A
+    LDA 60A_CB_SWITCH_WHICH? ; Load val.
+    SEC ; Prep sub.
+    SBC #$17 ; Sub.
+    STA TMP_00 ; Store.
+    ASL A ; << 1
+    CLC ; Prep add.
+    ADC TMP_00 ; Add to val.
+    ADC #$3D ; Add val.
+    ADC 87_CB_INDEX? ; Add val.
+    JSR UPDATE_BUF_MAKER ; Update using.
     LDA #$18
-    STA 88_UNK_SWITCH?
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$03
-    BEQ L_04:0A54
+    STA 88_UNK_SWITCH? ; Re-seed.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$03 ; If _ #$03
+    BEQ EXIT_TERMINATE ; == 0, goto.
     LDA #$32
-    JMP SND_BANKED_DISPATCH
+    JMP SND_BANKED_DISPATCH ; Play sound. Abuse RTS.
 CB_Q: ; 04:0AAE, 0x008AAE
-    LDA 60A_CB_SWITCH_WHICH?
-    SEC
-    SBC #$1C
-    CLC
-    ADC #$09
-    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
-    JMP CLEAR_87/88/60A_HELPER
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    SEC ; Prep sub.
+    SBC #$1C ; Subtract.
+    CLC ; Prep add.
+    ADC #$09 ; Add with.
+    JSR WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Do rtn.
+    JMP BG_UPDATER_TERMINATE ; Exit.
 CB_R: ; 04:0ABD, 0x008ABD
-    LDA 88_UNK_SWITCH?
-    BEQ L_04:0AC4
-    DEC 88_UNK_SWITCH?
-    RTS
-L_04:0AC4: ; 04:0AC4, 0x008AC4
-    LDA 87_CB_INDEX?
-    BNE L_04:0ACD
+    LDA 88_UNK_SWITCH? ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0AC4, 0x008AC4
+    LDA 87_CB_INDEX? ; Load
+    BNE VAL_NONZERO ; != 0, goto.
     LDA #$42
-    JSR SND_BANKED_DISPATCH
-L_04:0ACD: ; 04:0ACD, 0x008ACD
-    LDA 87_CB_INDEX?
-    CLC
-    ADC #$D8
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$16
-    BEQ L_04:0B02
-    CMP #$08
-    BNE L_04:0AEC
-    LDA 60A_CB_SWITCH_WHICH?
-    JSR L_04:05C8
-    LDY #$00
-    JMP L_04:0AF7
-L_04:0AEC: ; 04:0AEC, 0x008AEC
-    LDY #$01
-    CMP #$0F
-    BEQ L_04:0AF7
-    INY
-    CMP #$14
-    BNE L_04:0B01
-L_04:0AF7: ; 04:0AF7, 0x008AF7
-    LDA 60A_CB_SWITCH_WHICH?
-    JSR L_04:05FD
+    JSR SND_BANKED_DISPATCH ; Play sound.
+VAL_NONZERO: ; 04:0ACD, 0x008ACD
+    LDA 87_CB_INDEX? ; Load
+    CLC ; Prep add.
+    ADC #$D8 ; Add with.
+    JSR UPDATE_BUF_MAKER ; Buf update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$16 ; If _ #$16
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    CMP #$08 ; If _ #$08
+    BNE VAL_NE_ZERO ; != 0, goto.
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    JSR MAP_DATA_OVERRIDE_RTN ; Do data override.
+    LDY #$00 ; Zero reset.
+    JMP VAL_SEEDED ; Goto.
+VAL_NE_ZERO: ; 04:0AEC, 0x008AEC
+    LDY #$01 ; Alt val.
+    CMP #$0F ; If _ #$0F
+    BEQ VAL_SEEDED ; ==, goto.
+    INY ; Alt alt val.
+    CMP #$14 ; If _ #$14
+    BNE RTS ; !=, continue.
+VAL_SEEDED: ; 04:0AF7, 0x008AF7
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    JSR MAP_DATA_MOD_RTN ; Do rtn.
     LDA #$01
-    STA 88_UNK_SWITCH?
-L_04:0B01: ; 04:0B01, 0x008B01
-    RTS
-L_04:0B02: ; 04:0B02, 0x008B02
-    LDA 60A_CB_SWITCH_WHICH?
-    JSR L_04:0259
-    JMP CLEAR_87/88/60A_HELPER
+    STA 88_UNK_SWITCH? ; Set.
+RTS: ; 04:0B01, 0x008B01
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0B02, 0x008B02
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    JSR MAP_COLUMN_INDEX_CLEAR_RTN? ; Do.
+    JMP BG_UPDATER_TERMINATE ; Terminate.
 CB_S: ; 04:0B0B, 0x008B0B
-    LDA 60A_CB_SWITCH_WHICH?
-    CLC
-    ADC #$4B
-    JSR RTN_UNK_B_PAIR
-    JMP CLEAR_87/88/60A_HELPER
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    CLC ; Prep add.
+    ADC #$4B ; Add with.
+    JSR UPDATE_BUF_MAKER ; Do update.
+    JMP BG_UPDATER_TERMINATE ; Terminate the update.
 CB_T: ; 04:0B17, 0x008B17
-    LDA 60A_CB_SWITCH_WHICH?
-    SEC
-    SBC #$21
-    CLC
-    ADC #$00
-    JSR L_04:0CF8
-    LDA 60A_CB_SWITCH_WHICH?
-    CLC
-    ADC #$4B
-    JSR RTN_UNK_B_PAIR
-L_04:0B2C: ; 04:0B2C, 0x008B2C
-    JMP CLEAR_87/88/60A_HELPER
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    SEC ; Prep sub.
+    SBC #$21 ; Sub with.
+    CLC ; Prep add.
+    ADC #$00 ; Add nothing, lol.
+    JSR FILE_RTN_INDEX/DATA_UNK ; Do file to array.
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    CLC ; Prep add.
+    ADC #$4B ; Add with.
+    JSR UPDATE_BUF_MAKER ; Do update.
+EXIT_TERMINATE: ; 04:0B2C, 0x008B2C
+    JMP BG_UPDATER_TERMINATE ; Terminate.
 CB_U: ; 04:0B2F, 0x008B2F
-    LDA #$00
-    JMP L_04:0B36
+    LDA #$00 ; Seed val.
+    JMP VAL_SEEDED
 CB_V: ; 04:0B34, 0x008B34
-    LDA #$70
-L_04:0B36: ; 04:0B36, 0x008B36
-    LDY 88_UNK_SWITCH?
-    BEQ L_04:0B3D
-    DEC 88_UNK_SWITCH?
-    RTS
-L_04:0B3D: ; 04:0B3D, 0x008B3D
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$08
-    BEQ L_04:0B2C
-    AND #$01
-    BNE L_04:0B53
+    LDA #$70 ; Seed val.
+VAL_SEEDED: ; 04:0B36, 0x008B36
+    LDY 88_UNK_SWITCH? ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave. Waiting.
+VAL_EQ_ZERO: ; 04:0B3D, 0x008B3D
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR UPDATE_BUF_MAKER ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load.
+    CMP #$08 ; If _ #$08
+    BEQ EXIT_TERMINATE ; ==, exit. Done.
+    AND #$01 ; Even/odd?
+    BNE VAL_ODD ; Odd, leave.
     LDA #$01
-    STA 88_UNK_SWITCH?
-L_04:0B53: ; 04:0B53, 0x008B53
-    RTS
+    STA 88_UNK_SWITCH? ; Set on even.
+VAL_ODD: ; 04:0B53, 0x008B53
+    RTS ; Leave.
 CB_W: ; 04:0B54, 0x008B54
-    LDA 88_UNK_SWITCH?
-    BEQ L_04:0B5B
-    DEC 88_UNK_SWITCH?
-    RTS
-L_04:0B5B: ; 04:0B5B, 0x008B5B
-    LDA #$78
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$06
-    BEQ L_04:0B74
-    AND #$01
-    BNE L_04:0B73
+    LDA 88_UNK_SWITCH? ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0B5B, 0x008B5B
+    LDA #$78 ; Load
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR UPDATE_BUF_MAKER ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$06 ; If _ #$06
+    BEQ VAL_EQ ; ==, goto.
+    AND #$01 ; Even/odd.
+    BNE VAL_NE_ZERO ; != 0, goto.
     LDA #$03
-    STA 88_UNK_SWITCH?
-L_04:0B73: ; 04:0B73, 0x008B73
-    RTS
-L_04:0B74: ; 04:0B74, 0x008B74
-    LDA #$0B
-    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
-    JMP CLEAR_87/88/60A_HELPER
+    STA 88_UNK_SWITCH? ; Set.
+VAL_NE_ZERO: ; 04:0B73, 0x008B73
+    RTS ; Leave.
+VAL_EQ: ; 04:0B74, 0x008B74
+    LDA #$0B ; Load.
+    JSR WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Find.
+    JMP BG_UPDATER_TERMINATE ; Terminate.
 CB_X: ; 04:0B7C, 0x008B7C
-    LDA #$0B
-    JSR L_04:0644
-    LDA #$80
-    JSR RTN_UNK_B_PAIR
-    JMP CLEAR_87/88/60A_HELPER
+    LDA #$0B ; Load val.
+    JSR CLEAR_SLOT_EQ_A ; To slow.
+    LDA #$80 ; Load.
+    JSR UPDATE_BUF_MAKER ; Do update.
+    JMP BG_UPDATER_TERMINATE ; Terminate.
 CB_Y: ; 04:0B89, 0x008B89
-    LDA 87_CB_INDEX?
-    BNE L_04:0BAC
-    INC 87_CB_INDEX?
+    LDA 87_CB_INDEX? ; Load.
+    BNE VAL_NE_ZERO ; != 0, goto.
+    INC 87_CB_INDEX? ; ++
     LDA #$03
-    STA DA_FLAG?_UNK
+    STA DA_FLAG?_UNK ; Set flag.
     LDA #$90
-    STA FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE
+    STA FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Set flag.
     LDA #$06
-    STA B6_NAMETABLE_FOCUS_UNK
+    STA B6_NAMETABLE_FOCUS_UNK ; Store val.
     LDA #$E0
-    STA B3_SCROLL_X_IRQ_J
+    STA B3_SCROLL_X_IRQ_J ; Store val.
     LDA #$04
-    STA BC_UNK
+    STA BC_UNK ; Store ??
     LDA #$00
-    STA B9_UNK
+    STA B9_UNK ; Clear ??
     STA C5_UNK
     STA A7_IRQ_REPLACE_SECONDARY_INDEX
-L_04:0BAB: ; 04:0BAB, 0x008BAB
-    RTS
-L_04:0BAC: ; 04:0BAC, 0x008BAC
-    LDA 60A_CB_SWITCH_WHICH?
-    LDY #$03
-    JSR L_04:05FD
-    LDA 678_MAP_DATA_C,X
-    CMP #$04
-    BCS L_04:0BD5
+RTS: ; 04:0BAB, 0x008BAB
+    RTS ; Leave.
+VAL_NE_ZERO: ; 04:0BAC, 0x008BAC
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    LDY #$03 ; Index.
+    JSR MAP_DATA_MOD_RTN ; Mod data.
+    LDA 678_MAP_DATA_C,X ; Load
+    CMP #$04 ; If _ #$04
+    BCS VAL_GTE_CMP ; >=, goto.
     LDA #$FF
-    STA 678_MAP_DATA_C,X
-    LDA 684_MAP_DATA_F,X
-    BEQ L_04:0BCB
-    BPL L_04:0BD5
-    LDA #$01
-    BNE L_04:0BD2
-L_04:0BCB: ; 04:0BCB, 0x008BCB
-    LDA #$27
-    JSR SND_BANKED_DISPATCH
-    LDA #$80
-L_04:0BD2: ; 04:0BD2, 0x008BD2
-    STA 684_MAP_DATA_F,X
-L_04:0BD5: ; 04:0BD5, 0x008BD5
-    LDA B6_NAMETABLE_FOCUS_UNK
-    CMP #$09
-    BCC L_04:0BAB
-    LDA B3_SCROLL_X_IRQ_J
-    CMP #$20
-    BCC L_04:0BAB
-    JSR ZERO_ALL_INDEX
+    STA 678_MAP_DATA_C,X ; Store data.
+    LDA 684_MAP_DATA_F,X ; Load
+    BEQ VAL_ZERO ; == 0, goto.
+    BPL VAL_GTE_CMP ; If positive, goto.
+    LDA #$01 ; Seed val.
+    BNE VAL_SEEDED ; != 0, goto. Always taken.
+VAL_ZERO: ; 04:0BCB, 0x008BCB
+    LDA #$27 ; Sound.
+    JSR SND_BANKED_DISPATCH ; Play sound.
+    LDA #$80 ; Seed alt.
+VAL_SEEDED: ; 04:0BD2, 0x008BD2
+    STA 684_MAP_DATA_F,X ; Store seeded.
+VAL_GTE_CMP: ; 04:0BD5, 0x008BD5
+    LDA B6_NAMETABLE_FOCUS_UNK ; Load
+    CMP #$09 ; If _ #$09
+    BCC RTS ; <, leave.
+    LDA B3_SCROLL_X_IRQ_J ; Load
+    CMP #$20 ; If _ #$20
+    BCC RTS ; <, leave.
+    JSR ZERO_ALL_MAP_INDEX_ROW? ; Zero index.
     LDA #$00
-    STA B9_UNK
-    STA BC_UNK
+    STA B9_UNK ; Clear attr.
+    STA BC_UNK ; Clear attr.
     LDA #$01
-    STA 660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK
-    JMP CLEAR_87/88/60A_HELPER
+    STA 660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK ; Set attr.
+    JMP BG_UPDATER_TERMINATE ; Done, terminate.
 CB_Z: ; 04:0BF2, 0x008BF2
-    LDA 60A_CB_SWITCH_WHICH?
-    CLC
-    ADC #$57
-    JSR RTN_UNK_B_PAIR
-L_04:0BFB: ; 04:0BFB, 0x008BFB
-    JMP CLEAR_87/88/60A_HELPER
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    CLC ; Prep add.
+    ADC #$57 ; Add with.
+    JSR UPDATE_BUF_MAKER ; Do update.
+JMP_EXIT_TERMINATE: ; 04:0BFB, 0x008BFB
+    JMP BG_UPDATER_TERMINATE ; Exit.
 CB_AA: ; 04:0BFE, 0x008BFE
-    LDA #$84
-    BNE L_04:0C04
+    LDA #$84 ; Seed val.
+    BNE VAL_SEEDED ; Always taken.
 CB_AB: ; 04:0C02, 0x008C02
-    LDA #$88
-L_04:0C04: ; 04:0C04, 0x008C04
-    LDY 88_UNK_SWITCH?
-    BEQ L_04:0C0B
-    DEC 88_UNK_SWITCH?
-    RTS
-L_04:0C0B: ; 04:0C0B, 0x008C0B
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$04
-    BEQ L_04:0BFB
+    LDA #$88 ; Seed val.
+VAL_SEEDED: ; 04:0C04, 0x008C04
+    LDY 88_UNK_SWITCH? ; Y from.
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0C0B, 0x008C0B
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR UPDATE_BUF_MAKER ; Update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$04 ; If _ #$04
+    BEQ JMP_EXIT_TERMINATE ; ==, exit.
     LDA #$07
-    STA 88_UNK_SWITCH?
+    STA 88_UNK_SWITCH? ; Set.
     LDA #$32
-    JMP SND_BANKED_DISPATCH
+    JMP SND_BANKED_DISPATCH ; Play sound. Abuse RTS.
 CB_AC: ; 04:0C22, 0x008C22
-    LDA 60A_CB_SWITCH_WHICH?
-    CLC
-    ADC #$5D
-    JSR RTN_UNK_B_PAIR
-    JMP CLEAR_87/88/60A_HELPER
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    CLC ; Prep add.
+    ADC #$5D ; Add with.
+    JSR UPDATE_BUF_MAKER ; Do update.
+    JMP BG_UPDATER_TERMINATE ; Exit.
 CB_AD: ; 04:0C2E, 0x008C2E
-    LDA 60A_CB_SWITCH_WHICH?
-    SEC
-    SBC #$32
-    CLC
-    ADC #$03
-    JSR L_04:0CF8
-    LDA 60A_CB_SWITCH_WHICH?
-    CLC
-    ADC #$5D
-    PHA
-    JSR RTN_UNK_B_PAIR
-    PLA
-    CLC
-    ADC #$03
-    JSR RTN_UNK_B_PAIR
-    JMP CLEAR_87/88/60A_HELPER
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    SEC ; Prep sub.
+    SBC #$32 ; -=
+    CLC ; Prep add.
+    ADC #$03 ; Add with.
+    JSR FILE_RTN_INDEX/DATA_UNK ; Do from file.
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    CLC ; Prep add.
+    ADC #$5D ; Add with.
+    PHA ; Save val.
+    JSR UPDATE_BUF_MAKER ; Do with val.
+    PLA ; Pull val.
+    CLC ; Prep add.
+    ADC #$03 ; Add with.
+    JSR UPDATE_BUF_MAKER ; Do pair update.
+    JMP BG_UPDATER_TERMINATE ; Terminate.
 CB_AE: ; 04:0C4E, 0x008C4E
-    LDA 87_CB_INDEX?
-    BNE L_04:0C56
+    LDA 87_CB_INDEX? ; Load
+    BNE VAL_NONZERO ; != 0, goto.
     LDA #$95
-    STA 87_CB_INDEX?
-L_04:0C56: ; 04:0C56, 0x008C56
-    LDA 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$98
-    BEQ L_04:0BFB
-    RTS
+    STA 87_CB_INDEX? ; Set if zero.
+VAL_NONZERO: ; 04:0C56, 0x008C56
+    LDA 87_CB_INDEX? ; Load
+    JSR UPDATE_BUF_MAKER ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$98 ; If _ #$98
+    BEQ JMP_EXIT_TERMINATE ; ==, goto.
+    RTS ; Leave.
 CB_AF: ; 04:0C64, 0x008C64
     LDA #$98
-    JSR RTN_UNK_B_PAIR
-    JMP CLEAR_87/88/60A_HELPER
+    JSR UPDATE_BUF_MAKER ; Do update.
+    JMP BG_UPDATER_TERMINATE ; Terminate.
 CB_AG: ; 04:0C6C, 0x008C6C
-    LDA 60A_CB_SWITCH_WHICH?
-    SEC
-    SBC #$37
-    CLC
-    ADC #$0C
-    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
-    JSR CLEAR_87/88/60A_HELPER
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    SEC ; Prep sub.
+    SBC #$37 ; Sub with.
+    CLC ; Prep add.
+    ADC #$0C ; Add with.
+    JSR WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Set up.
+    JSR BG_UPDATER_TERMINATE ; Do terminate.
     LDA #$0B
-    JMP SND_BANKED_DISPATCH
+    JMP SND_BANKED_DISPATCH ; Play sound, abuse RTS.
 CB_AH: ; 04:0C80, 0x008C80
-    LDA #$10
-    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
-    JMP CLEAR_87/88/60A_HELPER
+    LDA #$10 ; Load
+    JSR WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Set up.
+    JMP BG_UPDATER_TERMINATE ; Exit.
 CB_AI: ; 04:0C88, 0x008C88
-    LDA 87_CB_INDEX?
-    BNE L_04:0C95
+    LDA 87_CB_INDEX? ; Load
+    BNE VAL_NE_ZERO ; != 0, goto.
     LDA #$10
-    JSR L_04:0644
-    LDA #$BB
-    BNE L_04:0C97
-L_04:0C95: ; 04:0C95, 0x008C95
-    LDA #$EE
-L_04:0C97: ; 04:0C97, 0x008C97
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$02
-    BNE L_04:0CBC
-    JMP CLEAR_87/88/60A_HELPER
+    JSR CLEAR_SLOT_EQ_A ; Write to slot.
+    LDA #$BB ; Seed update.
+    BNE VAL_SEEDED ; != 0, goto.
+VAL_NE_ZERO: ; 04:0C95, 0x008C95
+    LDA #$EE ; Update val seed.
+VAL_SEEDED: ; 04:0C97, 0x008C97
+    JSR UPDATE_BUF_MAKER ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$02 ; If _ #$02
+    BNE RTS ; !=, goto.
+    JMP BG_UPDATER_TERMINATE ; Done, abuse RTS.
 CB_AJ: ; 04:0CA5, 0x008CA5
-    LDA #$11
-    BNE L_04:0CAB
+    LDA #$11 ; Seed val.
+    BNE VAL_SEEDED ; Always taken.
 CB_AK: ; 04:0CA9, 0x008CA9
-    LDA #$12
-L_04:0CAB: ; 04:0CAB, 0x008CAB
-    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
+    LDA #$12 ; Seed val.
+VAL_SEEDED: ; 04:0CAB, 0x008CAB
+    JSR WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Do rtn.
     LDA #$0B
-    JSR SND_BANKED_DISPATCH
-L_04:0CB3: ; 04:0CB3, 0x008CB3
-    JMP CLEAR_87/88/60A_HELPER
+    JSR SND_BANKED_DISPATCH ; Play sound.
+EXIT_JMP_TERMINATE: ; 04:0CB3, 0x008CB3
+    JMP BG_UPDATER_TERMINATE ; Done.
 CB_AL: ; 04:0CB6, 0x008CB6
-    LDA 88_UNK_SWITCH?
-    BEQ L_04:0CBD
-    DEC 88_UNK_SWITCH?
-L_04:0CBC: ; 04:0CBC, 0x008CBC
-    RTS
-L_04:0CBD: ; 04:0CBD, 0x008CBD
-    LDA #$D2
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$04
-    BEQ L_04:0CB3
+    LDA 88_UNK_SWITCH? ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+RTS: ; 04:0CBC, 0x008CBC
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0CBD, 0x008CBD
+    LDA #$D2 ; Load
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR UPDATE_BUF_MAKER ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$04 ; If _ #$04
+    BEQ EXIT_JMP_TERMINATE ; ==, done. Terminate.
     LDA #$04
-    STA 88_UNK_SWITCH?
-L_04:0CD1: ; 04:0CD1, 0x008CD1
-    RTS
+    STA 88_UNK_SWITCH? ; Set var.
+RTS: ; 04:0CD1, 0x008CD1
+    RTS ; Leave.
 CB_AM: ; 04:0CD2, 0x008CD2
-    LDA #$D6
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B_PAIR
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$02
-    BNE L_04:0CD1
-    LDA 60A_CB_SWITCH_WHICH?
-    JSR L_04:05C8
+    LDA #$D6 ; Load
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR UPDATE_BUF_MAKER ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$02 ; If _ #$02
+    BNE RTS ; != 0, leave.
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    JSR MAP_DATA_OVERRIDE_RTN ; Mod arrays.
     LDA #$18
-    JSR LEVEL_RELATED_DATA_A_PASSED?
-    JMP CLEAR_87/88/60A_HELPER
+    JSR LEVEL_RELATED_DATA_A_PASSED? ; Do, todo.
+    JMP BG_UPDATER_TERMINATE ; Done, leave.
 CB_BG: ; 04:0CF0, 0x008CF0
-    LDA #$40
-    JSR L_04:0259
-    JMP CLEAR_87/88/60A_HELPER
-L_04:0CF8: ; 04:0CF8, 0x008CF8
-    ASL A
-    TAY
-    LDA L_04:0D17,Y
+    LDA #$40 ; Load, which.
+    JSR MAP_COLUMN_INDEX_CLEAR_RTN? ; Do.
+    JMP BG_UPDATER_TERMINATE ; Exit.
+FILE_RTN_INDEX/DATA_UNK: ; 04:0CF8, 0x008CF8
+    ASL A ; To word index.
+    TAY ; To index reg.
+    LDA FILE_PTRS_L,Y ; Move file ptr.
     STA TMP_00
-    LDA L_04:0D18,Y
+    LDA FILE_PTRS_H,Y
     STA TMP_01
     LDY #$00
-L_04:0D06: ; 04:0D06, 0x008D06
-    LDA [TMP_00],Y
-    CMP #$FF
-    BEQ L_04:0CD1
-    TAX
-    INY
-    LDA [TMP_00],Y
-    STA 740_UNK,X
-    INY
-    JMP L_04:0D06
-L_04:0D17: ; 04:0D17, 0x008D17
-    .db 23
-L_04:0D18: ; 04:0D18, 0x008D18
-    .db 8D
-    .db 28
-    .db 8D
-    .db 2D
-    .db 8D
-    .db 32
-    .db 8D
-    .db 35
-    .db 8D
-    .db 38
-    .db 8D
+LOOP_MOVE: ; 04:0D06, 0x008D06
+    LDA [TMP_00],Y ; Load from file.
+    CMP #$FF ; If _ #$FF, EOF.
+    BEQ RTS ; ==, goto.
+    TAX ; Val to X.
+    INY ; Stream++
+    LDA [TMP_00],Y ; Load next val.
+    STA 740_UNK,X ; Store val loaded to index from file.
+    INY ; Stream++
+    JMP LOOP_MOVE
+FILE_PTRS_L: ; 04:0D17, 0x008D17
+    LOW(FILE_A)
+FILE_PTRS_H: ; 04:0D18, 0x008D18
+    HIGH(FILE_A)
+    LOW(FILE_B)
+    HIGH(FILE_B)
+    LOW(FILE_C)
+    HIGH(FILE_C)
+    LOW(FILE_D)
+    HIGH(FILE_D)
+    LOW(FILE_E)
+    HIGH(FILE_E)
+    LOW(FILE_F)
+    HIGH(FILE_F)
+FILE_A: ; 04:0D23, 0x008D23
     .db 96
     .db 33
     .db 97
     .db 33
     .db FF
+FILE_B: ; 04:0D28, 0x008D28
     .db 30
     .db 33
     .db 31
     .db 33
     .db FF
+FILE_C: ; 04:0D2D, 0x008D2D
     .db 36
     .db 33
     .db 37
     .db 33
     .db FF
+FILE_D: ; 04:0D32, 0x008D32
     .db 30
     .db 33
     .db FF
+FILE_E: ; 04:0D35, 0x008D35
     .db 36
     .db 33
     .db FF
+FILE_F: ; 04:0D38, 0x008D38
     .db 33
     .db 33
     .db FF
 CB_AQ: ; 04:0D3B, 0x008D3B
-    LDA 87_CB_INDEX?
-    BNE 04:0D73
-    INC 87_CB_INDEX?
+    LDA 87_CB_INDEX? ; Load
+    BNE VAL_NE_ZERO ; != 0, goto.
+    INC 87_CB_INDEX? ; ++
     LDA #$98
-    STA IRQ_BANK_VALUES_R[0/1][2]
+    STA IRQ_BANK_VALUES_R[0/1][2] ; Set bank.
     LDA #$9A
-    STA IRQ_BANK_VALUES_R[0/1]+1
+    STA IRQ_BANK_VALUES_R[0/1]+1 ; Set bank.
     LDA #$21
-    JSR LEVEL_RELATED_DATA_A_PASSED?
+    JSR LEVEL_RELATED_DATA_A_PASSED? ; Do.
     LDA #$06
-    STA DA_FLAG?_UNK
+    STA DA_FLAG?_UNK ; Set.
     LDA #$09
-    STA B6_NAMETABLE_FOCUS_UNK
+    STA B6_NAMETABLE_FOCUS_UNK ; Set.
     LDA #$E0
-    STA B3_SCROLL_X_IRQ_J
+    STA B3_SCROLL_X_IRQ_J ; Set.
     LDA #$90
-    STA FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE
+    STA FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Set.
     LDA #$02
-    STA BC_UNK
+    STA BC_UNK ; Set.
     LDA #$80
-    STA B9_UNK
+    STA B9_UNK ; Set.
     LDA #$00
-    STA C5_UNK
+    STA C5_UNK ; Set.
     LDA #$01
-    STA A7_IRQ_REPLACE_SECONDARY_INDEX
+    STA A7_IRQ_REPLACE_SECONDARY_INDEX ; Set.
     LDA #$53
-    JMP FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
-    LDA 60A_CB_SWITCH_WHICH?
-    LDY #$04
-    JSR L_04:05FD
-    LDA 678_MAP_DATA_C,X
-    CMP #$04
-    BCS 04:0D97
+    JMP WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Do, abuse RTS.
+VAL_NE_ZERO: ; 04:0D73, 0x008D73
+    LDA 60A_CB_SWITCH_WHICH? ; Load mod.
+    LDY #$04 ; Val?
+    JSR MAP_DATA_MOD_RTN ; Mod.
+    LDA 678_MAP_DATA_C,X ; Load
+    CMP #$04 ; If _ #$04
+    BCS SKIP_OUTPUT ; >=, goto.
     LDA #$FF
-    STA 678_MAP_DATA_C,X
-    LDA 684_MAP_DATA_F,X
-    BEQ 04:0D92
-    BPL 04:0D97
-    LDA #$01
-    BNE 04:0D94
-    LDA #$80
-    STA 684_MAP_DATA_F,X
-    LDA 684_MAP_DATA_F,X
-    BPL 04:0DA7
-    LDA IRQ/SCRIPT_RUN_COUNT?
-    AND #$0F
-    BNE 04:0DA7
+    STA 678_MAP_DATA_C,X ; Set attr.
+    LDA 684_MAP_DATA_F,X ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    BPL SKIP_OUTPUT ; If positive, goto.
+    LDA #$01 ; Seed val.
+    BNE VAL_SEEDED ; != 0, goto.
+VAL_EQ_ZERO: ; 04:0D92, 0x008D92
+    LDA #$80 ; Seed val.
+VAL_SEEDED: ; 04:0D94, 0x008D94
+    STA 684_MAP_DATA_F,X ; Store attr.
+SKIP_OUTPUT: ; 04:0D97, 0x008D97
+    LDA 684_MAP_DATA_F,X ; Load
+    BPL VAL_POSITIVE ; If positive, goto.
+    LDA IRQ/SCRIPT_RUN_COUNT? ; Load
+    AND #$0F ; Keep bits.
+    BNE VAL_POSITIVE ; Any set, goto. 15 in 16.
     LDA #$0A
-    JSR SND_BANKED_DISPATCH
-    LDA B6_NAMETABLE_FOCUS_UNK
-    CMP #$0C
-    BCC 04:0DDC
-    LDA B3_SCROLL_X_IRQ_J
-    CMP #$04
-    BCS 04:0DB8
-    LDA #$53
-    JMP L_04:0644
-    LDA B3_SCROLL_X_IRQ_J
-    CMP #$C0
-    BCC 04:0DDC
-    JSR ZERO_ALL_INDEX
+    JSR SND_BANKED_DISPATCH ; Play sound. 1 in 16. TODO: Whats this?
+VAL_POSITIVE: ; 04:0DA7, 0x008DA7
+    LDA B6_NAMETABLE_FOCUS_UNK ; Load
+    CMP #$0C ; If _ #$0C
+    BCC EXIT_CONTINUING ; <, goto.
+    LDA B3_SCROLL_X_IRQ_J ; Load
+    CMP #$04 ; If _ #$04
+    BCS SCROLL_GTE_0x04 ; >=, goto.
+    LDA #$53 ; Clear match val.
+    JMP CLEAR_SLOT_EQ_A ; Clear.
+SCROLL_GTE_0x04: ; 04:0DB8, 0x008DB8
+    LDA B3_SCROLL_X_IRQ_J ; Load
+    CMP #$C0 ; If _ #$C0
+    BCC EXIT_CONTINUING ; <, goto.
+    JSR ZERO_ALL_MAP_INDEX_ROW? ; Zero row.
     LDA #$94
-    STA IRQ_BANK_VALUES_R[0/1][2]
+    STA IRQ_BANK_VALUES_R[0/1][2] ; Set banks.
     LDA #$96
     STA IRQ_BANK_VALUES_R[0/1]+1
     LDA #$20
-    JSR LEVEL_RELATED_DATA_A_PASSED?
+    JSR LEVEL_RELATED_DATA_A_PASSED? ; Level related.
     LDA #$00
-    STA B9_UNK
+    STA B9_UNK ; Clear vars.
     STA BC_UNK
     LDA #$01
-    STA 660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK
-    JMP CLEAR_87/88/60A_HELPER
-    RTS
+    STA 660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK ; Set flag.
+    JMP BG_UPDATER_TERMINATE ; Terminate.
+EXIT_CONTINUING: ; 04:0DDC, 0x008DDC
+    RTS ; Leave.
 CB_AR: ; 04:0DDD, 0x008DDD
     LDA #$5A
-    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
-    JMP CLEAR_87/88/60A_HELPER
+    JSR WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Make.
+    JMP BG_UPDATER_TERMINATE ; Leave.
 CB_AS: ; 04:0DE5, 0x008DE5
-    LDA #$28
-    BNE 04:0DEB
+    LDA #$28 ; Seed.
+    BNE VAL_SEEDED ; Always taken.
 CB_AT: ; 04:0DE9, 0x008DE9
-    LDA #$2A
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$02
-    BNE 04:0DDC
-    JMP CLEAR_87/88/60A_HELPER
+    LDA #$2A ; Seed.
+VAL_SEEDED: ; 04:0DEB, 0x008DEB
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR MULTIUPDATE_BUF_RTN ; Do.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$02 ; If _ #$02
+    BNE EXIT_CONTINUING ; !=, goto.
+EXIT_JMP_TERMINATE: ; 04:0DF9, 0x008DF9
+    JMP BG_UPDATER_TERMINATE ; Done.
 CB_AU: ; 04:0DFC, 0x008DFC
-    LDA 88_UNK_SWITCH?
-    BEQ 04:0E03
-    DEC 88_UNK_SWITCH?
-    RTS
-    LDA #$2C
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$06
-    BEQ 04:0DF9
+    LDA 88_UNK_SWITCH? ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0E03, 0x008E03
+    LDA #$2C ; Load
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR MULTIUPDATE_BUF_RTN ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$06 ; If _ #$06
+    BEQ EXIT_JMP_TERMINATE ; ==, goto.
     LDA #$04
-    STA 88_UNK_SWITCH?
-    RTS
+    STA 88_UNK_SWITCH? ; Set attr.
+    RTS ; Leave.
 CB_AW: ; 04:0E18, 0x008E18
-    LDA #$39
-    BNE 04:0E1E
+    LDA #$39 ; Seed val.
+    BNE VAL_SEEDED ; Always taken.
 CB_AV: ; 04:0E1C, 0x008E1C
-    LDA #$32
-    LDY 88_UNK_SWITCH?
-    BEQ 04:0E25
-    DEC 88_UNK_SWITCH?
-    RTS
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$07
-    BEQ 04:0DF9
+    LDA #$32 ; Val.
+VAL_SEEDED: ; 04:0E1E, 0x008E1E
+    LDY 88_UNK_SWITCH? ; Load
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0E25, 0x008E25
+    CLC ; Prfep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR MULTIUPDATE_BUF_RTN ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load.
+    CMP #$07 ; If _ #$07
+    BEQ EXIT_JMP_TERMINATE ; == 0, goto.
     LDA #$03
-    STA 88_UNK_SWITCH?
-    RTS
+    STA 88_UNK_SWITCH? ; Set var.
+    RTS ; Leave.
 CB_AX: ; 04:0E38, 0x008E38
-    LDA 87_CB_INDEX?
-    CLC
-    ADC #$40
-    JSR RTN_UNK_B
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$02
-    BEQ 04:0DF9
-    RTS
+    LDA 87_CB_INDEX? ; Load
+    CLC ; Prep add.
+    ADC #$40 ; Add with.
+    JSR MULTIUPDATE_BUF_RTN ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$02 ; If _ #$02
+    BEQ EXIT_JMP_TERMINATE ; ==, done.
+    RTS ; Leave.
 CB_AY: ; 04:0E49, 0x008E49
-    LDA #$42
-    BNE 04:0E4F
+    LDA #$42 ; Load val.
+    BNE VAL_SEEDED ; Always taken.
 CB_AZ: ; 04:0E4D, 0x008E4D
-    LDA #$4A
-    LDY 88_UNK_SWITCH?
-    BEQ 04:0E56
-    DEC 88_UNK_SWITCH?
-    RTS
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$08
-    BEQ 04:0DF9
-    CMP #$05
-    BNE 04:0E68
+    LDA #$4A ; Load val.
+VAL_SEEDED: ; 04:0E4F, 0x008E4F
+    LDY 88_UNK_SWITCH? ; Load.
+    BEQ VAL_EQ_ZERO
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0E56, 0x008E56
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR MULTIUPDATE_BUF_RTN ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$08 ; If _ #$08
+    BEQ EXIT_JMP_TERMINATE ; ==, done.
+    CMP #$05 ; If _ #$05. TODO: Mistake/bad code here?
+    BNE VAL_NOT_0x5 ; !=, goto. Next line, lol.
+VAL_NOT_0x5: ; 04:0E68, 0x008E68
     LDA #$0E
-    STA 88_UNK_SWITCH?
-    RTS
+    STA 88_UNK_SWITCH? ; Set var.
+    RTS ; Leave.
 CB_BA: ; 04:0E6D, 0x008E6D
-    LDY 88_UNK_SWITCH?
-    BEQ 04:0E74
-    DEC 88_UNK_SWITCH?
-    RTS
-    LDA 60A_CB_SWITCH_WHICH?
-    SEC
-    SBC #$53
-    STA TMP_00
-    ASL A
-    CLC
-    ADC TMP_00
-    CLC
-    ADC #$52
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$03
-    BEQ 04:0E96
+    LDY 88_UNK_SWITCH? ; Load 
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0E74, 0x008E74
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    SEC ; Prep sub.
+    SBC #$53 ; -=, get base val.
+    STA TMP_00 ; Store val.
+    ASL A ; << 1, double.
+    CLC ; Prep add.
+    ADC TMP_00 ; Add with original. 3x val.
+    CLC ; Prep add.
+    ADC #$52 ; Add with.
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR MULTIUPDATE_BUF_RTN ; Do updates.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$03 ; If _ #$03
+    BEQ VAL_EQ_0x3 ; ==, goto.
     LDA #$03
-    STA 88_UNK_SWITCH?
-    RTS
-    LDA 60A_CB_SWITCH_WHICH?
-    JSR L_04:05C8
-    JMP CLEAR_87/88/60A_HELPER
+    STA 88_UNK_SWITCH? ; Set var.
+    RTS ; Leave.
+VAL_EQ_0x3: ; 04:0E96, 0x008E96
+    LDA 60A_CB_SWITCH_WHICH? ; Load
+    JSR MAP_DATA_OVERRIDE_RTN ; Do mod.
+    JMP BG_UPDATER_TERMINATE ; Done.
 CB_BB: ; 04:0E9F, 0x008E9F
-    LDY 88_UNK_SWITCH?
-    BEQ 04:0EA6
-    DEC 88_UNK_SWITCH?
-    RTS
-    LDA 60A_CB_SWITCH_WHICH?
-    SEC
-    SBC #$57
+    LDY 88_UNK_SWITCH? ; LOad
+    BEQ VAL_EQ_ZERO
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0EA6, 0x008EA6
+    LDA 60A_CB_SWITCH_WHICH? ; Load.
+    SEC ; Prep sub.
+    SBC #$57 ; Sub.
+    ASL A ; << 2, *4.
     ASL A
-    ASL A
-    CLC
-    ADC #$5E
-    CLC
-    ADC 87_CB_INDEX?
-    JSR RTN_UNK_B
-    INC 87_CB_INDEX?
-    LDA 87_CB_INDEX?
-    CMP #$04
-    BNE 04:0EC2
-    JMP CLEAR_87/88/60A_HELPER
+    CLC ; Prep add.
+    ADC #$5E ; Add with.
+    CLC ; Prep add.
+    ADC 87_CB_INDEX? ; Add with.
+    JSR MULTIUPDATE_BUF_RTN ; Do update.
+    INC 87_CB_INDEX? ; ++
+    LDA 87_CB_INDEX? ; Load
+    CMP #$04 ; If _ #$04
+    BNE VAL_NE_0x4 ; !=, goto.
+EXIT_JMP_TERMINATE: ; 04:0EBF, 0x008EBF
+    JMP BG_UPDATER_TERMINATE ; Done, terminate.
+VAL_NE_0x4: ; 04:0EC2, 0x008EC2
     LDA #$04
-    STA 88_UNK_SWITCH?
-    RTS
+    STA 88_UNK_SWITCH? ; Set attr.
+    RTS ; Leave.
 CB_BC: ; 04:0EC7, 0x008EC7
-    LDY 88_UNK_SWITCH?
-    BEQ 04:0ECE
-    DEC 88_UNK_SWITCH?
-    RTS
-    LDY 87_CB_INDEX?
-    LDA 04:0EE1,Y
-    CMP #$FF
-    BEQ 04:0EBF
-    JSR RTN_UNK_B
-    INC 87_CB_INDEX?
+    LDY 88_UNK_SWITCH? ; Load.
+    BEQ VAL_EQ_ZERO ; == 0, goto.
+    DEC 88_UNK_SWITCH? ; --
+    RTS ; Leave.
+VAL_EQ_ZERO: ; 04:0ECE, 0x008ECE
+    LDY 87_CB_INDEX? ; Load
+    LDA UPDATE_DATA_A,Y ; Load.
+    CMP #$FF ; If _ #$FF
+    BEQ EXIT_JMP_TERMINATE ; ==, goto.
+    JSR MULTIUPDATE_BUF_RTN ; Do update.
+    INC 87_CB_INDEX? ; ++
     LDA #$0C
-    STA 88_UNK_SWITCH?
-    RTS
-    .db 78
+    STA 88_UNK_SWITCH? ; Set var.
+    RTS ; Leave.
+UPDATE_DATA_A: ; 04:0EE1, 0x008EE1
+    .db 78 ; Updates.
     .db 76
     .db 77
     .db 76
@@ -3021,18 +2942,20 @@ CB_BC: ; 04:0EC7, 0x008EC7
     .db 76
     .db FF
 CB_BD: ; 04:0EEA, 0x008EEA
-    LDA #$79
-    JSR RTN_UNK_B
-    JMP CLEAR_87/88/60A_HELPER
+    LDA #$79 ; Update.
+    JSR MULTIUPDATE_BUF_RTN ; Do update.
+    JMP BG_UPDATER_TERMINATE ; Done.
 CB_BE: ; 04:0EF2, 0x008EF2
-    LDA #$5B
-    JSR FIND_OBJ_TYPE_A_PASSED?_RET_CS_FAILURE
-    JMP CLEAR_87/88/60A_HELPER
+    LDA #$5B ; Update.
+    JSR WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Write to slot.
+    JMP BG_UPDATER_TERMINATE ; Terminate.
 CB_BF: ; 04:0EFA, 0x008EFA
-    LDA #$5B
-    JSR L_04:0644
-    JMP CLEAR_87/88/60A_HELPER
+    LDA #$5B ; Slot to clear.
+    JSR CLEAR_SLOT_EQ_A ; Clear.
+    JMP BG_UPDATER_TERMINATE ; Done.
+DATA_C: ; 04:0F02, 0x008F02
     .db A4
+DATA_D: ; 04:0F03, 0x008F03
     .db 57
     .db A5
     .db 58
@@ -3288,7 +3211,9 @@ CB_BF: ; 04:0EFA, 0x008EFA
     .db 61
     .db AA
     .db 62
+DATA_A: ; 04:1002, 0x009002
     .db AA
+DATA_B: ; 04:1003, 0x009003
     .db 63
     .db AB
     .db 64
@@ -3538,7 +3463,9 @@ CB_BF: ; 04:0EFA, 0x008EFA
     .db 95
     .db 01
     .db 03
+DATA_K: ; 04:10FC, 0x0090FC
     .db 14
+DATA_L: ; 04:10FD, 0x0090FD
     .db 25
     .db 04
     .db 21
@@ -3794,7 +3721,9 @@ CB_BF: ; 04:0EFA, 0x008EFA
     .db 25
     .db A8
     .db 25
+DATA_I: ; 04:11FC, 0x0091FC
     .db 87
+DATA_J: ; 04:11FD, 0x0091FD
     .db 25
     .db 66
     .db 25
@@ -3982,7 +3911,9 @@ CB_BF: ; 04:0EFA, 0x008EFA
     .db 21
     .db 5F
     .db 21
+DATA_E_PTR: ; 04:12B8, 0x0092B8
     .db A8
+DATA_F_PTR: ; 04:12B9, 0x0092B9
     .db 95
     .db CE
     .db 95
@@ -4238,7 +4169,9 @@ CB_BF: ; 04:0EFA, 0x008EFA
     .db A3
     .db 83
     .db A3
+DATA_G_PTR: ; 04:13B8, 0x0093B8
     .db 90
+DATA_H_PTR: ; 04:13B9, 0x0093B9
     .db A3
     .db 9D
     .db A3
@@ -4290,7 +4223,9 @@ CB_BF: ; 04:0EFA, 0x008EFA
     .db 9F
     .db 09
     .db A0
+DATA_A: ; 04:13EC, 0x0093EC
     .db 00
+DATA_B: ; 04:13ED, 0x0093ED
     .db 00
     .db 01
     .db 01
@@ -4542,7 +4477,9 @@ CB_BF: ; 04:0EFA, 0x008EFA
     .db 35
     .db 28
     .db 36
+DATA_E: ; 04:14E8, 0x0094E8
     .db E6
+DATA_F: ; 04:14E9, 0x0094E9
     .db 26
     .db C7
     .db 26
@@ -4624,116 +4561,118 @@ CB_BF: ; 04:0EFA, 0x008EFA
     .db 22
     .db 88
     .db 22
-    .db C0
-    .db A4
-    .db E7
-    .db A4
-    .db 13
-    .db A5
-    .db 40
-    .db A5
-    .db 4C
-    .db A5
-    .db 58
-    .db A5
-    .db 63
-    .db A5
-    .db 6E
-    .db A5
-    .db 79
-    .db A5
-    .db 84
-    .db A5
-    .db 8F
-    .db A5
-    .db A2
-    .db A5
-    .db B5
-    .db A5
-    .db C8
-    .db A5
-    .db D3
-    .db A5
-    .db DE
-    .db A5
-    .db E9
-    .db A5
-    .db 0C
-    .db A6
-    .db 2F
-    .db A6
-    .db 52
-    .db A6
-    .db 75
-    .db A6
-    .db 98
-    .db A6
-    .db BB
-    .db A6
-    .db DE
-    .db A6
-    .db 01
-    .db A7
-    .db 24
-    .db A7
-    .db 47
-    .db A7
-    .db 6A
-    .db A7
-    .db 8D
-    .db A7
-    .db B0
-    .db A7
-    .db D3
-    .db A7
-    .db F6
-    .db A7
-    .db 19
-    .db A8
-    .db 3C
-    .db A8
-    .db 6F
-    .db A8
-    .db A2
-    .db A8
-    .db D5
-    .db A8
-    .db 08
-    .db A9
-    .db 3B
-    .db A9
-    .db 6E
-    .db A9
-    .db AC
-    .db A9
-    .db EB
-    .db A9
-    .db 2A
-    .db AA
-    .db 69
-    .db AA
-    .db A8
-    .db AA
-    .db E7
-    .db AA
-    .db 26
-    .db AB
-    .db 6A
-    .db AB
-    .db 9F
-    .db AB
-    .db DF
-    .db AB
-    .db F1
-    .db AB
-    .db 03
-    .db AC
-    .db 15
-    .db AC
-    .db 57
-    .db AC
-    .db 61
-    .db AC
+DATA_C_PTR_L: ; 04:153A, 0x00953A
+    LOW(FILE_A)
+DATA_D_PTR_H: ; 04:153B, 0x00953B
+    HIGH(FILE_A)
+    LOW(FILE_B)
+    HIGH(FILE_B)
+    LOW(FILE_C)
+    HIGH(FILE_C)
+    LOW(FILE_D)
+    HIGH(FILE_D)
+    LOW(FILE_E)
+    HIGH(FILE_E)
+    LOW(FILE_F)
+    HIGH(FILE_F)
+    LOW(FILE_G)
+    HIGH(FILE_G)
+    LOW(FILE_H)
+    HIGH(FILE_H)
+    LOW(FILE_I)
+    HIGH(FILE_I)
+    LOW(FILE_J)
+    HIGH(FILE_J)
+    LOW(FILE_K)
+    HIGH(FILE_K)
+    LOW(FILE_L)
+    HIGH(FILE_L)
+    LOW(FILE_M)
+    HIGH(FILE_M)
+    LOW(FILE_N)
+    HIGH(FILE_N)
+    LOW(FILE_O)
+    HIGH(FILE_O)
+    LOW(FILE_P)
+    HIGH(FILE_P)
+    LOW(FILE_Q)
+    HIGH(FILE_Q)
+    LOW(FILE_R)
+    HIGH(FILE_R)
+    LOW(FILE_S)
+    HIGH(FILE_S)
+    LOW(FILE_T)
+    HIGH(FILE_T)
+    LOW(FILE_U)
+    HIGH(FILE_U)
+    LOW(FILE_V)
+    HIGH(FILE_V)
+    LOW(FILE_W)
+    HIGH(FILE_W)
+    LOW(FILE_X)
+    HIGH(FILE_X)
+    LOW(FILE_Y)
+    HIGH(FILE_Y)
+    LOW(FILE_Z)
+    HIGH(FILE_Z)
+    LOW(FILE_AA)
+    HIGH(FILE_AA)
+    LOW(FILE_AB)
+    HIGH(FILE_AB)
+    LOW(FILE_AC)
+    HIGH(FILE_AC)
+    LOW(FILE_AD)
+    HIGH(FILE_AD)
+    LOW(FILE_AE)
+    HIGH(FILE_AE)
+    LOW(FILE_AF)
+    HIGH(FILE_AF)
+    LOW(FILE_AG)
+    HIGH(FILE_AG)
+    LOW(FILE_AH)
+    HIGH(FILE_AH)
+    LOW(FILE_AI)
+    HIGH(FILE_AI)
+    LOW(FILE_AJ)
+    HIGH(FILE_AJ)
+    LOW(FILE_AK)
+    HIGH(FILE_AK)
+    LOW(FILE_AL)
+    HIGH(FILE_AL)
+    LOW(FILE_AM)
+    HIGH(FILE_AM)
+    LOW(FILE_AN)
+    HIGH(FILE_AN)
+    LOW(FILE_AO)
+    HIGH(FILE_AO)
+    LOW(FILE_AP)
+    HIGH(FILE_AP)
+    LOW(FILE_AQ)
+    HIGH(FILE_AQ)
+    LOW(FILE_AR)
+    HIGH(FILE_AR)
+    LOW(FILE_AS)
+    HIGH(FILE_AS)
+    LOW(FILE_AT)
+    HIGH(FILE_AT)
+    LOW(FILE_AU)
+    HIGH(FILE_AU)
+    LOW(FILE_AV)
+    HIGH(FILE_AV)
+    LOW(FILE_AW)
+    HIGH(FILE_AW)
+    LOW(FILE_AX)
+    HIGH(FILE_AX)
+    LOW(FILE_AY)
+    HIGH(FILE_AY)
+    LOW(FILE_AZ)
+    HIGH(FILE_AZ)
+    LOW(FILE_BA)
+    HIGH(FILE_BA)
+    LOW(FILE_BB)
+    HIGH(FILE_BB)
+    LOW(FILE_BC)
+    HIGH(FILE_BC)
     .db 02
     .db 08
     .db 48

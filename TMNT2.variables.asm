@@ -77,7 +77,7 @@ SUBSTATE_SWITCH_MENUS:                        .rs 1 ; 0x0019
 
           .rsset 0x001B
 IRQ/SCRIPT_RUN_COUNT?:                        .rs 1 ; 0x001B
-FLAG_GAME_SCREEN_UNFINISHED:                  .rs 1 ; 0x001C
+FLAG_FRAME_UNFINISHED:                        .rs 1 ; 0x001C
 DISABLE_RENDERING_X_FRAMES:                   .rs 1 ; 0x001D
 PPU_UPDATE_BUF_INDEX:                         .rs 1 ; 0x001E
 GAME_STARTED:                                 .rs 1 ; 0x001F
@@ -90,7 +90,7 @@ KONAMI_CODE_TRIGGERED_FLAG?:                  .rs 1 ; 0x0025
 
           .rsset 0x0027
 ATTRACT_LEVEL:                                .rs 1 ; 0x0027
-28_BANK_CFG_INDEX?:                           .rs 1 ; 0x0028
+BANK_CFG_RESTORE_INDEX:                       .rs 1 ; 0x0028
 LOWER_BANK_SAVE_PAIRED?:                      .rs 1 ; 0x0029
 IRQ_BANK_VALUES_R[0/1]:                       .rs 2 ; 0x002A to 0x002B
 
@@ -264,8 +264,8 @@ R_**:$00EA:                                   .rs 1 ; 0x00EA
           .rsset 0x00EC
 R_**:$00EC:                                   .rs 1 ; 0x00EC
 R_**:$00ED:                                   .rs 1 ; 0x00ED
-R_**:$00EE:                                   .rs 1 ; 0x00EE
-R_**:$00EF:                                   .rs 1 ; 0x00EF
+EE_SND_UNK:                                   .rs 1 ; 0x00EE
+EF_SND_UNK:                                   .rs 1 ; 0x00EF
 F0_UNK:                                       .rs 1 ; 0x00F0
 
 
@@ -293,7 +293,7 @@ R_**:$010B:                                   .rs 1 ; 0x010B
 
           .rsset 0x010D
 R_**:$010D:                                   .rs 1 ; 0x010D
-R_**:$010E:                                   .rs 1 ; 0x010E
+10E_UNK:                                      .rs 1 ; 0x010E
 R_**:$010F:                                   .rs 1 ; 0x010F
 R_**:$0110:                                   .rs 1 ; 0x0110
 
@@ -582,9 +582,7 @@ R2_TO_R5_BANK_DATA:                           .rs 4 ; 0x060D to 0x0610
           .rsset 0x0615
 STATE_TURTLE_SELECT:                          .rs 1 ; 0x0615
 PPU_FLAG_UNK_MODIFY_LATCH_UNK:                .rs 1 ; 0x0616
-
-
-          .rsset 0x0618
+617_UNK:                                      .rs 1 ; 0x0617
 PLAYER_ANIM_FRAME_SWAP?:                      .rs 2 ; 0x0618 to 0x0619
 61A_UNK_INDEX:                                .rs 1 ; 0x061A
 61B_UPDATE_FROM_RAM/PALETTE/DEV_MISC:         .rs 1 ; 0x061B
@@ -684,9 +682,9 @@ IRQ_CONFIG_CHANGE_INDEX:                      .rs 1 ; 0x065F
 
 
           .rsset 0x0694
-694_OBJ/PLAYER_UNK?:                          .rs 4 ; 0x0694 to 0x0697
-PLAYER_UNK_698:                               .rs 4 ; 0x0698 to 0x069B
-PLAYER_UNK_69C:                               .rs 4 ; 0x069C to 0x069F
+694_PLAYER_UNK:                               .rs 4 ; 0x0694 to 0x0697
+698_PLAYER_UNK:                               .rs 4 ; 0x0698 to 0x069B
+69C_PLAYER_UNK:                               .rs 4 ; 0x069C to 0x069F
 
 
           .rsset 0x06A8
@@ -758,6 +756,10 @@ R_**:$0770:                                   .rs 1 ; 0x0770
 
           .rsset 0x0780
 R_**:$0780:                                   .rs 1 ; 0x0780
+
+
+          .rsset 0x07A0
+7A0_ARR_UNK:                                  .rs 1 ; 0x07A0
 
 
           .rsset 0x6C22
