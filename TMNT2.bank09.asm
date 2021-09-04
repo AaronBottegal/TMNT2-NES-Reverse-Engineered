@@ -2254,11 +2254,11 @@ RTN_OBJECTS_SPAWN?: ; 09:08CF, 0x0128CF
     BMI RTS ; If negative, leave.
     STA TMP_12 ; Store val from stream.
     AND #$1F ; Keep 0001.1111
-    CMP NAMETABLE_FOCUS_VAL?[2] ; If _ var
+    CMP SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; If _ var
     BNE COMPARE_LEAVE ; !=, goto.
     INY ; Stream++
     LDA [TMP_00],Y ; Load from stream.
-    CMP B1_SCROLL_X_COPY_IRQ_ZP[2] ; If A _ var
+    CMP SCRIPT_SCROLL_X?[2] ; If A _ var
     BEQ DONT_LEAVE ; ==, goto.
     BCS RTS ; >=, leave.
 DONT_LEAVE: ; 09:0905, 0x012905
@@ -2379,7 +2379,7 @@ SET_OBJECT_STATE/ENABLED: ; 09:09B0, 0x0129B0
     STA DE_FLAG_PALETTE_UNK
     INY ; Stream++
     LDA [TMP_00],Y ; Load from stream.
-    STA OBJ_POS_X?[18],X ; Store to object.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store to object.
     INY ; Stream++
     LDA [TMP_00],Y ; Load from stream.
     STA OBJ_POS_X??[18],X ; Store to obj. Y pos, guessing?
@@ -5474,9 +5474,9 @@ UNK_SWITCH3_A: ; 09:1600, 0x013600
     LDA #$40
     STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set attr.
     LDA #$59
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$58
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     LDY #$11
     JSR UPDATE_PALETTE[0x1C]_WITH_Y_SAVING_XOBJ ; Set color.
     INC OBJ_TERTIARY_SWITCH?[18],X ; Tert++
@@ -5758,25 +5758,25 @@ REENTER: ; 09:181F, 0x01381F
     STA OBJ_POS_X??[18],Y ; Store to Yobj.
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Do again.
     STA 556_OBJ_STATUS_FLAGS_A[18],Y
-    LDA OBJ_POS_X?[18],X ; Load from Xobj.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load from Xobj.
     CLC ; Prep add.
     ADC TMP_11 ; Add with.
-    STA OBJ_POS_X?[18],Y ; Store to Yobj.
+    STA OBJ_POS_X_CONFIRMED[18],Y ; Store to Yobj.
     LDA 4C6_OBJ_UNK[18],X ; Load from Xobj.
     CLC ; Prep add.
     ADC TMP_12 ; Add with.
     STA 4C6_OBJ_UNK[18],Y ; Store to Yobj.
     LDA TMP_10
     STA OBJ_ENABLED_STATE+MORE?[18],Y ; Set Yobj.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     BMI VAL_NEGATIVE ; Negative, goto.
-    LDA OBJ_POS_X?[18],Y ; Load from Yobj.
+    LDA OBJ_POS_X_CONFIRMED[18],Y ; Load from Yobj.
     CMP #$E0 ; If _ 0xE0
     BCC EXIT_5F0_INC ; <, goto.
     LDA #$02 ; Seed A.
     BNE A_SEEDED ; Always taken.
 VAL_NEGATIVE: ; 09:1894, 0x013894
-    LDA OBJ_POS_X?[18],Y ; Load Xobj.
+    LDA OBJ_POS_X_CONFIRMED[18],Y ; Load Xobj.
     CMP #$20 ; If A _ 0x20
     BCS EXIT_5F0_INC ; >=, goto.
     LDA #$01 ; Seed A.
@@ -5906,10 +5906,10 @@ VAL_NONZERO: ; 09:197A, 0x01397A
     LDA TMP_DATA_B,Y
     STA TMP_01
     LDY TMP_10 ; Get Yobj given again.
-    LDA OBJ_POS_X?[18],X ; Load from Xobj.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load from Xobj.
     CLC ; Prep add.
     ADC TMP_00 ; Add with.
-    STA OBJ_POS_X?[18],Y ; Store to Yobj.
+    STA OBJ_POS_X_CONFIRMED[18],Y ; Store to Yobj.
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
     AND #$03 ; Keep 0000.0011
     BEQ FLAGS_EQ_0x00 ; None set, goto.
@@ -5917,20 +5917,20 @@ VAL_NONZERO: ; 09:197A, 0x01397A
     BEQ BIT_0x01_UNSET ; == 0, not set, goto.
     LDA TMP_00 ; Load val.
     BPL TMP_00_POSITIVE ; Positive, goto.
-    LDA OBJ_POS_X?[18],X ; Load from Xobj.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load from Xobj.
     CMP #$20 ; If _ #$20
     BCS TMP_00_POSITIVE ; >=, goto.
-    LDA OBJ_POS_X?[18],Y ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],Y ; Load
     CMP #$E0 ; If _ #$E0
     BCC TMP_00_POSITIVE ; <, goto.
     LDA #$00 ; A seed.
     BEQ STATUS_SEEDED_A ; Always taken.
 FLAGS_EQ_0x00: ; 09:19BC, 0x0139BC
-    LDA OBJ_POS_X?[18],X ; Load from Xobj.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load from Xobj.
     BMI ATTR_NEGATIVE ; Negative, goto.
     LDA TMP_00 ; Load
     BPL TMP_00_POSITIVE ; Positive, goto.
-    LDA OBJ_POS_X?[18],Y ; Load from Yobj.
+    LDA OBJ_POS_X_CONFIRMED[18],Y ; Load from Yobj.
     CMP #$E0 ; If _ #$E0
     BCC TMP_00_POSITIVE ; <, goto.
     LDA #$02 ; A seed.
@@ -5938,7 +5938,7 @@ FLAGS_EQ_0x00: ; 09:19BC, 0x0139BC
 ATTR_NEGATIVE: ; 09:19D0, 0x0139D0
     LDA TMP_00 ; Load
     BMI TMP_00_POSITIVE ; If negative, goto.
-    LDA OBJ_POS_X?[18],Y ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],Y ; Load
     CMP #$20 ; If _ #$20
     BCS TMP_00_POSITIVE ; >=, goto.
     LDA #$01 ; A seed.
@@ -5946,10 +5946,10 @@ ATTR_NEGATIVE: ; 09:19D0, 0x0139D0
 BIT_0x01_UNSET: ; 09:19DF, 0x0139DF
     LDA TMP_00 ; Load.
     BMI TMP_00_POSITIVE ; If negative, goto.
-    LDA OBJ_POS_X?[18],X ; Load from Xobj.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load from Xobj.
     CMP #$E0 ; If _ #$E0
     BCC TMP_00_POSITIVE ; <, goto.
-    LDA OBJ_POS_X?[18],Y ; Load from Yobj.
+    LDA OBJ_POS_X_CONFIRMED[18],Y ; Load from Yobj.
     CMP #$20 ; If _ #$20
     BCS TMP_00_POSITIVE ; >=, goto.
     LDA #$00 ; A seed.
@@ -6126,8 +6126,8 @@ SECONDARY_NONZERO: ; 09:1B11, 0x013B11
     STA 4C6_OBJ_UNK[18],X ; Clear
     LDA OBJ_POS_X_SUBPIXEL?+17,X ; Move to Xobj. TODO: Why 17th object?
     STA OBJ_POS_X??[18],X
-    LDA OBJ_POS_Y??+17,X ; Move from Obj[17]
-    STA OBJ_POS_X?[18],X
+    LDA OBJ_POS_Y_CONFIRMED+17,X ; Move from Obj[17]
+    STA OBJ_POS_X_CONFIRMED[18],X
     LDA 544_OBJ_UNK_POS_DELTA?+17,X ; Move from Obj[17]
     STA 556_OBJ_STATUS_FLAGS_A[18],X
     JMP OBJECT_X_MOVE? ; Goto, abuse RTS.

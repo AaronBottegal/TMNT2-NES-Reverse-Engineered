@@ -92,13 +92,11 @@ KONAMI_CODE_TRIGGERED_FLAG?:                  .rs 1 ; 0x0025
 ATTRACT_LEVEL:                                .rs 1 ; 0x0027
 BANK_CFG_RESTORE_INDEX:                       .rs 1 ; 0x0028
 LOWER_BANK_SAVE_PAIRED?:                      .rs 1 ; 0x0029
-IRQ_BANK_VALUES_R[0/1]:                       .rs 2 ; 0x002A to 0x002B
+IRQ_R0/R1_BANK_VALS:                          .rs 2 ; 0x002A to 0x002B
 
 
           .rsset 0x002D
-IRQ_GFX_DATA_BANK_R0:                         .rs 1 ; 0x002D
-IRQ_GFX_DATA_BANK_R1:                         .rs 1 ; 0x002E
-ZP_R2-R5_BANK_VALUES:                         .rs 4 ; 0x002F to 0x0032
+SCRIPT_R0-R5_GFX_BANK_VALS:                   .rs 6 ; 0x002D to 0x0032
 TURTLE_SELECTION:                             .rs 2 ; 0x0033 to 0x0034
 
 
@@ -139,7 +137,7 @@ IRQ_LATCH_VALUE_COPY_5A:                      .rs 1 ; 0x005A
 
 
           .rsset 0x005C
-IRQ_EXTENDED/HANDLER/SECONDARY:               .rs 1 ; 0x005C
+IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE:       .rs 1 ; 0x005C
 5D_IRQ_BANK?:                                 .rs 1 ; 0x005D
 FLAG_IRQ_ENABLE:                              .rs 1 ; 0x005E
 
@@ -201,7 +199,7 @@ A3_UNK:                                       .rs 1 ; 0x00A3
 
           .rsset 0x00A5
 A5_UNK:                                       .rs 1 ; 0x00A5
-IRQ_FLAG_R2-R5_BANK_7E:                       .rs 1 ; 0x00A6
+IRQ_FLAG_R2-R5_GFX_USE_BANK_7E:               .rs 1 ; 0x00A6
 A7_IRQ_REPLACE_SECONDARY_INDEX:               .rs 1 ; 0x00A7
 FILE_PLAYER_OBJ_USE_B:                        .rs 2 ; 0x00A8 to 0x00A9
 FILE_PLAYER_OBJ_USE_A:                        .rs 2 ; 0x00AA to 0x00AB
@@ -209,11 +207,11 @@ FILE_PLAYER_OBJ_USE_A:                        .rs 2 ; 0x00AA to 0x00AB
 
           .rsset 0x00AD
 R_**:$00AD:                                   .rs 1 ; 0x00AD
-AE_ARR_UNK:                                   .rs 2 ; 0x00AE to 0x00AF
+SCRIPT_VAL_UNK:                               .rs 2 ; 0x00AE to 0x00AF
 B0_UNK:                                       .rs 1 ; 0x00B0
-B1_SCROLL_X_COPY_IRQ_ZP:                      .rs 2 ; 0x00B1 to 0x00B2
+SCRIPT_SCROLL_X?:                             .rs 2 ; 0x00B1 to 0x00B2
 B3_SCROLL_X_IRQ_J:                            .rs 1 ; 0x00B3
-NAMETABLE_FOCUS_VAL?:                         .rs 2 ; 0x00B4 to 0x00B5
+SCRIPT_NAMETABLE_FOCUS_VAL?:                  .rs 2 ; 0x00B4 to 0x00B5
 B6_NAMETABLE_FOCUS_UNK:                       .rs 1 ; 0x00B6
 OBJ_POS_X_SUBPIXEL_DELTA?:                    .rs 1 ; 0x00B7
 B8_UNK:                                       .rs 1 ; 0x00B8
@@ -232,7 +230,7 @@ C0_UNK:                                       .rs 1 ; 0x00C0
 C3_UNK:                                       .rs 1 ; 0x00C3
 C4_UNK:                                       .rs 1 ; 0x00C4
 C5_UNK:                                       .rs 1 ; 0x00C5
-C6_SPR_ARR_UNK:                               .rs 2 ; 0x00C6 to 0x00C7
+SPRITE_ORDERING_ARR_OBJ_INDEXES:              .rs 18 ; 0x00C6 to 0x00D7
 
 
           .rsset 0x00C9
@@ -515,8 +513,8 @@ OBJ_ENABLED_STATE+MORE?:                      .rs 18 ; 0x0424 to 0x0435
 OBJ_STATE_DIR_RELATED_C_SPR_DATA?:            .rs 18 ; 0x0436 to 0x0447
 OBJ_ANIM_HOLD_TIMER?:                         .rs 18 ; 0x0448 to 0x0459
 45A_OBJ_DATA_ENTRY?STATE_STEP?:               .rs 18 ; 0x045A to 0x046B
-OBJ_POS_Y??:                                  .rs 18 ; 0x046C to 0x047D
-OBJ_POS_X?:                                   .rs 18 ; 0x047E to 0x048F
+OBJ_POS_Y_CONFIRMED:                          .rs 18 ; 0x046C to 0x047D
+OBJ_POS_X_CONFIRMED:                          .rs 18 ; 0x047E to 0x048F
 OBJ_POS_X_SUBPIXEL?:                          .rs 18 ; 0x0490 to 0x04A1
 OBJ_POS_X??:                                  .rs 18 ; 0x04A2 to 0x04B3
 4B4_OBJ_SPEED?:                               .rs 18 ; 0x04B4 to 0x04C5
@@ -574,7 +572,7 @@ R_**:$05FC:                                   .rs 1 ; 0x05FC
 60A_CB_SWITCH_WHICH?:                         .rs 1 ; 0x060A
 60B_STREAM_INDEX_MAP?:                        .rs 1 ; 0x060B
 60C_UNK_INDEX:                                .rs 1 ; 0x060C
-R2_TO_R5_BANK_DATA:                           .rs 4 ; 0x060D to 0x0610
+COMMITTED_R2-R5_GFX_BANK_VALS:                .rs 4 ; 0x060D to 0x0610
 611_SWITCH_UNK:                               .rs 1 ; 0x0611
 612_STEP?_UNK:                                .rs 1 ; 0x0612
 
@@ -609,15 +607,15 @@ TIMER_GAME_SCRIPT?:                           .rs 1 ; 0x063A
 
 
           .rsset 0x0640
-FLAG_WEIRD_UPDATES_A:                         .rs 1 ; 0x0640
-PPU_ADDR_UNK_A:                               .rs 2 ; 0x0641 to 0x0642
+FLAG_ATTRMOD_A:                               .rs 1 ; 0x0640
+PPU_ATTRMOD_ADDR_A1:                          .rs 2 ; 0x0641 to 0x0642
 PPU_ADDR_OR_A:                                .rs 1 ; 0x0643
-PPU_ADDR_UNK_B:                               .rs 2 ; 0x0644 to 0x0645
+PPU_ATTRMOD_ADDR_A2:                          .rs 2 ; 0x0644 to 0x0645
 PPU_ADDR_OR_B:                                .rs 1 ; 0x0646
-FLAG_WEIRD_UPDATES_B:                         .rs 1 ; 0x0647
-PPU_ADDR_UNK_C:                               .rs 2 ; 0x0648 to 0x0649
+FLAG_ATTRMOD_B:                               .rs 1 ; 0x0647
+PPU_ATTRMOD_ADDR_B1:                          .rs 2 ; 0x0648 to 0x0649
 PPU_ADDR_OR_C:                                .rs 1 ; 0x064A
-PPU_ADDR_UNK_D:                               .rs 2 ; 0x064B to 0x064C
+PPU_ATTRMOD_ADDR_B2:                          .rs 2 ; 0x064B to 0x064C
 PPU_ADDR_OR_D:                                .rs 1 ; 0x064D
 FLAG?_PPU_UPDATE_WEIRD_CLEARS:                .rs 1 ; 0x064E
 
@@ -625,21 +623,21 @@ FLAG?_PPU_UPDATE_WEIRD_CLEARS:                .rs 1 ; 0x064E
           .rsset 0x0654
 654_UPDATE_UNK_FLAG:                          .rs 1 ; 0x0654
 CONTINUE_OPTION_ON:                           .rs 1 ; 0x0655
-656_ARR_AE_COPY_UNK:                          .rs 2 ; 0x0656 to 0x0657
+COMMITTED_UNK_VAL:                            .rs 2 ; 0x0656 to 0x0657
 
 
           .rsset 0x0659
-PPU_SCROLL_X_COPY_IRQ:                        .rs 1 ; 0x0659
+COMMITTED_SCROLL_X?:                          .rs 1 ; 0x0659
 IRQ_L_SCROLL_X:                               .rs 1 ; 0x065A
 
 
           .rsset 0x065C
-NAMETABLE_VAR_UNK:                            .rs 1 ; 0x065C
+COMMITTED_NAMETABLE_FOCUS_VAL?:               .rs 1 ; 0x065C
 IRQ_L_NAMETABLE_FOCUS:                        .rs 1 ; 0x065D
 
 
           .rsset 0x065F
-IRQ_CONFIG_CHANGE_INDEX:                      .rs 1 ; 0x065F
+IRQ_CONFIG_CHANGE:                            .rs 1 ; 0x065F
 660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK:            .rs 1 ; 0x0660
 661_UNK_LEVEL_A_SETS:                         .rs 1 ; 0x0661
 662_PLAYER_UPDATE_UNK:                        .rs 2 ; 0x0662 to 0x0663
@@ -730,11 +728,8 @@ OBJ_INDEXES_GROUP_UNK:                        .rs 3 ; 0x0717 to 0x0719
 
 
           .rsset 0x071C
-71C_ARR_UNK:                                  .rs 2 ; 0x071C to 0x071D, Unsure of size.
-
-
-          .rsset 0x072E
-72E_ARR_UNK:                                  .rs 1 ; 0x072E
+71C_SPRITE_SORT_ARRAY:                        .rs 18 ; 0x071C to 0x072D
+SPR_SORT_ARR_UNK:                             .rs 1 ; 0x072E
 
 
           .rsset 0x0740

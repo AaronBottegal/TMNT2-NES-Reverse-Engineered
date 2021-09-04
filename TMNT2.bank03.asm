@@ -2672,8 +2672,8 @@ OBJ_STATE_0x30_HANDLER: ; 03:0AB7, 0x006AB7
     STA OBJ_POS_X??[18],X ; Store to.
     LDA 544_OBJ_UNK_POS_DELTA?+17,X ; Load from +17? TODO: Mistake?
     STA 556_OBJ_STATUS_FLAGS_A[18],X ; Store to.
-    LDA OBJ_POS_Y??+17,X ; Load
-    STA OBJ_POS_X?[18],X ; Store to.
+    LDA OBJ_POS_Y_CONFIRMED+17,X ; Load
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store to.
     TAY ; Val to Y
     LDA OBJ_POS_X??[18],X ; Load
     JSR RTN_SCREEN?_UNK ; Do?? TODO: What do.
@@ -2853,9 +2853,9 @@ STATE_0x32_SUBSWITCH_A: ; 03:0BFA, 0x006BFA
     AND #$03 ; Keep 0000.0011
     BNE EXIT ; If either set, goto.
     LDA #$30
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$31
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     LDY #$06
     JSR UPDATE_PALETTE[0x1C]_WITH_Y_SAVING_XOBJ ; Upload palette.
     LDA #$11
@@ -2956,7 +2956,7 @@ STATE_0x32_SUUBSWITCH_G: ; 03:0CC6, 0x006CC6
     LDA #$18
     STA OBJ_ANIMATION_DISPLAY[18],X ; Set display.
     LDA #$03 ; Positive delta, to right.
-    LDY OBJ_POS_X?[18],X ; Load obj Xpos.
+    LDY OBJ_POS_X_CONFIRMED[18],X ; Load obj Xpos.
     BPL XPOS_LEFT_OF_SCREEN ; If positive, goto.
     LDA #$FD ; Load value move to left.
 XPOS_LEFT_OF_SCREEN: ; 03:0CD9, 0x006CD9
@@ -3012,7 +3012,7 @@ BITS_NOT_SET: ; 03:0D2F, 0x006D2F
     JSR FIND_YPOS_DIFF_OBJY/OBJS_TMP_10_FLAG_XVAL_GT_YVAL
     CMP #$20
     BCS L_03:0D64
-    LDA OBJ_POS_X?[18],X
+    LDA OBJ_POS_X_CONFIRMED[18],X
     CMP #$40
     BCC L_03:0D64
     CMP #$C0
@@ -3065,7 +3065,7 @@ L_03:0DA2: ; 03:0DA2, 0x006DA2
     LDA #$02
     STA 503_OBJ_POS_X_LARGEST?[18],X
 L_03:0DA7: ; 03:0DA7, 0x006DA7
-    LDY OBJ_POS_X?[18],X
+    LDY OBJ_POS_X_CONFIRMED[18],X
     CLC
     LDA 4B4_OBJ_SPEED?[18],X
     ADC 520_OBJ_POS_X_LARGE?[18],X
@@ -3083,13 +3083,13 @@ L_03:0DC5: ; 03:0DC5, 0x006DC5
     LDA 556_OBJ_STATUS_FLAGS_A[18],X
     AND #$04
     BNE L_03:0DD8
-    LDA OBJ_POS_X?[18],X
+    LDA OBJ_POS_X_CONFIRMED[18],X
     CMP #$38
     BCC L_03:0DF6
     BCS L_03:0DDF
 L_03:0DD8: ; 03:0DD8, 0x006DD8
     LDA #$C8
-    CMP OBJ_POS_X?[18],X
+    CMP OBJ_POS_X_CONFIRMED[18],X
     BCC L_03:0DF6
 L_03:0DDF: ; 03:0DDF, 0x006DDF
     LDA #$37
@@ -3098,7 +3098,7 @@ L_03:0DDF: ; 03:0DDF, 0x006DDF
     LDA #$C9
 L_03:0DE7: ; 03:0DE7, 0x006DE7
     CLC
-    ADC OBJ_POS_X?[18],X
+    ADC OBJ_POS_X_CONFIRMED[18],X
     TAY
     LDA OBJ_POS_X??[18],X
     JSR RTN_SCREEN?_UNK
@@ -3125,14 +3125,14 @@ L_03:0DFE: ; 03:0DFE, 0x006DFE
 L_03:0E1C: ; 03:0E1C, 0x006E1C
     LDA TMP_12
     BNE L_03:0E6B
-    LDA OBJ_POS_X?[18],X
+    LDA OBJ_POS_X_CONFIRMED[18],X
     CMP #$E0
     BCS L_03:0E6B
     CMP #$A0
     BCS L_03:0E38
     BCC L_03:0E42
 L_03:0E2D: ; 03:0E2D, 0x006E2D
-    LDA OBJ_POS_X?[18],X
+    LDA OBJ_POS_X_CONFIRMED[18],X
     CMP #$20
     BCC L_03:0E6B
     CMP #$60
@@ -3176,12 +3176,12 @@ SUB_ARR_SET/XOBJ_POS_RET_CC_PASS_CS_FAIL?: ; 03:0E6E, 0x006E6E
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
     AND #$04 ; Test reverse flag.
     BNE FLAG_SET ; != 0, set, goto.
-    LDA OBJ_POS_X?[18],X ; Load Xpos.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load Xpos.
     CMP #$58 ; If _ #$58
     RTS ; RTS CS/CC
 FLAG_SET: ; 03:0E8A, 0x006E8A
     LDA #$A8 ; Load
-    CMP OBJ_POS_X?[18],X ; If A _ Var
+    CMP OBJ_POS_X_CONFIRMED[18],X ; If A _ Var
     RTS ; RTS CS/CC
 RTS_CC: ; 03:0E90, 0x006E90
     CLC
@@ -3195,7 +3195,7 @@ SCREEN_UNK_RET_CS_?_CC_?: ; 03:0E92, 0x006E92
 BIT_SET: ; 03:0E9D, 0x006E9D
     TYA ; To A.
     CLC ; Prep add.
-    ADC OBJ_POS_X?[18],X ; Add with pos.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add with pos.
     TAY ; To Y index.
     LDA OBJ_POS_X??[18],X
     JSR RTN_SCREEN?_UNK ; Rtn.
@@ -3327,7 +3327,7 @@ SECONDARY_SEEDED: ; 03:0F90, 0x006F90
     LDA #$00
     STA OBJ_TERTIARY_SWITCH?[18],X ; Clear tert.
 SKIP_LARGER: ; 03:0F98, 0x006F98
-    LDY OBJ_POS_X?[18],X ; Load
+    LDY OBJ_POS_X_CONFIRMED[18],X ; Load
     CLC ; Prep add.
     LDA 4B4_OBJ_SPEED?[18],X ; Add with.
     ADC 520_OBJ_POS_X_LARGE?[18],X ; Add with.
@@ -3625,8 +3625,8 @@ BIT_NOT_SET: ; 03:1197, 0x007197
     LDA #$0C ; Seed positive.
 SEEDED_VAL: ; 03:1199, 0x007199
     CLC ; Prep add.
-    ADC OBJ_POS_X?[18],X ; Add val to.
-    STA OBJ_POS_X?[18],Y ; Store to Yobj.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add val to.
+    STA OBJ_POS_X_CONFIRMED[18],Y ; Store to Yobj.
     LDA OBJ_POS_X??[18],X ; Move to Yobj.
     STA OBJ_POS_X??[18],Y
     LDA #$F0
@@ -3729,12 +3729,12 @@ HAS_HEALTH: ; 03:123E, 0x00723E
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
     AND #$04 ; Test 0x04
     BNE BIT_0x04_SET ; If set, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$F0 ; If _ #$F0
     BCS POSITIVE_XPOS_GTE_0xF0 ; >=, goto.
     BCC POSITIVE_XPOS_LT_0xF0 ; <, goto. Always taken.
 BIT_0x04_SET: ; 03:1265, 0x007265
-    LDA OBJ_POS_X?[18],X ; Load val.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load val.
     CMP #$11 ; If _ #$11
     BCS POSITIVE_XPOS_LT_0xF0 ; >=, goto.
 POSITIVE_XPOS_GTE_0xF0: ; 03:126C, 0x00726C
@@ -3790,12 +3790,12 @@ VAL_NEGATIVE: ; 03:12BC, 0x0072BC
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
     AND #$04 ; Test 0x04
     BNE 0x04_SET ; != 0, was set, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$F0 ; If _ #$F0
     BCC INBOUNDS ; <, goto.
     BCS OOB
 0x04_SET: ; 03:12CC, 0x0072CC
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$11 ; If _ #$11
     BCS INBOUNDS ; >=, goto.
 OOB: ; 03:12D3, 0x0072D3
@@ -3876,15 +3876,15 @@ STATE_0x34_SUBSWITCH_B: ; 03:1356, 0x007356
     AND #$7F ; Keep 0111.1111
     BNE TIMER_MOVE ; Any set, goto.
     LDA #$2C
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$2D
-    STA ZP_R2-R5_BANK_VALUES+3 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5 ; Set GFX.
     LDY #$06
     JSR UPDATE_PALETTE[0x1C]_WITH_Y_SAVING_XOBJ ; Upload palette.
     JSR RTN_GET_OBJ_PAIR_IN_Y_RET_CC_SUCCESS ; Get objs.
     BCS TIMER_MOVE ; Failed, skip the rest.
-    LDA OBJ_POS_X?[18],X ; Move attrs to Yobj.
-    STA OBJ_POS_X?[18],Y
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Move attrs to Yobj.
+    STA OBJ_POS_X_CONFIRMED[18],Y
     LDA OBJ_POS_X??[18],X
     STA OBJ_POS_X??[18],Y
     LDA #$35
@@ -3936,7 +3936,7 @@ SPAWN_OBJECT_RTN: ; 03:13C3, 0x0073C3
     CMP #$CD ; If _ #$CD
     BCC RTS ; <, leave.
 VAL_LT_0xBA: ; 03:13DB, 0x0073DB
-    LDA OBJ_POS_X?[18],X ; Load.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load.
     CMP #$A0 ; If _ #$A0
     BCS RTS ; >=, leave.
     LDA #$06
@@ -3947,14 +3947,14 @@ VAL_LT_0xBA: ; 03:13DB, 0x0073DB
     STA OBJ_ANIMATION_DISPLAY[18],Y
     LDA #$35
     STA OBJ_ENABLED_STATE+MORE?[18],Y
-    LDA OBJ_POS_X?[18],X ; Move from Xobj to Yobj.
-    STA OBJ_POS_X?[18],Y
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Move from Xobj to Yobj.
+    STA OBJ_POS_X_CONFIRMED[18],Y
     LDA OBJ_POS_X??[18],X
     STA OBJ_POS_X??[18],Y
     LDA 4C6_OBJ_UNK[18],X
     STA 4C6_OBJ_UNK[18],Y
-    LDA OBJ_POS_Y??[18],X
-    STA OBJ_POS_Y??[18],Y
+    LDA OBJ_POS_Y_CONFIRMED[18],X
+    STA OBJ_POS_Y_CONFIRMED[18],Y
     LDA #$02
     STA OBJECT_DATA_EXTRA_B?[18],Y ; Set more Yobj things.
     LDA #$03
@@ -3984,9 +3984,9 @@ UNK_SWITCH_A: ; 03:142F, 0x00742F
     AND #$03 ; Keep 0000.0011
     BNE RTS ; Either set, goto.
     LDA #$2C
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$2D
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     LDY #$06
     JSR UPDATE_PALETTE[0x1C]_WITH_Y_SAVING_XOBJ ; Set color.
     LDA #$03
@@ -4053,7 +4053,7 @@ UNK_SWITCH_E: ; 03:14AC, 0x0074AC
     LDA 532_OBJ_UNK_POS_DELTA?[18],X ; Load Xobj.
     BMI EXIT_MOVE ; If negative, goto.
     LDA OBJ_POS_X??[18],X ; Load from Xobj.
-    LDY OBJ_POS_X?[18],X ; Load Y from Xobj.
+    LDY OBJ_POS_X_CONFIRMED[18],X ; Load Y from Xobj.
     JSR RTN_SCREEN?_UNK ; Do.
     CMP #$05 ; If _ #$05
     BEQ A_EQ_0x05
@@ -4197,7 +4197,7 @@ SWITCH_RTN_B: ; 03:1550, 0x007550
     JSR FIND_XPOS_DIFF_OBJY/OBJX_TMP_12_FLAG_XVAL_GT_YVAL
     CMP #$24
     BCS 03:1640
-    LDA OBJ_POS_X?[18],X
+    LDA OBJ_POS_X_CONFIRMED[18],X
     CMP #$20
     BCC 03:1640
     CMP #$E0
@@ -4234,7 +4234,7 @@ SWITCH_RTN_B: ; 03:1550, 0x007550
     .db 00
     .db 3F
 SUB_CLEAR_ATTRS_IF_??: ; 03:164B, 0x00764B
-    LDY OBJ_POS_X?[18],X ; Load Yobj from Xobj.
+    LDY OBJ_POS_X_CONFIRMED[18],X ; Load Yobj from Xobj.
     CLC ; Prep add.
     LDA 4B4_OBJ_SPEED?[18],X ; Load Xobj.
     ADC 520_OBJ_POS_X_LARGE?[18],X ; Add with Xobj attr.
@@ -4258,7 +4258,7 @@ SCREEN_UNK: ; 03:1677, 0x007677
     CLC ; Prep add.
     LDA OBJ_POS_X_SUBPIXEL?[18],X ; Load
     ADC OBJ_POS_X_SUBPIXEL_DELTA?[18],X ; Add with.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     ADC OBJ_POS_X_DELTA?[18],X ; Add with.
     TAY ; To Y index.
     LDA OBJ_POS_X??[18],X ; Load from Xobj.
@@ -4355,7 +4355,7 @@ SWITCH_RTN_D: ; 03:1721, 0x007721
     LDA 532_OBJ_UNK_POS_DELTA?[18],X
     BMI 03:1762
     LDA OBJ_POS_X??[18],X
-    LDY OBJ_POS_X?[18],X
+    LDY OBJ_POS_X_CONFIRMED[18],X
     JSR RTN_SCREEN?_UNK
     CMP #$05
     BEQ 03:1746
@@ -4391,7 +4391,7 @@ SWITCH_RTN_D: ; 03:1721, 0x007721
     AND #$03
     STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
     LDA OBJ_POS_X??[18],X
-    LDY OBJ_POS_X?[18],X
+    LDY OBJ_POS_X_CONFIRMED[18],X
     JSR RTN_SCREEN?_UNK
     CMP #$06
     BNE 03:179A
@@ -4682,7 +4682,7 @@ TERT_NONZERO: ; 03:194B, 0x00794B
     LDA 532_OBJ_UNK_POS_DELTA?[18],X
     BMI 03:19D3
     LDA OBJ_POS_X??[18],X
-    LDY OBJ_POS_X?[18],X
+    LDY OBJ_POS_X_CONFIRMED[18],X
     JSR RTN_SCREEN?_UNK
     CMP #$05
     BEQ 03:1991

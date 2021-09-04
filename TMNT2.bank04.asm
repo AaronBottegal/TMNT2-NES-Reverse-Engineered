@@ -16,13 +16,13 @@ RTN_MAP_MOVABILITY_UPDATES?: ; 04:0001, 0x008001
     LDA [TMP_00],Y ; Load from stream.
     CMP #$FF ; If _ #$FF
     BEQ RTS ; ==, leave.
-    LDA NAMETABLE_FOCUS_VAL?[2] ; Load focus.
+    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load focus.
     CMP [TMP_00],Y ; Compare to stream.
     BEQ SKIP_OTHER_CHECKS ; ==, goto.
     BCS INDEX_RTN_UNK ; >=, goto.
     BCC RTS ; <, leave.
 SKIP_OTHER_CHECKS: ; 04:002C, 0x00802C
-    LDA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load
+    LDA SCRIPT_SCROLL_X?[2] ; Load
     INY ; Stream++
     CMP [TMP_00],Y ; If scroll _ stream
     BCC RTS ; <, leave.
@@ -558,13 +558,13 @@ L_04:0288: ; 04:0288, 0x008288
     BCS L_04:02D9
 L_04:02AF: ; 04:02AF, 0x0082AF
     LDA 678_MAP_DATA_C,Y
-    CMP OBJ_POS_X?[18],X
+    CMP OBJ_POS_X_CONFIRMED[18],X
     BCS L_04:02D9
     LDA 678_MAP_DATA_C,Y
     CLC
     ADC TMP_0A
     BCS L_04:02C4
-    CMP OBJ_POS_X?[18],X
+    CMP OBJ_POS_X_CONFIRMED[18],X
     BCC L_04:02D9
 L_04:02C4: ; 04:02C4, 0x0082C4
     LDA 680_MAP_DATA_E,Y
@@ -2693,9 +2693,9 @@ CB_AQ: ; 04:0D3B, 0x008D3B
     BNE VAL_NE_ZERO ; != 0, goto.
     INC 87_CB_INDEX? ; ++
     LDA #$98
-    STA IRQ_BANK_VALUES_R[0/1][2] ; Set bank.
+    STA IRQ_R0/R1_BANK_VALS[2] ; Set bank.
     LDA #$9A
-    STA IRQ_BANK_VALUES_R[0/1]+1 ; Set bank.
+    STA IRQ_R0/R1_BANK_VALS+1 ; Set bank.
     LDA #$21
     JSR LEVEL_RELATED_DATA_A_PASSED? ; Do.
     LDA #$06
@@ -2757,9 +2757,9 @@ SCROLL_GTE_0x04: ; 04:0DB8, 0x008DB8
     BCC EXIT_CONTINUING ; <, goto.
     JSR ZERO_ALL_MAP_INDEX_ROW? ; Zero row.
     LDA #$94
-    STA IRQ_BANK_VALUES_R[0/1][2] ; Set banks.
+    STA IRQ_R0/R1_BANK_VALS[2] ; Set banks.
     LDA #$96
-    STA IRQ_BANK_VALUES_R[0/1]+1
+    STA IRQ_R0/R1_BANK_VALS+1
     LDA #$20
     JSR LEVEL_RELATED_DATA_A_PASSED? ; Level related.
     LDA #$00

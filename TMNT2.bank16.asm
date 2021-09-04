@@ -21,13 +21,13 @@ MAP_ARRAYS_UPDATE?: ; 10:000B, 0x02000B
     LDA [TMP_00],Y ; Data from file.
     CMP #$FF ; If _ #$FF
     BEQ RTS_EXTRA ; ==, goto.
-    LDA NAMETABLE_FOCUS_VAL?[2] ; Load
+    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load
     CMP [TMP_00],Y ; If _ Data
     BEQ VAL_EQ ; ==, goto.
     BCS VAL_GTE ; >=, goto.
     BCC RTS_EXTRA ; <, goto.
 VAL_EQ: ; 10:002C, 0x02002C
-    LDA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load val.
+    LDA SCRIPT_SCROLL_X?[2] ; Load val.
     INY ; Index++
     CMP [TMP_00],Y ; If _ fdata
     BCC RTS_EXTRA ; <, goto.

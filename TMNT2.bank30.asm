@@ -2822,14 +2822,14 @@ NO_CONTROLLER_NEWLY_PRESSED: ; 1E:0B65, 0x03CB65
     CPX #$03 ; If X _ #$03
     BCC X_INDEX_LOOP ; <, goto.
     LDA #$50 ; XPos
-    STA OBJ_POS_X?[18] ; To
+    STA OBJ_POS_X_CONFIRMED[18] ; To
     LDA #$74 ; Object
     STA OBJ_ANIMATION_DISPLAY[18] ; To
     LDA #$C4 ; GFX Bank.
-    STA ZP_R2-R5_BANK_VALUES[4] ; To.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+2 ; To.
     LDX TITLE_PLAYERS_COUNT_CURSOR_0/1 ; X=
     LDA TITLE_DATA_Y_POS,X
-    STA OBJ_POS_Y??[18] ; To here
+    STA OBJ_POS_Y_CONFIRMED[18] ; To here
     LDA CTRL_NEWLY_PRESSED_B[2] ; Load pressed.
     AND #$20 ; Test select?
     BEQ SELECT_NOT_PRESSED
@@ -3101,133 +3101,133 @@ LOOP_MOVE: ; 1E:0D28, 0x03CD28
     DEX ; Loop--
     BNE LOOP_MOVE ; !=0, continue.
     BEQ NEXT_UPDATE_PACKET ; Always taken.
-PPU_ATTR_SET?_UNK: ; 1E:0D34, 0x03CD34
-    LDA FLAG_WEIRD_UPDATES_A ; Load
-    BNE FLAG_SET_A ; If set, goto.
+PPU_ONEOFF_ATTRMOD?: ; 1E:0D34, 0x03CD34
+    LDA FLAG_ATTRMOD_A ; Load
+    BNE DO_ATTRMOD ; If set, goto.
     RTS ; RTS if not set.
-FLAG_SET_A: ; 1E:0D3A, 0x03CD3A
+DO_ATTRMOD: ; 1E:0D3A, 0x03CD3A
     LDA PPU_STATUS ; Reset latch.
-    LDA PPU_ADDR_UNK_A+1 ; Load.
+    LDA PPU_ATTRMOD_ADDR_A1+1 ; Load.
     PHA ; Save
     STA PPU_ADDR ; Store to addr.
-    LDA PPU_ADDR_UNK_A[2] ; Load
+    LDA PPU_ATTRMOD_ADDR_A1[2] ; Load
     PHA ; Save
     STA PPU_ADDR ; Store to addr.
     LDA PPU_DATA ; Get PPU data at. Two reads for buffered reads issue.
     LDA PPU_DATA
-    AND #$0F ; Get lower bits.
+    AND #$0F ; Discard upper bits.
     ORA PPU_ADDR_OR_A ; Or with.
     STA TMP_00 ; Store to.
     LDA PPU_STATUS ; Reset latch.
     PLA ; Pull addr.
     TAX
     PLA ; Pull addr.
-    STA PPU_ADDR ; Store addr back.
+    STA PPU_ADDR ; Store addr.
     STX PPU_ADDR
     LDA TMP_00 ; Load.
-    STA PPU_DATA ; Store back.
+    STA PPU_DATA ; Store data.
     LDA PPU_STATUS ; Reset latch.
-    LDA PPU_ADDR_UNK_B+1 ; Load.
+    LDA PPU_ATTRMOD_ADDR_A2+1 ; Load.
     PHA ; Save.
     STA PPU_ADDR ; To addr.
-    LDA PPU_ADDR_UNK_B[2] ; Load
+    LDA PPU_ATTRMOD_ADDR_A2[2] ; Load
     PHA ; Save.
     STA PPU_ADDR ; Write addr.
     LDA PPU_DATA ; Get PPU data at. Two reads for buffered reads issue.
     LDA PPU_DATA
-    AND #$F0 ; Get top bits.
+    AND #$F0 ; Discard lower bits.
     ORA PPU_ADDR_OR_B ; OR with...
     STA TMP_00 ; Store to TMP.
     LDA PPU_STATUS ; Reset latch.
     PLA ; Pull addr.
     TAX
     PLA
-    STA PPU_ADDR ; Store.
+    STA PPU_ADDR ; Store addr.
     STX PPU_ADDR
     LDA TMP_00 ; Load from TMP.
     STA PPU_DATA ; To PPU.
-    LDA FLAG_WEIRD_UPDATES_B ; Load
-    BEQ CLEAR_FLAGS ; == 0, unset, finished. Could have branched straight to stores, A=0x00 here.
-    LDA PPU_STATUS ; Do same crap here, lol.
-    LDA PPU_ADDR_UNK_C+1
-    PHA
-    STA PPU_ADDR
-    LDA PPU_ADDR_UNK_C[2]
-    PHA
-    STA PPU_ADDR
+    LDA FLAG_ATTRMOD_B ; Load
+    BEQ NO_ATTRMOD_B ; == 0, unset, finished. Could have branched straight to stores, A=0x00 here.
+    LDA PPU_STATUS ; Reset latch.
+    LDA PPU_ATTRMOD_ADDR_B1+1 ; Load
+    PHA ; Save.
+    STA PPU_ADDR ; Store to addr.
+    LDA PPU_ATTRMOD_ADDR_B1[2] ; Load.
+    PHA ; Save.
+    STA PPU_ADDR ; Store to addr.
+    LDA PPU_DATA ; Get PPU data at. Two reads for buffered reads issue.
     LDA PPU_DATA
-    LDA PPU_DATA
-    AND #$0F
-    ORA PPU_ADDR_OR_C
-    STA TMP_00
-    LDA PPU_STATUS
-    PLA
+    AND #$0F ; Discard upper bits.
+    ORA PPU_ADDR_OR_C ; Set upper bits.
+    STA TMP_00 ; Store to TMP.
+    LDA PPU_STATUS ; Reset latch.
+    PLA ; Pull addr.
     TAX
     PLA
-    STA PPU_ADDR
+    STA PPU_ADDR ; Store addr.
+    STX PPU_ADDR
+    LDA TMP_00 ; Load data.
+    STA PPU_DATA ; Store data back.
+    LDA PPU_STATUS ; Reset latch.
+    LDA PPU_ATTRMOD_ADDR_B2+1 ; Load addr.
+    PHA ; Save.
+    STA PPU_ADDR ; Store to addr.
+    LDA PPU_ATTRMOD_ADDR_B2[2] ; Load addr.
+    PHA ; Save.
+    STA PPU_ADDR ; Store to addr.
+    LDA PPU_DATA ; Loads data. Buffered issue double reads.
+    LDA PPU_DATA
+    AND #$F0 ; Discard the lower bits.
+    ORA PPU_ADDR_OR_D ; Set lower bits.
+    STA TMP_00 ; Store to.
+    LDA PPU_STATUS ; Reset latch.
+    PLA
+    TAX ; Pull addr.
+    PLA
+    STA PPU_ADDR ; Store addr.r
     STX PPU_ADDR
     LDA TMP_00
-    STA PPU_DATA
-    LDA PPU_STATUS
-    LDA PPU_ADDR_UNK_D+1
-    PHA
-    STA PPU_ADDR
-    LDA PPU_ADDR_UNK_D[2]
-    PHA
-    STA PPU_ADDR
-    LDA PPU_DATA
-    LDA PPU_DATA
-    AND #$F0
-    ORA PPU_ADDR_OR_D
-    STA TMP_00
-    LDA PPU_STATUS
-    PLA
-    TAX
-    PLA
-    STA PPU_ADDR
-    STX PPU_ADDR
-    LDA TMP_00
-    STA PPU_DATA
-CLEAR_FLAGS: ; 1E:0DFB, 0x03CDFB
+    STA PPU_DATA ; Set data.
+NO_ATTRMOD_B: ; 1E:0DFB, 0x03CDFB
     LDA #$00 ; Load
-    STA FLAG_WEIRD_UPDATES_A
-    STA FLAG_WEIRD_UPDATES_B
+    STA FLAG_ATTRMOD_A ; Modded attrs.
+    STA FLAG_ATTRMOD_B
     STA FLAG?_PPU_UPDATE_WEIRD_CLEARS ; Clear unk.
     RTS
-DISPLAY_OBJECTS: ; 1E:0E07, 0x03CE07
+DISPLAY_OBJECTS_ROUTINE: ; 1E:0E07, 0x03CE07
     JSR OBJ_PROCESS_DISPLAY_ORDER
     LDA #$00 ; Clear val.
-    STA TMP_05 ; Clear these.
+    STA TMP_05 ; Clear these. Array index.
     STA TMP_04 ; Sprite page index pos.
     STA TMP_0F
 LOOP_LARGE_SPRITES?: ; 1E:0E12, 0x03CE12
-    LDX TMP_05 ; X from
+    LDX TMP_05 ; X from, obj.
     CPX #$12 ; If _ #$12
     BCS SPRITE_CLEAR_REST ; >=, goto.
-    LDA C6_SPR_ARR_UNK[2],X ; Load from array
-    BMI SPRITE_CLEAR_REST ; Top bit set, goto.
+    LDA SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X ; Load from array
+    BMI SPRITE_CLEAR_REST ; Object ID/Index negative, invalid, clear rest.
     LDY PPU_FLAG_UNK_MODIFY_LATCH_UNK ; Load PPU flag.
     BEQ PPU_FLAG_NOT_SET ; No value, goto.
     LDA IRQ/SCRIPT_RUN_COUNT? ; Load...
     LSR A ; Shift.
-    BCC SHIFTED_0 ; If shifted 0, goto.
-    LDA C6_SPR_ARR_UNK[2],X ; Load val.
-    CMP #$02 ; If _ #$02
-    JMP SKIP_OTHER_LOAD ; goto. Odd skips if two.
-SHIFTED_0: ; 1E:0E2D, 0x03CE2D
-    LDA C6_SPR_ARR_UNK[2],X ; Even skips if zero.
+    BCC PLAYER_UPDATE_SKIP_P1 ; If shifted 0, goto. Skips P1 update.
+    LDA SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X ; Load val.
+    CMP #$02 ; If Obj Index _ #$02
+    JMP SKIP_OTHER_LOAD ; goto. Skips P2 update.
+PLAYER_UPDATE_SKIP_P1: ; 1E:0E2D, 0x03CE2D
+    LDA SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X ; Even skips if zero.
 SKIP_OTHER_LOAD: ; 1E:0E2F, 0x03CE2F
     BEQ SKIP_UPDATE? ; If val == to, goto. NOTE: 0 or 2 can branch depending.
 PPU_FLAG_NOT_SET: ; 1E:0E31, 0x03CE31
-    TAX ; A val to X.
-    STX TMP_0B ; Store to.
-    LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; A from
-    AND #$03 ; Get bits 0000.0011 from val.
+    TAX ; Obj index to X.
+    STX TMP_0B ; Store to, also.
+    LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Load sprite attr.
+    AND #$03 ; Get bits 0000.0011 from val. Palette?
     STA TMP_0C ; Store them here.
-    LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X
+    LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Load attr again.
     AND #$E0 ; Get bits 1110.0000
-    STA TMP_07 ; Store here.
-    LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load value.
+    STA TMP_07 ; Store here. Flip/BG priority.
+    LDA OBJ_ENABLED_STATE+MORE?[18],X ; Load obj state.
     STA TMP_11 ; Store to.
     LDY #$00 ; Clear vals.
     STY TMP_0D
@@ -3235,39 +3235,39 @@ PPU_FLAG_NOT_SET: ; 1E:0E31, 0x03CE31
     STY TMP_12
     STY TMP_13
     CPX #$04 ; If index _ #$04
-    BCS INDEX_GE_4 ; >=, goto.
+    BCS NOT_P2_PAIR ; >=, goto.
     CPX #$02 ; If index _ #$02
-    BNE X_NE_2 ; !=, goto.
-    INC TMP_12 ; ++
+    BNE NOT_P2_BASE ; !=, goto.
+    INC TMP_12 ; Set of Obj == 0x2, P2 base?
     JMP OBJECT_ANIM_DECIDED?
-X_NE_2: ; 1E:0E5E, 0x03CE5E
-    CPX #$03 ; X _ #$03
-    BNE INDEX_GE_4 ; !=, goto.
-    INC TMP_13 ; ++ unk.
+NOT_P2_BASE: ; 1E:0E5E, 0x03CE5E
+    CPX #$03 ; If Xobj _ #$03
+    BNE NOT_P2_PAIR ; !=, goto.
+    INC TMP_13 ; Set if Obj != 2,3, P1.
     JMP OBJECT_ANIM_DECIDED? ; Goto.
-INDEX_GE_4: ; 1E:0E67, 0x03CE67
-    CMP #$6D ; If A _ #$6D
+NOT_P2_PAIR: ; 1E:0E67, 0x03CE67
+    CMP #$6D ; If state  _ #$6D
     BCC OBJECT_ANIM_DECIDED? ; <, goto.
-    CMP #$70 ; If A _ #$70
+    CMP #$70 ; If state _ #$70
     BCS OBJECT_ANIM_DECIDED? ; >=, goto.
-    INC TMP_0E ; ++ otherwise.
+    INC TMP_0E ; Set flag otherwise. Shredder?
 OBJECT_ANIM_DECIDED?: ; 1E:0E71, 0x03CE71
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load value from.
     AND #$03 ; Get bits 0000.0011
     STA TMP_06 ; Store to.
-    LDA OBJ_ANIMATION_DISPLAY[18],X
-    BEQ SKIP_UPDATE? ; ==, goto.
-    LDY OBJ_POS_Y??[18],X ; Load from.
+    LDA OBJ_ANIMATION_DISPLAY[18],X ; Load obj attr.
+    BEQ SKIP_UPDATE? ; ==, goto. No update.
+    LDY OBJ_POS_Y_CONFIRMED[18],X ; Load obj pos.
     STY TMP_01 ; To temp.
-    LDY OBJ_POS_X?[18],X ; Same
+    LDY OBJ_POS_X_CONFIRMED[18],X ; Load obj pos.
     STY TMP_02
-    JSR RTN_ANIMATE_SPRITES? ; Do routine.
+    JSR RTN_CREATE_SPRITE ; Do routine.
     LDA TMP_0F ; Load. Out of sprites flag.
-    BNE RTS ; != 0, leave.
+    BNE RTS ; != 0, leave. More to assign still.
 SKIP_UPDATE?: ; 1E:0E8E, 0x03CE8E
-    INC TMP_05 ; ++
-    BEQ SPRITE_CLEAR_REST ; If now 0, goto.
-    JMP LOOP_LARGE_SPRITES? ; Not 0, goto.
+    INC TMP_05 ; Array slot++
+    BEQ SPRITE_CLEAR_REST ; If now 0, goto. ?? TODO: Is this a crap branch?
+    JMP LOOP_LARGE_SPRITES? ; Large loop.
 SPRITE_CLEAR_REST: ; 1E:0E95, 0x03CE95
     LDX TMP_04 ; Sprite clear index.
     LDA #$F4 ; Load sprite clear value.
@@ -3303,10 +3303,10 @@ HIGHER_FLAGS: ; 1E:0ECB, 0x03CECB
     STA TMP_08
     LDA 02:0100,Y ; Tables above.
     JMP SPRITE_CREATE_FROM_PTR
-RTN_ANIMATE_SPRITES?: ; 1E:0ED6, 0x03CED6
+RTN_CREATE_SPRITE: ; 1E:0ED6, 0x03CED6
     ASL A ; << 1, *2
     STA TMP_10 ; Sprite making word index.
-    BCC SKIP_INC
+    BCC SKIP_INC ; Shifted 0x0, skip set.
     INC TMP_0D ; Inc value if top bit was set. >= 0x80 flag.
 SKIP_INC: ; 1E:0EDD, 0x03CEDD
     CPX #$04 ; Slot _ #$04
@@ -3323,24 +3323,24 @@ SKIP_INC: ; 1E:0EDD, 0x03CEDD
     JSR BANK_PAIR_USE_A ; Bank 8/9
     LDY TMP_10 ; Sprite word index.
     LDA TMP_0D ; Load flag.
-    BNE ANIMATION_INDEX_GTE_0x80
+    BNE PTR_ARRAY_UPPER ; Top bit flag set, goto.
     LDA **:$7FFF,Y ; Reads 0x8001 minimum. OBJ_SPRITES_DATA_TABLE_L
     STA TMP_08
     LDA 08:0000,Y ; Reads 0x8002 minimum. OBJ_SPRITES_DATA_TABLE_H
     JMP SPRITE_CREATE_FROM_PTR ; Make sprite. Abuse RTS?
-TMP_7_NEGATIVE: ; 1E:0F08, 0x03CF08
-    LDA [TMP_08],Y
-    EOR #$FF
+VFLIP_INVERT: ; 1E:0F08, 0x03CF08
+    LDA [TMP_08],Y ; Load data.
+    EOR #$FF ; Invert.
     CLC
     ADC #$01
     SEC
-    SBC #$10
-    JMP 1E:0F73
-ANIMATION_INDEX_GTE_0x80: ; 1E:0F15, 0x03CF15
-    LDA 08:00FF,Y
+    SBC #$10 ; Todo: Shit code, just SBC #$0F.
+    JMP RE-ENTER_VFLIP_INVERT ; Goto.
+PTR_ARRAY_UPPER: ; 1E:0F15, 0x03CF15
+    LDA 08:00FF,Y ; Load ptr from upper array.
     STA TMP_08
     LDA 08:0100,Y
-    JMP SPRITE_CREATE_FROM_PTR
+    JMP SPRITE_CREATE_FROM_PTR ; Goto.
 SPRITES_PAGE_8: ; 1E:0F20, 0x03CF20
     LDA #$28
     JSR BANK_PAIR_USE_A
@@ -3377,12 +3377,13 @@ SPRITE_CREATE_FROM_PTR: ; 1E:0F5F, 0x03CF5F
     RTS ; EOF, leave.
 VAL_LOADED: ; 1E:0F68, 0x03CF68
     STA TMP_03 ; To TMP. Num of tiles to output.
-    LDX TMP_04 ; X from
-LOOP_OBJ_DISPLAY: ; 1E:0F6C, 0x03CF6C
+    LDX TMP_04 ; X from. Sprite page index pos.
+LOOP_COMPLETE_OBJ_SPRITE: ; 1E:0F6C, 0x03CF6C
     INY ; Stream++
-    LDA TMP_07 ; From TMP.
-    BMI TMP_7_NEGATIVE ; Negative, goto.
+    LDA TMP_07 ; Load flip/priority from obj attrs.
+    BMI VFLIP_INVERT ; Negative, goto. VFlip.
     LDA [TMP_08],Y ; From PTR.
+RE-ENTER_VFLIP_INVERT: ; 1E:0F73, 0x03CF73
     CLC ; Prep add.
     ADC TMP_01 ; Add with.
     STA SPRITE_PAGE[256],X ; Store, sprite Y.
@@ -3390,81 +3391,81 @@ LOOP_OBJ_DISPLAY: ; 1E:0F6C, 0x03CF6C
     LDA [TMP_08],Y ; From stream.
     STA SPRITE_PAGE+1,X ; Tile value.
     LDA 4C_UNK ; Load
-    BMI SKIP_UNK_B ; If negative, goto.
-    LDA TMP_12 ; Load
-    BNE 2P_GAME ; If non-zero, goto.
+    BMI SKIP_TILE_OFFSET_ADD ; If negative, goto.
+    LDA TMP_12 ; Load.
+    BNE POSSIBLE_P2_ADJUST? ; If non-zero, goto.
     LDA TMP_13 ; Load
-    BEQ 13_EQ_ZERO ; == 0, goto.
+    BEQ 13_FLAG_NOT_SET ; == 0, goto.
     LDA LEVEL/SCREEN_ON ; Load screen.
     CMP #$07 ; If _ #$07
-    BEQ SKIP_UNK_B ; ==, goto.
-    BNE SKIP_UNK_A ; Always taken. Level 7.
-13_EQ_ZERO: ; 1E:0F93, 0x03CF93
+    BEQ SKIP_TILE_OFFSET_ADD ; ==, goto. Level 7.
+    BNE TILE_ADD_0x40 ; Always taken.
+13_FLAG_NOT_SET: ; 1E:0F93, 0x03CF93
     LDA TMP_0E ; Load
-    BEQ SKIP_UNK_B ; == 0, goto.
+    BEQ SKIP_TILE_OFFSET_ADD ; == 0, goto.
     LDA TMP_0B ; Load
     CMP #$0A ; If _ #$0A
-    BEQ SKIP_UNK_A ; ==, goto.
+    BEQ TILE_ADD_0x40 ; ==, goto.
     CMP #$0B ; If _ #$0B
-    BEQ SKIP_UNK_A ; ==, goto.
+    BEQ TILE_ADD_0x40 ; ==, goto.
     CMP #$0C ; If _ #$0C
-    BNE SKIP_UNK_B ; !=, goto.
-    BEQ SKIP_UNK_A ; ==, goto.
-2P_GAME: ; 1E:0FA7, 0x03CFA7
+    BNE SKIP_TILE_OFFSET_ADD ; !=, goto.
+    BEQ TILE_ADD_0x40 ; ==, goto.
+POSSIBLE_P2_ADJUST?: ; 1E:0FA7, 0x03CFA7
     LDA SPRITE_PAGE+1,X ; Load tile.
-    BMI SKIP_UNK_B ; >= 0x80, don't adjust. Enemy.
-SKIP_UNK_A: ; 1E:0FAC, 0x03CFAC
+    BMI SKIP_TILE_OFFSET_ADD ; >= 0x80, don't adjust. Enemy.
+TILE_ADD_0x40: ; 1E:0FAC, 0x03CFAC
     LDA SPRITE_PAGE+1,X ; Load tile
     CLC
     ADC #$40 ; += 40, P2 animation sprite bank.
     STA SPRITE_PAGE+1,X ; Store back.
-SKIP_UNK_B: ; 1E:0FB5, 0x03CFB5
+SKIP_TILE_OFFSET_ADD: ; 1E:0FB5, 0x03CFB5
     INY ; Stream++
     LDA [TMP_08],Y ; Load
-    EOR TMP_07 ; Invert with.
-    STA TMP_00 ; Store to .
+    EOR TMP_07 ; Invert with attrs.
+    STA TMP_00 ; Store to.
     LDA TMP_0C ; Load
-    BEQ SKIP_UNK ; == 0, goto.
+    BEQ SKIP_PALETTE_THING ; == 0, goto.
     LDA TMP_12 ; Load
     ORA TMP_13 ; OR with.
-    BEQ 12|13_EQ_ZERO ; == 0, goto.
+    BEQ SET_SPRITE_PALETTE_WITH_TMP_0C ; == 0, goto.
     LDA [TMP_08],Y ; Load again.
-    AND #$03 ; Keep 0000.0011
-    CMP #$02 ; If _ #$02
-    BEQ SKIP_UNK ; ==, goto.
-12|13_EQ_ZERO: ; 1E:0FCE, 0x03CFCE
+    AND #$03 ; Keep 0000.0011, palette.
+    CMP #$02 ; If _ #$02. NOTE: Nice trick possibly. Palette 0x2 means "No eor" in the data.
+    BEQ SKIP_PALETTE_THING ; ==, goto.
+SET_SPRITE_PALETTE_WITH_TMP_0C: ; 1E:0FCE, 0x03CFCE
     LDA TMP_00 ; Load
     AND #$FC ; Keep 1111.1100
-    ORA TMP_0C ; OR with.
+    ORA TMP_0C ; OR with. Setting palette.
     STA TMP_00 ; Store back.
-SKIP_UNK: ; 1E:0FD6, 0x03CFD6
-    LDA TMP_00 ; Load
+SKIP_PALETTE_THING: ; 1E:0FD6, 0x03CFD6
+    LDA TMP_00 ; Load.
     STA SPRITE_PAGE+2,X ; Store, sprite attributes.
     INY ; Stream++
     LDA [TMP_08],Y ; Load from stream.
     BIT TMP_07 ; Test bits from 7.
-    BVC BIT_SET_0x40 ; Bit 0x40 set, goto.
-    EOR #$FF ; Invert
+    BVC SKIP_H_FLIP ; Bit 0x40 set, goto.
+    EOR #$FF ; Invert val.
     SEC
-    SBC #$07 ; Subtract 7. Two's compliment minus 8.
-BIT_SET_0x40: ; 1E:0FE7, 0x03CFE7
+    SBC #$07 ; Subtract 7 (8 total) to pivot tile in-place.
+SKIP_H_FLIP: ; 1E:0FE7, 0x03CFE7
     CLC ; Prep add.
-    ADC TMP_02 ; Add with.
+    ADC TMP_02 ; Add with Xpos.
     STA SPRITE_PAGE+3,X ; Store, sprite X position.
     LDA TMP_06 ; Load
     BEQ TMP_6_EQ_ZERO ; == 0, goto.
     AND #$01 ; Keep only 0x01
-    BNE UNK_C ; If 0x01 set, goto.
+    BNE SPRITE_ON_LEFT_SIDE_OF_SCREEN? ; If 0x01 set, goto.
     LDA SPRITE_PAGE+3,X ; Load X pos.
-    CLC
+    CLC ; Prep add.
     ADC #$03 ; += 0x03
     CMP #$40 ; If Xpos _ #$40
-    BCS SPRITE_POS_INVALID ; >=, goto.
+    BCS SPRITE_POS_INVALID ; >=, goto. Can't be in this range if on left side of screen.
     BCC NEXT_SPRITE_SLOT ; <, goto. Always taken.
-TMP_2_NEGATIVE: ; 1E:1001, 0x03D001
+SPRITE_XPOS_NEGATIVE: ; 1E:1001, 0x03D001
     LDA SPRITE_PAGE+3,X ; Load Xpos.
     CMP #$40 ; If _ #$40
-    BCC SPRITE_POS_INVALID ; <, goto.
+    BCC SPRITE_POS_INVALID ; <, goto. Can't be in this range if on right side of screen.
 NEXT_SPRITE_SLOT: ; 1E:1008, 0x03D008
     INX ; X += 4, next sprite pos.
     INX
@@ -3473,21 +3474,21 @@ NEXT_SPRITE_SLOT: ; 1E:1008, 0x03D008
     BEQ OUT_OF_SPRITES ; Rolled over to 0x00, none left. Leave.
     DEC TMP_03 ; --, tiles left.
     BEQ ALL_TILES_DISPLAYED ; == 0, done.
-    JMP LOOP_OBJ_DISPLAY
+    JMP LOOP_COMPLETE_OBJ_SPRITE ; Loop more objs.
 ALL_TILES_DISPLAYED: ; 1E:1015, 0x03D015
     STX TMP_04 ; SPR_POS_FINAL
     RTS
 OUT_OF_SPRITES: ; 1E:1018, 0x03D018
-    INC TMP_0F ; ++, don't clear flag.
-    RTS
-UNK_C: ; 1E:101B, 0x03D01B
+    INC TMP_0F ; Set flag, out of sprites.
+    RTS ; Leave.
+SPRITE_ON_LEFT_SIDE_OF_SCREEN?: ; 1E:101B, 0x03D01B
     LDA SPRITE_PAGE+3,X ; Load Xpos.
     CMP #$C0 ; If _ #$C0
-    BCC SPRITE_POS_INVALID ; <, goto.
+    BCC SPRITE_POS_INVALID ; <, goto. Invalid.
     BCS NEXT_SPRITE_SLOT ; >=, goto. Always taken.
 TMP_6_EQ_ZERO: ; 1E:1024, 0x03D024
     LDA TMP_02 ; Load
-    BMI TMP_2_NEGATIVE ; If negative, goto.
+    BMI SPRITE_XPOS_NEGATIVE ; If negative, goto.
     LDA SPRITE_PAGE+3,X ; Load Xpos.
     CLC ; Prep add
     ADC #$03 ; += 0x03
@@ -3500,168 +3501,170 @@ SPRITE_POS_INVALID: ; 1E:1032, 0x03D032
     STA SPRITE_PAGE+1,X ; Clear.
     STA SPRITE_PAGE+2,X
     STA SPRITE_PAGE+3,X
-    BEQ NEXT_SPRITE_SLOT ; Always taken, goto.
-OBJ_EQ_4: ; 1E:1044, 0x03D044
-    STY TMP_17 ; Y to.
-    LDY TMP_12 ; Y from.
-    TXA ; Obj to A.
-    STA 71C_ARR_UNK[2],Y ; Store to arr.
-    INC TMP_12 ; ++
-    LDY TMP_17 ; Restore Y.
-    JMP NEXT_OBJ ; Next object.
+    BEQ NEXT_SPRITE_SLOT ; Goto. Always taken.
+OBJ_TO_ALT_ARRAY_71C: ; 1E:1044, 0x03D044
+    STY TMP_17 ; Array index pos.
+    LDY TMP_12 ; Alt index.
+    TXA ; Obj to A.Obj to A.
+    STA 71C_SPRITE_SORT_ARRAY[18],Y ; Obj to array.
+    INC TMP_12 ; Index++
+    LDY TMP_17 ; Restore other index.
+    JMP NEXT_XOBJ ; Next object.
 OBJ_PROCESS_DISPLAY_ORDER: ; 1E:1053, 0x03D053
-    LDX #$11 ; Object.
-    LDY #$00 ; Val?
+    LDX #$11 ; Object start.
+    LDY #$00 ; Array index.
     STY TMP_12 ; Clear.
 OBJ_PROCESS_LOOP: ; 1E:1059, 0x03D059
     LDA OBJ_ANIMATION_DISPLAY[18],X ; Load if we change.
-    BEQ NEXT_OBJ ; No change, next.
+    BEQ NEXT_XOBJ ; Set to 0x00, next.
     CPX #$04 ; Obj _ #$04
     BCS CHANGED_GT_4 ; >=, goto.
     CPX #$01 ; Obj _ #$01
-    BEQ OBJ_EQ_4 ; ==, goto.
+    BEQ OBJ_TO_ALT_ARRAY_71C ; ==, goto.
     CPX #$03 ; Obj _ #$03
-    BEQ OBJ_EQ_4 ; ==, goto.
-    BNE OBJ_MOD_0/2 ; !=, goto.
+    BEQ OBJ_TO_ALT_ARRAY_71C ; ==, goto.
+    BNE ADD_ATTRS_TO_SORT_ARRAY ; != to any, goto.
 CHANGED_GT_4: ; 1E:106C, 0x03D06C
-    CMP #$04 ; Obj _ #$04
-    BEQ OBJ_EQ_4 ; ==, goto.
-OBJ_MOD_0/2: ; 1E:1070, 0x03D070
+    CMP #$04 ; Disp _ #$04
+    BEQ OBJ_TO_ALT_ARRAY_71C ; ==, goto.
+ADD_ATTRS_TO_SORT_ARRAY: ; 1E:1070, 0x03D070
     LDA OBJ_POS_X??[18],X ; Load
-    STA TMP_00,Y ; Store to.
-    STX C6_SPR_ARR_UNK[2],Y ; Obj to array.
+    STA TMP_00,Y ; Store TMP. POS array.
+    STX SPRITE_ORDERING_ARR_OBJ_INDEXES[18],Y ; Obj arr.
     INY ; Arr++
-NEXT_OBJ: ; 1E:1079, 0x03D079
+NEXT_XOBJ: ; 1E:1079, 0x03D079
     DEX ; Obj--
     BPL OBJ_PROCESS_LOOP ; Obj 18 to obj 0.
-    STY TMP_15 ; To change.
-    DEY
-    STY TMP_13 ; Change - 1, total count todo.
-    STY TMP_14 ; Change - 1, loop count.
+    STY TMP_15 ; Num of arr entries.
+    DEY ; --
+    STY TMP_13 ; Entry_count - 1, total count todo.
+    STY TMP_14 ; Entry_count - 1, loop count.
     BEQ MOD_ONE ; Y was 1, goto.
     BMI MOD_ONE ; Y was 0, goto.
-LOOP_ALL_AGAIN_INDEXES: ; 1E:1087, 0x03D087
+SWAP_INDEXES_REDO: ; 1E:1087, 0x03D087
     LDX #$00 ; Index val. Y above 2 here.
-LOOP_MORE_FLIPS: ; 1E:1089, 0x03D089
-    LDA TMP_00,X ; Load from indexed.
+LOOP_MORE_SWAPS: ; 1E:1089, 0x03D089
+    LDA TMP_00,X ; Compare positions.
     CMP TMP_01,X ; If _ next
-    BCS NO_FLIP ; >=, goto. No flip.
-    LDY TMP_01,X ; Y from. Swap around.
+    BCS NO_SWAP ; >=, goto. No flip.
+    LDY TMP_01,X ; Y from. Swap around positions.
     LDA TMP_00,X ; A from.
     STA TMP_01,X ; A to.
     STY TMP_00,X ; Y to.
-    LDY C6_SPR_ARR_UNK+1,X ; Flip around in this array, too.
-    LDA C6_SPR_ARR_UNK[2],X
-    STA C6_SPR_ARR_UNK+1,X
-    STY C6_SPR_ARR_UNK[2],X
-NO_FLIP: ; 1E:109F, 0x03D09F
+    LDY SPRITE_ORDERING_ARR_OBJ_INDEXES+1,X ; Swap around object indexes.
+    LDA SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X
+    STA SPRITE_ORDERING_ARR_OBJ_INDEXES+1,X
+    STY SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X
+NO_SWAP: ; 1E:109F, 0x03D09F
     INX ; Index++
     CPX TMP_13 ; Index _ Total todo.
-    BCC LOOP_MORE_FLIPS ; Do more.
+    BCC LOOP_MORE_SWAPS ; Do more.
     DEC TMP_14 ; -= 1 swap processes.
-    BNE LOOP_ALL_AGAIN_INDEXES ; If more to do, do.
+    BNE SWAP_INDEXES_REDO ; If more to do, do.
 MOD_ONE: ; 1E:10A8, 0x03D0A8
-    LDY #$00 ; Clear.
+    LDY #$00 ; Init index.
     LDX TMP_15 ; Get how many to update.
-    LDA TMP_12 ; Cleared?
-    BEQ ENTER_UNK ; Always taken?
-L_1E:10B0: ; 1E:10B0, 0x03D0B0
-    LDA 71C_ARR_UNK[2],Y
-    STA C6_SPR_ARR_UNK[2],X
-    INX
-    INY
-    CPY TMP_12
-    BCC L_1E:10B0
-ENTER_UNK: ; 1E:10BB, 0x03D0BB
+    LDA TMP_12 ; Load end of arr.
+    BEQ CONCAT_END_CHECK ; If zero, goto.
+CONCAT_71C_TO_INDEX_ARRAY: ; 1E:10B0, 0x03D0B0
+    LDA 71C_SPRITE_SORT_ARRAY[18],Y ; Load
+    STA SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X ; Store to.
+    INX ; Index++
+    INY ; Index++
+    CPY TMP_12 ; If index _ target
+    BCC CONCAT_71C_TO_INDEX_ARRAY ; <, loop append.
+CONCAT_END_CHECK: ; 1E:10BB, 0x03D0BB
     CPX #$12 ; Xobj _ 18
-    BCS OBJ_INVALID ; >=, goto.
+    BCS SKIP_ARR_EOF ; >=, goto. Using all, no EOF.
     LDA #$FF ; Val invalid?
-    STA C6_SPR_ARR_UNK[2],X ; Store to.
-OBJ_INVALID: ; 1E:10C3, 0x03D0C3
-    LDA #$FF ; Val?
-    LDX #$00 ; Index
-SET_ARRS_FF: ; 1E:10C7, 0x03D0C7
-    STA 72E_ARR_UNK,X ; Set
-    STA TMP_00,X ; Set
+    STA SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X ; End of data marker, > 0x80. Object ID.
+SKIP_ARR_EOF: ; 1E:10C3, 0x03D0C3
+    LDA #$FF ; Val.
+    LDX #$00 ; Index reset.
+SPR_SET_UNK_ARR_ATTRS: ; 1E:10C7, 0x03D0C7
+    STA SPR_SORT_ARR_UNK,X ; Set 0xFF.
+    STA TMP_00,X ; Set 0xFF
     INX ; X++
     CPX #$12 ; If Obj _ 18
-    BCC SET_ARRS_FF ; <, loop.
-    LDY #$00
-    STY TMP_16 ; Clear.
+    BCC SPR_SET_UNK_ARR_ATTRS ; <, loop all slots. Initing.
+    LDY #$00 ; Clear val, index reset.
+    STY TMP_16 ; Clear indexes.
     STY TMP_17
-LOOP_UNTIL_INDEX_18: ; 1E:10D7, 0x03D0D7
-    LDX C6_SPR_ARR_UNK[2],Y ; X from array.
-    BMI C6_VAL_NEGATIVE ; Negative, goto.
-    LDA OBJ_POS_X?[18],X ; Load Xpos.
-    BPL XPOS_POSITIVE ; Positive, goto.
-    STY TMP_15 ; Save Y.
-    LDY TMP_17 ; Index Y from.
-    STX TMP_00,Y ; X to TMP array.
-    INC TMP_17 ; Inc.
-    JMP PAST_OTHER ; Goto.
-XPOS_POSITIVE: ; 1E:10EB, 0x03D0EB
-    STY TMP_15 ; Save Y.
-    LDY TMP_16 ; Index Y from.
-    TXA ; X to A.
-    STA 72E_ARR_UNK,Y ; A to array.
-    INC TMP_16 ; ++
-PAST_OTHER: ; 1E:10F5, 0x03D0F5
-    LDY TMP_15 ; Restore Y
-    INY ; ++
-    CPY #$12 ; If _ #$12 (18)
-    BCC LOOP_UNTIL_INDEX_18 ; <, goto.
-C6_VAL_NEGATIVE: ; 1E:10FC, 0x03D0FC
+SORT_POSITION_POS/NEG: ; 1E:10D7, 0x03D0D7
+    LDX SPRITE_ORDERING_ARR_OBJ_INDEXES[18],Y ; Load sprite ID.
+    BMI FINAL_SORT_CONCAT ; Negative, no entry/done, goto.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load pos.
+    BPL POSITION_POSITIVE ; Positive, goto.
+    STY TMP_15 ; Save index.
+    LDY TMP_17 ; Load index from.
+    STX TMP_00,Y ; Obj index to array.
+    INC TMP_17 ; Index++
+    JMP CHECK_FINISH ; Goto.
+POSITION_POSITIVE: ; 1E:10EB, 0x03D0EB
+    STY TMP_15 ; Save index.
+    LDY TMP_16 ; Load index from.
+    TXA ; Pos to A. NOTE: Fucked up because of array position in memory. Only STX ZP,Y available.
+    STA SPR_SORT_ARR_UNK,Y ; Store to arr. Obj index.
+    INC TMP_16 ; Index++
+CHECK_FINISH: ; 1E:10F5, 0x03D0F5
+    LDY TMP_15 ; Restore entry index.
+    INY ; Index++
+    CPY #$12 ; If _ #$12.
+    BCC SORT_POSITION_POS/NEG ; <, goto. Do all objs.
+FINAL_SORT_CONCAT: ; 1E:10FC, 0x03D0FC
     LDA #$00
-    STA TMP_16 ; Clear
+    STA TMP_16 ; Clear indexes. Note: Supposed to affect below. Generic lib code, probably.
     STA TMP_17
     TAX ; Clear X+Y
     TAY
     LDA IRQ/SCRIPT_RUN_COUNT? ; Load val.
     LSR A ; >> 1, /2
-    BCS RUN_COUNT_ODD ; If bottom bit set, goto.
-    LDY TMP_17 ; Y from.
+    BCS CONCAT_REVERSE_ORDER ; If bottom bit set, goto.
+    LDY TMP_17 ; First index.
 LOOP_ZP_ZERO_STUFF: ; 1E:110B, 0x03D10B
     LDA TMP_00,Y ; Load from arr.
-    BMI ZP_ARR_VAL_NEG ; Value from ZP array 0 negative, goto.
-    STA C6_SPR_ARR_UNK[2],X ; Store to C6 arr.
+    BMI ADD_OTHER_ARR/INDEX ; Negative, goto.
+    STA SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X ; Store to final arr.
     INY ; Index++
     INX ; Index++
-    CPX #$12 ; If entry _ 18
+    CPX #$12 ; If index _ #$12
     BCC LOOP_ZP_ZERO_STUFF ; <, goto.
-    RTS ; Leave.
-ZP_ARR_VAL_NEG: ; 1E:1119, 0x03D119
-    LDY TMP_16 ; Y from.
+    RTS ; Leave, all in this one.
+ADD_OTHER_ARR/INDEX: ; 1E:1119, 0x03D119
+    LDY TMP_16 ; Other index.
 LOOP_ARRAY_72E_CHECKS: ; 1E:111B, 0x03D11B
-    LDA 72E_ARR_UNK,Y ; A from 72E arr.
+    LDA SPR_SORT_ARR_UNK,Y ; Load
     BMI RTS ; If negative, leave.
-    STA C6_SPR_ARR_UNK[2],X ; Store to C6.
+    STA SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X ; Store to C6.
     INY ; Index++
-    INX ; Inxed++
+    INX ; Index++
     CPX #$12 ; If entry _ 18
     BCC LOOP_ARRAY_72E_CHECKS ; <, goto.
 RTS: ; 1E:1128, 0x03D128
     RTS ; Leave.
-RUN_COUNT_ODD: ; 1E:1129, 0x03D129
-    LDY TMP_16
-L_1E:112B: ; 1E:112B, 0x03D12B
-    LDA 72E_ARR_UNK,Y
-    BMI L_1E:1139
-    STA C6_SPR_ARR_UNK[2],X
-    INY
+CONCAT_REVERSE_ORDER: ; 1E:1129, 0x03D129
+    LDY TMP_16 ; Index from.
+LOOP_ALL_OBJS: ; 1E:112B, 0x03D12B
+    LDA SPR_SORT_ARR_UNK,Y ; Load val from arr.
+    BMI ARR_VAL_NEG ; If negative, goto.
+    STA SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X ; Store to C6 arr.
+    INY ; Index++
     INX
-    CPX #$12
-    BCC L_1E:112B
-    RTS
-L_1E:1139: ; 1E:1139, 0x03D139
-    LDY TMP_17
-    LDA TMP_00,Y
-    BMI 1E:1148
-    STA C6_SPR_ARR_UNK[2],X
-    INY
-    INX
-    CPX #$12
-    BCC 1E:113B
-    RTS
+    CPX #$12 ; If _ #$12
+    BCC LOOP_ALL_OBJS ; <, loop all objs.
+    RTS ; Leave.
+ARR_VAL_NEG: ; 1E:1139, 0x03D139
+    LDY TMP_17 ; Other index.
+LOOP_ALL_OBJS: ; 1E:113B, 0x03D13B
+    LDA TMP_00,Y ; Load from array.
+    BMI RTS ; Negative ID, leave.
+    STA SPRITE_ORDERING_ARR_OBJ_INDEXES[18],X ; Append to array.
+    INY ; Index++
+    INX ; Index++
+    CPX #$12 ; If _ #$12
+    BCC LOOP_ALL_OBJS ; <, goto.
+RTS: ; 1E:1148, 0x03D148
+    RTS ; Leave.
 ATTRACT_MODE: ; 1E:1149, 0x03D149
     LDA #$34 ; Bank 14/15
     JSR BANK_PAIR_USE_A ; Switch data in.
@@ -3837,7 +3840,7 @@ NOT_LEVEL_1: ; 1E:1273, 0x03D273
     CMP #$07 ; If _ #$07
     BNE LEVEL_NOT_7 ; !=, goto.
     LDA #$54
-    STA ZP_R2-R5_BANK_VALUES+3 ; Set R5 GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5 ; Set R5 GFX.
 LEVEL_NOT_7: ; 1E:127D, 0x03D27D
     LDA LEVEL/SCREEN_ON ; Load level.
     CMP #$0A ; If _ #$0A
@@ -4001,7 +4004,7 @@ SWITCH_3C_RTN_I: ; 1E:13AD, 0x03D3AD
     JSR BANK_PAIR_USE_A ; Bank in 12/13.
     LDA 4B_SWITCH_GAME_PREP/OVER ; Use this as switch now? lol.
     JSR SWITCH_CODE_PTRS_PAST_JSR
-    LOW(4B_SWITCH_RTN_A) ; Another switch.
+    LOW(4B_SWITCH_RTN_A) ; Another switch. TODO.
     HIGH(4B_SWITCH_RTN_A)
     LOW(4B_SWITCH_RTN_B) ; Switch off same variable but different meaning, sub too.
     HIGH(4B_SWITCH_RTN_B)
@@ -6010,45 +6013,45 @@ BANKED_PLAYER_UI_GAME_OVER_GFX: ; 1E:1CC3, 0x03DCC3
     ASL A
     TAY
     LDA 1E:1CE8,Y
-    STA ZP_R2-R5_BANK_VALUES[4]
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+2
     LDA 1E:1CE9,Y
-    STA ZP_R2-R5_BANK_VALUES+1
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+3
     LDA 1E:1CEA,Y
-    STA ZP_R2-R5_BANK_VALUES+2
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4
     LDA 1E:1CEB,Y
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     RTS
     .db 22 ; Removed earlier feature?
     .db 22
     .db 22
     .db 22
-MOVE_R2-R5_VALUES_ZP_TO_60D: ; 1E:1CEC, 0x03DCEC
+COMMIT_SCRIPT_R2-R5_VALS: ; 1E:1CEC, 0x03DCEC
     LDX #$03 ; X=
 LOOP_MOVE: ; 1E:1CEE, 0x03DCEE
-    LDA ZP_R2-R5_BANK_VALUES[4],X ; Load.
-    STA R2_TO_R5_BANK_DATA[4],X ; Move to.
+    LDA SCRIPT_R0-R5_GFX_BANK_VALS+2,X ; Load.
+    STA COMMITTED_R2-R5_GFX_BANK_VALS[4],X ; Move to.
     DEX ; X--
     BPL LOOP_MOVE ; Do 4x.
     RTS ; RTS
-BANK_R2-R5_FROM_60D: ; 1E:1CF7, 0x03DCF7
-    LDA IRQ_FLAG_R2-R5_BANK_7E ; Load.
+COMMITTED_R2-R5_TO_MAPPER: ; 1E:1CF7, 0x03DCF7
+    LDA IRQ_FLAG_R2-R5_GFX_USE_BANK_7E ; Load.
     BNE WRITE_R2-R5_0x7E ; If set, do B.
 WRITE_R2-R5_FROM_RAM: ; 1E:1CFB, 0x03DCFB
     LDA #$02 ; R2
     STA MMC3_BANK_CFG ; Set bank to cfg.
-    LDA R2_TO_R5_BANK_DATA[4] ; Load config.
+    LDA COMMITTED_R2-R5_GFX_BANK_VALS[4] ; Load config.
     STA MMC3_BANK_DATA ; Commit to mapper.
     LDA #$03 ; Repeat R3-R5
     STA MMC3_BANK_CFG
-    LDA R2_TO_R5_BANK_DATA+1
+    LDA COMMITTED_R2-R5_GFX_BANK_VALS+1
     STA MMC3_BANK_DATA
     LDA #$04
     STA MMC3_BANK_CFG
-    LDA R2_TO_R5_BANK_DATA+2
+    LDA COMMITTED_R2-R5_GFX_BANK_VALS+2
     STA MMC3_BANK_DATA
     LDA #$05 ; R5
     STA MMC3_BANK_CFG
-    LDA R2_TO_R5_BANK_DATA+3
+    LDA COMMITTED_R2-R5_GFX_BANK_VALS+3
     STA MMC3_BANK_DATA
     RTS
 WRITE_R2-R5_0x7E: ; 1E:1D28, 0x03DD28
@@ -6056,23 +6059,23 @@ WRITE_R2-R5_0x7E: ; 1E:1D28, 0x03DD28
     LDA #$02 ; R2
     STA MMC3_BANK_CFG
     STY MMC3_BANK_DATA
-    LDA #$03
+    LDA #$03 ; R3
     STA MMC3_BANK_CFG
     STY MMC3_BANK_DATA
-    LDA #$04
+    LDA #$04 ; R4
     STA MMC3_BANK_CFG
     STY MMC3_BANK_DATA
     LDA #$05 ; R5
     STA MMC3_BANK_CFG
     STY MMC3_BANK_DATA
-    RTS
+    RTS ; Leave.
 SETUP_R0/R1_IRQ_DATA: ; 1E:1D4B, 0x03DD4B
     ASL A ; A to word index.
     TAY ; A to Y.
     LDA IRQ_DATA_UNK_BA,Y ; A from.
-    STA IRQ_GFX_DATA_BANK_R0 ; To R0.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS[6] ; To R0.
     LDA IRQ_DATA_UNK_BB,Y ; A from.
-    STA IRQ_GFX_DATA_BANK_R1 ; To R1.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+1 ; To R1.
     RTS ; Leave.
 DATA_UNK: ; 1E:1D58, 0x03DD58
     .db 01
@@ -6119,14 +6122,14 @@ IRQ_DATA_UNK_BB: ; 1E:1D65, 0x03DD65
     .db CA
     .db C8
     .db CC
-BANKSWITCH_R0/R1: ; 1E:1D82, 0x03DD82
+SCRIPT_GFX_R0-R1_TO_MAPPER: ; 1E:1D82, 0x03DD82
     LDA #$00 ; Load.
     STA MMC3_BANK_CFG ; Set CFG, R0.
-    LDA IRQ_GFX_DATA_BANK_R0
+    LDA SCRIPT_R0-R5_GFX_BANK_VALS[6]
     STA MMC3_BANK_DATA ; Store data.
     LDA #$01
     STA MMC3_BANK_CFG ; Bank 1.
-    LDA IRQ_GFX_DATA_BANK_R1 ; Load.
+    LDA SCRIPT_R0-R5_GFX_BANK_VALS+1 ; Load.
     STA MMC3_BANK_DATA ; Switch.
     RTS
 BG_UPDATE_SWITCH?: ; 1E:1D97, 0x03DD97
@@ -6162,12 +6165,12 @@ BG_UPDATE_SWITCH?: ; 1E:1D97, 0x03DD97
     ASL A ; << 1, *2.
     TAY ; To Y index.
     LDA IRQ_DATA_UNK_BA,Y
-    STA IRQ_BANK_VALUES_R[0/1][2] ; Set value.
-    STA IRQ_GFX_DATA_BANK_R0 ; R0 bank.
+    STA IRQ_R0/R1_BANK_VALS[2] ; Set value.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS[6] ; R0 bank.
     LDA IRQ_DATA_UNK_BB,Y ; Load A.
-    STA IRQ_BANK_VALUES_R[0/1]+1 ; Set value.
-    STA IRQ_GFX_DATA_BANK_R1 ; Set as R1, too.
-    JSR BANKSWITCH_R0/R1 ; Commit values.
+    STA IRQ_R0/R1_BANK_VALS+1 ; Set value.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+1 ; Set as R1, too.
+    JSR SCRIPT_GFX_R0-R1_TO_MAPPER ; Commit values.
     LDY LEVEL/SCREEN_ON ; Load index.
     LDA DATA_UNK,Y
     ASL A ; << 2, *4.
@@ -6214,7 +6217,7 @@ OUTPUT_X_TO_636: ; 1E:1E33, 0x03DE33
 DONT_UPDATE_636_WITH_X: ; 1E:1E36, 0x03DE36
     INC 606_NMI_SWITCH_STATE_UNK ; ++
 606_SWITCH_RTN_B: ; 1E:1E39, 0x03DE39
-    LDA NAMETABLE_FOCUS_VAL?[2] ; Load
+    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load
     CLC
     ADC 607_UNK ; += val.
     CLC
@@ -6305,7 +6308,7 @@ X_LOOP: ; 1E:1EB1, 0x03DEB1
     STA TMP_03 ; To.
     STA TMP_0B ; To.
     LDY 98_UNK ; Y from.
-    LDA NAMETABLE_FOCUS_VAL?[2],Y ; A from which.
+    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2],Y ; A from which.
     CLC ; Prep add.
     ADC 97_COPY_607 ; A +=
     AND #$01 ; Get bottom bit.
@@ -6377,7 +6380,7 @@ LOOP_FOUR_BYTES: ; 1E:1F1D, 0x03DF1D
     JSR RTN_UNK_BG? ; Another rtn?
     LDX FLAG?_PPU_UPDATE_WEIRD_CLEARS ; Load
     LDA #$01
-    STA FLAG_WEIRD_UPDATES_A,X ; Store flag.
+    STA FLAG_ATTRMOD_A,X ; Store flag.
     INX ; X++
     STX FLAG?_PPU_UPDATE_WEIRD_CLEARS ; Store X back.
     LDY 61C_UNK ; Stream index.
@@ -6403,13 +6406,13 @@ LOOP_FOUR_BYTES: ; 1E:1F1D, 0x03DF1D
 BG_BUF_RTN?: ; 1E:1F7C, 0x03DF7C
     LDX FLAG?_PPU_UPDATE_WEIRD_CLEARS ; Load.
     LDA TMP_06 ; Move
-    STA FLAG_WEIRD_UPDATES_A,X
+    STA FLAG_ATTRMOD_A,X
     INX ; Buf++
     LDA TMP_07 ; Move
-    STA FLAG_WEIRD_UPDATES_A,X
+    STA FLAG_ATTRMOD_A,X
     INX ; Buf++
     LDA 628_UNK ; Move
-    STA FLAG_WEIRD_UPDATES_A,X
+    STA FLAG_ATTRMOD_A,X
     INX ; Buf++
     STX FLAG?_PPU_UPDATE_WEIRD_CLEARS
     RTS
@@ -6439,10 +6442,10 @@ LOOP_RTN_UNK: ; 1E:1FB1, 0x03DFB1
     LDA [TMP_0A],Y ; Load from stream.
     STA TMP_09 ; To.
     BMI USA_VAL_1
-    LDA IRQ_BANK_VALUES_R[0/1][2] ; Load val 0.
+    LDA IRQ_R0/R1_BANK_VALS[2] ; Load val 0.
     JMP SKIP_OTHER ; Always taken.
 USA_VAL_1: ; 1E:1FC2, 0x03DFC2
-    LDA IRQ_BANK_VALUES_R[0/1]+1 ; Load val 1.
+    LDA IRQ_R0/R1_BANK_VALS+1 ; Load val 1.
 SKIP_OTHER: ; 1E:1FC4, 0x03DFC4
     CMP #$E0 ; If _ #$E0
     BCC LT_E0 ; <, goto.

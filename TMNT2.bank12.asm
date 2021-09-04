@@ -124,9 +124,9 @@ STATE_0x51_ALTSWITCH_B: ; 0C:00D5, 0x0180D5
     DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; --
     BNE RTS ; != 0, goto.
     LDA #$2E
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$2F
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     LDY #$0A ; Color.
     LDA LEVEL/SCREEN_ON ; Load screen.
     CMP #$01 ; If _ #$01. Rocksteady hint.
@@ -146,15 +146,15 @@ LEVEL_EQ_0x01: ; 0C:00EC, 0x0180EC
     STA OBJ_ANIMATION_DISPLAY+1,X ; Set pair animation.
     LDA OBJ_POS_X??[18],X ; Move to next attrs.
     STA OBJ_POS_X??+1,X
-    STA OBJ_POS_Y??[18],X
-    STA OBJ_POS_Y??+1,X
+    STA OBJ_POS_Y_CONFIRMED[18],X
+    STA OBJ_POS_Y_CONFIRMED+1,X
     SEC ; Prep sub.
     SBC #$0C ; -= #$0C
     STA OBJ_POS_X??+2,X ; Store to next obj attrs.
-    STA OBJ_POS_Y??+2,X
-    LDA OBJ_POS_X?[18],X ; Move to other objs.
-    STA OBJ_POS_X?+1,X
-    STA OBJ_POS_X?+2,X
+    STA OBJ_POS_Y_CONFIRMED+2,X
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Move to other objs.
+    STA OBJ_POS_X_CONFIRMED+1,X
+    STA OBJ_POS_X_CONFIRMED+2,X
     LDA 4C6_OBJ_UNK[18],X ; Move to pair/next obj.
     STA 4C6_OBJ_UNK+1,X
     STA 4C6_OBJ_UNK+2,X
@@ -303,29 +303,29 @@ STATE_0x51_ALTSWITCH_K: ; 0C:024C, 0x01824C
     LDA #$00
     STA PPU_FLAG_UNK_MODIFY_LATCH_UNK ; Clear.
     LDA #$57 ; Set gfx bank.
-    STA ZP_R2-R5_BANK_VALUES+2
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4
     LDA #$3C ; Set anim.
     STA OBJ_ANIMATION_DISPLAY+2,X
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC #$05 ; -= 0x05
-    STA OBJ_POS_X?+2,X ; Store to next.
+    STA OBJ_POS_X_CONFIRMED+2,X ; Store to next.
     LDA OBJ_POS_X??[18],X ; Load
     CLC ; Prep add.
     ADC #$BC ; Add with #$BC
     STA OBJ_POS_X??+2,X ; Store to next.
-    STA OBJ_POS_Y??+2,X
+    STA OBJ_POS_Y_CONFIRMED+2,X
     LDA #$50
     STA OBJ_ENABLED_STATE+MORE?+2,X ; Store to next/pair.
     STA OBJ_ENABLED_STATE+MORE?+1,X
     LDA #$3B
     STA OBJ_ANIMATION_DISPLAY+1,X ; Set pair.
-    LDA OBJ_POS_X?+2,X ; Move from next to pair.
-    STA OBJ_POS_X?+1,X
-    LDA OBJ_POS_Y??+2,X ; Load from next.
+    LDA OBJ_POS_X_CONFIRMED+2,X ; Move from next to pair.
+    STA OBJ_POS_X_CONFIRMED+1,X
+    LDA OBJ_POS_Y_CONFIRMED+2,X ; Load from next.
     CLC ; Prep add.
     ADC #$42 ; Add val.
-    STA OBJ_POS_Y??+1,X ; Store to pair.
+    STA OBJ_POS_Y_CONFIRMED+1,X ; Store to pair.
     STA OBJ_POS_X??+1,X
     LDA #$20
     STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Set.
@@ -443,9 +443,9 @@ STATE_0x51_ALT_SWITCH: ; 0C:0330, 0x018330
     HIGH(STATE_0x51_ALTSWITCH_O)
 SET_GFX_HELPER: ; 0C:0354, 0x018354
     LDA #$4C
-    STA ZP_R2-R5_BANK_VALUES+2
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4
     LDA #$4D
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     RTS
 STATE_0x51_ALTSWITCH_N: ; 0C:035D, 0x01835D
     JSR SET_GFX_HELPER ; Set GFX.
@@ -643,9 +643,9 @@ STATE_0x51_SUB_0x0E+0x03_SWITCH_D: ; 0C:04B3, 0x0184B3
     LDY STATUS_FLAGS_B/OBJ_FOCUS[18],X ; Mod focus.
     JSR SET_FOCUS_LEFT/RIGHT_FLAG_FOR_OBJ_X->Y ; Goto, abuse RTS.
     LDA #$4C
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$4E
-    STA ZP_R2-R5_BANK_VALUES+3 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5 ; Set GFX.
     LDA #$00
     STA OBJ_ANIM_HOLD_TIMER?[18],X ; Clear hold.
     STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X ; Clear step.
@@ -665,9 +665,9 @@ STATE_0x51_SUB_0x0E+0x03_SWITCH_I: ; 0C:04DE, 0x0184DE
     JMP ANIM_HELPER_RTN ; Goto, abuse RTS.
 STATE_0x51_SUB_0x0E+0x03_SWITCH_F: ; 0C:04E3, 0x0184E3
     LDA #$4F
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$4D
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     LDA #$8C
     STA OBJECT_DATA_EXTRA_B?[18],X ; Set attr.
     JSR CLEAR_OBJ_ATTRS_UNK_1546 ; Clear attrs.
@@ -723,7 +723,7 @@ SEED_0xE0: ; 0C:055E, 0x01855E
     LDA #$E0 ; Seed val.
 VAL_SEEDED: ; 0C:0560, 0x018560
     CLC ; Prep add.
-    ADC OBJ_POS_X?[18],X ; Add with.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add with.
     TAY ; To Y index.
     LDA OBJ_POS_X??[18],X ; Load attr.
     JSR RTN_SCREEN?_UNK ; Do sub.
@@ -731,12 +731,12 @@ VAL_SEEDED: ; 0C:0560, 0x018560
     BEQ EXIT_MOVE_TERT
     LDA OBJ_POS_X_DELTA?[18],X ; Load
     BPL POS_ALT ; If positive, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$28 ; If _ #$28
     BCC EXIT_MOVE_TERT ; <, move tert exit.
     BCS EXIT_MOVE ; Otherwise don't move tert.
 POS_ALT: ; 0C:057D, 0x01857D
-    LDA OBJ_POS_X?[18],X ; Load pos.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load pos.
     CMP #$D8 ; If _ #$D8
     BCC EXIT_MOVE ; <, exit move.
 EXIT_MOVE_TERT: ; 0C:0584, 0x018584
@@ -791,12 +791,12 @@ STATE_0x51_SUB_0x0E+0x03_SWITCH_L: ; 0C:05D7, 0x0185D7
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
     AND #$04 ; Test bit.
     BNE BIT_SET ; Set, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$C0 ; If _ #$C0
     BCS VAL_GT ; >=, goto.
     BNE DIFF_RTN ; <, goto. Note: Funny way, never done this way I've see other places.
 BIT_SET: ; 0C:05F3, 0x0185F3
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$41 ; If _ #$41
     BCC VAL_GT ; <, goto.
 DIFF_RTN: ; 0C:05FA, 0x0185FA
@@ -836,7 +836,7 @@ DIFF_LT_0x60: ; 0C:063B, 0x01863B
     BCS GT_0x80 ; >=, goto.
     LDA TMP_12 ; Flag
     BNE FLAG_SET ; Set, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$40 ; If _ #$40
     BEQ GT_0x80 ; ==, goto.
     BCC GT_0x80 ; <, goto.
@@ -844,7 +844,7 @@ DIFF_LT_0x60: ; 0C:063B, 0x01863B
     STA OBJ_POS_X_DELTA?[18],X ; Set attr.
     BNE GT_0x80 ; Always taken.
 FLAG_SET: ; 0C:0659, 0x018659
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$C0 ; If _ #$C0
     BCS GT_0x80 ; >=, goto.
     LDA #$01
@@ -902,16 +902,16 @@ VAL_CONTINUE: ; 0C:06B0, 0x0186B0
     LDA 556_OBJ_STATUS_FLAGS_A[18],Y ; Load
     AND #$04 ; Test bit.
     BNE BIT_SET ; != 0, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC #$1E ; -= 0x1E
     JMP WRITE_YOBJ_ATTR ; Goto.
 BIT_SET: ; 0C:06DF, 0x0186DF
-    LDA OBJ_POS_X?[18],X ; Load attr.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load attr.
     CLC ; Prep add.
     ADC #$1E ; Add with.
 WRITE_YOBJ_ATTR: ; 0C:06E5, 0x0186E5
-    STA OBJ_POS_X?[18],Y ; Store to Xobj.
+    STA OBJ_POS_X_CONFIRMED[18],Y ; Store to Xobj.
 EXIT_INC_PTR: ; 0C:06E8, 0x0186E8
     INC 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; ++
 EXIT_MOVE_ANIMATE: ; 0C:06EB, 0x0186EB
@@ -944,16 +944,16 @@ VAL_ONGOING: ; 0C:0709, 0x018709
     LDA 556_OBJ_STATUS_FLAGS_A[18],Y ; Load
     AND #$04 ; Test.
     BNE POS_ADD ; Set, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC #$18 ; -= val.
     JMP POS_SEEDED ; Goto.
 POS_ADD: ; 0C:0738, 0x018738
-    LDA OBJ_POS_X?[18],X ; Load.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load.
     CLC ; Prep add.
     ADC #$18 ; += val.
 POS_SEEDED: ; 0C:073E, 0x01873E
-    STA OBJ_POS_X?[18],Y ; Store pos.
+    STA OBJ_POS_X_CONFIRMED[18],Y ; Store pos.
     LDA #$01
     STA STATUS_FLAGS_B/OBJ_FOCUS[18],Y ; Set attr.
 EXIT_INC: ; 0C:0746, 0x018746
@@ -999,16 +999,16 @@ VAL_ONGOING: ; 0C:078A, 0x01878A
     LDA 556_OBJ_STATUS_FLAGS_A[18],Y ; Load
     AND #$04 ; Test bit.
     BNE BIT_SET
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC #$1E ; -= val
     JMP POS_SEEDED ; Goto.
 BIT_SET: ; 0C:07B3, 0x0187B3
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CLC ; Prep add.
     ADC #$1E ; Add with.
 POS_SEEDED: ; 0C:07B9, 0x0187B9
-    STA OBJ_POS_X?[18],Y ; Store pos.
+    STA OBJ_POS_X_CONFIRMED[18],Y ; Store pos.
 EXIT_INC_PTR: ; 0C:07BC, 0x0187BC
     INC 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; Move.
     LDY #$02 ; File.
@@ -1039,16 +1039,16 @@ TIMER_ONGOING: ; 0C:07E1, 0x0187E1
     LDA 556_OBJ_STATUS_FLAGS_A[18],Y ; Load
     AND #$04 ; Test bit.
     BNE POS_ADD ; Set, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC #$18 ; -= val.
     JMP POS_SEEDED ; goto.
 POS_ADD: ; 0C:080A, 0x01880A
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CLC ; Prep add.
     ADC #$18 ; Add val.
 POS_SEEDED: ; 0C:0810, 0x018810
-    STA OBJ_POS_X?[18],Y ; Store pos.
+    STA OBJ_POS_X_CONFIRMED[18],Y ; Store pos.
     LDA #$01
     STA STATUS_FLAGS_B/OBJ_FOCUS[18],Y ; Set attr.
 EXIT_INC_PTR: ; 0C:0818, 0x018818
@@ -1079,16 +1079,16 @@ TIMER_ONGOING: ; 0C:0838, 0x018838
     LDA 556_OBJ_STATUS_FLAGS_A[18],Y ; Load
     AND #$04 ; Test
     BNE BIT_SET
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC #$18 ; Sub.
     JMP VAL_SUB ; Goto.
 BIT_SET: ; 0C:0861, 0x018861
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CLC ; Prep add.
     ADC #$18 ; Add.
 VAL_SUB: ; 0C:0867, 0x018867
-    STA OBJ_POS_X?[18],Y ; Store pos.
+    STA OBJ_POS_X_CONFIRMED[18],Y ; Store pos.
     LDA #$01
     STA STATUS_FLAGS_B/OBJ_FOCUS[18],Y ; Set attr.
 EXIT_INC_VAL: ; 0C:086F, 0x01886F
@@ -1123,16 +1123,16 @@ VAL_ONGOING: ; 0C:0899, 0x018899
     LDA 556_OBJ_STATUS_FLAGS_A[18],Y ; Load
     AND #$04 ; Test bit.
     BNE VAL_ADD ; Set, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC #$1E ; -= 0x1E
     JMP POS_SEEDED ; Goto, abuse RTS.
 VAL_ADD: ; 0C:08C2, 0x0188C2
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CLC ; Prep add.
     ADC #$1E ; Add with.
 POS_SEEDED: ; 0C:08C8, 0x0188C8
-    STA OBJ_POS_X?[18],Y ; Store pos.
+    STA OBJ_POS_X_CONFIRMED[18],Y ; Store pos.
 EXIT_INC: ; 0C:08CB, 0x0188CB
     INC 5C2_OBJ_DATA_PTR/MISC_INDEX[18],X ; ++
     LDY #$02 ; File.
@@ -1141,8 +1141,8 @@ EXIT_INC: ; 0C:08CB, 0x0188CB
 OBJ_SPAWN_HELPER: ; 0C:08D6, 0x0188D6
     LDA OBJ_POS_X??[18],X ; Move from Xobj to Yobj.
     STA OBJ_POS_X??[18],Y
-    LDA OBJ_POS_Y??[18],X ; 2x
-    STA OBJ_POS_Y??[18],Y
+    LDA OBJ_POS_Y_CONFIRMED[18],X ; 2x
+    STA OBJ_POS_Y_CONFIRMED[18],Y
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; 3x
     STA 556_OBJ_STATUS_FLAGS_A[18],Y
     LDA #$00
@@ -1210,7 +1210,7 @@ VAL_LT_0x08: ; 0C:096B, 0x01896B
     STA OBJ_ANIMATION_DISPLAY[18],X ; Set anim from file.
     INY ; Stream++
     LDA [TMP_10],Y ; Load GFX.
-    STA ZP_R2-R5_BANK_VALUES+3 ; Store GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5 ; Store GFX.
     RTS ; Goto.
 FILES_L: ; 0C:0976, 0x018976
     LOW(FILE_A)
@@ -1252,9 +1252,9 @@ STATE_0x51_SUBSWITCH_E: ; 0C:0999, 0x018999
     LDA OBJ_TERTIARY_SWITCH?[18],X ; Load tert.
     BNE TERT_NONZERO
     LDA #$4C
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$4E
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     JSR CLEAR_OBJ_ATTRS_UNK_154F ; Clear attrs.
     JSR CLEAR_OBJ_ATTRS_UNK_1546
     LDA #$29
@@ -1344,9 +1344,9 @@ STATE_0x51_SUBSWITCH_F: ; 0C:0A56, 0x018A56
     HIGH(STATE_0x51_SUB_0x0E_SWITCH_C)
 STATE_0x51_SUB_0x0E_SWITCH_A: ; 0C:0A62, 0x018A62
     LDA #$4F
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$4E
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     JSR CLEAR_OBJ_ATTRS_UNK_154F ; Clear attr.
     LDA #$2A
     STA OBJ_ANIMATION_DISPLAY[18],X ; Disp.
@@ -1372,7 +1372,7 @@ STATE_0x51_SUB_0x0E_SWITCH_B: ; 0C:0A98, 0x018A98
     LDY #$00
     JSR ADD_A/Y_TO_OBJ_DELTA? ; Move.
     JSR MOVE_OBJ_POS_DELTA_AMOUNT? ; Move.
-    LDA OBJ_POS_X?[18],X ; Load val.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load val.
     CMP #$2C ; If _ #$2C
     BCC CLEAR_ATTRS ; <, goto.
     CMP #$D4 ; If _ #$D4
@@ -1463,7 +1463,7 @@ SYNC: ; 0C:0B53, 0x018B53
 STATE_0x52_SUBSWITCH_B: ; 0C:0B5C, 0x018B5C
     JSR OBJ_RTN_UNK_RET_VAL_UNK ; Do.
     JSR OBJECT_X_MOVE? ; Move.
-    LDA OBJ_POS_Y??[18],X ; Load
+    LDA OBJ_POS_Y_CONFIRMED[18],X ; Load
     CMP #$30 ; If _ #$30
     BCC EXIT_INIT ; <, goto.
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
@@ -1591,9 +1591,9 @@ STATE_0x53_SUBSWITCH_A: ; 0C:0BFB, 0x018BFB
     HIGH(RTN_F)
 RTN_A: ; 0C:0C0B, 0x018C0B
     LDA #$5C
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$5D
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     LDA #$00
     STA 704_OBJ_USE_UNK ; Clear vars.
     STA 705_UNK
@@ -1614,7 +1614,7 @@ SINGLE_PLAYER: ; 0C:0C23, 0x018C23
     LDA OBJ_POS_X??[18],X ; Load
     CLC ; Prep add.
     ADC 4C6_OBJ_UNK[18],X ; Add with.
-    STA OBJ_POS_Y??[18],X ; Store to.
+    STA OBJ_POS_Y_CONFIRMED[18],X ; Store to.
     LDA #$60
     JSR SND_BANKED_DISPATCH ; Play sound.
     INC OBJ_TERTIARY_SWITCH?[18],X ; Next tert.
@@ -1700,9 +1700,9 @@ STATE_0x53_SUBSWITCH_C: ; 0C:0CE8, 0x018CE8
     HIGH(STATE_0x53_SUB_0x02_SWITCH_C)
 STATE_0x53_SUB_0x02_SWITCH_A: ; 0C:0CF4, 0x018CF4
     LDA #$5C
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set gfx.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set gfx.
     LDA #$5D
-    STA ZP_R2-R5_BANK_VALUES+3 ; Set gfx.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5 ; Set gfx.
     JSR FIND_PLAYER_FOCUS_HELPER ; Do.
     LDY #$00 ; File.
     JSR ANIM_HOLD_FILE_INIT ; Do.
@@ -1854,9 +1854,9 @@ STATE_0x53_SUBSWITCH_D: ; 0C:0DD3, 0x018DD3
     HIGH(STATE_0x53_SUB_0x03_SWITCH_K)
 STATE_0x53_SUB_0x03_SWITCH_D: ; 0C:0DEF, 0x018DEF
     LDA #$5F
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$5D
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     LDA #$8C
     STA OBJECT_DATA_EXTRA_B?[18],X ; Set attr.
     JSR CLEAR_OBJ_ATTRS_UNK_1546 ; Clear attrs.
@@ -1913,13 +1913,13 @@ BIT_UNSET: ; 0C:0E6E, 0x018E6E
     LDA #$E8 ; Alt val.
 VAL_SEEDED: ; 0C:0E70, 0x018E70
     CLC ; Prep add.
-    ADC OBJ_POS_X?[18],X ; Add to.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add to.
     TAY ; Val to Y.
     LDA OBJ_POS_X??[18],X ; Load val.
     JSR RTN_SCREEN?_UNK ; Do.
     CMP #$01 ; If _ #$01
     BEQ EXIT_TERT ; ==, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$24 ; If _ #$24
     BCC EXIT_TERT ; <, goto.
     CMP #$DC ; If _ #$DC
@@ -1954,9 +1954,9 @@ STATE_0x53_SUB_0x03_SWITCH_G: ; 0C:0E98, 0x018E98
     RTS ; Leave.
 STATE_0x53_SUB_0x03_SWITCH_A: ; 0C:0EB4, 0x018EB4
     LDA #$5E
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$5D
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     LDA #$99
     STA OBJECT_DATA_EXTRA_B?[18],X ; Set attr.
     JSR CLEAR_OBJ_ATTRS_UNK_1546 ; Clear attrs.
@@ -1971,9 +1971,9 @@ STATE_0x53_SUB_0x03_SWITCH_B: ; 0C:0ED5, 0x018ED5
     DEC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; --
     BNE RTS ; != 0, goto.
     LDA #$5C
-    STA ZP_R2-R5_BANK_VALUES+2
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4
     LDA #$5D
-    STA ZP_R2-R5_BANK_VALUES+3 ; Change GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5 ; Change GFX.
     LDA #$03
     STA OBJECT_DATA_EXTRA_B?[18],X ; Set attr.
     LDY #$00 ; File.
@@ -2000,9 +2000,9 @@ STATE_0x53_SUB_0x03_SWITCH_H: ; 0C:0F0A, 0x018F0A
     JSR CHECK_OBJS[0x0D-0x12]_DISABLED_RET_CS_PASS ; Do.
     BCC WAIT_OBJS
     LDA #$5C
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$5D
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     JSR CLEAR_OBJ_ATTRS_UNK_1546 ; Clear attrs.
     JSR CLEAR_OBJ_ATTRS_UNK_154F
     LDY #$02 ; File.
@@ -2048,8 +2048,8 @@ BIT_CLEAR: ; 0C:0F7B, 0x018F7B
     LDA #$E0 ; Alt val.
 VAL_SEEDED: ; 0C:0F7D, 0x018F7D
     CLC ; Prep add.
-    ADC OBJ_POS_X?[18],X ; Add to Xobj val.
-    STA OBJ_POS_X?[18],Y ; Store to focus val.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add to Xobj val.
+    STA OBJ_POS_X_CONFIRMED[18],Y ; Store to focus val.
     INY ; Next obj.
     CPY #$12 ; If _ OBJ[0x12]
     BCC NOT_ALL_OBJS ; <, goto.
@@ -2077,9 +2077,9 @@ STATE_0x53_SUBSWITCH_E: ; 0C:0FAC, 0x018FAC
     LDA OBJ_TERTIARY_SWITCH?[18],X ; Load tert.
     BNE TERT_NONZERO ; != 0, goto.
     LDA #$5E
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$5D
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     JSR CLEAR_OBJ_ATTRS_UNK_1546 ; Clear attrs.
     JSR CLEAR_OBJ_ATTRS_UNK_154F
     LDA #$4A
@@ -2163,9 +2163,9 @@ STATE_0x53_SUBSWITCH_F: ; 0C:105A, 0x01905A
     HIGH(STATE_0x53_SUB_0x0E_SWITCH_C)
 STATE_0x53_SUB_0x0E_SWITCH_A: ; 0C:1066, 0x019066
     LDA #$5E
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$5D
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     JSR CLEAR_OBJ_ATTRS_UNK_1546 ; Clear attrs.
     JSR CLEAR_OBJ_ATTRS_UNK_154F
     LDA #$4B
@@ -2207,12 +2207,12 @@ STATE_0x53_SUB_0x0E_SWITCH_B: ; 0C:10A7, 0x0190A7
 VAL_NEGATIVE: ; 0C:10CB, 0x0190CB
     LDA OBJ_POS_X_DELTA?[18],X ; Load
     BPL VAL_POSITIVE ; If positive, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$31 ; If _ #$31
     BCS EXIT_MOVE ; >=, goto.
     BCC EXIT_ATTR_CLEAR ; <, goto.
 VAL_POSITIVE: ; 0C:10D9, 0x0190D9
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$D0 ; If _ #$D0
     BCC EXIT_MOVE ; <, goto.
 EXIT_ATTR_CLEAR: ; 0C:10E0, 0x0190E0
@@ -2442,10 +2442,10 @@ EXIT_SOUND: ; 0C:1248, 0x019248
 OBJ_STATE_0x56_HANDLER: ; 0C:1250, 0x019250
     LDA 544_OBJ_UNK_POS_DELTA?+17,X ; Move from Obj[17] to Xobj.
     STA 556_OBJ_STATUS_FLAGS_A[18],X
-    LDA OBJ_POS_Y??+17,X ; 2x
-    STA OBJ_POS_X?[18],X
+    LDA OBJ_POS_Y_CONFIRMED+17,X ; 2x
+    STA OBJ_POS_X_CONFIRMED[18],X
     LDA OBJ_POS_X_SUBPIXEL?+17,X ; 3x
-    STA OBJ_POS_Y??[18],X
+    STA OBJ_POS_Y_CONFIRMED[18],X
     LDA #$A2 ; Anim.
     STA OBJ_ANIMATION_DISPLAY[18],X ; Set anim.
     RTS
@@ -2521,7 +2521,7 @@ RTN_A: ; 0C:12B0, 0x0192B0
     LDA #$01
     STA 556_OBJ_STATUS_FLAGS_A[18],X ; Set attr.
     LDA #$30
-    STA OBJ_POS_X?[18],X ; Set.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Set.
     LDA #$B0
     STA OBJ_POS_X??[18],X ; Set.
     LDA #$D0
@@ -2567,16 +2567,16 @@ RTN_A: ; 0C:1329, 0x019329
 RET_CC: ; 0C:1333, 0x019333
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
     BNE EXIT_JMP ; If set, leave.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$A0 ; If _ #$A0
     BCC EXIT_STATE_MOVE_POS+ATTRS_IDK ; <, goto.
 EXIT_JMP: ; 0C:133F, 0x01933F
     JMP SET_GFX/ANIM/MISC ; Goto, abuse RTS.
 SET_GFX/ANIM/MISC: ; 0C:1342, 0x019342
     LDA #$2C
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX.
     LDA #$2D
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     DEC OBJ_ANIM_HOLD_TIMER?[18],X ; --
     BPL HOLD_POSITIVE ; If positive, goto.
     LDA #$06
@@ -2608,7 +2608,7 @@ EXIT_STATE_MOVE_POS+ATTRS_IDK: ; 0C:1380, 0x019380
     STA OBJ_SECONDARY_SWITCH?[18],X ; Set secondary.
     LDA #$01
     STA OBJ_TERTIARY_SWITCH?[18],X ; Set tert.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC #$1A ; -= 0x1A
     STA OBJ_POS_X_SUBPIXEL?[18],X ; Store back.
@@ -2685,7 +2685,7 @@ VAL_NONZERO: ; 0C:1409, 0x019409
 QUARTER_CHANCE_ROUTINE: ; 0C:1423, 0x019423
     JSR FOCUS_EITHER_PLAYER_HELPER_RET_CS_FAIL_TO_FOCUS ; Do.
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Get focus.
-    LDA OBJ_POS_X?[18],Y ; Focus val.
+    LDA OBJ_POS_X_CONFIRMED[18],Y ; Focus val.
     STA OBJECT_DATA_EXTRA_B?+1,X ; To pair.
     LDA OBJ_POS_X??[18],Y ; Focus val.
     STA OBJ_TERTIARY_SWITCH?+1,X ; To pair.
@@ -2723,7 +2723,7 @@ VAL_GT_0x1C: ; 0C:1475, 0x019475
     BCC VAL_LT_0xE4 ; <, goto.
     LDA #$E4 ; Max.
 VAL_LT_0xE4: ; 0C:147B, 0x01947B
-    STA OBJ_POS_X?[18],X ; Set pos.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Set pos.
     CLC ; Prep add.
     LDA TMP_09 ; Load
     ADC 4B4_OBJ_SPEED?[18],X ; Add with.
@@ -2762,7 +2762,7 @@ STEPPED_RTN_ATTR_MANIP: ; 0C:14BE, 0x0194BE
 RTS: ; 0C:14C7, 0x0194C7
     RTS ; Leave.
 EXTENSION_ADD: ; 0C:14C8, 0x0194C8
-    LDA OBJ_POS_X?[18],X ; Load from Xobj.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load from Xobj.
     CMP OBJECT_DATA_EXTRA_B?+1,X ; If _ pair
     BCS RTS ; >=, goto.
     CLC ; Prep add.
@@ -2784,7 +2784,7 @@ EXTENSION_ADD: ; 0C:14C8, 0x0194C8
 RTS: ; 0C:14F4, 0x0194F4
     RTS ; Leave.
 EXTENSION_SUB: ; 0C:14F5, 0x0194F5
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP OBJECT_DATA_EXTRA_B?+1,X ; If _ pair
     BCC RTS ; <, goto.
     SEC ; Prep sub.
@@ -2940,11 +2940,11 @@ VAL_NE_ZERO: ; 0C:1624, 0x019624
     STA 4C6_OBJ_UNK[18],X ; Store to.
     CLC ; Prep add.
     ADC OBJ_POS_X??[18],X ; Add to.
-    STA OBJ_POS_Y??[18],X ; Store.
+    STA OBJ_POS_Y_CONFIRMED[18],X ; Store.
     RTS ; Leave.
-    LDA OBJ_POS_X?[18],X
+    LDA OBJ_POS_X_CONFIRMED[18],X
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
-    CMP OBJ_POS_X?[18],Y
+    CMP OBJ_POS_X_CONFIRMED[18],Y
     ROL A
     AND #$01
     STA STATUS_FLAGS_B/OBJ_FOCUS[18],X
@@ -2956,7 +2956,7 @@ VAL_NE_ZERO: ; 0C:1624, 0x019624
     LDY TMP_00
     LDA 0C:16A1,Y
     CLC
-    ADC OBJ_POS_X?[18],X
+    ADC OBJ_POS_X_CONFIRMED[18],X
     PHA
     ROR A
     EOR 0C:16A1,Y
@@ -2972,7 +2972,7 @@ VAL_NE_ZERO: ; 0C:1624, 0x019624
     TAY
     LDA 0C:16A1,Y
     CLC
-    ADC OBJ_POS_X?[18],X
+    ADC OBJ_POS_X_CONFIRMED[18],X
     STA OBJ_POS_X_SUBPIXEL?[18],X
     LDA OBJ_POS_X??[18],X
     STA 4B4_OBJ_SPEED?[18],X
@@ -3044,7 +3044,7 @@ RTS: ; 0C:16EA, 0x0196EA
     STA OBJ_POS_X??[18],X
     RTS
 DIFF_ATTRS: ; 0C:1713, 0x019713
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC OBJECT_DATA_EXTRA_B?+1,X ; Sub pair val.
     BPL POSITIVE ; Positive, goto.
@@ -3057,7 +3057,7 @@ POSITIVE: ; 0C:1723, 0x019723
     CMP #$10 ; If _ #$10
     LDA #$00 ; Prep val.
     BCC VAL_FOUND ; <, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP OBJECT_DATA_EXTRA_B?+1,X ; CMP to attr.
     LDA #$02 ; Val.
     BCS VAL_FOUND ; Pos >= attr.
@@ -3326,7 +3326,7 @@ RTN_A: ; 0C:1883, 0x019883
     STA 4C6_OBJ_UNK[18],X ; Set attr.
     CLC ; Prep add.
     ADC OBJ_POS_X??[18],X ; Add with.
-    STA OBJ_POS_Y??[18],X ; Store to.
+    STA OBJ_POS_Y_CONFIRMED[18],X ; Store to.
     JSR GFX/ANIM_HELPER ; Do.
     LDA #$00
     STA ARR_SPRITE_OBJ_TIMER?+1 ; Clear.
@@ -3338,9 +3338,9 @@ RTN_A: ; 0C:1883, 0x019883
     RTS ; Leave.
 GFX/ANIM_HELPER: ; 0C:18C6, 0x0198C6
     LDA #$A4
-    STA ZP_R2-R5_BANK_VALUES+2
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4
     LDA #$A5
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     LDA #$51
     STA OBJ_ANIMATION_DISPLAY[18],X
     RTS
@@ -3377,11 +3377,11 @@ RTN_B: ; 0C:190D, 0x01990D
     LDA #$00
     STA OBJECT_DATA_EXTRA_B?[18],X ; Set attr.
     JSR XPOS_RTN_RET_?? ; Do.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$E0 ; If _ #$E0
     BCC LT_0xE0
     LDA #$DF ; That's cap.
-    STA OBJ_POS_X?[18],X ; Set cap.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Set cap.
 LT_0xE0: ; 0C:1921, 0x019921
     JSR MOVE_UNK_RET_?? ; Do.
     SEC ; Prep sub.
@@ -3407,9 +3407,9 @@ VAL_GTE_0xC6: ; 0C:1952, 0x019952
     JMP EXIT_ANIM_MOD ; Goto, abuse RTS.
 EXIT_GFX: ; 0C:1958, 0x019958
     LDA #$A4
-    STA ZP_R2-R5_BANK_VALUES+2 ; Gfx swap.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Gfx swap.
     LDA #$A5
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     LDA #$02
     STA OBJ_SECONDARY_SWITCH?[18],X ; Mod state.
     LDA #$00
@@ -3442,8 +3442,8 @@ RTN_C: ; 0C:1995, 0x019995
     JMP 0C:1A68
 FOCUS_L/R_SET_HELPER: ; 0C:19A0, 0x0199A0
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Get focus.
-    LDA OBJ_POS_X?[18],X ; Load Xobj.
-    CMP OBJ_POS_X?[18],Y ; If _ Focus. Carry set/clear.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load Xobj.
+    CMP OBJ_POS_X_CONFIRMED[18],Y ; If _ Focus. Carry set/clear.
     ROR A ; >> 2. Carry to 0x40.
     ROR A
     EOR #$40 ; Invert
@@ -3455,8 +3455,8 @@ FOCUS_L/R_SET_HELPER: ; 0C:19A0, 0x0199A0
     STA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Store back.
     RTS ; Leave.
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X
-    LDA OBJ_POS_X?[18],Y
-    LDY OBJ_POS_X?[18],X
+    LDA OBJ_POS_X_CONFIRMED[18],Y
+    LDY OBJ_POS_X_CONFIRMED[18],X
     BMI 0C:19CC
     CMP #$60
     LDA #$01
@@ -3481,12 +3481,12 @@ RTN_D: ; 0C:19E9, 0x0199E9
     ADC OBJ_POS_X_SUBPIXEL?[18],X ; Add with.
     STA OBJ_POS_X_SUBPIXEL?[18],X ; Store to.
     LDA OBJ_POS_X_DELTA?[18],X ; Load
-    ADC OBJ_POS_X?[18],X ; Carry add.
-    STA OBJ_POS_X?[18],X ; Store to.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Carry add.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store to.
     LDA IRQ/SCRIPT_RUN_COUNT? ; Load count.
     AND #$1F ; Keep bits 0001.1111
     BEQ ONE_IN_THIRTY_TWO ; == 0, goto. 1 in 32 chance of.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$20 ; If _ #$20
     BCC 0C:1A0D ; <, goto.
     CMP #$E0 ; If _ #$E0
@@ -3565,8 +3565,8 @@ RTN_A: ; 0C:1A8C, 0x019A8C
 STATUS_NEG: ; 0C:1AA0, 0x019AA0
     SEC ; Prep sub.
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Get focus obj.
-    LDA OBJ_POS_X?[18],X ; Load X attr.
-    SBC OBJ_POS_X?[18],Y ; Subtract Y attr.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load X attr.
+    SBC OBJ_POS_X_CONFIRMED[18],Y ; Subtract Y attr.
     LDY OBJ_POS_X_DELTA?[18],X ; Y from Xobj.
     BMI SUB_NEG ; Subu result neg, goto.
     CMP #$F0 ; If _ #$F0
@@ -3606,7 +3606,7 @@ STEP_ZERO: ; 0C:1AD4, 0x019AD4
     CMP 4C6_OBJ_UNK[18],X ; If _ Attr
     BCC OOB ; <, goto.
     STA 4C6_OBJ_UNK[18],X ; Store higher.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$21 ; If _ #$21
     BCC SKIP_JMP ; <, goto.
     CMP #$DF ; If _ #$DF
@@ -3643,18 +3643,18 @@ RANGED_MOVE: ; 0C:1B48, 0x019B48
     ADC OBJ_POS_X_SUBPIXEL?[18],X ; Add
     STA OBJ_POS_X_SUBPIXEL?[18],X ; Store.
     LDA OBJ_POS_X_DELTA?[18],X ; Load
-    ADC OBJ_POS_X?[18],X ; Carry add.
-    STA OBJ_POS_X?[18],X ; Store back.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Carry add.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store back.
     CMP #$20 ; If _ #$20
     BCS ABOVE_MIN ; >=, goto.
     LDA #$20
-    STA OBJ_POS_X?[18],X ; Store min.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store min.
     BNE RTS
 ABOVE_MIN: ; 0C:1B66, 0x019B66
     CMP #$E0 ; If _ #$E0
     BCC RTS ; <, goto. Below max.
     LDA #$DF
-    STA OBJ_POS_X?[18],X ; Store max.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store max.
 RTS: ; 0C:1B6F, 0x019B6F
     RTS ; Leave.
 OBJ_DATA_C: ; 0C:1B70, 0x019B70
@@ -3701,10 +3701,10 @@ DATA_A: ; 0C:1B95, 0x019B95
 OBJ_STATE_0x58_HANDLER: ; 0C:1B9F, 0x019B9F
     LDA 544_OBJ_UNK_POS_DELTA?+17,X ; Load from obj-1
     STA 556_OBJ_STATUS_FLAGS_A[18],X ; Store to us.
-    LDA OBJ_POS_Y??+17,X ; Load from obj-1
-    STA OBJ_POS_X?[18],X ; Store to us.
+    LDA OBJ_POS_Y_CONFIRMED+17,X ; Load from obj-1
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store to us.
     LDA OBJ_POS_X_SUBPIXEL?+17,X ; Load from obj-1, different var.
-    STA OBJ_POS_Y??[18],X ; Store to us.
+    STA OBJ_POS_Y_CONFIRMED[18],X ; Store to us.
     LDA OBJ_ANIMATION_DISPLAY+17,X ; Load from obj - 1
     CMP #$02 ; If _ #$02
     LDA #$00 ; Seed val.
@@ -3761,7 +3761,7 @@ ADD_MIN_HELPER: ; 0C:1BF6, 0x019BF6
     BCS DONT_MIN ; >=, goto.
     LDA #$30 ; Min.
 DONT_MIN: ; 0C:1C03, 0x019C03
-    STA OBJ_POS_Y??[18],X ; Set attr.
+    STA OBJ_POS_Y_CONFIRMED[18],X ; Set attr.
     RTS ; Leave.
     LDA #$40
     BNE 0C:1C0B
@@ -3779,7 +3779,7 @@ STATE/GFX/EXTENSION_EXIT: ; 0C:1C1A, 0x019C1A
     LDA #$00
     STA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Clear.
     LDA #$A6
-    STA ZP_R2-R5_BANK_VALUES+3 ; Mod GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5 ; Mod GFX.
     JMP FOCUS_L/R_SET_HELPER ; Goto.
 RTN_B: ; 0C:1C30, 0x019C30
     INC 59E_OBJ_UNK/EXTRA_TIMER[18],X ; ++
@@ -3817,7 +3817,7 @@ EXIT_MOD_ONLY: ; 0C:1C6D, 0x019C6D
 MOVE_TERT: ; 0C:1C70, 0x019C70
     INC OBJ_TERTIARY_SWITCH?[18],X ; Move tert.
     LDA #$A5
-    STA ZP_R2-R5_BANK_VALUES+3 ; Set GFX.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5 ; Set GFX.
     LDA #$51
     STA OBJ_ANIMATION_DISPLAY[18],X ; Set anim.
     LDA 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Load
@@ -3838,7 +3838,7 @@ OBJ_STATE_0x59_HANDLER: ; 0C:1C92, 0x019C92
     BCS EXIT_DIE ; Ret CS, die.
     LDA 4C6_OBJ_UNK[18],X ; Load
     ADC OBJ_POS_X??[18],X ; Add with.
-    STA OBJ_POS_Y??[18],X ; Store to.
+    STA OBJ_POS_Y_CONFIRMED[18],X ; Store to.
     LDA #$93
     STA OBJECT_DATA_EXTRA_B?[18],X ; Set attr.
     LDA #$FF
@@ -3869,20 +3869,20 @@ SIMPLE_HOLD_OR_DIE: ; 0C:1CDC, 0x019CDC
     BPL RTS ; If positive, leave.
 EXIT_DIE: ; 0C:1CE1, 0x019CE1
     JMP INIT_OBJECT[X]_DATA_FULL ; Else, kill self.
-    LDA OBJ_POS_Y??+17,X
-    STA OBJ_POS_X?[18],X
+    LDA OBJ_POS_Y_CONFIRMED+17,X
+    STA OBJ_POS_X_CONFIRMED[18],X
     LDA OBJ_POS_X_SUBPIXEL?+17,X
-    STA OBJ_POS_Y??[18],X
+    STA OBJ_POS_Y_CONFIRMED[18],X
     RTS
     STX OBJ_HANDLER_FOCUS_SCRATCHPAD ; Save Xobj.
-    LDA OBJ_POS_X?[18],X ; Set TMP's from Xobj.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Set TMP's from Xobj.
     STA TMP_08
-    LDA OBJ_POS_Y??[18],X
+    LDA OBJ_POS_Y_CONFIRMED[18],X
     STA TMP_09
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Get focus obj.
-    LDA OBJ_POS_X?[18],Y ; Set TMP's from focus OBJ.
+    LDA OBJ_POS_X_CONFIRMED[18],Y ; Set TMP's from focus OBJ.
     STA TMP_0A
-    LDA OBJ_POS_Y??[18],Y
+    LDA OBJ_POS_Y_CONFIRMED[18],Y
     STA TMP_0B
     JSR L_0C:1D96 ; Do.
     LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Load
@@ -3905,7 +3905,7 @@ CREATE_OBJ: ; 0C:1D2D, 0x019D2D
     CLC
     LDA L_0C:1D8E,Y
     ADC TMP_08
-    STA OBJ_POS_X?[18],X
+    STA OBJ_POS_X_CONFIRMED[18],X
     CLC
     LDA L_0C:1D8F,Y
     LDY OBJ_HANDLER_FOCUS_SCRATCHPAD
@@ -3913,7 +3913,7 @@ CREATE_OBJ: ; 0C:1D2D, 0x019D2D
     STA 4C6_OBJ_UNK[18],X
     CLC
     ADC TMP_06
-    STA OBJ_POS_Y??[18],X
+    STA OBJ_POS_Y_CONFIRMED[18],X
     LDA TMP_06
     STA OBJ_POS_X??[18],X
     LDA #$00
@@ -4141,9 +4141,9 @@ ANIM/GFX_HELPER: ; 0C:1EC3, 0x019EC3
     LDA #$5B
     STA OBJ_ANIMATION_DISPLAY[18],X ; Set anim disp.
     LDA #$A7
-    STA ZP_R2-R5_BANK_VALUES+2 ; Set GFX banks to use.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; Set GFX banks to use.
     LDA #$A6
-    STA ZP_R2-R5_BANK_VALUES+3
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     RTS ; Leave.
 OBJ_DATA_A: ; 0C:1ED1, 0x019ED1
     .db 00

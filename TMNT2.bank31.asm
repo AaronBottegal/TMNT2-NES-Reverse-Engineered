@@ -281,9 +281,9 @@ RTS_EOF: ; 1F:01D2, 0x03E1D2
     STX PPU_UPDATE_BUF_INDEX ; Store index.
     RTS
 BANK_SWITCH_BASED_ON_SCREEN/LEVEL: ; 1F:01DB, 0x03E1DB
-    LDY LEVEL/SCREEN_ON ; Load index.
-    LDA BANK_USE_DATA,Y ; Load bank.
-    JMP BANK_PAIR_USE_A ; Goto bank.
+    LDY LEVEL/SCREEN_ON ; Load screen for index.
+    LDA BANK_USE_DATA,Y ; Load bank for data.
+    JMP BANK_PAIR_USE_A ; Bank in data.
 BANK_USE_DATA: ; 1F:01E3, 0x03E1E3
     .db 26 ; Unk size.
     .db 26
@@ -1527,7 +1527,7 @@ RTN_UNK_RTS_CARRY_SET_FAIL?: ; 1F:0630, 0x03E630
     PHA
     TYA
     PHA
-    LDA OBJ_POS_Y??[18],X ; Load obj val.
+    LDA OBJ_POS_Y_CONFIRMED[18],X ; Load obj val.
     LDY 8E_UNK ; Y from.
     BPL 8E_VAL_POSITIVE ; If positive, goto.
     LDA OBJ_SECONDARY_SWITCH?[18],X ; Load
@@ -1556,7 +1556,7 @@ NONE_SET: ; 1F:0662, 0x03E662
     STA 8E_UNK ; Store to.
     LDA DATA_UNK_D,Y ; Load val.
     CLC
-    ADC OBJ_POS_X?[18],X ; Add val.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add val.
     TAY ; To Y index.
     PLA ; Pull previous.
     JSR RTN_SCREEN?_UNK ; Do ?
@@ -1754,7 +1754,7 @@ RTN_UNK: ; 1F:0721, 0x03E721
     PHA
     LDA DATA_UNK_D,Y
     CLC
-    ADC OBJ_POS_X?[18],X
+    ADC OBJ_POS_X_CONFIRMED[18],X
     TAY
     PLA
     JSR RTN_SCREEN?_UNK
@@ -1815,10 +1815,10 @@ ADD_OVERFLOW: ; 1F:07C9, 0x03E7C9
     STA 8C_UNK ; To 8C.
     TYA ; Y to A.
     CLC
-    ADC B1_SCROLL_X_COPY_IRQ_ZP[2] ; += Var.
+    ADC SCRIPT_SCROLL_X?[2] ; += Var.
     STA 8D_UNK ; Store to.
     PHA ; Save A.
-    LDA NAMETABLE_FOCUS_VAL?[2] ; Load 
+    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load 
     ADC #$00 ; Carry from last add.
     PHA ; Save val.
     LDA 8D_UNK ; Load
@@ -1942,8 +1942,8 @@ NEGATIVE_INDEX_FILE[5]_NEGATIVE: ; 1F:0897, 0x03E897
     BEQ GOTO_RTN_WAY_OUT ; == 0, goto.
 HIGHER_GTE_4: ; 1F:08A4, 0x03E8A4
     LDY TMP_08 ; Y from TMP. XOBJ original from OBJ handler.
-    LDA OBJ_POS_X?[18],X
-    CMP OBJ_POS_X?[18],Y ; If XHigher.Xpos _ XOriginal.Xpos
+    LDA OBJ_POS_X_CONFIRMED[18],X
+    CMP OBJ_POS_X_CONFIRMED[18],Y ; If XHigher.Xpos _ XOriginal.Xpos
     BCC SKIP_UNK_B ; <, goto.
     LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Load dir
     AND #$40 ; Keep only 0100.0000
@@ -2020,12 +2020,12 @@ SUB_F[3]_NEGATIVE: ; 1F:0919, 0x03E919
 SKIP_SWAP: ; 1F:092C, 0x03E92C
     LDA TMP_00 ; Load
     CLC ; Prep add
-    ADC OBJ_POS_X?[18],X ; Add with
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add with
     BCC ADD_NO_OVERFLOW
     LDA #$FC ; Overflow val.
 ADD_NO_OVERFLOW: ; 1F:0936, 0x03E936
     STA TMP_00 ; Store to.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC TMP_01 ; Sub with.
     BCS SUB_NO_UNDERFLOW
@@ -2102,10 +2102,10 @@ COPY_FROM_YOBJ_TO_XOBJ: ; 1F:09B0, 0x03E9B0
     STA OBJ_ANIM_HOLD_TIMER?[18],X
     LDA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],Y
     STA 45A_OBJ_DATA_ENTRY?STATE_STEP?[18],X
-    LDA OBJ_POS_Y??[18],Y
-    STA OBJ_POS_Y??[18],X
-    LDA OBJ_POS_X?[18],Y
-    STA OBJ_POS_X?[18],X
+    LDA OBJ_POS_Y_CONFIRMED[18],Y
+    STA OBJ_POS_Y_CONFIRMED[18],X
+    LDA OBJ_POS_X_CONFIRMED[18],Y
+    STA OBJ_POS_X_CONFIRMED[18],X
     LDA OBJ_POS_X_SUBPIXEL?[18],Y
     STA OBJ_POS_X_SUBPIXEL?[18],X
     LDA OBJ_POS_X??[18],Y
@@ -2239,12 +2239,12 @@ RTN_UNK: ; 1F:0AD0, 0x03EAD0
 DIR_BIT_CLEAR: ; 1F:0AF7, 0x03EAF7
     LDA TMP_00 ; Load
     CLC ; Prep add
-    ADC OBJ_POS_X?[18],X ; Add with obj.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add with obj.
     BCC DONT_SEED_ADD ; No overflow, skip seed.
     LDA #$FC ; Seed
 DONT_SEED_ADD: ; 1F:0B01, 0x03EB01
     STA TMP_00 ; Store to.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC TMP_01 ; Sub with file.
     BCS DONT_SEED_SUB ; No underflow, skip seed.
@@ -2481,7 +2481,7 @@ DONT_SEED_SUB: ; 1F:0CB4, 0x03ECB4
 BIT_CLEAR: ; 1F:0CC2, 0x03ECC2
     LDA [TMP_04],Y ; Load from file.
     CLC ; Prep add.
-    ADC OBJ_POS_X?[18],X ; Add from OBJ.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add from OBJ.
     BCS ADD_OVERFLOW
     CMP TMP_01 ; If result _ #$01
     BCC RTS_CC ; <, goto.
@@ -2492,7 +2492,7 @@ ADD_OVERFLOW: ; 1F:0CCE, 0x03ECCE
     BNE BIT_0x40_SET
     INY ; Next index if clear.
 BIT_0x40_SET: ; 1F:0CD8, 0x03ECD8
-    LDA OBJ_POS_X?[18],X ; Load from OBJ.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load from OBJ.
     SEC ; Prep sub.
     SBC [TMP_04],Y ; Sub from file.
     BCC RTS_CS ; If underflow, leave.
@@ -3323,11 +3323,11 @@ P1_NEG: ; 1F:1042, 0x03F042
     STA TMP_03
 PLAYER_DATA_PTR_SETUP: ; 1F:105B, 0x03F05B
     LDY #$00 ; Reset stream index.
-    LDA NAMETABLE_FOCUS_VAL?[2] ; Load
+    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load
     CMP [TMP_02],Y ; If _ Stream
     INY ; Stream++
     BCC STREAM_LESS ; <, goto.
-    LDA B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load
+    LDA SCRIPT_SCROLL_X?[2] ; Load
     CMP [TMP_02],Y ; If _ Stream
     BCS OBJECT_CLEAR_UNK_AND_NEXT_OBJ ; >=, goto.
 STREAM_LESS: ; 1F:106A, 0x03F06A
@@ -3852,13 +3852,13 @@ INIT_LEVEL_AND_OBJ[7]_STUFF: ; 1F:12C9, 0x03F2C9
     LDA #$00
     STA DISABLE_RENDERING_X_FRAMES ; Enable rendering.
     LDA #$69
-    STA ZP_R2-R5_BANK_VALUES+2 ; GFX, R4.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+4 ; GFX, R4.
     LDA #$E7
-    STA ZP_R2-R5_BANK_VALUES+3 ; GFX, R5.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+5 ; GFX, R5.
     LDA #$49
     JSR LEVEL_RELATED_DATA_A_PASSED? ; Level data?
     LDA #$E8
-    STA OBJ_POS_X?+7 ; Set unk.
+    STA OBJ_POS_X_CONFIRMED+7 ; Set unk.
     LDA #$D0
     STA OBJ_POS_X??+7 ; Set unk.
     LDA #$40
@@ -4010,7 +4010,7 @@ EXIT_MOVE_TERT: ; 1F:13C5, 0x03F3C5
 EXIT_X_MOVE: ; 1F:13C8, 0x03F3C8
     JMP OBJECT_X_MOVE? ; Finalize. Abuse RTS.
 OBJ_POS_BASED_INIT_CLEAR: ; 1F:13CB, 0x03F3CB
-    LDA OBJ_POS_Y??[18],X ; Load.
+    LDA OBJ_POS_Y_CONFIRMED[18],X ; Load.
     CMP #$30 ; If _ #$30
     BCC EXIT_REINIT ; <, goto.
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
@@ -4018,12 +4018,12 @@ OBJ_POS_BASED_INIT_CLEAR: ; 1F:13CB, 0x03F3CB
     BEQ RTS ; None set, leave.
     AND #$02 ; Test if this bit is set specifically.
     BNE BIT_0x02_SET ; Was set, goto.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$30 ; If _ #$30
     BCC RTS ; <, leave.
     BCS EXIT_REINIT ; >=, exit.
 BIT_0x02_SET: ; 1F:13E6, 0x03F3E6
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     CMP #$D0 ; If _ #$D0
     BCC EXIT_REINIT ; <, exit reinit.
 RTS: ; 1F:13ED, 0x03F3ED
@@ -4055,13 +4055,13 @@ BIT_0x04_NOT_SET: ; 1F:1408, 0x03F408
     LDA OBJ_POS_X_DELTA?[18],X ; Load
     SBC OBJ_POS_X_DELTA? ; -= val. Carry sub.
     STA TMP_01 ; Store to TMP.
-    LDA OBJ_POS_X?[18],X ; Load POS.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load POS.
     STA TMP_08 ; Store to TMP.
     JSR RTN_OBJ_MOVE?_UNK ; Do rtn.
     LDA TMP_01 ; Load TMP.
     BPL MOVE_POSITIVE ; If positive, goto.
     LDA TMP_08 ; Load, XPOS previous.
-    CMP OBJ_POS_X?[18],X ; Compare to current.
+    CMP OBJ_POS_X_CONFIRMED[18],X ; Compare to current.
     BCS OBJ_XPOS_[OVER/UNDER]FLOW ; Previous was greater after sub, wrong.
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
     AND #$03 ; Keep 0000.0011
@@ -4074,7 +4074,7 @@ NO_BITS_SET_0x03: ; 1F:1444, 0x03F444
     STA 556_OBJ_STATUS_FLAGS_A[18],X ; Store back.
     RTS
 MOVE_POSITIVE: ; 1F:144D, 0x03F44D
-    LDA OBJ_POS_X?[18],X ; Load current.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load current.
     CMP TMP_08 ; Compare to previous.
     BCS OBJ_XPOS_[OVER/UNDER]FLOW ; If XPOS_CURR > PREV after add, wrong.
     LDA 556_OBJ_STATUS_FLAGS_A[18],X ; Load
@@ -4114,9 +4114,9 @@ RTN_OBJ_MOVE?_UNK: ; 1F:1494, 0x03F494
     LDA OBJ_POS_X_SUBPIXEL?[18],X ; Load from OBJ.
     ADC TMP_00 ; Add to.
     STA OBJ_POS_X_SUBPIXEL?[18],X ; Store back.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     ADC TMP_01 ; Add with.
-    STA OBJ_POS_X?[18],X ; Store back.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store back.
     CLC ; Prep add.
     LDA 4B4_OBJ_SPEED?[18],X ; Load from OBJ.
     ADC TMP_02 ; Add with.
@@ -4129,7 +4129,7 @@ RTN_OBJ_MOVE?_UNK: ; 1F:1494, 0x03F494
     ADC 4D8_OBJ_UNK[18],X ; Add with.
     LDA OBJ_POS_X??[18],X ; Load
     ADC 4C6_OBJ_UNK[18],X ; Add with. Carry add.
-    STA OBJ_POS_Y??[18],X ; Store to.
+    STA OBJ_POS_Y_CONFIRMED[18],X ; Store to.
 RTS: ; 1F:14C6, 0x03F4C6
     RTS ; Leave.
 TEST_OBJ_UPDATE_FLAG_INIT: ; 1F:14C7, 0x03F4C7
@@ -4140,10 +4140,10 @@ TEST_OBJ_UPDATE_FLAG_INIT: ; 1F:14C7, 0x03F4C7
 INIT_OBJECT[X]_DATA_FULL: ; 1F:14D1, 0x03F4D1
     LDA #$00
     STA 556_OBJ_STATUS_FLAGS_A[18],X
-    STA OBJ_POS_X?[18],X
+    STA OBJ_POS_X_CONFIRMED[18],X
     STA OBJ_POS_X??[18],X
     STA 4C6_OBJ_UNK[18],X
-    STA OBJ_POS_Y??[18],X
+    STA OBJ_POS_Y_CONFIRMED[18],X
     STA OBJ_ANIMATION_DISPLAY[18],X
     STA OBJ_ENABLED_STATE+MORE?[18],X
 INT_OBJECT[X]_DATA_SMOL: ; 1F:14E8, 0x03F4E8
@@ -4289,9 +4289,9 @@ RTS: ; 1F:15F4, 0x03F5F4
 FIND_XPOS_DIFF_OBJY/OBJX_TMP_12_FLAG_XVAL_GT_YVAL: ; 1F:15F5, 0x03F5F5
     LDA #$00
     STA TMP_12 ; Clear TMP. Used as flag for negative.
-    LDA OBJ_POS_X?[18],Y ; Load Yobj pos.
+    LDA OBJ_POS_X_CONFIRMED[18],Y ; Load Yobj pos.
     SEC ; Prep sub.
-    SBC OBJ_POS_X?[18],X ; Sub with Xobj.
+    SBC OBJ_POS_X_CONFIRMED[18],X ; Sub with Xobj.
     BCS RTS ; Yobj >= Xobj, leave as is.
     INC TMP_12 ; Set flag. This means Xobj > Yobj.
     EOR #$FF ; Compliment for ABS value.
@@ -4352,11 +4352,11 @@ UPDATE_PALETTE[0x1C]_WITH_Y_SAVING_XOBJ: ; 1F:1655, 0x03F655
     RTS ; Leave.
     LDA #$30
     STA OBJ_ENABLED_STATE+MORE?+1,X
-    LDA OBJ_POS_X?[18],X
-    STA OBJ_POS_X?+1,X
+    LDA OBJ_POS_X_CONFIRMED[18],X
+    STA OBJ_POS_X_CONFIRMED+1,X
     LDA OBJ_POS_X??[18],X
     STA OBJ_POS_X??+1,X
-    STA OBJ_POS_Y??+1,X
+    STA OBJ_POS_Y_CONFIRMED+1,X
     RTS
 CROSSBANK_SPAWN_OBJECT_RTN: ; 1F:1673, 0x03F673
     LDA #$22 ; Bank 0x02/0x03.
@@ -4446,9 +4446,9 @@ A_SEED_ENTER: ; 1F:1700, 0x03F700
     ORA NUM_PLAYER_LIVES+1 ; Combine with P2.
     BMI RTS ; If either game over, RTS.
     SEC ; Prep sub.
-    LDA OBJ_POS_X?[18],X ; Load Xobj.pos
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load Xobj.pos
     PHA ; Save.
-    SBC OBJ_POS_X?[18] ; Sub P1.Xpos
+    SBC OBJ_POS_X_CONFIRMED[18] ; Sub P1.Xpos
     BCS DONT_INVERT_P1 ; Xobj.xpos >= P1.xpos
     EOR #$FF ; Compliment to find positive difference.
     CLC ; Carry was already clear, lol. Macro, probably. Mistake not mistake.
@@ -4457,7 +4457,7 @@ DONT_INVERT_P1: ; 1F:171B, 0x03F71B
     STA TMP_00 ; Store to TMP.
     PLA ; Restore Xpos.
     SEC
-    SBC OBJ_POS_X?+2 ; Sub P2.Xpos
+    SBC OBJ_POS_X_CONFIRMED+2 ; Sub P2.Xpos
     BCS DONT_INVERT_P2 ; Xobj.xpos >= P2.xpos, goto.
     EOR #$FF ; Compliment to find positive difference.
     CLC
@@ -4481,12 +4481,12 @@ RTS: ; 1F:1741, 0x03F741
     RTS ; Leave.
 RTN_BOX_DETECT?: ; 1F:1742, 0x03F742
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Load index from OBJ.
-    LDA OBJ_POS_X?[18],Y ; Load from Yobj.
+    LDA OBJ_POS_X_CONFIRMED[18],Y ; Load from Yobj.
     STA TMP_14 ; Store to.
     LDA OBJ_POS_X??[18],Y ; Move
     STA TMP_15
 HIT_DETECT_HELPER_UNK: ; 1F:174F, 0x03F74F
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SEC ; Prep sub.
     SBC TMP_14 ; Sub with.
     STA TMP_12 ; Store result.
@@ -4508,9 +4508,9 @@ NO_UNDERFLOW_B: ; 1F:176F, 0x03F76F
     STA TMP_11 ; Store result.
     RTS
 SUB_OBJ_DIR_MOD_FROM_POS_AND_UNK: ; 1F:1772, 0x03F772
-    LDA OBJ_POS_X?[18],X ; Load from Xobj.
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load from Xobj.
     LDY 5D4_EXTRA_TIMER/OBJ/FOCUS[18],X ; Y from Xobj
-    CMP OBJ_POS_X?[18],Y ; If X.Xpos _ Y.Xpos
+    CMP OBJ_POS_X_CONFIRMED[18],Y ; If X.Xpos _ Y.Xpos
     LDA OBJ_STATE_DIR_RELATED_C_SPR_DATA?[18],X ; Load
     AND #$03 ; Keep
     BCS DONT_MOD_DIRECTION ; >=, goto.
@@ -4522,29 +4522,29 @@ MOVE_Y_FINALIZE: ; 1F:1788, 0x03F788
     CLC ; Prep add.
     LDA 4C6_OBJ_UNK[18],X ; Load
     ADC OBJ_POS_X??[18],X ; Add with.
-    STA OBJ_POS_Y??[18],X ; Store.
+    STA OBJ_POS_Y_CONFIRMED[18],X ; Store.
     RTS ; Leave.
 SUB_OBJ_SPEED_AND_XPOS_STUFF: ; 1F:1793, 0x03F793
     SEC ; Prep sub.
     LDA OBJ_POS_X_SUBPIXEL?[18],X ; Load
     SBC OBJ_POS_X_SUBPIXEL_DELTA? ; Sub
     STA OBJ_POS_X_SUBPIXEL?[18],X ; Store back.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SBC OBJ_POS_X_DELTA? ; Sub.
     BCS NO_UNDERFLOW ; If no underflow, goto.
     LDA #$00 ; Min.
 NO_UNDERFLOW: ; 1F:17A5, 0x03F7A5
-    STA OBJ_POS_X?[18],X ; Set.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Set.
     LDA LEVEL/SCREEN_ON ; Load screen.
     CMP #$07 ; If _ #$07
     BNE RTS ; !=, oto.
     CLC ; Prep add.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     ADC #$04 ; Add 
     BCC NO_OVERFLOW ; If no overflow, goto.
     LDA #$00
 NO_OVERFLOW: ; 1F:17B8, 0x03F7B8
-    STA OBJ_POS_X?[18],X ; Store
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store
 RTS: ; 1F:17BB, 0x03F7BB
     RTS
 X_MOVE_RET_CS_UNDERFLOW_CC_OKAY: ; 1F:17BC, 0x03F7BC
@@ -4552,20 +4552,20 @@ X_MOVE_RET_CS_UNDERFLOW_CC_OKAY: ; 1F:17BC, 0x03F7BC
     LDA OBJ_POS_X_SUBPIXEL?[18],X ; Load 
     SBC OBJ_POS_X_SUBPIXEL_DELTA? ; Sub
     STA OBJ_POS_X_SUBPIXEL?[18],X ; Store back.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     SBC OBJ_POS_X_DELTA? ; Carry to upper.
-    STA OBJ_POS_X?[18],X ; Store to.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store to.
     BCC RTS_CS ; If underflow, leave with carry set.
     LDA LEVEL/SCREEN_ON ; Load level.
     CMP #$07 ; If _ #$07
     BNE LEVEL_NOT_SEVEN ; If not 7, ret CC.
     CLC ; Prep add.
-    LDA OBJ_POS_X?[18],X ; Load
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load
     ADC #$04 ; Add
     BCC OUTPUT_XPOS ; If no overflow, write as-is.
     LDA #$00 ; Seed with val.
 OUTPUT_XPOS: ; 1F:17DF, 0x03F7DF
-    STA OBJ_POS_X?[18],X ; Store XPOS.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store XPOS.
 LEVEL_NOT_SEVEN: ; 1F:17E2, 0x03F7E2
     CLC ; Return CC.
     RTS
@@ -4598,9 +4598,9 @@ FOCUS_CLOSEST_PLAYER: ; 1F:17FC, 0x03F7FC
     JMP RTS_FOCUS_P1 ; Clear extra otherwise.
 2P_2_ALIVE: ; 1F:1813, 0x03F813
     LDY #$00 ; Obj index, P1.
-    LDA OBJ_POS_X?[18],X ; Load XObj.XPos
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load XObj.XPos
     SEC ; Prep sub.
-    SBC OBJ_POS_X?[18],Y ; Sub P1.XPos
+    SBC OBJ_POS_X_CONFIRMED[18],Y ; Sub P1.XPos
     BCS SKIP_COMPLEMENT ; If no underflow, skip complement.
     EOR #$FF ; Two compliment.
     CLC
@@ -4608,9 +4608,9 @@ FOCUS_CLOSEST_PLAYER: ; 1F:17FC, 0x03F7FC
 SKIP_COMPLEMENT: ; 1F:1823, 0x03F823
     STA TMP_00 ; Store different between P1 and OBJ.
     LDY #$02 ; Obj index, P2.
-    LDA OBJ_POS_X?[18],X ; Load Xobj.XPos
+    LDA OBJ_POS_X_CONFIRMED[18],X ; Load Xobj.XPos
     SEC ; Prep sub.
-    SBC OBJ_POS_X?[18],Y ; Sub P2.XPos
+    SBC OBJ_POS_X_CONFIRMED[18],Y ; Sub P2.XPos
     BCS SKIP_COMPEMENT_P2
     EOR #$FF ; Compliment
     CLC
@@ -4666,8 +4666,8 @@ XPOS_RTN_RET_??: ; 1F:187C, 0x03F87C
     ADC OBJ_POS_X_SUBPIXEL?[18],X ; Add with.
     STA OBJ_POS_X_SUBPIXEL?[18],X ; Store.
     LDA OBJ_POS_X_DELTA?[18],X ; Load
-    ADC OBJ_POS_X?[18],X ; Add with.
-    STA OBJ_POS_X?[18],X ; Store to.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add with.
+    STA OBJ_POS_X_CONFIRMED[18],X ; Store to.
     ROR A ; Rotate A
     EOR OBJ_POS_X_DELTA?[18],X ; Eor val.
     ASL A ; Shift A back.
@@ -4776,7 +4776,7 @@ LOOP_PPU_BOGUS_MANUAL_CLOCK: ; 1F:1906, 0x03F906
     RTS ; Leave.
 CLEAR_IRQ_FLAGS_UNK: ; 1F:1912, 0x03F912
     LDA #$00
-    STA IRQ_FLAG_R2-R5_BANK_7E
+    STA IRQ_FLAG_R2-R5_GFX_USE_BANK_7E
     STA FLAG_IRQ_ENABLE
     STA IRQ_56_OR'D
 MAPPER_IRQ_DISABLE+RTS: ; 1F:191A, 0x03F91A
@@ -4939,17 +4939,17 @@ COMMIT_Y_VAL_LATCH: ; 1F:19F0, 0x03F9F0
     STA DA_FLAG?_UNK ; Clear unk.
     STA 660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK ; Clear flag.
 FLAG_660_NOT_SET: ; 1F:1A08, 0x03FA08
-    LDA IRQ_CONFIG_CHANGE_INDEX ; Load
-    BEQ FLAG_65F_NOT_SET ; If not set, goto.
-    ASL A ; A to index.
+    LDA IRQ_CONFIG_CHANGE ; Load
+    BEQ NO_IRQ_CONFIG_CHANGE ; If not set, goto.
+    ASL A ; Val to index.
     TAY ; To Y.
     LDA D9_DATA,Y ; Move config.
     STA D9_IRQ_CONFIG_A
     LDA D8_DATA,Y
     STA D8_IRQ_CONFIG_B
     LDA #$00
-    STA IRQ_CONFIG_CHANGE_INDEX ; Clear flag.
-FLAG_65F_NOT_SET: ; 1F:1A1E, 0x03FA1E
+    STA IRQ_CONFIG_CHANGE ; Clear val.
+NO_IRQ_CONFIG_CHANGE: ; 1F:1A1E, 0x03FA1E
     LDA D9_IRQ_CONFIG_A ; Load
     CMP #$04 ; If A _ 0x04
     BEQ CONFIG_A_EQ_0x04 ; ==, goto.
@@ -4971,10 +4971,10 @@ USE_IRQ_RTNS_BASED_ON_LEVEL: ; 1F:1A3A, 0x03FA3A
     LDX LEVEL/SCREEN_ON ; Re-load.
     LDA IRQ_EXTENSION_PER_SCREEN,X ; Data from.
 SET_EXTENDED_IRQ_FROM_A: ; 1F:1A47, 0x03FA47
-    STA IRQ_EXTENDED/HANDLER/SECONDARY ; Store to.
+    STA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Store to.
     LDA #$00 ; Switch R0/R1 to status bar GFX.
     JSR SETUP_R0/R1_IRQ_DATA ; Set up.
-    JSR BANKSWITCH_R0/R1 ; Swap to.
+    JSR SCRIPT_GFX_R0-R1_TO_MAPPER ; Swap to.
 RTS: ; 1F:1A51, 0x03FA51
     RTS ; Leave.
 D9_DATA: ; 1F:1A52, 0x03FA52
@@ -5025,14 +5025,14 @@ IRQ_RTN_B: ; 1F:1A74, 0x03FA74
     PHA ; Save Y
     STA MMC3_IRQ_DISABLE ; Disable+enable for no IRQ's.
     STA MMC3_IRQ_ENABLE
-    LDA IRQ_EXTENDED/HANDLER/SECONDARY
-    BNE EXTENDED_RTN
-    STA MMC3_IRQ_DISABLE ; Disable otherwise.
+    LDA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Load extend.
+    BNE REPLACE_RTN ; Set, goto.
+    STA MMC3_IRQ_DISABLE ; Disable IRQ.
     JMP IRQ_WAIT/PPU/UNK/GFX/CFG_GENERAL
-EXTENDED_RTN: ; 1F:1A89, 0x03FA89
-    JSR SET_IRQ_LATCH_COPY_AND_HANDLER_FROM_A
-    LDA 57_IRQ_LATCH_VAL_COPY
-    STA MMC3_IRQ_LATCH
+REPLACE_RTN: ; 1F:1A89, 0x03FA89
+    JSR SET_IRQ_LATCH_COPY_AND_HANDLER_FROM_A ; Assign mapper things from A.
+    LDA 57_IRQ_LATCH_VAL_COPY ; Load latch.
+    STA MMC3_IRQ_LATCH ; Store to mapper.
 IRQ_WAIT/PPU/UNK/GFX/CFG_GENERAL: ; 1F:1A91, 0x03FA91
     LDY #$0C ; Delay amount.
 DELAY_LOOP: ; 1F:1A93, 0x03FA93
@@ -5044,25 +5044,25 @@ DELAY_LOOP: ; 1F:1A93, 0x03FA93
     STX PPU_ADDR ; Store addr.
     STY PPU_ADDR
     LDA PPU_STATUS ; Reset latch more.
-    LDX PPU_SCROLL_X_COPY_IRQ
+    LDX COMMITTED_SCROLL_X?
     LDY PPU_SCROLL_Y_COPY_IRQ
-    LDA NAMETABLE_VAR_UNK
+    LDA COMMITTED_NAMETABLE_FOCUS_VAL?
     AND #$01 ; Isolate.
     ORA PPU_CTRL_RAM_COPY ; Set to proper nametable.
     STX PPU_SCROLL ; Set X and Y scroll. Bonus points for proper registers.
     STY PPU_SCROLL
     STA PPU_CTRL ; Set CTRL.
-    LDA IRQ_BANK_VALUES_R[0/1][2]
-    STA IRQ_GFX_DATA_BANK_R0
-    LDA IRQ_BANK_VALUES_R[0/1]+1
-    STA IRQ_GFX_DATA_BANK_R1
-    JSR BANKSWITCH_R0/R1 ; Switch graphics.
+    LDA IRQ_R0/R1_BANK_VALS[2]
+    STA SCRIPT_R0-R5_GFX_BANK_VALS[6]
+    LDA IRQ_R0/R1_BANK_VALS+1
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+1
+    JSR SCRIPT_GFX_R0-R1_TO_MAPPER ; Switch graphics.
     LDA #$00
-    STA IRQ_FLAG_R2-R5_BANK_7E ; Use RAM ones.
-    JSR BANK_R2-R5_FROM_60D ; Switch graphics.
+    STA IRQ_FLAG_R2-R5_GFX_USE_BANK_7E ; Use RAM ones, not 0x7E.
+    JSR COMMITTED_R2-R5_TO_MAPPER ; Switch graphics.
     LDX LEVEL/SCREEN_ON ; X from
     LDA RTN_EXTRA_DATA,X
-    STA IRQ_EXTENDED/HANDLER/SECONDARY
+    STA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE
 RTI_AND_RESTORE_BANK_CFG: ; 1F:1AD4, 0x03FAD4
     LDX BANK_CFG_RESTORE_INDEX ; X from.
     LDA COPY_BANK_CFG_F5,X ; Bank config.
@@ -5094,7 +5094,7 @@ IRQ_RTN_L: ; 1F:1AED, 0x03FAED
     PHA ; Save Y.
     STA MMC3_IRQ_DISABLE ; MMC3 IRQ dis/enable.
     STA MMC3_IRQ_ENABLE
-    LDA IRQ_EXTENDED/HANDLER/SECONDARY ; Set next.
+    LDA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Set next.
     JSR SET_IRQ_LATCH_COPY_AND_HANDLER_FROM_A
     LDA 57_IRQ_LATCH_VAL_COPY ; Set latch.
     STA MMC3_IRQ_LATCH
@@ -5117,13 +5117,13 @@ DELAY_LOOP: ; 1F:1B04, 0x03FB04
     STY PPU_SCROLL
     STA PPU_CTRL
     LDA #$00
-    STA IRQ_FLAG_R2-R5_BANK_7E ; From RAM.
-    JSR BANK_R2-R5_FROM_60D ; Set GFX.
-    LDA IRQ_BANK_VALUES_R[0/1][2] ; Move BG banks wanted.
-    STA IRQ_GFX_DATA_BANK_R0
-    LDA IRQ_BANK_VALUES_R[0/1]+1
-    STA IRQ_GFX_DATA_BANK_R1
-    JSR BANKSWITCH_R0/R1 ; Commit to hardware.
+    STA IRQ_FLAG_R2-R5_GFX_USE_BANK_7E ; From RAM.
+    JSR COMMITTED_R2-R5_TO_MAPPER ; Set GFX.
+    LDA IRQ_R0/R1_BANK_VALS[2] ; Move BG banks wanted.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS[6]
+    LDA IRQ_R0/R1_BANK_VALS+1
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+1
+    JSR SCRIPT_GFX_R0-R1_TO_MAPPER ; Commit to hardware.
     LDA FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE ; Load.
     BPL VAL_POSITIVE ; Positive, don't set other secondary.
     LDX A7_IRQ_REPLACE_SECONDARY_INDEX ; Load index.
@@ -5143,7 +5143,7 @@ SECONDARY_OPT_A: ; 1F:1B58, 0x03FB58
 SECONDARY_DEFAULT: ; 1F:1B5C, 0x03FB5C
     LDA #$0A ; Default.
 SET_SECONDARY: ; 1F:1B5E, 0x03FB5E
-    STA IRQ_EXTENDED/HANDLER/SECONDARY ; Set secondary.
+    STA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Set secondary.
     JMP RTI_AND_RESTORE_BANK_CFG ; Leave.
 IRQ_RTN_K: ; 1F:1B63, 0x03FB63
     PHA ; Save A.
@@ -5180,12 +5180,12 @@ DELAY_LOOP_SMOL: ; 1F:1B94, 0x03FB94
     BNE DELAY_LOOP_SMOL ; != 0, keep looping.
 DELAY_FINISHED: ; 1F:1B97, 0x03FB97
     LDA #$00
-    STA IRQ_FLAG_R2-R5_BANK_7E ; Use from RAM.
-    JSR BANK_R2-R5_FROM_60D ; Set GFX.
+    STA IRQ_FLAG_R2-R5_GFX_USE_BANK_7E ; Use from RAM.
+    JSR COMMITTED_R2-R5_TO_MAPPER ; Set GFX.
     LDA #$7E
-    STA IRQ_GFX_DATA_BANK_R0 ; Set manually to 7E.
-    STA IRQ_GFX_DATA_BANK_R1
-    JSR BANKSWITCH_R0/R1 ; Switch in.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS[6] ; Set manually to 7E.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+1
+    JSR SCRIPT_GFX_R0-R1_TO_MAPPER ; Switch in.
     LDA #$02
     JSR SET_IRQ_LATCH_COPY_AND_HANDLER_FROM_A ; Set next.
     JMP RTI_AND_RESTORE_BANK_CFG
@@ -5212,10 +5212,10 @@ IRQ_RTN_C: ; 1F:1BAF, 0x03FBAF
     BPL POSITIVE ; If positive, extend 6.
     INY ; Extend val 7.
 POSITIVE: ; 1F:1BD8, 0x03FBD8
-    STY IRQ_EXTENDED/HANDLER/SECONDARY ; Store to.
+    STY IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Store to.
     TYA ; To A
     JSR SET_IRQ_LATCH_COPY_AND_HANDLER_FROM_A ; Set handler somehow.
-    LDA IRQ_EXTENDED/HANDLER/SECONDARY ; Load
+    LDA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Load
     CMP #$06 ; If _ 6
     BEQ HANDLER_3_BANK_MOVED? ; ==, goto.
     LDA IRQ_LATCH_VALUE_COPY_5A ; Load val.
@@ -5253,12 +5253,12 @@ IRQ_RTN_D: ; 1F:1C0F, 0x03FC0F
     STA MMC3_IRQ_ENABLE
     LDA 5D_IRQ_BANK? ; Load val.
     STA MMC3_IRQ_LATCH ; Store to latch.
-    LDA IRQ_EXTENDED/HANDLER/SECONDARY ; Load
+    LDA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Load
     JSR SET_IRQ_LATCH_COPY_AND_HANDLER_FROM_A
     LDA PPU_STATUS ; Reset
-    LDX PPU_SCROLL_X_COPY_IRQ ; Set scroll.
+    LDX COMMITTED_SCROLL_X? ; Set scroll.
     LDY PPU_SCROLL_Y_COPY_IRQ
-    LDA NAMETABLE_VAR_UNK
+    LDA COMMITTED_NAMETABLE_FOCUS_VAL?
     AND #$01
     ORA PPU_CTRL_RAM_COPY
     STX PPU_SCROLL
@@ -5277,11 +5277,11 @@ DELAY_SMALL_LOOP: ; 1F:1C4A, 0x03FC4A
     DEY
     BNE DELAY_SMALL_LOOP
 DELAY_FINSIHED: ; 1F:1C4D, 0x03FC4D
-    LDA IRQ_BANK_VALUES_R[0/1][2] ; Move bank vals.
-    STA IRQ_GFX_DATA_BANK_R0
-    LDA IRQ_BANK_VALUES_R[0/1]+1
-    STA IRQ_GFX_DATA_BANK_R1
-    JSR BANKSWITCH_R0/R1 ; Swap GFX.
+    LDA IRQ_R0/R1_BANK_VALS[2] ; Move bank vals.
+    STA SCRIPT_R0-R5_GFX_BANK_VALS[6]
+    LDA IRQ_R0/R1_BANK_VALS+1
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+1
+    JSR SCRIPT_GFX_R0-R1_TO_MAPPER ; Swap GFX.
     JMP RTI_AND_RESTORE_BANK_CFG ; Leave.
 IRQ_RTN_G: ; 1F:1C5B, 0x03FC5B
     PHA ; Save X.
@@ -5301,7 +5301,7 @@ WAIT_LOOP: ; 1F:1C65, 0x03FC65
     INX ; X = 1
     STX MMC3_BANK_CFG ; R1
     STY MMC3_BANK_DATA ; Also copy to R1.
-    LDA NAMETABLE_VAR_UNK ; Load
+    LDA COMMITTED_NAMETABLE_FOCUS_VAL? ; Load
     AND #$01 ; Keep bottom bit.
     ORA PPU_CTRL_RAM_COPY ; Set base nametable for PPUCTRL.
     TAX ; Save to X.
@@ -5311,16 +5311,16 @@ WAIT_LOOP: ; 1F:1C65, 0x03FC65
     STA PPU_ADDR ; Addr 20C0.
     STY PPU_ADDR
     STX PPU_CTRL ; Store PPU CTRL.
-    LDA PPU_SCROLL_X_COPY_IRQ ; Load ammount X scrolling.
+    LDA COMMITTED_SCROLL_X? ; Load ammount X scrolling.
     STA PPU_SCROLL ; Store to X.
     STA PPU_SCROLL ; And Y.
     LDX #$00
     STX MMC3_BANK_CFG ; Reset bank cfg, R0.
-    LDA IRQ_BANK_VALUES_R[0/1][2] ; Load bank.
+    LDA IRQ_R0/R1_BANK_VALS[2] ; Load bank.
     STA MMC3_BANK_DATA ; Store.
     INX ; R1
     STX MMC3_BANK_CFG ; R1.
-    LDA IRQ_BANK_VALUES_R[0/1]+1 ; Load R1.
+    LDA IRQ_R0/R1_BANK_VALS+1 ; Load R1.
     STA MMC3_BANK_DATA ; Store.
     LDX BANK_CFG_RESTORE_INDEX ; Set previous CFG.
     LDA COPY_BANK_CFG_F5,X
@@ -5339,14 +5339,14 @@ IRQ_RTN_I: ; 1F:1CBA, 0x03FCBA
     PHA ; Save Y.
     STA MMC3_IRQ_DISABLE ; Disable.
     STA MMC3_IRQ_ENABLE ; Enable.
-    LDA IRQ_EXTENDED/HANDLER/SECONDARY ; Load extended.
+    LDA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Load extended.
     JSR SET_IRQ_LATCH_COPY_AND_HANDLER_FROM_A ; Set next.
     LDA 57_IRQ_LATCH_VAL_COPY ; Set latch.
     STA MMC3_IRQ_LATCH
     LDA PPU_STATUS ; Reset PPU latch.
-    LDX B1_SCROLL_X_COPY_IRQ_ZP[2] ; Load X scroll.
+    LDX SCRIPT_SCROLL_X?[2] ; Load X scroll.
     LDY PPU_SCROLL_Y_COPY_IRQ ; Load Y scroll.
-    LDA NAMETABLE_FOCUS_VAL?[2] ; Load nametable focus.
+    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load nametable focus.
     AND #$01 ; Keep focus bit.
     ORA PPU_CTRL_RAM_COPY ; Set PPU otherwise.
     STX PPU_SCROLL ; Store scroll.
@@ -5356,7 +5356,7 @@ IRQ_RTN_I: ; 1F:1CBA, 0x03FCBA
     BPL EXIT_IRQ ; Is positive, keep secondary as is.
     LDX A7_IRQ_REPLACE_SECONDARY_INDEX ; Index.
     LDA IRQ_SECONDARY_NEXT,X ; Get value.
-    STA IRQ_EXTENDED/HANDLER/SECONDARY ; Next one is this instead.
+    STA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Next one is this instead.
 EXIT_IRQ: ; 1F:1CF0, 0x03FCF0
     JMP RTI_AND_RESTORE_BANK_CFG ; Leave.
 IRQ_RTN_E: ; 1F:1CF3, 0x03FCF3
@@ -5367,7 +5367,7 @@ IRQ_RTN_E: ; 1F:1CF3, 0x03FCF3
     PHA ; Save Y.
     STA MMC3_IRQ_DISABLE ; Disable IRQ's.
     STA MMC3_IRQ_ENABLE
-    LDA IRQ_EXTENDED/HANDLER/SECONDARY ; Load val
+    LDA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Load val
     JSR SET_IRQ_LATCH_COPY_AND_HANDLER_FROM_A ; Handler from.
     LDA 57_IRQ_LATCH_VAL_COPY ; Load val.
     STA MMC3_IRQ_LATCH ; To latch.
@@ -5387,10 +5387,10 @@ DELAY_LOOP: ; 1F:1D1D, 0x03FD1D
     DEY ; Y--
     BNE DELAY_LOOP ; !=0, loop.
     LDA ANIM_DATA_BANKS_R1,X ; A from, X indexed.
-    STA IRQ_GFX_DATA_BANK_R1 ; Change to bank.
-    JSR BANKSWITCH_R0/R1 ; Swap BG GFX
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+1 ; Change to bank.
+    JSR SCRIPT_GFX_R0-R1_TO_MAPPER ; Swap BG GFX
     LDA #$05 ; A=
-    STA IRQ_EXTENDED/HANDLER/SECONDARY ; Change handler.
+    STA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Change handler.
     JMP RTI_AND_RESTORE_BANK_CFG ; Goto.
 ANIM_DATA_BANKS_R1: ; 1F:1D2F, 0x03FD2F
     .db 02
@@ -5404,7 +5404,7 @@ IRQ_RTN_H: ; 1F:1D32, 0x03FD32
     PHA ; Save Y.
     STA MMC3_IRQ_DISABLE ; Stop IRQ's.
     STA MMC3_IRQ_ENABLE ; Enable again.
-    LDA IRQ_EXTENDED/HANDLER/SECONDARY ; Load.
+    LDA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Load.
     JSR SET_IRQ_LATCH_COPY_AND_HANDLER_FROM_A ; Set.
     LDA 57_IRQ_LATCH_VAL_COPY ; Load.
     STA MMC3_IRQ_LATCH ; Store.
@@ -5413,8 +5413,8 @@ DELAY_LOOP: ; 1F:1D49, 0x03FD49
     DEX ; X--
     BNE DELAY_LOOP ; != 0, keep delaying.
     LDA #$01
-    STA IRQ_FLAG_R2-R5_BANK_7E ; Set flag.
-    JSR BANK_R2-R5_FROM_60D ; Write values.
+    STA IRQ_FLAG_R2-R5_GFX_USE_BANK_7E ; Set flag.
+    JSR COMMITTED_R2-R5_TO_MAPPER ; Write values.
     JMP RTI_AND_RESTORE_BANK_CFG ; Leave.
 IRQ_RTN_F: ; 1F:1D56, 0x03FD56
     PHA ; Save A.
@@ -5426,8 +5426,8 @@ IRQ_RTN_F: ; 1F:1D56, 0x03FD56
     STA MMC3_IRQ_ENABLE
     STA MMC3_IRQ_DISABLE ; Disable again.
     LDA #$01
-    STA IRQ_FLAG_R2-R5_BANK_7E ; True, set to 7E.
-    JSR BANK_R2-R5_FROM_60D ; Switch GFX for sprites.
+    STA IRQ_FLAG_R2-R5_GFX_USE_BANK_7E ; True, set to 7E.
+    JSR COMMITTED_R2-R5_TO_MAPPER ; Switch GFX for sprites.
     JMP RTI_AND_RESTORE_BANK_CFG ; Commit, abuse RTI.
 IRQ_RTN_J: ; 1F:1D6E, 0x03FD6E
     PHA ; Save A.
@@ -5437,7 +5437,7 @@ IRQ_RTN_J: ; 1F:1D6E, 0x03FD6E
     PHA ; Save Y.
     STA MMC3_IRQ_DISABLE ; IRQ Disable.
     STA MMC3_IRQ_ENABLE
-    LDA IRQ_EXTENDED/HANDLER/SECONDARY ; Set secondary.
+    LDA IRQ_EXTENDED/HANDLER/SECONDARY_REPLACE ; Set secondary.
     JSR SET_IRQ_LATCH_COPY_AND_HANDLER_FROM_A
     LDA 57_IRQ_LATCH_VAL_COPY ; Set latch.
     STA MMC3_IRQ_LATCH
@@ -5502,7 +5502,7 @@ INFINITE_LOOP: ; 1F:1DE7, 0x03FDE7
 FRAME_OVERRUN_NMI: ; 1F:1DF3, 0x03FDF3
     JSR SET_PPU_ADDR/SCROLL/CTRL ; Set scroll.
     JSR IRQ_UPDATING_RTN
-    JSR BANKSWITCH_R0/R1
+    JSR SCRIPT_GFX_R0-R1_TO_MAPPER
     JSR WRITE_R2-R5_FROM_RAM
     JSR SOUND_FORWARD
     LDX BANK_CFG_RESTORE_INDEX ; Load
@@ -5525,44 +5525,44 @@ NMI_HANDLER: ; 1F:1E0C, 0x03FE0C
     STY OAM_DMA ; Upload sprites from 0x0200.
     JSR DISABLE_PPU_RENDERING
     JSR PPU_UPDATE_BUFFER_COMMIT ; Upload all PPU update packets.
-    JSR PPU_ATTR_SET?_UNK ; Set attributes?
+    JSR PPU_ONEOFF_ATTRMOD? ; Set one-off attributes needing modification? TODO: Find use, verify.
     LDA PPU_MASK_RAM_COPY ; Load mask
     LDX DISABLE_RENDERING_X_FRAMES ; X from
     BEQ WRITE_ENABLED_MASK ; == 0, skip.
-    DEC DISABLE_RENDERING_X_FRAMES ; --
+    DEC DISABLE_RENDERING_X_FRAMES ; Frames--
     BEQ WRITE_ENABLED_MASK ; If now 0, enable.
     AND #$E7 ; Disable sprites and BG.
 WRITE_ENABLED_MASK: ; 1F:1E39, 0x03FE39
     STA PPU_MASK ; Store mask, usually enabling background.
-    JSR SET_PPU_ADDR/SCROLL/CTRL ; Set PPU stuff.
+    JSR SET_PPU_ADDR/SCROLL/CTRL ; Set PPU display attrs.
     JSR IRQ_UPDATING_RTN ; IRQ stuffs here. <<<<<<<<<<<<<<<<<<<<<
     LDA MMC3_MIRRORING_COPY ; Load copy.
     STA MMC3_MIRRORING ; Store to mapper.
     LDX #$00 ; Index 0. Mistake: counts up, smh.
 LOOP_MOVE_3DATA: ; 1F:1E49, 0x03FE49
-    LDA AE_ARR_UNK[2],X ; Move unk...
-    STA 656_ARR_AE_COPY_UNK[2],X
-    LDA B1_SCROLL_X_COPY_IRQ_ZP[2],X
-    STA PPU_SCROLL_X_COPY_IRQ,X
-    LDA NAMETABLE_FOCUS_VAL?[2],X
-    STA NAMETABLE_VAR_UNK,X
+    LDA SCRIPT_VAL_UNK[2],X ; Move unk...
+    STA COMMITTED_UNK_VAL[2],X
+    LDA SCRIPT_SCROLL_X?[2],X
+    STA COMMITTED_SCROLL_X?,X
+    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2],X
+    STA COMMITTED_NAMETABLE_FOCUS_VAL?,X
     INX ; X++
     CPX #$02 ; If X _ #$02
     BNE LOOP_MOVE_3DATA ; Move both sets.
-    JSR MOVE_R2-R5_VALUES_ZP_TO_60D
-    JSR BANK_R2-R5_FROM_60D
-    JSR BANKSWITCH_R0/R1
+    JSR COMMIT_SCRIPT_R2-R5_VALS
+    JSR COMMITTED_R2-R5_TO_MAPPER
+    JSR SCRIPT_GFX_R0-R1_TO_MAPPER
     JSR SOUND_FORWARD
     JSR CTRL_READ_SAFE ; Read controllers.
     JSR UPDATE_BUF_FILL_EXTRAS ; Puts ppu update packets to buffer.
     JSR GAME_SCRIPT_SWITCHES ; Game script, you're probably looking for this. <<<<<<<<<<<<<<<
-    JSR DISPLAY_OBJECTS
+    JSR DISPLAY_OBJECTS_ROUTINE ;  Order, display, blank leftovers.
     LDX PPU_UPDATE_BUF_INDEX ; Load index.
     LDA #$00 ; Load
     STA PPU_UPDATE_BUFFER[20],X ; Store EOF in buf.
     INX ; X++
-    STX PPU_UPDATE_BUF_INDEX ; Store index past EOF.
-    STA FLAG_FRAME_UNFINISHED ; Clear.
+    STX PPU_UPDATE_BUF_INDEX ; Store index past EOF for this group.
+    STA FLAG_FRAME_UNFINISHED ; Clear flag.
 RTI_RESTORE_AXY: ; 1F:1E81, 0x03FE81
     PLA
     TAY ; Restore Y
