@@ -92,13 +92,13 @@ LOOP_LARGEST: ; 1F:0063, 0x03E063
     STA 75_STREAM_UNK_B ; Store to.
     LDX PPU_UPDATE_BUF_INDEX ; Get update index.
     LDA #$01 ; Type.
-    STA PPU_UPDATE_BUFFER[20],X ; Store to.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to.
     INX ; Index++
     LDA TMP_04 ; Load
-    STA PPU_UPDATE_BUFFER[20],X ; Store addr.
+    STA PPU_UPDATE_BUFFER[64],X ; Store addr.
     INX ; Index++
     LDA TMP_05 ; Load
-    STA PPU_UPDATE_BUFFER[20],X ; Store addr.
+    STA PPU_UPDATE_BUFFER[64],X ; Store addr.
     INX ; Index++
     STX PPU_UPDATE_BUF_INDEX ; Store index back.
 LOOP_LARGER: ; 1F:008A, 0x03E08A
@@ -142,7 +142,7 @@ LOOP_FOUR: ; 1F:00A4, 0x03E0A4
     LDX PPU_UPDATE_BUF_INDEX ; Load index.
 LOOP_STREAM: ; 1F:00CD, 0x03E0CD
     LDA [TMP_02],Y ; Load from stream.
-    STA PPU_UPDATE_BUFFER[20],X ; To buffer.
+    STA PPU_UPDATE_BUFFER[64],X ; To buffer.
     INY ; Stream++
     INX ; Index++
     STX PPU_UPDATE_BUF_INDEX ; Store X back.
@@ -162,7 +162,7 @@ LOOP_STREAM: ; 1F:00CD, 0x03E0CD
     BNE LOOP_LARGER ; !=, goto.
     LDX PPU_UPDATE_BUF_INDEX ; Load index.
     LDA #$FF
-    STA PPU_UPDATE_BUFFER[20],X ; Store EOF.
+    STA PPU_UPDATE_BUFFER[64],X ; Store EOF.
     INX ; Index++
     STX PPU_UPDATE_BUF_INDEX ; Store index back.
     LDA #$00 ; Clear val.
@@ -186,7 +186,7 @@ LOOP_STREAM: ; 1F:00CD, 0x03E0CD
     STY 602_COUNTER?_UNK ; Set to 1.
 609_EQ_14: ; 1F:012B, 0x03E12B
     LDA #$FF
-    STA PPU_UPDATE_BUFFER[20],X ; Set EOF.
+    STA PPU_UPDATE_BUFFER[64],X ; Set EOF.
     INX ; Index++
     STX PPU_UPDATE_BUF_INDEX ; Store index.
     LDA 604_UNK ; Load
@@ -221,13 +221,13 @@ LOOP_C_TIMES: ; 1F:014D, 0x03E14D
 LOOP_PREP_SHIFTS: ; 1F:0169, 0x03E169
     LDX PPU_UPDATE_BUF_INDEX ; Load index.
     LDA #$01
-    STA PPU_UPDATE_BUFFER[20],X ; Type.
+    STA PPU_UPDATE_BUFFER[64],X ; Type.
     INX ; Index++
     LDA TMP_06 ; Load.
-    STA PPU_UPDATE_BUFFER[20],X ; Store addr.
+    STA PPU_UPDATE_BUFFER[64],X ; Store addr.
     INX ; Index++
     LDA TMP_07 ; Load.
-    STA PPU_UPDATE_BUFFER[20],X ; Store addr.
+    STA PPU_UPDATE_BUFFER[64],X ; Store addr.
     INX ; Index++
 LOOP_STREAM_SHIFTS: ; 1F:017D, 0x03E17D
     LDY TMP_00 ; Y from.
@@ -240,7 +240,7 @@ LOOP_STREAM_SHIFTS: ; 1F:017D, 0x03E17D
     ASL A
     LDY TMP_01 ; Y from
     ORA 628_UNK,Y ; Or val with, indexed.
-    STA PPU_UPDATE_BUFFER[20],X ; Store to buffer.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to buffer.
     INX ; Index++
     LDY TMP_00 ; Y from
     LDA 61C_UNK,Y ; Load val.
@@ -270,13 +270,13 @@ LOOP_STREAM_SHIFTS: ; 1F:017D, 0x03E17D
     EOR #$04 ; Invert 0000.0100
     STA TMP_07 ; Store back.
     LDA #$FF
-    STA PPU_UPDATE_BUFFER[20],X ; Store EOF.
+    STA PPU_UPDATE_BUFFER[64],X ; Store EOF.
     INX ; Index++
     STX PPU_UPDATE_BUF_INDEX ; Store index.
     JMP LOOP_PREP_SHIFTS
 RTS_EOF: ; 1F:01D2, 0x03E1D2
     LDA #$FF
-    STA PPU_UPDATE_BUFFER[20],X ; Set index.
+    STA PPU_UPDATE_BUFFER[64],X ; Set index.
     INX ; ++
     STX PPU_UPDATE_BUF_INDEX ; Store index.
     RTS
@@ -3832,19 +3832,19 @@ OBJ_HANDLERS_NEGATIVE_H: ; 1F:122A, 0x03F22A
     LOW(OBJ_STATE_0xC0_HANDLER) ; 0x40
     HIGH(OBJ_STATE_0xC0_HANDLER)
 LEVEL_8_PLAYERS_NOT_ENABLED: ; 1F:12AB, 0x03F2AB
-    LDA DC_UNK ; Load
-    BNE DC_SET ; If set, goto.
+    LDA LEVEL_8_CUTSCENE_IN_PROGRESS_FLAG ; Load
+    BNE IN_PROGRESS ; If set, goto.
     JSR INIT_LEVEL_AND_OBJ[7]_STUFF ; Do rtn.
-    INC DC_UNK ; Set.
+    INC LEVEL_8_CUTSCENE_IN_PROGRESS_FLAG ; Set.
     RTS ; Leave.
-DC_SET: ; 1F:12B5, 0x03F2B5
+IN_PROGRESS: ; 1F:12B5, 0x03F2B5
     JSR OBJ[0x4-0x11]_RUN_STATE_HANDLERS ; Do..
     JSR SUB_CHECK_OBJS-0x7-0x11_RET_CS_FINISHED ; Check to see if stil in use.
     BCC RTS ; Not finished, RTS.
     LDA #$4A
     JSR LEVEL_RELATED_DATA_A_PASSED? ; Level data.
     LDA #$00
-    STA DC_UNK ; Clear.
+    STA LEVEL_8_CUTSCENE_IN_PROGRESS_FLAG ; Clear, finished.
     INC 4B_SWITCH_GAME_PREP/OVER ; ++
 RTS: ; 1F:12C8, 0x03F2C8
     RTS
@@ -3868,11 +3868,11 @@ INIT_LEVEL_AND_OBJ[7]_STUFF: ; 1F:12C9, 0x03F2C9
     LDA #$70
     JMP SND_BANKED_DISPATCH ; Sound. Abuse RTS.
 OBJ_STATE_0xAF_HANDLER: ; 1F:12F3, 0x03F2F3
-    JMP INIT_OBJECT[X]_DATA_FULL ; Mistake? TODO: See if gets to anyhow.
+    JMP INIT_OBJECT[X]_DATA_FULL ; Simple handler, lol.
 RTN_ALL_OBJS_DISABLED?_UNK: ; 1F:12F6, 0x03F2F6
     LDA 5F8_OBJ_SETS_UNK ; Load
     BMI 5F8_IS_NEG ; If negative.
-    LDA 70C_UNK ; Load
+    LDA 70C_END_OF_LEVEL_HOLDER? ; Load
     BEQ RTS ; Not set, goto.
     JSR TEST_OBJ[7-18]_DISABLED/!8B_RET_CS_TRUE ; Enabled?
     BCC RTS ; Not all finished, RTS.
@@ -3880,7 +3880,7 @@ RTN_ALL_OBJS_DISABLED?_UNK: ; 1F:12F6, 0x03F2F6
     DEC 5FB_TIMER_ALL_FINISHED? ; --
     BNE RTS ; != 0, leave.
     LDA #$00
-    STA 70C_UNK ; Clear these.
+    STA 70C_END_OF_LEVEL_HOLDER? ; Clear these.
     STA 5F8_OBJ_SETS_UNK
     LDA #$04 ; Switch to end of level things.
     STA 3C_SWITCH_CORE
@@ -4660,17 +4660,17 @@ MOVE_UNK_RET_CS_POS_CS_NEG: ; 1F:1863, 0x03F863
 CARRY_SET_RET: ; 1F:187A, 0x03F87A
     SEC ; Carry set if positive.
     RTS
-XPOS_RTN_RET_??: ; 1F:187C, 0x03F87C
+XPOS_MOD_DELTA_RET_CS_WRAPAROUND: ; 1F:187C, 0x03F87C
     CLC ; Prep add.
     LDA OBJ_POS_X_SUBPIXEL_DELTA?[18],X ; Load
     ADC OBJ_POS_X_SUBPIXEL?[18],X ; Add with.
     STA OBJ_POS_X_SUBPIXEL?[18],X ; Store.
     LDA OBJ_POS_X_DELTA?[18],X ; Load
-    ADC OBJ_POS_X_CONFIRMED[18],X ; Add with.
+    ADC OBJ_POS_X_CONFIRMED[18],X ; Add with, carried.
     STA OBJ_POS_X_CONFIRMED[18],X ; Store to.
-    ROR A ; Rotate A
-    EOR OBJ_POS_X_DELTA?[18],X ; Eor val.
-    ASL A ; Shift A back.
+    ROR A ; Rotate carry into A.
+    EOR OBJ_POS_X_DELTA?[18],X ; Invert carry for top bit because negative carries other way.
+    ASL A ; Shift carry back. Will now be correct for add and sub.
     RTS ; RTS
 MOVE_UNK_RET_??: ; 1F:1895, 0x03F895
     .db 18 ; Prep add.
@@ -4776,13 +4776,13 @@ LOOP_PPU_BOGUS_MANUAL_CLOCK: ; 1F:1906, 0x03F906
     RTS ; Leave.
 CLEAR_IRQ_FLAGS_UNK: ; 1F:1912, 0x03F912
     LDA #$00
-    STA IRQ_FLAG_R2-R5_GFX_USE_BANK_7E
-    STA FLAG_IRQ_ENABLE
-    STA IRQ_56_OR'D
+    STA IRQ_FLAG_R2-R5_GFX_USE_BANK_7E ; Use GFX.
+    STA FLAG_IRQ_ENABLE ; Disable IRQ.
+    STA IRQ_56_OR'D ; Clear. ?? TODO.
 MAPPER_IRQ_DISABLE+RTS: ; 1F:191A, 0x03F91A
     STA MMC3_IRQ_DISABLE
     RTS
-RTS_SET_IRQ_5E_UNK: ; 1F:191E, 0x03F91E
+ENABLE_IRQ?: ; 1F:191E, 0x03F91E
     LDA #$80
     STA FLAG_IRQ_ENABLE ; Set
     RTS ; RTS.
@@ -5559,7 +5559,7 @@ LOOP_MOVE_3DATA: ; 1F:1E49, 0x03FE49
     JSR DISPLAY_OBJECTS_ROUTINE ;  Order, display, blank leftovers.
     LDX PPU_UPDATE_BUF_INDEX ; Load index.
     LDA #$00 ; Load
-    STA PPU_UPDATE_BUFFER[20],X ; Store EOF in buf.
+    STA PPU_UPDATE_BUFFER[64],X ; Store EOF in buf.
     INX ; X++
     STX PPU_UPDATE_BUF_INDEX ; Store index past EOF for this group.
     STA FLAG_FRAME_UNFINISHED ; Clear flag.
@@ -5634,7 +5634,7 @@ CTRL_X_PROCESS: ; 1F:1EF5, 0x03FEF5
     STA CTRL_NEWLY_PRESSED_B[2],X
     STY CTRL_PREV_A[2],X
     STY CTRL_PREV_B[2],X
-    RTS
+    RTS ; Leave to main program/jsr.
 CTRL_FAIL_NO_NEW_PRESSES: ; 1F:1F05, 0x03FF05
     LDA #$00
     STA CTRL_NEWLY_PRESSED_A[2] ; Clear all newly pressed.

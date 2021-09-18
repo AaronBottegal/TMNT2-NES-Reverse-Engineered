@@ -317,7 +317,7 @@ P1_UPDATE: ; 14:020B, 0x02820B
     STA TMP_16
     LDX PPU_UPDATE_BUF_INDEX ; Load index.
     LDA #$04
-    STA PPU_UPDATE_BUFFER[20],X ; Store type.
+    STA PPU_UPDATE_BUFFER[64],X ; Store type.
     TYA ; Obj to A.
     AND #$02 ; Turn to [0|2] for P1/P2
     TAY ; Back to Y.
@@ -434,7 +434,7 @@ VAL_UNDER_7: ; 14:02DA, 0x0282DA
     STA TMP_10 ; Store.
     LDY PPU_UPDATE_BUF_INDEX ; Load index.
     LDA #$04
-    STA PPU_UPDATE_BUFFER[20],Y ; Type.
+    STA PPU_UPDATE_BUFFER[64],Y ; Type.
     LDA UPDATE_POS_L,X
     STA PPU_UPDATE_BUFFER+1,Y ; Set addr.
     LDA UPDATE_POS_H,X
@@ -449,7 +449,7 @@ VAL_UNDER_7: ; 14:02DA, 0x0282DA
     BEQ SKIP_FULL ; If == 0, goto.
     LDA #$4C ; Tile, full health tile with two bars.
 LOOP_WRITE_FULL: ; 14:02FE, 0x0282FE
-    STA PPU_UPDATE_BUFFER[20],Y ; Store tile.
+    STA PPU_UPDATE_BUFFER[64],Y ; Store tile.
     DEC TMP_13 ; Total--
     INY ; Buf++
     DEX ; Loop--
@@ -458,7 +458,7 @@ SKIP_FULL: ; 14:0307, 0x028307
     LDA TMP_11 ; Load
     BEQ SKIP_PARTIAL ; == 0, skip partial update.
     LDA #$4D ; Tile, half health tile with one bar.
-    STA PPU_UPDATE_BUFFER[20],Y ; Store to buffer.
+    STA PPU_UPDATE_BUFFER[64],Y ; Store to buffer.
     INY ; Buf++
     DEC TMP_13 ; Total--
     BMI UPDATE_FINISHED ; If < 0, goto.
@@ -467,7 +467,7 @@ SKIP_PARTIAL: ; 14:0315, 0x028315
     BMI UPDATE_FINISHED ; If negative, goto.
     LDA #$00 ; Clear tile.
 LOOP_MORE_BLANKS: ; 14:031B, 0x02831B
-    STA PPU_UPDATE_BUFFER[20],Y ; Clear tile.
+    STA PPU_UPDATE_BUFFER[64],Y ; Clear tile.
     INY ; Buf++
     DEC TMP_13 ; Total--
     BPL LOOP_MORE_BLANKS ; Loop total left. Clearing.
@@ -513,7 +513,7 @@ VAL_EQ_ZERO: ; 14:0356, 0x028356
 CREATE_UPDATE_BUFFER: ; 14:0358, 0x028358
     LDY PPU_UPDATE_BUF_INDEX ; Get index.
     LDA #$04
-    STA PPU_UPDATE_BUFFER[20],Y ; Type.
+    STA PPU_UPDATE_BUFFER[64],Y ; Type.
     LDA UPDATE_ADDRS_L,X ; Move
     STA PPU_UPDATE_BUFFER+1,Y
     LDA UPDATE_ADDRS_H,X ; Move
@@ -579,7 +579,7 @@ RTN_TURTLE_NAME_TO_STATUS_BAR: ; 14:03A6, 0x0283A6
     LDX PPU_UPDATE_BUF_INDEX ; Get index.
 LOOP_MAKE_NAME_BUF_UPD8: ; 14:03CA, 0x0283CA
     LDA [TMP_00],Y ; Load val from file.
-    STA PPU_UPDATE_BUFFER[20],X ; Store to buf.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to buf.
     INX ; Buf++
     INY ; Stream++
     CPY #$09 ; Stream.pos _ #$09
@@ -664,7 +664,7 @@ MAKE_UPDATE_BUF_UNK: ; 14:0414, 0x028414
     LDX PPU_UPDATE_BUF_INDEX ; Update index.
 LOOP_DATA_MOVE: ; 14:042E, 0x02842E
     LDA [TMP_00],Y ; A from stream.
-    STA PPU_UPDATE_BUFFER[20],X ; Move to buf.
+    STA PPU_UPDATE_BUFFER[64],X ; Move to buf.
     INX ; Buf++
     INY ; Stream++
     CPY #$0D ; Bytes of data.
@@ -817,41 +817,42 @@ VAL_7F: ; 14:0501, 0x028501
 RTS: ; 14:0509, 0x028509
     RTS
 DATA_PTRS_L: ; 14:050A, 0x02850A
-    .db 2C
+    LOW(FILE_A)
 DATA_PTRS_H: ; 14:050B, 0x02850B
-    .db 85
-    .db EA
-    .db 97
-    .db 56
-    .db 85
-    .db CF
-    .db 85
-    .db 42
-    .db 86
-    .db 58
-    .db 88
-    .db 17
-    .db 8A
-    .db EB
-    .db 8B
-    .db 7E
-    .db 9A
-    .db A2
-    .db A1
-    .db 3B
-    .db 9D
-    .db C2
-    .db 9E
-    .db 98
-    .db 9F
-    .db 4C
-    .db 9C
-    .db 46
-    .db A3
-    .db 17
-    .db 99
-    .db D9
-    .db A5
+    HIGH(FILE_A)
+    LOW(FILE_B)
+    HIGH(FILE_B)
+    LOW(FILE_C)
+    HIGH(FILE_C)
+    LOW(FILE_D)
+    HIGH(FILE_D)
+    LOW(FILE_E)
+    HIGH(FILE_E)
+    LOW(FILE_F)
+    HIGH(FILE_F)
+    LOW(FILE_G)
+    HIGH(FILE_G)
+    LOW(FILE_H)
+    HIGH(FILE_H)
+    LOW(FILE_I)
+    HIGH(FILE_I)
+    LOW(FILE_J)
+    HIGH(FILE_J)
+    LOW(FILE_K)
+    HIGH(FILE_K)
+    LOW(FILE_L)
+    HIGH(FILE_L)
+    LOW(FILE_M)
+    HIGH(FILE_M)
+    LOW(FILE_N)
+    HIGH(FILE_N)
+    LOW(FILE_O)
+    HIGH(FILE_O)
+    LOW(FILE_P)
+    HIGH(FILE_P)
+    LOW(FILE_Q)
+    HIGH(FILE_Q)
+FILE_A: ; 14:052C, 0x02852C
     .db 00
     .db 20
     .db 78
@@ -894,6 +895,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 40
     .db 00
     .db FF
+FILE_C: ; 14:0556, 0x028556
     .db 40
     .db 20
     .db 88
@@ -1015,6 +1017,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 10
     .db FF
     .db FF
+FILE_D: ; 14:05CF, 0x0285CF
     .db 40
     .db 20
     .db 88
@@ -1130,6 +1133,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 10
     .db FF
     .db FF
+FILE_E: ; 14:0642, 0x028642
     .db 00
     .db 20
     .db 67
@@ -1664,6 +1668,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 09
     .db 00
     .db FF
+FILE_F: ; 14:0858, 0x028858
     .db 00
     .db 20
     .db 7E
@@ -2111,6 +2116,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 11
     .db 00
     .db FF
+FILE_G: ; 14:0A17, 0x028A17
     .db 00
     .db 20
     .db 7E
@@ -2579,6 +2585,7 @@ DATA_PTRS_H: ; 14:050B, 0x02850B
     .db 10
     .db 00
     .db FF
+FILE_H: ; 14:0BEB, 0x028BEB
     .db 00
     .db 20
     .db 7E
@@ -5657,6 +5664,7 @@ ATTRACT_CTRL_DATA_G: ; 14:170A, 0x02970A
     .db 63
     .db FF
     .db FF
+FILE_B: ; 14:17EA, 0x0297EA
     .db 00
     .db 20
     .db 7E
@@ -5958,6 +5966,7 @@ ATTRACT_CTRL_DATA_G: ; 14:170A, 0x02970A
     .db 0A
     .db 00
     .db FF
+FILE_P: ; 14:1917, 0x029917
     .db 00
     .db 20
     .db 7E
@@ -6317,6 +6326,7 @@ ATTRACT_CTRL_DATA_G: ; 14:170A, 0x02970A
     .db 10
     .db 00
     .db FF
+FILE_I: ; 14:1A7E, 0x029A7E
     .db 00
     .db 20
     .db 7E
@@ -6779,6 +6789,7 @@ ATTRACT_CTRL_DATA_G: ; 14:170A, 0x02970A
     .db 40
     .db 00
     .db FF
+FILE_N: ; 14:1C4C, 0x029C4C
     .db 00
     .db 20
     .db 7E
@@ -7018,6 +7029,7 @@ ATTRACT_CTRL_DATA_G: ; 14:170A, 0x02970A
     .db 14
     .db 00
     .db FF
+FILE_K: ; 14:1D3B, 0x029D3B
     .db 00
     .db 20
     .db 7E
@@ -7409,6 +7421,7 @@ ATTRACT_CTRL_DATA_G: ; 14:170A, 0x02970A
     .db 08
     .db 00
     .db FF
+FILE_L: ; 14:1EC2, 0x029EC2
     .db 00
     .db 20
     .db 7E
@@ -7623,6 +7636,7 @@ ATTRACT_CTRL_DATA_G: ; 14:170A, 0x02970A
     .db 11
     .db 00
     .db FF
+FILE_M: ; 14:1F98, 0x029F98
     .db 00
     .db 20
     .db 7E

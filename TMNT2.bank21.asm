@@ -416,6 +416,7 @@
     .db 0B
     .db 00
     .db FF
+FILE_J: ; 15:01A2, 0x02A1A2
     .db 00
     .db 20
     .db 7E
@@ -836,6 +837,7 @@
     .db 09
     .db 00
     .db FF
+FILE_O: ; 15:0346, 0x02A346
     .db 00
     .db 20
     .db 4E
@@ -1495,6 +1497,7 @@
     .db 05
     .db 04
     .db FF
+FILE_Q: ; 15:05D9, 0x02A5D9
     .db 00
     .db 20
     .db 7E

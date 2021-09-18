@@ -2045,23 +2045,23 @@ PPU_UPDATE_BUF_MAKER: ; 04:08E8, 0x0088E8
     LDA TMP_01 ; Load
     STA TMP_06 ; Store to.
     LDA TMP_08 ; Load
-    STA PPU_UPDATE_BUFFER[20],X ; Set to buffer.
+    STA PPU_UPDATE_BUFFER[64],X ; Set to buffer.
     INX ; Buf++
     LDA TMP_02 ; Load
-    STA PPU_UPDATE_BUFFER[20],X ; Store to buf.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to buf.
     INX ; Buf++
     LDA TMP_03 ; Load
-    STA PPU_UPDATE_BUFFER[20],X ; Store to buffer.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to buffer.
     INX ; Buf++
 LOOP_DATA: ; 04:0900, 0x008900
     LDA [TMP_04],Y ; Load from file.
-    STA PPU_UPDATE_BUFFER[20],X ; Store to buffer.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to buffer.
     INX ; Buf++
     INY ; Stream++
     DEC TMP_06 ; Count--
     BNE LOOP_DATA ; != 0, loop.
     LDA #$FF
-    STA PPU_UPDATE_BUFFER[20],X ; Buffer EOF.
+    STA PPU_UPDATE_BUFFER[64],X ; Buffer EOF.
     INX ; Buf++
     STX PPU_UPDATE_BUF_INDEX ; Save.
     LDA [TMP_04],Y ; Load from file.

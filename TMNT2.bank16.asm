@@ -1673,23 +1673,23 @@ MAKE_PPU_UPDATE_BUFFER: ; 10:06E1, 0x0206E1
     LDA TMP_01 ; Load
     STA TMP_06 ; Store to.
     LDA TMP_08 ; Load
-    STA PPU_UPDATE_BUFFER[20],X ; Store to buf.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to buf.
     INX ; Index++
     LDA TMP_02 ; Load
-    STA PPU_UPDATE_BUFFER[20],X ; Store to.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to.
     INX ; Index++
     LDA TMP_03 ; Load
-    STA PPU_UPDATE_BUFFER[20],X ; Store to.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to.
     INX ; Index++
 LOOP_FILE: ; 10:06F9, 0x0206F9
     LDA [TMP_04],Y ; Load from file.
-    STA PPU_UPDATE_BUFFER[20],X ; Store to.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to.
     INX ; Index++
     INY ; Stream++
     DEC TMP_06 ; --
     BNE LOOP_FILE ; != 0, goto.
     LDA #$FF
-    STA PPU_UPDATE_BUFFER[20],X ; Store EOF.
+    STA PPU_UPDATE_BUFFER[64],X ; Store EOF.
     INX ; Index++
     STX PPU_UPDATE_BUF_INDEX ; Store buf.
     LDA [TMP_04],Y ; Load from file.
@@ -1911,7 +1911,7 @@ VAL_EQ_ZERO: ; 10:0833, 0x020833
     LDA #$00
     STA 636_UNK ; Set.
     LDA #$01
-    STA 661_UNK_LEVEL_A_SETS ; Set.
+    STA 661_LEVEL_A_FLAG_UNK ; Set.
     JSR DATA_MOD_SEED_0x00 ; Do.
 VAL_NONZERO: ; 10:0849, 0x020849
     LDA 87_CB_INDEX? ; Load
@@ -1963,7 +1963,7 @@ VAL_EQ_0xFF: ; 10:08A5, 0x0208A5
     JSR DATA_MOD_SEED_0x1F ; Do.
     JSR BG_MULTIUPDATE_TERMINATE ; Done.
     LDA #$00
-    STA 661_UNK_LEVEL_A_SETS ; Clear.
+    STA 661_LEVEL_A_FLAG_UNK ; Clear.
     LDA #$16 ; Val?
     JMP LEVEL_RELATED_DATA_A_PASSED? ; Do, abuse RTS.
 DATA_MOD_SEED_0x00: ; 10:08B5, 0x0208B5

@@ -8,8 +8,8 @@ PREMADE_UPDATE_BUF_QUEUE: ; 1C:0001, 0x038001
     STA TMP_01
     LDA #$FF ; Mask set.
     ADC #$00 ; Carry test. Set means mask of 0x00.
-    STA TMP_02 ; Store.
-    LDY #$00 ; STream seed.
+    STA TMP_02 ; Store mask.
+    LDY #$00 ; Stream seed.
 OUTPUT_PACKET_HEADER: ; 1C:0015, 0x038015
     LDA #$01 ; Type. "Unique breakout"
     JSR A_TO_PPU_UPDATE_BUFFER_REINDEX ; Store to.
@@ -37,7 +37,7 @@ WRITE_0xFF_TO_UPDATE_BUF_REINDEXED: ; 1C:003F, 0x03803F
 A_TO_PPU_UPDATE_BUFFER_REINDEX: ; 1C:0041, 0x038041
     LDX PPU_UPDATE_BUF_INDEX ; Set index to val.
 A_TO_PPU_UPDATE_BUFFER: ; 1C:0043, 0x038043
-    STA PPU_UPDATE_BUFFER[20],X ; Store to.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to.
     INX ; Next.
     STX PPU_UPDATE_BUF_INDEX ; Store back.
     RTS ; Leave.
@@ -53,7 +53,7 @@ PREMADE_PPU_UPDATE_PTRS_H: ; 1C:004B, 0x03804B
     HIGH(UPDATE_ENTRY_D)
     LOW(UPDATE_ENTRY_E) ; 0x04:
     HIGH(UPDATE_ENTRY_E)
-    LOW(ARR_RAM_CUSTOM_PACKET_61B_FLAG) ; 0x05: RAM priority/created update.
+    LOW(ARR_RAM_CUSTOM_PACKET_61B_FLAG) ; 0x05: RAM priority/created update from $06D7
     HIGH(ARR_RAM_CUSTOM_PACKET_61B_FLAG)
     LOW(UPDATE_ENTRY_F) ; 0x06: "GAME OVER"
     HIGH(UPDATE_ENTRY_F)
@@ -811,7 +811,7 @@ RTN_STATE_BIT_0x02: ; 1C:0526, 0x038526
     BNE BIT_0x40_SET ; If set, goto.
     LDA 601_IRQ_FLAG_DELAY_MOD_+ ; Load
     BMI 601_TOP_SET ; If top bit set, goto.
-    LDA 661_UNK_LEVEL_A_SETS ; Load
+    LDA 661_LEVEL_A_FLAG_UNK ; Load
     BEQ 661_ZERO ; If == 0, goto.
 601_TOP_SET: ; 1C:0537, 0x038537
     LDA #$87 ; Val?
@@ -860,7 +860,7 @@ RTN_B_UNPRESSED?: ; 1C:0585, 0x038585
     BEQ L_1C:05DD
     LDA 601_IRQ_FLAG_DELAY_MOD_+
     BMI L_1C:059A
-    LDA 661_UNK_LEVEL_A_SETS
+    LDA 661_LEVEL_A_FLAG_UNK
     BEQ L_1C:05A3
 L_1C:059A: ; 1C:059A, 0x03859A
     LDA #$87
@@ -958,7 +958,7 @@ L_1C:064E: ; 1C:064E, 0x03864E
     LDA TMP_02
     AND #$04
     BEQ RTN_STATE_BIT_0x08
-    LDA 661_UNK_LEVEL_A_SETS
+    LDA 661_LEVEL_A_FLAG_UNK
     BEQ L_1C:0660
     LDA #$85
     JSR RTN_UNK_RTS_CARRY_SET_FAIL?
@@ -3085,7 +3085,7 @@ TURTLE_SELECTION_ATTR_UPDATE: ; 1C:143C, 0x03943C
     LDX PPU_UPDATE_BUF_INDEX ; Load X from.
 UPDATE_MAKE_LOOP: ; 1C:1455, 0x039455
     LDA #$04 ; 4 byte update?
-    STA PPU_UPDATE_BUFFER[20],X ; Set up.
+    STA PPU_UPDATE_BUFFER[64],X ; Set up.
     LDA TMP_02 ; Load PPU low.
     STA PPU_UPDATE_BUFFER+1,X ; Make addr.
     LDA TMP_03 ; Load PPU high.
@@ -3112,7 +3112,7 @@ UPDATE_MAKE_LOOP: ; 1C:1455, 0x039455
     DEC TMP_00 ; Dec loop count.
     BPL UPDATE_MAKE_LOOP ; If positive, continue.
     LDA #$00
-    STA PPU_UPDATE_BUFFER[20],X ; Null next slot.
+    STA PPU_UPDATE_BUFFER[64],X ; Null next slot.
     STX PPU_UPDATE_BUF_INDEX ; X final to index.
     LDX TMP_07 ; Load X passed?
     RTS

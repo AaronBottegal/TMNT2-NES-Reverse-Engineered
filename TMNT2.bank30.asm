@@ -2673,17 +2673,17 @@ GAME_SCRIPT_SWITCHES: ; 1E:0A83, 0x03CA83
     LDA STATE_SWITCH_INITIAL_MENUS ; Load switch state.
     JSR SWITCH_CODE_PTRS_PAST_JSR ; Switch it up.
     LOW(SWITCH_18_RTN_FIRST_SCREEN) ; Initial screen.
-    HIGH(SWITCH_18_RTN_FIRST_SCREEN)
+    HIGH(SWITCH_18_RTN_FIRST_SCREEN) ; 0x00
     LOW(SWITCH_18_TITLE_SCREEN) ; Title screen.
-    HIGH(SWITCH_18_TITLE_SCREEN)
+    HIGH(SWITCH_18_TITLE_SCREEN) ; 0x01
     LOW(SWITCH_18_RTN_ATTRACT) ; Attract/demo screen.
-    HIGH(SWITCH_18_RTN_ATTRACT)
+    HIGH(SWITCH_18_RTN_ATTRACT) ; 0x02
     LOW(SWITCH_18_TITLE_DATA_MOVE) ; Select setup?
-    HIGH(SWITCH_18_TITLE_DATA_MOVE)
+    HIGH(SWITCH_18_TITLE_DATA_MOVE) ; 0x03
     LOW(SWITCH_18_SELECT_TURTLE) ; Select turtle screen.
-    HIGH(SWITCH_18_SELECT_TURTLE)
+    HIGH(SWITCH_18_SELECT_TURTLE) ; 0x04
     LOW(SWITCH_18_RTN_CORE_GAMEPLAY) ; Cutscene+Gameplay? <<<<<<<<
-    HIGH(SWITCH_18_RTN_CORE_GAMEPLAY)
+    HIGH(SWITCH_18_RTN_CORE_GAMEPLAY) ; 0x05
 SWITCH_18_RTN_FIRST_SCREEN: ; 1E:0A96, 0x03CA96
     LDA SUBSTATE_SWITCH_MENUS
     BNE 19_NOT_ZERO
@@ -2959,7 +2959,7 @@ LEVEL_POOLS_INIT?: ; 1E:0C50, 0x03CC50
     LDX #$D0 ; Index
     LDA #$00 ; A=
 INIT_3D0-3FF_LOOP: ; 1E:0C54, 0x03CC54
-    STA PPU_UPDATE_BUFFER[20],X ; A to.
+    STA PPU_UPDATE_BUFFER[64],X ; A to.
     INX ; X++
     BNE INIT_3D0-3FF_LOOP ; Loop.
     LDX #$A8 ; Index
@@ -2996,7 +2996,7 @@ CLEAR_[4/5/7]00_PAGES_LOOP: ; 1E:0C81, 0x03CC81
 CLEAR_3C0-3FF: ; 1E:0C8D, 0x03CC8D
     LDX #$C0 ; Set index.
 CLEAR_3XX-3C0: ; 1E:0C8F, 0x03CC8F
-    STA PPU_UPDATE_BUFFER[20],X ; Clear
+    STA PPU_UPDATE_BUFFER[64],X ; Clear
     INX ; X++
     CPX #$C0 ; If X _ #$C0
     BCC CLEAR_3XX-3C0 ; <, goto.
@@ -3045,7 +3045,7 @@ PPU_CTRL_UPDATE_CONFIG: ; [5], 1E:0CC6, 0x03CCC6
 PPU_UPDATE_BUFFER_COMMIT: ; 1E:0CCB, 0x03CCCB
     LDY #$00 ; Index.
 NEXT_UPDATE_PACKET: ; 1E:0CCD, 0x03CCCD
-    LDX PPU_UPDATE_BUFFER[20],Y ; X from. Type of update.
+    LDX PPU_UPDATE_BUFFER[64],Y ; X from. Type of update.
     BEQ END_RTN_NULL_BUFFER ; == 0, NULL, goto.
     LDA PPU_CTRL_RAM_COPY ; Load...
     AND #$18 ; Keep BG/SPR locations.
@@ -3055,7 +3055,7 @@ NEXT_UPDATE_PACKET: ; 1E:0CCD, 0x03CCCD
     LDA PPU_STATUS ; Reset latch.
     LDA PPU_UPDATE_BUFFER+1,Y ; Load addr high.
     STA PPU_ADDR ; Store to PPU.
-    LDA PPU_UPDATE_BUFFER[20],Y ; Load addr low.
+    LDA PPU_UPDATE_BUFFER[64],Y ; Load addr low.
     STA PPU_ADDR ; Store to PPU.
     INY
     INY ; Put to data, consumed 2.
@@ -3065,7 +3065,7 @@ NEXT_UPDATE_PACKET: ; 1E:0CCD, 0x03CCCD
     BCS LOOP_COUNT_STREAM ; >, goto. Type 4, count.
 END_RTN_NULL_BUFFER: ; 1E:0CF6, 0x03CCF6
     LDA #$00 ; Load, clear value.
-    STA PPU_UPDATE_BUFFER[20] ; Store EOF.
+    STA PPU_UPDATE_BUFFER[64] ; Store EOF.
     STA PPU_UPDATE_BUF_INDEX ; Clear index.
     RTS ; Leave.
 UNIQUE_COMMIT_0xFF: ; 1E:0CFE, 0x03CCFE
@@ -3073,18 +3073,18 @@ UNIQUE_COMMIT_0xFF: ; 1E:0CFE, 0x03CCFE
 UNIQUE_COMMIT_TILE: ; 1E:0D00, 0x03CD00
     STA PPU_DATA ; Store to PPU.
 UNIQUE_STORE_MOVE: ; 1E:0D03, 0x03CD03
-    LDA PPU_UPDATE_BUFFER[20],Y ; Load data.
+    LDA PPU_UPDATE_BUFFER[64],Y ; Load data.
     INY ; Index++
     CMP #$FF ; Breakout marker.
     BNE UNIQUE_COMMIT_TILE ; Store data looped if not 0xFF.
-    LDA PPU_UPDATE_BUFFER[20],Y ; Load next.
+    LDA PPU_UPDATE_BUFFER[64],Y ; Load next.
     CMP #$05 ; If A _ 0x05
     BCS UNIQUE_COMMIT_0xFF ; >=, goto.
     BCC NEXT_UPDATE_PACKET ; <, goto. Always taken.
 RLE_MOVE: ; 1E:0D14, 0x03CD14
-    LDX PPU_UPDATE_BUFFER[20],Y ; Load loop count.
+    LDX PPU_UPDATE_BUFFER[64],Y ; Load loop count.
     INY ; Index++
-    LDA PPU_UPDATE_BUFFER[20],Y ; Load data to store.
+    LDA PPU_UPDATE_BUFFER[64],Y ; Load data to store.
     INY ; Index++
 RLE_MOVE_LOOP: ; 1E:0D1C, 0x03CD1C
     STA PPU_DATA ; Store data loaded.
@@ -3092,10 +3092,10 @@ RLE_MOVE_LOOP: ; 1E:0D1C, 0x03CD1C
     BNE RLE_MOVE_LOOP ; !=0, keep moving.
     BEQ NEXT_UPDATE_PACKET ; Always taken.
 LOOP_COUNT_STREAM: ; 1E:0D24, 0x03CD24
-    LDX PPU_UPDATE_BUFFER[20],Y ; Load loop count.
+    LDX PPU_UPDATE_BUFFER[64],Y ; Load loop count.
     INY ; Index++
 LOOP_MOVE: ; 1E:0D28, 0x03CD28
-    LDA PPU_UPDATE_BUFFER[20],Y ; Load value.
+    LDA PPU_UPDATE_BUFFER[64],Y ; Load value.
     INY ; Index++
     STA PPU_DATA ; To PPU.
     DEX ; Loop--
@@ -3680,13 +3680,13 @@ ATTRACT_MODE: ; 1E:1149, 0x03D149
 SWITCH_18_RTN_CORE_GAMEPLAY: ; 1E:115F, 0x03D15F
     LDA 3C_SWITCH_CORE ; Load core switch.
     CMP #$03 ; If _ #$03
-    BNE CORE_STATE_SWITCH ; !=, goto. Not in gameplay, continue.
-    LDA 3DB_UNKNOWN ; Load val. In gameplay checks here. Cutscene related?
-    BNE CORE_STATE_SWITCH ; != 0, set, goto always. Skips cutscene stuff.
-    JSR CUTSCENE_START_DOES_SOMETHING? ; Do rtn.
-    LDA 3D_UNK ; Load val.
-    BEQ CORE_STATE_SWITCH ; != 0, not set, goto.
-    RTS ; Leave.
+    BNE CORE_STATE_SWITCH ; !=, goto. Not in gameplay, run switch.
+    LDA FLAG_RUN_CORE_SWITCH? ; Load val. In gameplay checks here. Cutscene related?
+    BNE CORE_STATE_SWITCH ; Set, run core switch.
+    JSR CUTSCENE_START_DOES_SOMETHING? ; Do between.
+    LDA 3D_CORE_SWITCH_HOLD ; Load val.
+    BEQ CORE_STATE_SWITCH ; If clear, run main switch now.
+    RTS ; Still set, leave.
 CORE_STATE_SWITCH: ; 1E:1172, 0x03D172
     LDA 3C_SWITCH_CORE ; Load switch value.
     JSR SWITCH_CODE_PTRS_PAST_JSR
@@ -3696,13 +3696,13 @@ CORE_STATE_SWITCH: ; 1E:1172, 0x03D172
     HIGH(SWITCH_3C_RTN_B) ; 0x01
     LOW(SWITCH_3C_RTN_C) ; Turtle UI info.
     HIGH(SWITCH_3C_RTN_C) ; 0x02
-    LOW(SWITCH_3C_RTN_D) ; Gameplay/level handling. <<<<<<<<
+    LOW(SWITCH_3C_RTN_D) ; Gameplay/level handling. <<<<<<
     HIGH(SWITCH_3C_RTN_D) ; 0x03
     LOW(SWITCH_3C_RTN_E) ; End level begin?
     HIGH(SWITCH_3C_RTN_E) ; 0x04
     LOW(SWITCH_3C_RTN_F) ; End level script?
     HIGH(SWITCH_3C_RTN_F) ; 0x05
-    LOW(SWITCH_3C_RTN_G) ; Set up loads of gameplay stuff, turtle attrs, cutscene sound.
+    LOW(SWITCH_3C_RTN_G) ; Animation intro cutscene player, misc other things.
     HIGH(SWITCH_3C_RTN_G) ; 0x06
     LOW(SWITCH_3C_RTN_H) ; Game over portion.
     HIGH(SWITCH_3C_RTN_H) ; 0x07
@@ -3757,7 +3757,7 @@ RTS: ; 1E:11C2, 0x03D1C2
     LDA #$32 ; Bank in 12/13
     JSR BANK_PAIR_USE_A
     JSR RTN_TEXT_AFTER_CUTSCENE? ; Do rtn.
-    LDA 63B_TEXT_FADE_OUT_DONE? ; Load val.
+    LDA SWITCH_TEXT_INTRO ; Load val.
     BNE RTS ; != 0, RTS.
 4B_SWITCH_RTN_C_FINISHED: ; 1E:11E3, 0x03D1E3
     LDA #$00 ; Clear
@@ -3809,7 +3809,7 @@ RTN_PLAYER_UI_TO_STATUS?: ; 1E:1234, 0x03D234
     LDX #$02 ; Data index.
     JSR ALL_PLAYER_INFO_TO_SCREEN
 NOT_2P_GAME: ; 1E:1242, 0x03D242
-    JSR RTS_SET_IRQ_5E_UNK
+    JSR ENABLE_IRQ?
     LDA #$06 ; Set switch, routine F.
     STA 3C_SWITCH_CORE
 RTS: ; 1E:1249, 0x03D249
@@ -3825,7 +3825,7 @@ NOT_SCREEN_8: ; 1E:1257, 0x03D257
     LDA #$00
     STA DISABLE_RENDERING_X_FRAMES ; Enable rendering.
     LDA #$03
-    STA 3C_SWITCH_CORE ; Switch to setup level.
+    STA 3C_SWITCH_CORE ; Switch to gameplay.
     LDA #$00
     STA 4B_SWITCH_GAME_PREP/OVER ; Clear.
     LDA LEVEL/SCREEN_ON ; Load screen.
@@ -3846,7 +3846,7 @@ LEVEL_NOT_7: ; 1E:127D, 0x03D27D
     CMP #$0A ; If _ #$0A
     BNE NOT_LEVEL_A ; !=, goto.
     LDA #$01
-    STA 661_UNK_LEVEL_A_SETS ; Set.
+    STA 661_LEVEL_A_FLAG_UNK ; Set.
 NOT_LEVEL_A: ; 1E:1288, 0x03D288
     JSR RTN_TURTLE_COLORS_ASSIGN? ; Do..
     LDA #$3C
@@ -3870,7 +3870,7 @@ SOUNDS_PER_SCREEN: ; 1E:12A7, 0x03D2A7
     .db 70
     .db 72
     .db 73
-    .db 00
+    .db 00 ; Level 8, sound set earlier so no entry here.
     .db 74
     .db 75
     .db 63
@@ -3917,9 +3917,9 @@ SWITCH_3C_RTN_D: ; 1E:12C9, 0x03D2C9
 RTS: ; 1E:1313, 0x03D313
     RTS
 SWITCH_3C_RTN_E: ; 1E:1314, 0x03D314
-    LDA 4B_SWITCH_GAME_PREP/OVER ; Load
-    CMP #$02 ; If _ #$02
-    BEQ PLAYER_STEP_EQ_2 ; ==, goto.
+    LDA 4B_SWITCH_GAME_PREP/OVER ; Load game over switch.
+    CMP #$02 ; If state _ #$02
+    BEQ PLAYER_STEP_EQ_2 ; ==, goto. Note: Intercepts, basically.
     LDA #$00
     STA CTRL_PREV_A[2] ; Clear controller.
     STA CTRL_PREV_A+1
@@ -3932,15 +3932,15 @@ SWITCH_3C_RTN_E: ; 1E:1314, 0x03D314
     ORA OBJ_SECONDARY_SWITCH?+2 ; Load P2.
     AND #$0F ; Keep 0000.1111
     BNE ANY_STATE_SET ; If either any bits set, goto.
-    INC 4B_SWITCH_GAME_PREP/OVER ; Otherwise, ++
+    INC 4B_SWITCH_GAME_PREP/OVER ; Continue with game over screen.
 ANY_STATE_SET: ; 1E:1338, 0x03D338
-    JMP UPDATE_PLAYERS_HEALTH_IF_NO_QUEUED ; Do instead.
+    JMP UPDATE_PLAYERS_HEALTH_IF_NO_QUEUED ; Do update.
 PLAYER_STEP_EQ_2: ; 1E:133B, 0x03D33B
     LDA #$00
-    STA 3DB_UNKNOWN ; Clear ?
+    STA FLAG_RUN_CORE_SWITCH? ; Init core.
     LDA #$00
-    STA 4B_SWITCH_GAME_PREP/OVER ; Reset.
-    INC 3C_SWITCH_CORE ; Next switch.
+    STA 4B_SWITCH_GAME_PREP/OVER ; Init game over switch.
+    INC 3C_SWITCH_CORE ; Next switch for core.
     LDY LEVEL/SCREEN_ON ; Load level on.
     LDA PER_LEVEL_SOUND_DATA,Y ; Load..
     BEQ RTS ; No value loaded, don't play sound.
@@ -3963,7 +3963,7 @@ SWITCH_3C_RTN_F: ; 1E:135C, 0x03D35C
     LDA #$32 ; Bank pair 12/13.
     JSR BANK_PAIR_USE_A
     JSR EOL_CUTSCENE?
-    LDA 639_SWITCH_EOL_SCRIPT? ; Load
+    LDA 639_SWITCH_EOL_SCRIPT_IN_PROGRESS? ; Load
     BNE RTS_RTS ; If set, RTS. Still in cutscene.
     INC LEVEL/SCREEN_ON ; Move to next.
     LDA #$01
@@ -3981,7 +3981,7 @@ SKIP_CLEAR: ; 1E:1382, 0x03D382
     LDA OBJECT_DATA_HEALTH?+2 ; Load P2, save.
     PHA
     JSR CLEAR_$60-$E0_WITH_ZERO ; Clean up data.
-    PLA ; Restore player vars.
+    PLA ; Restore player vars, health had.
     STA OBJECT_DATA_HEALTH?+2
     PLA
     STA OBJECT_DATA_HEALTH?[18]
@@ -3998,44 +3998,44 @@ RTS_RTS: ; 1E:13A4, 0x03D3A4
 SWITCH_3C_RTN_H: ; 1E:13A5, 0x03D3A5
     LDA #$32
     JSR BANK_PAIR_USE_A ; Bank 12/13.
-    JMP 4B_SWITCH ; Do.
+    JMP 4B_SWITCH_DIFFERENT_BANK ; Do.
 SWITCH_3C_RTN_I: ; 1E:13AD, 0x03D3AD
     LDA #$32
     JSR BANK_PAIR_USE_A ; Bank in 12/13.
-    LDA 4B_SWITCH_GAME_PREP/OVER ; Use this as switch now? lol.
+    LDA 4B_SWITCH_GAME_PREP/OVER ; Use this as a switch now. Epilogue.
     JSR SWITCH_CODE_PTRS_PAST_JSR
-    LOW(4B_SWITCH_RTN_A) ; Another switch. TODO.
+    LOW(4B_SWITCH_RTN_A) ; Palette things, objs at some point, not too bad.
     HIGH(4B_SWITCH_RTN_A)
     LOW(4B_SWITCH_RTN_B) ; Switch off same variable but different meaning, sub too.
     HIGH(4B_SWITCH_RTN_B)
-    LOW(4B_SWITCH_RTN_C) ; Finished epilogue/credits?
+    LOW(4B_SWITCH_RTN_C) ; Finished epilogue/credits. Sends to game over in previous switch.
     HIGH(4B_SWITCH_RTN_C)
 4B_SWITCH_RTN_C: ; 1E:13BD, 0x03D3BD
     LDA #$07
-    STA 3C_SWITCH_CORE ; Switch core to state 7, game over?
+    STA 3C_SWITCH_CORE ; Switch core to state 7, game over.
     LDA #$00
     STA 4B_SWITCH_GAME_PREP/OVER ; Clear vars.
-    STA CONTINUES_LEFT ; No continues, game actually over.
-    RTS
+    STA CONTINUES_LEFT ; No continues, game actually over now.
+    RTS ; Done, leave.
 CUTSCENE_START_DOES_SOMETHING?: ; 1E:13C9, 0x03D3C9
     LDA GAME_STARTED ; Load val.
     ORA 3E_UNK ; Or with.
     ORA DISABLE_RENDERING_X_FRAMES ; Or with disabled frames.
     BNE RTS ; Any nonzero, RTS.
     LDA CTRL_NEWLY_PRESSED_B[2] ; Get buttons pressed P1.
-    LDY 3D_UNK ; Y=
-    BNE Y_WAS_SET ; If Y has value, goto.
+    LDY 3D_CORE_SWITCH_HOLD ; Y=
+    BNE CORE_SWITCH_HELD ; If Y has value, goto.
     AND #$10 ; Test start button.
     BEQ RTS ; Not pressed, leave.
-    LDA #$01 ; Set 3D...
-    STA 3D_UNK
+    LDA #$01 ; Hold core.
+    STA 3D_CORE_SWITCH_HOLD
     LDA #$5F ; Sound to play.
     JMP SND_BANKED_DISPATCH ; Abuse RTS.
-Y_WAS_SET: ; 1E:13E4, 0x03D3E4
+CORE_SWITCH_HELD: ; 1E:13E4, 0x03D3E4
     AND #$10 ; Test start button.
     BEQ RTS ; Not pressed, leave.
-    LDA #$00 ; Clear...
-    STA 3D_UNK
+    LDA #$00 ; Clear hold.
+    STA 3D_CORE_SWITCH_HOLD ; Unhold switch.
 RTS: ; 1E:13EC, 0x03D3EC
     RTS
 INITIAL_PALETTE_TO_CREATED_UPDATE: ; 1E:13ED, 0x03D3ED
@@ -5306,13 +5306,13 @@ A_NOT_PRESSED: ; 1E:18F2, 0x03D8F2
     LDA #$56 ; Play sound.
     JSR SND_BANKED_DISPATCH
     DEC LEVEL/SCREEN_ON ; --
-    BMI 42_UNDERFLOW ; Under 0?
+    BMI LEVEL_SELECT_UNDERFLOW ; Under 0?
     LDA LEVEL/SCREEN_ON ; Load
     CMP #$01 ; If _ #$01
     BNE MAKE_UPDATE_BUF? ; !=, goto.
     DEC LEVEL/SCREEN_ON ; 0 now.
     JMP MAKE_UPDATE_BUF? ; Goto.
-42_UNDERFLOW: ; 1E:190C, 0x03D90C
+LEVEL_SELECT_UNDERFLOW: ; 1E:190C, 0x03D90C
     LDA #$0A ; A=
     STA LEVEL/SCREEN_ON ; Store index.
     BNE MAKE_UPDATE_BUF? ; Always taken.
@@ -5335,13 +5335,13 @@ LEFT_NOT_PRESSED: ; 1E:1912, 0x03D912
 MAKE_UPDATE_BUF?: ; 1E:192F, 0x03D92F
     LDX PPU_UPDATE_BUF_INDEX ; X=
     LDA #$01 ; Type?
-    STA PPU_UPDATE_BUFFER[20],X ; To buf.
+    STA PPU_UPDATE_BUFFER[64],X ; To buf.
     INX ; Buf++
     LDA #$6F ; Addr low.
-    STA PPU_UPDATE_BUFFER[20],X ; To buf.
+    STA PPU_UPDATE_BUFFER[64],X ; To buf.
     INX ; Buf++
     LDA #$21 ; Addr high.
-    STA PPU_UPDATE_BUFFER[20],X ; Store.
+    STA PPU_UPDATE_BUFFER[64],X ; Store.
     INX ; Buf++
     LDY LEVEL/SCREEN_ON ; Y=
     LDA CUTSCENE_1_TILE_BUF?,Y ; A from data.
@@ -5350,15 +5350,15 @@ MAKE_UPDATE_BUF?: ; 1E:192F, 0x03D92F
     LSR A
     LSR A
     LSR A
-    STA PPU_UPDATE_BUFFER[20],X ; Store to buf.
+    STA PPU_UPDATE_BUFFER[64],X ; Store to buf.
     INX ; Buf++
     LDY LEVEL/SCREEN_ON ; Re-load Y. Mistake, unneeded.
     LDA CUTSCENE_1_TILE_BUF?,Y ; Data from
     AND #$0F ; Get bottom bits.
-    STA PPU_UPDATE_BUFFER[20],X ; To buffer.
+    STA PPU_UPDATE_BUFFER[64],X ; To buffer.
     INX ; Buf++
     LDA #$FF ; Data EOF.
-    STA PPU_UPDATE_BUFFER[20],X ; To buffer.
+    STA PPU_UPDATE_BUFFER[64],X ; To buffer.
     INX ; Buf++
     STX PPU_UPDATE_BUF_INDEX ; Store buf index finished.
     RTS
@@ -5374,413 +5374,202 @@ CUTSCENE_1_TILE_BUF?: ; 1E:1965, 0x03D965
     .db 09
     .db 0A
     .db 21
-    .db A5
-    .db 38
-    .db 05
-    .db 39
-    .db 29
-    .db 08
-    .db F0
-    .db 0A
-    .db A9
-    .db 56
-    .db 20
-    .db 52
-    .db DB
-    .db C6
-    .db B4
-    .db 4C
-    .db 91
-    .db D9
-    .db A5
-    .db 38
-    .db 05
-    .db 39
-    .db 29
-    .db 04
-    .db F0
-    .db 3B
-    .db A9
-    .db 56
-    .db 20
-    .db 52
-    .db DB
-    .db E6
-    .db B4
-    .db A6
-    .db 1E
-    .db A9
-    .db 01
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A9
-    .db EF
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A9
-    .db 21
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A5
-    .db B4
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 18
-    .db 69
-    .db 01
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A5
-    .db B4
-    .db 29
-    .db 0F
-    .db 18
-    .db 69
-    .db 01
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A9
-    .db FF
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db 86
-    .db 1E
-    .db A5
-    .db 38
-    .db 05
-    .db 39
-    .db 29
-    .db 20
-    .db F0
-    .db 16
-    .db A9
-    .db 56
-    .db 20
-    .db 52
-    .db DB
-    .db AD
-    .db D6
-    .db 06
-    .db 49
-    .db 01
-    .db 8D
-    .db D6
-    .db 06
-    .db A9
-    .db 13
-    .db 18
-    .db 6D
-    .db D6
-    .db 06
-    .db 20
-    .db 1C
-    .db DC
-    .db A5
-    .db 38
-    .db 05
-    .db 39
-    .db 29
-    .db 40
-    .db F0
-    .db 1A
-    .db E6
-    .db 4D
-    .db E6
-    .db 4E
-    .db A5
-    .db 4D
-    .db C9
-    .db 33
-    .db 90
-    .db 06
-    .db A9
-    .db 02
-    .db 85
-    .db 4D
-    .db 85
-    .db 4E
-    .db A2
-    .db 00
-    .db 20
-    .db AD
-    .db DC
-    .db A2
-    .db 02
-    .db 20
-    .db AD
-    .db DC
-    .db 60
-    .db A5
-    .db 3A
-    .db CD
-    .db 6B
-    .db 06
-    .db D0
-    .db 14
-    .db AD
-    .db 6C
-    .db 06
-    .db C9
-    .db 28
-    .db B0
-    .db 06
-    .db EE
-    .db 6C
-    .db 06
-    .db 4C
-    .db 29
-    .db DA
-    .db A5
-    .db 3A
-    .db 85
-    .db 38
-    .db 4C
-    .db 29
-    .db DA
-    .db 8D
-    .db 6B
-    .db 06
-    .db A9
-    .db 00
-    .db 8D
-    .db 6C
-    .db 06
-    .db A5
-    .db 38
-    .db 29
-    .db 0C
-    .db F0
-    .db 2A
-    .db A5
-    .db 38
-    .db 29
-    .db 08
-    .db F0
-    .db 0C
-    .db CE
-    .db 6F
-    .db 06
-    .db AD
-    .db 6F
-    .db 06
-    .db 10
-    .db 10
-    .db A9
-    .db 03
-    .db D0
-    .db 0C
-    .db AD
-    .db 6F
-    .db 06
-    .db 18
-    .db 69
-    .db 01
-    .db C9
-    .db 04
-    .db D0
-    .db 02
-    .db A9
-    .db 00
-    .db 8D
-    .db 6F
-    .db 06
-    .db 18
-    .db 69
-    .db 08
-    .db 20
-    .db 1C
-    .db DC
-    .db 4C
-    .db A9
-    .db DA
-    .db A5
-    .db 38
-    .db 29
-    .db 03
-    .db F0
-    .db 55
-    .db A5
-    .db 38
-    .db 29
-    .db 01
-    .db D0
-    .db 06
-    .db CE
-    .db 6E
-    .db 06
-    .db 4C
-    .db 6E
-    .db DA
-    .db EE
-    .db 6E
-    .db 06
-    .db A9
-    .db 0C
-    .db 20
-    .db 1C
-    .db DC
-    .db A6
-    .db 1E
-    .db A9
-    .db 01
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A9
-    .db 70
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A9
-    .db 20
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db AD
-    .db 6E
-    .db 06
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 18
-    .db 69
-    .db 01
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db AD
-    .db 6E
-    .db 06
-    .db 29
-    .db 0F
-    .db 18
-    .db 69
-    .db 01
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db A9
-    .db FF
-    .db 9D
-    .db 00
-    .db 03
-    .db E8
-    .db 86
-    .db 1E
-    .db AE
-    .db 6F
-    .db 06
-    .db AD
-    .db 6E
-    .db 06
-    .db 95
-    .db 2F
-    .db 4C
-    .db F7
-    .db DC
-    .db A2
-    .db 00
-    .db A5
-    .db 38
-    .db 29
-    .db 80
-    .db F0
-    .db 06
-    .db FE
-    .db 00
-    .db 04
-    .db 4C
-    .db CB
-    .db DA
-    .db A5
-    .db 38
-    .db 29
-    .db 40
-    .db F0
-    .db 3E
-    .db DE
-    .db 00
-    .db 04
-    .db A4
-    .db 1E
-    .db A9
-    .db 01
-    .db 99
-    .db 00
-    .db 03
-    .db C8
-    .db A9
-    .db 78
-    .db 99
-    .db 00
-    .db 03
-    .db C8
-    .db A9
-    .db 20
-    .db 99
-    .db 00
-    .db 03
-    .db C8
-    .db BD
-    .db 00
-    .db 04
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 4A
-    .db 18
-    .db 69
-    .db 01
-    .db 99
-    .db 00
-    .db 03
-    .db C8
-    .db BD
-    .db 00
-    .db 04
-    .db 29
-    .db 0F
-    .db 18
-    .db 69
-    .db 01
-    .db 99
-    .db 00
-    .db 03
-    .db C8
-    .db A9
-    .db FF
-    .db 99
-    .db 00
-    .db 03
-    .db C8
-    .db 84
-    .db 1E
-    .db A9
-    .db 0D
-    .db 20
-    .db 1C
-    .db DC
-    .db 60
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    ORA CTRL_NEWLY_PRESSED_A+1
+    AND #$08
+    BEQ 1E:1982
+    LDA #$56
+    JSR SND_BANKED_DISPATCH
+    DEC SCRIPT_NAMETABLE_FOCUS_VAL?[2]
+    JMP 1E:1991
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    ORA CTRL_NEWLY_PRESSED_A+1
+    AND #$04
+    BEQ 1E:19C5
+    LDA #$56
+    JSR SND_BANKED_DISPATCH
+    INC SCRIPT_NAMETABLE_FOCUS_VAL?[2]
+    LDX PPU_UPDATE_BUF_INDEX
+    LDA #$01
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    LDA #$EF
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    LDA #$21
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2]
+    LSR A
+    LSR A
+    LSR A
+    LSR A
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2]
+    AND #$0F
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    LDA #$FF
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    STX PPU_UPDATE_BUF_INDEX
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    ORA CTRL_NEWLY_PRESSED_A+1
+    AND #$20
+    BEQ 1E:19E3
+    LDA #$56
+    JSR SND_BANKED_DISPATCH
+    LDA 6D6_OBJ_UNK
+    EOR #$01
+    STA 6D6_OBJ_UNK
+    LDA #$13
+    CLC
+    ADC 6D6_OBJ_UNK
+    JSR PPU_UPDATE_PREMADE_FROM_1C/1D
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    ORA CTRL_NEWLY_PRESSED_A+1
+    AND #$40
+    BEQ 1E:1A05
+    INC NUM_PLAYER_LIVES[2]
+    INC NUM_PLAYER_LIVES+1
+    LDA NUM_PLAYER_LIVES[2]
+    CMP #$33
+    BCC 1E:19FB
+    LDA #$02
+    STA NUM_PLAYER_LIVES[2]
+    STA NUM_PLAYER_LIVES+1
+    LDX #$00
+    JSR UPDATE_PLAYER_LIVES
+    LDX #$02
+    JSR UPDATE_PLAYER_LIVES
+    RTS
+    LDA CTRL_PREV_A[2]
+    CMP **:$066B
+    BNE 1E:1A21
+    LDA **:$066C
+    CMP #$28
+    BCS 1E:1A1A
+    INC **:$066C
+    JMP 1E:1A29
+    LDA CTRL_PREV_A[2]
+    STA CTRL_NEWLY_PRESSED_A[2]
+    JMP 1E:1A29
+    STA **:$066B
+    LDA #$00
+    STA **:$066C
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    AND #$0C
+    BEQ 1E:1A59
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    AND #$08
+    BEQ 1E:1A41
+    DEC **:$066F
+    LDA **:$066F
+    BPL 1E:1A4D
+    LDA #$03
+    BNE 1E:1A4D
+    LDA **:$066F
+    CLC
+    ADC #$01
+    CMP #$04
+    BNE 1E:1A4D
+    LDA #$00
+    STA **:$066F
+    CLC
+    ADC #$08
+    JSR PPU_UPDATE_PREMADE_FROM_1C/1D
+    JMP 1E:1AA9
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    AND #$03
+    BEQ 1E:1AB4
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    AND #$01
+    BNE 1E:1A6B
+    DEC **:$066E
+    JMP 1E:1A6E
+    INC **:$066E
+    LDA #$0C
+    JSR PPU_UPDATE_PREMADE_FROM_1C/1D
+    LDX PPU_UPDATE_BUF_INDEX
+    LDA #$01
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    LDA #$70
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    LDA #$20
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    LDA **:$066E
+    LSR A
+    LSR A
+    LSR A
+    LSR A
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    LDA **:$066E
+    AND #$0F
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    LDA #$FF
+    STA PPU_UPDATE_BUFFER[64],X
+    INX
+    STX PPU_UPDATE_BUF_INDEX
+    LDX **:$066F
+    LDA **:$066E
+    STA SCRIPT_R0-R5_GFX_BANK_VALS+2,X
+    JMP COMMITTED_R2-R5_TO_MAPPER
+    LDX #$00
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    AND #$80
+    BEQ 1E:1AC2
+    INC OBJ_ANIMATION_DISPLAY[18],X
+    JMP 1E:1ACB
+    LDA CTRL_NEWLY_PRESSED_A[2]
+    AND #$40
+    BEQ 1E:1B06
+    DEC OBJ_ANIMATION_DISPLAY[18],X
+    LDY PPU_UPDATE_BUF_INDEX
+    LDA #$01
+    STA PPU_UPDATE_BUFFER[64],Y
+    INY
+    LDA #$78
+    STA PPU_UPDATE_BUFFER[64],Y
+    INY
+    LDA #$20
+    STA PPU_UPDATE_BUFFER[64],Y
+    INY
+    LDA OBJ_ANIMATION_DISPLAY[18],X
+    LSR A
+    LSR A
+    LSR A
+    LSR A
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER[64],Y
+    INY
+    LDA OBJ_ANIMATION_DISPLAY[18],X
+    AND #$0F
+    CLC
+    ADC #$01
+    STA PPU_UPDATE_BUFFER[64],Y
+    INY
+    LDA #$FF
+    STA PPU_UPDATE_BUFFER[64],Y
+    INY
+    STY PPU_UPDATE_BUF_INDEX
+    LDA #$0D
+    JSR PPU_UPDATE_PREMADE_FROM_1C/1D
+    RTS
 BANK_PAIRED: ; 1E:1B07, 0x03DB07
     LDY $8000 ; Load lower.
     STY LOWER_BANK_SAVE_PAIRED? ; Save.
@@ -5930,21 +5719,21 @@ PPU_UPDATE_PREMADE_FROM_1C/1D: ; 1E:1C1C, 0x03DC1C
     PLA ; Pull A.
     JSR PREMADE_UPDATE_BUF_QUEUE ; Goto rtn.
     JMP RESTORE_BANK_PAIRED ; Abuse RTS.
-L_1E:1C29: ; 1E:1C29, 0x03DC29
-    PHA
+GFX/FILE_TO_SCREEN_WITH_OBJ: ; 1E:1C29, 0x03DC29
+    PHA ; Save val.
     LDA #$32 ; Set bank 12/13
     JSR BANK_PAIRED
-    PLA
-    JSR INIT_GFX_BANKS+OBJ_STREAMS_TEXT
-    JMP RESTORE_BANK_PAIRED
-L_1E:1C36: ; 1E:1C36, 0x03DC36
+    PLA ; Pull val.
+    JSR INIT_GFX_BANKS+OBJ_STREAMS_TEXT ; Do.
+    JMP RESTORE_BANK_PAIRED ; Goto.
+OBJ_PROCESS_RUN_RET_CC_CONTINUE: ; 1E:1C36, 0x03DC36
     LDA #$32
-    JSR BANK_PAIRED
-    JSR OBJ_PROCESS_UNK_RET_CC_UNFINISHED
-    PHP
-    JSR RESTORE_BANK_PAIRED
-    PLP
-    RTS
+    JSR BANK_PAIRED ; Bank in data.
+    JSR OBJ_PROCESS_UNK_RET_CC_UNFINISHED ; Finished.
+    PHP ; Save status.
+    JSR RESTORE_BANK_PAIRED ; Restore bank.
+    PLP ; Pull status.
+    RTS ; Leave.
     LDA #$3C ; Bank 1C/1D
     JSR BANK_PAIRED
     JSR ANIMATE_UPDATE_OBJ_X?
@@ -6012,18 +5801,22 @@ BANKED_PLAYER_UI_GAME_OVER_GFX: ; 1E:1CC3, 0x03DCC3
     ASL A
     ASL A
     TAY
-    LDA 1E:1CE8,Y
+    LDA ROM_DATA_A,Y
     STA SCRIPT_R0-R5_GFX_BANK_VALS+2
-    LDA 1E:1CE9,Y
+    LDA ROM_DATA_B,Y
     STA SCRIPT_R0-R5_GFX_BANK_VALS+3
-    LDA 1E:1CEA,Y
+    LDA ROM_DATA_C,Y
     STA SCRIPT_R0-R5_GFX_BANK_VALS+4
-    LDA 1E:1CEB,Y
+    LDA ROM_DATA_D,Y
     STA SCRIPT_R0-R5_GFX_BANK_VALS+5
     RTS
+ROM_DATA_A: ; 1E:1CE8, 0x03DCE8
     .db 22 ; Removed earlier feature?
+ROM_DATA_B: ; 1E:1CE9, 0x03DCE9
     .db 22
+ROM_DATA_C: ; 1E:1CEA, 0x03DCEA
     .db 22
+ROM_DATA_D: ; 1E:1CEB, 0x03DCEB
     .db 22
 COMMIT_SCRIPT_R2-R5_VALS: ; 1E:1CEC, 0x03DCEC
     LDX #$03 ; X=
@@ -6039,7 +5832,7 @@ COMMITTED_R2-R5_TO_MAPPER: ; 1E:1CF7, 0x03DCF7
 WRITE_R2-R5_FROM_RAM: ; 1E:1CFB, 0x03DCFB
     LDA #$02 ; R2
     STA MMC3_BANK_CFG ; Set bank to cfg.
-    LDA COMMITTED_R2-R5_GFX_BANK_VALS[4] ; Load config.
+    LDA COMMITTED_R2-R5_GFX_BANK_VALS[4] ; Load bank value.
     STA MMC3_BANK_DATA ; Commit to mapper.
     LDA #$03 ; Repeat R3-R5
     STA MMC3_BANK_CFG
@@ -6053,7 +5846,7 @@ WRITE_R2-R5_FROM_RAM: ; 1E:1CFB, 0x03DCFB
     STA MMC3_BANK_CFG
     LDA COMMITTED_R2-R5_GFX_BANK_VALS+3
     STA MMC3_BANK_DATA
-    RTS
+    RTS ; Leave routine.
 WRITE_R2-R5_0x7E: ; 1E:1D28, 0x03DD28
     LDY #$7E ; Bank.
     LDA #$02 ; R2
@@ -6345,24 +6138,24 @@ SKIP_OTHER_Y: ; 1E:1ED8, 0x03DED8
 MAKE_MORE_ROWS_UPDATE: ; 1E:1F07, 0x03DF07
     LDX PPU_UPDATE_BUF_INDEX ; X from.
     LDA #$01
-    STA PPU_UPDATE_BUFFER[20],X ; Store type.
+    STA PPU_UPDATE_BUFFER[64],X ; Store type.
     INX ; Buf++
     LDA TMP_04 ; Load
-    STA PPU_UPDATE_BUFFER[20],X ; Store addr.
+    STA PPU_UPDATE_BUFFER[64],X ; Store addr.
     INX
     LDA TMP_05
-    STA PPU_UPDATE_BUFFER[20],X ; Store addr.
+    STA PPU_UPDATE_BUFFER[64],X ; Store addr.
     INX
     LDY #$00 ; Stream reset.
 LOOP_FOUR_BYTES: ; 1E:1F1D, 0x03DF1D
     LDA [TMP_02],Y ; Load from stream.
-    STA PPU_UPDATE_BUFFER[20],X ; To buf.
+    STA PPU_UPDATE_BUFFER[64],X ; To buf.
     INX ; Buf++
     INY ; Stream++
     CPY #$04 ; If Y _ #$04
     BCC LOOP_FOUR_BYTES ; <, goto.
     LDA #$FF
-    STA PPU_UPDATE_BUFFER[20],X ; Store EOF.
+    STA PPU_UPDATE_BUFFER[64],X ; Store EOF.
     INX ; Buf++
     STX PPU_UPDATE_BUF_INDEX ; Save index.
     LDX #$02

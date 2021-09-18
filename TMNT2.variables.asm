@@ -104,7 +104,7 @@ TURTLE_SELECTION:                             .rs 2 ; 0x0033 to 0x0034
 CTRL_NEWLY_PRESSED_A:                         .rs 2 ; 0x0038 to 0x0039
 CTRL_PREV_A:                                  .rs 2 ; 0x003A to 0x003B
 3C_SWITCH_CORE:                               .rs 1 ; 0x003C
-3D_UNK:                                       .rs 1 ; 0x003D
+3D_CORE_SWITCH_HOLD:                          .rs 1 ; 0x003D
 3E_UNK:                                       .rs 1 ; 0x003E
 3F_ATTRACT_EXIT_FLAG:                         .rs 1 ; 0x003F
 40_TIMER?:                                    .rs 2 ; 0x0040 to 0x0041
@@ -242,7 +242,7 @@ D8_IRQ_CONFIG_B:                              .rs 1 ; 0x00D8
 D9_IRQ_CONFIG_A:                              .rs 1 ; 0x00D9
 DA_FLAG?_UNK:                                 .rs 1 ; 0x00DA
 R_**:$00DB:                                   .rs 1 ; 0x00DB
-DC_UNK:                                       .rs 1 ; 0x00DC
+LEVEL_8_CUTSCENE_IN_PROGRESS_FLAG:            .rs 1 ; 0x00DC
 DD_UNK:                                       .rs 1 ; 0x00DD
 DE_FLAG_PALETTE_UNK:                          .rs 1 ; 0x00DE
 DF_UNK:                                       .rs 1 ; 0x00DF
@@ -457,12 +457,7 @@ R_**:$01B3:                                   .rs 1 ; 0x01B3
 
           .rsset 0x0200
 SPRITE_PAGE:                                  .rs 256 ; 0x0200 to 0x02FF
-PPU_UPDATE_BUFFER:                            .rs 20 ; 0x0300 to 0x0313
-R_**:$0314:                                   .rs 1 ; 0x0314
-R_**:$0315:                                   .rs 1 ; 0x0315
-R_**:$0316:                                   .rs 1 ; 0x0316
-R_**:$0317:                                   .rs 1 ; 0x0317
-R_**:$0318:                                   .rs 1 ; 0x0318
+PPU_UPDATE_BUFFER:                            .rs 64 ; 0x0300 to 0x033F
 
 
           .rsset 0x03C0
@@ -482,7 +477,7 @@ PALETTE_SWAP_QUEUEING_IN_PROGRESS:            .rs 1 ; 0x03D6
 3D8_UNK:                                      .rs 1 ; 0x03D8
 3D9_UNK:                                      .rs 1 ; 0x03D9
 3DA_PSWAP_COUNTDOWN_VAL:                      .rs 1 ; 0x03DA
-3DB_UNKNOWN:                                  .rs 1 ; 0x03DB
+FLAG_RUN_CORE_SWITCH?:                        .rs 1 ; 0x03DB
 
 
           .rsset 0x03E3
@@ -597,16 +592,14 @@ PLAYER_ANIM_FRAME_SWAP?:                      .rs 2 ; 0x0618 to 0x0619
 636_UNK:                                      .rs 1 ; 0x0636
 637_UNK:                                      .rs 1 ; 0x0637
 638_UNK:                                      .rs 1 ; 0x0638
-639_SWITCH_EOL_SCRIPT?:                       .rs 1 ; 0x0639
+639_SWITCH_EOL_SCRIPT_IN_PROGRESS?:           .rs 1 ; 0x0639
 TIMER_GAME_SCRIPT?:                           .rs 1 ; 0x063A
-63B_TEXT_FADE_OUT_DONE?:                      .rs 1 ; 0x063B
+SWITCH_TEXT_INTRO:                            .rs 1 ; 0x063B
 
 
           .rsset 0x063E
 63E_SWITCH_CUTSCENE_NOT_FINISHED_FLAG?:       .rs 1 ; 0x063E
-
-
-          .rsset 0x0640
+63F_UNK:                                      .rs 1 ; 0x063F
 FLAG_ATTRMOD_A:                               .rs 1 ; 0x0640
 PPU_ATTRMOD_ADDR_A1:                          .rs 2 ; 0x0641 to 0x0642
 PPU_ADDR_OR_A:                                .rs 1 ; 0x0643
@@ -639,7 +632,7 @@ IRQ_L_NAMETABLE_FOCUS:                        .rs 1 ; 0x065D
           .rsset 0x065F
 IRQ_CONFIG_CHANGE:                            .rs 1 ; 0x065F
 660_FLAG_IRQ_I_RESET+DA_CLEAR_UNK:            .rs 1 ; 0x0660
-661_UNK_LEVEL_A_SETS:                         .rs 1 ; 0x0661
+661_LEVEL_A_FLAG_UNK:                         .rs 1 ; 0x0661
 662_PLAYER_UPDATE_UNK:                        .rs 2 ; 0x0662 to 0x0663
 
 
@@ -711,7 +704,7 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2 ; 0x0702 to 0x0703
 
 
           .rsset 0x070C
-70C_UNK:                                      .rs 1 ; 0x070C
+70C_END_OF_LEVEL_HOLDER?:                     .rs 1 ; 0x070C
 70D_UNK:                                      .rs 1 ; 0x070D
 70E_OBJ_UNK:                                  .rs 1 ; 0x070E
 R_**:$070F:                                   .rs 1 ; 0x070F
@@ -736,21 +729,13 @@ SPR_SORT_ARR_UNK:                             .rs 1 ; 0x072E
 740_UNK:                                      .rs 1 ; 0x0740
 
 
-          .rsset 0x074F
-R_**:$074F:                                   .rs 1 ; 0x074F
-R_**:$0750:                                   .rs 1 ; 0x0750
-
-
-          .rsset 0x075F
-R_**:$075F:                                   .rs 1 ; 0x075F
+          .rsset 0x0750
+750_CREDITS_ARR_A:                            .rs 16 ; 0x0750 to 0x075F
 
 
           .rsset 0x0770
-R_**:$0770:                                   .rs 1 ; 0x0770
-
-
-          .rsset 0x0780
-R_**:$0780:                                   .rs 1 ; 0x0780
+770_CREDITS_ARR_B:                            .rs 16 ; 0x0770 to 0x077F
+780_CREDITS_ARR_C:                            .rs 16 ; 0x0780 to 0x078F
 
 
           .rsset 0x07A0
