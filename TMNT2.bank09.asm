@@ -2254,11 +2254,11 @@ RTN_OBJECTS_SPAWN?: ; 09:08CF, 0x0128CF
     BMI RTS ; If negative, leave.
     STA TMP_12 ; Store val from stream.
     AND #$1F ; Keep 0001.1111
-    CMP SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; If _ var
+    CMP SCRIPT_LEVEL_SCREEN[2] ; If _ var
     BNE COMPARE_LEAVE ; !=, goto.
     INY ; Stream++
     LDA [TMP_00],Y ; Load from stream.
-    CMP SCRIPT_SCROLL_X?[2] ; If A _ var
+    CMP SCRIPT_SCREEN_X_SCROLL[2] ; If A _ var
     BEQ DONT_LEAVE ; ==, goto.
     BCS RTS ; >=, leave.
 DONT_LEAVE: ; 09:0905, 0x012905

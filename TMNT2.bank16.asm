@@ -21,13 +21,13 @@ MAP_ARRAYS_UPDATE?: ; 10:000B, 0x02000B
     LDA [TMP_00],Y ; Data from file.
     CMP #$FF ; If _ #$FF
     BEQ RTS_EXTRA ; ==, goto.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load
+    LDA SCRIPT_LEVEL_SCREEN[2] ; Load
     CMP [TMP_00],Y ; If _ Data
     BEQ VAL_EQ ; ==, goto.
     BCS VAL_GTE ; >=, goto.
     BCC RTS_EXTRA ; <, goto.
 VAL_EQ: ; 10:002C, 0x02002C
-    LDA SCRIPT_SCROLL_X?[2] ; Load val.
+    LDA SCRIPT_SCREEN_X_SCROLL[2] ; Load val.
     INY ; Index++
     CMP [TMP_00],Y ; If _ fdata
     BCC RTS_EXTRA ; <, goto.
@@ -1584,10 +1584,11 @@ CLEAR_MAP_COLUMN?: ; 10:0241, 0x020241
     .db 9C
     .db 06
     .db 60
-DATA_PLAYER_PTR_UNK_L_ALT: ; 10:0661, 0x020661
-    .db 63
-DATA_PLAYER_PTR_UNK_H_ALT: ; 10:0662, 0x020662
-    .db 86
+SLOT_DATA_PTRS_B_L: ; 10:0661, 0x020661
+    LOW(FILE_A)
+SLOT_DATA_PTRS_B_H: ; 10:0662, 0x020662
+    HIGH(FILE_A)
+FILE_A: ; 10:0663, 0x020663
     .db 0A
     .db 00
     .db 30

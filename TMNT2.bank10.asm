@@ -253,7 +253,7 @@ A_FROM_X: ; 0A:0153, 0x014153
     LDA LEVEL/SCREEN_ON ; Get screen.
     CMP #$08 ; If _ #$08
     BNE SCREEN_NOT_8 ; !=, goto.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load
+    LDA SCRIPT_LEVEL_SCREEN[2] ; Load
     BEQ SCREEN_NOT_8 ; If 0, skip.
     CMP #$03 ; If _ #$03
     BCS SCREEN_NOT_8 ; >=, goto.
@@ -2654,7 +2654,7 @@ UNK_SUB_A: ; 0A:12B2, 0x0152B2
 SUB_UNK: ; 0A:12D6, 0x0152D6
     CLC ; Prep add.
     LDA OBJ_POS_X_CONFIRMED[18],X ; Load from obj.
-    ADC SCRIPT_SCROLL_X?[2] ; Add with scroll.
+    ADC SCRIPT_SCREEN_X_SCROLL[2] ; Add with scroll.
     AND #$0F ; Keep 0000.1111
     STA TMP_00 ; Store to TMP.
     LDA OBJ_POS_X_DELTA?[18],X ; Load 

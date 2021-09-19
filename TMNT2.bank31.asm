@@ -1815,10 +1815,10 @@ ADD_OVERFLOW: ; 1F:07C9, 0x03E7C9
     STA 8C_UNK ; To 8C.
     TYA ; Y to A.
     CLC
-    ADC SCRIPT_SCROLL_X?[2] ; += Var.
+    ADC SCRIPT_SCREEN_X_SCROLL[2] ; += Var.
     STA 8D_UNK ; Store to.
     PHA ; Save A.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load 
+    LDA SCRIPT_LEVEL_SCREEN[2] ; Load 
     ADC #$00 ; Carry from last add.
     PHA ; Save val.
     LDA 8D_UNK ; Load
@@ -3268,122 +3268,122 @@ SWITCH_RTN: ; 1F:0F35, 0x03EF35
     HIGH(CB_BF)
     LOW(CB_BG) ; 0x61
     HIGH(CB_BG)
-WAIT_UPDATES_AND_???: ; 1F:0FFC, 0x03EFFC
+WAIT_SETTLE_AND_PROCESS_SLOTS: ; 1F:0FFC, 0x03EFFC
     LDA PLAYER?_UNK[2] ; Load P1 unk.
     ORA PPU_UPDATE_BUF_INDEX ; Combine with BG updates.
-    BEQ GAME_STATE_SETTLED ; If neither active/set, do.
+    BEQ PROCESS_SLOTS ; If neither active/set, do.
     RTS ; Leave, not settled.
-GAME_STATE_SETTLED: ; 1F:1003, 0x03F003
-    LDX #$00 ; P1 object.
-LOOP_PLAYER_OBJS: ; 1F:1005, 0x03F005
-    LDA 694_PLAYER_UNK[4],X ; Load
-    BNE P1_SET ; != 0, goto.
-    JMP NEXT_OBJ
-P1_SET: ; 1F:100D, 0x03F00D
-    BMI P1_NEG ; If negative, goto.
+PROCESS_SLOTS: ; 1F:1003, 0x03F003
+    LDX #$00 ; Slot.
+LOOP_ALL_SLOTS: ; 1F:1005, 0x03F005
+    LDA 694_SLOTS_FILE[4],X ; Load slot.
+    BNE SLOT_SET ; != 0, goto.
+    JMP NEXT_SLOT ; Not set, skip.
+SLOT_SET: ; 1F:100D, 0x03F00D
+    BMI SLOT_NEGATIVE ; If negative, goto.
     LDA #$24
-    JSR BANK_PAIR_USE_A ; Bank 4/5
-    LDA 694_PLAYER_UNK[4],X ; Load
+    JSR BANK_PAIR_USE_A ; Bank 4/5, swap in.
+    LDA 694_SLOTS_FILE[4],X ; Load slot val.
     CMP #$09 ; If _ #$09
     BEQ VAL_EQ_9/A ; ==, goto.
     CMP #$0A ; If _ #$0A
-    BNE VAL_NE_9/A ; !=, goto.
+    BNE DONT_PLAY_SOUND ; !=, goto.
 VAL_EQ_9/A: ; 1F:101F, 0x03F01F
-    LDA 698_PLAYER_UNK[4],X ; Load
+    LDA 698_SLOTS_DATA_INDEX[4],X ; Load attr.
     CMP #$10 ; If _ #$10
-    BNE VAL_NE_9/A ; !=, goto.
+    BNE DONT_PLAY_SOUND ; !=, goto.
     LDA #$4A
-    JSR SND_BANKED_DISPATCH ; Play sound.
-VAL_NE_9/A: ; 1F:102B, 0x03F02B
-    LDA 694_PLAYER_UNK[4],X ; Load
+    JSR SND_BANKED_DISPATCH ; Play sound on val.
+DONT_PLAY_SOUND: ; 1F:102B, 0x03F02B
+    LDA 694_SLOTS_FILE[4],X ; Load slot.
     AND #$3F ; Isolate 0011.1111
     TAY ; A -= 1, but fancy.
     DEY
     TYA
-    ASL A ; << 1, *2.
+    ASL A ; << 1, *2. Word index.
     TAY ; To Y index.
-    LDA DATA_PLAYER_PTR_UNK_L,Y ; Move ptr.
+    LDA SLOT_DATA_PTRS_A_L,Y ; Move ptr.
     STA TMP_02
-    LDA DATA_PLAYER_PTR_UNK_H,Y
+    LDA SLOT_DATA_PTRS_A_H,Y
     STA TMP_03
-    JMP PLAYER_DATA_PTR_SETUP ; Skip other code.
-P1_NEG: ; 1F:1042, 0x03F042
+    JMP DATA_PTR_SELECTED ; Skip other code.
+SLOT_NEGATIVE: ; 1F:1042, 0x03F042
     LDA #$30
     JSR BANK_PAIR_USE_A ; Bank in bank 10/11.
-    LDA 694_PLAYER_UNK[4],X ; Load val.
+    LDA 694_SLOTS_FILE[4],X ; Load slot val.
     AND #$7F ; Isolate 0111.1111
     TAY ; A -= 1, but fancy.
     DEY
     TYA
     ASL A ; << 1, *2.
     TAY ; To Y index.
-    LDA DATA_PLAYER_PTR_UNK_L_ALT,Y ; Set up ptr.
+    LDA SLOT_DATA_PTRS_B_L,Y ; Set up ptr.
     STA TMP_02
-    LDA DATA_PLAYER_PTR_UNK_H_ALT,Y
+    LDA SLOT_DATA_PTRS_B_H,Y
     STA TMP_03
-PLAYER_DATA_PTR_SETUP: ; 1F:105B, 0x03F05B
+DATA_PTR_SELECTED: ; 1F:105B, 0x03F05B
     LDY #$00 ; Reset stream index.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load
+    LDA SCRIPT_LEVEL_SCREEN[2] ; Load screen.
     CMP [TMP_02],Y ; If _ Stream
     INY ; Stream++
-    BCC STREAM_LESS ; <, goto.
-    LDA SCRIPT_SCROLL_X?[2] ; Load
+    BCC CURRENT_SCREEN_LESS_THAN_STREAM ; <, goto.
+    LDA SCRIPT_SCREEN_X_SCROLL[2] ; Load scroll.
     CMP [TMP_02],Y ; If _ Stream
-    BCS OBJECT_CLEAR_UNK_AND_NEXT_OBJ ; >=, goto.
-STREAM_LESS: ; 1F:106A, 0x03F06A
-    LDA 69C_PLAYER_UNK[4],X ; Load
-    BEQ P_VAL_ZERO ; No value, goto.
-    DEC 69C_PLAYER_UNK[4],X ; --
-    BNE NEXT_OBJ ; Next object.
-P_VAL_ZERO: ; 1F:1074, 0x03F074
+    BCS EXIT_SLOT_COMPLETED ; >=, goto. Scroll in file less than now, file done, complete.
+CURRENT_SCREEN_LESS_THAN_STREAM: ; 1F:106A, 0x03F06A
+    LDA 69C_SLOTS_TIMER[4],X ; Load attr.
+    BEQ SLOT_TIMER_CONSUME ; == 0, goto.
+    DEC 69C_SLOTS_TIMER[4],X ; Timer--
+    BNE NEXT_SLOT ; Still not done, next slot.
+SLOT_TIMER_CONSUME: ; 1F:1074, 0x03F074
     INY ; Stream++
     LDA [TMP_02],Y ; Load val.
-    STA 69C_PLAYER_UNK[4],X ; Store to player.
-    LDA 698_PLAYER_UNK[4],X ; Load other val.
-    CLC
-    ADC #$03 ; += 3
+    STA 69C_SLOTS_TIMER[4],X ; Store to slot timer.
+    LDA 698_SLOTS_DATA_INDEX[4],X ; Load other val.
+    CLC ; Prep add.
+    ADC #$03 ; Offset header data.
     TAY ; To Y index.
     LDA [TMP_02],Y ; Load from stream set val.
     CMP #$FF ; If _ #$FF
-    BEQ OBJECT_CLEAR_UNK_AND_NEXT_OBJ ; ==, goto. Clear more.
+    BEQ EXIT_SLOT_COMPLETED ; ==, goto. Done, end slot.
     CMP #$FE ; If _ #$FE
-    BEQ OBJECT_LIMITED_CLEAR_AND_NEXT_OBJ ; ==, goto. Clear less.
-    TXA ; Save X.
+    BEQ EXIT_SLOT_CLEAR_ATTRS ; ==, goto. Reset slot vars.
+    TXA ; Save slot.
     PHA
-    LDA 694_PLAYER_UNK[4],X ; Load val.
-    BPL VAL_POSITIVE
+    LDA 694_SLOTS_FILE[4],X ; Load val.
+    BPL VAL_POSITIVE ; If positive, val, alt.
     LDA [TMP_02],Y ; Load from stream.
     JSR MULTI-UPDATES_RTN ; Do sub from bank 10.
-    JMP RESTORE_SAVED_INC_PLAYER_VAR
+    JMP RESTORE_SLOT_INDEX_INC_PTR
 VAL_POSITIVE: ; 1F:109A, 0x03F09A
-    LDA 694_PLAYER_UNK[4],X ; Load val from player.
+    LDA 694_SLOTS_FILE[4],X ; Load val from slot.
     AND #$40 ; Test 0100.0000
     BEQ BIT_NOT_SET ; Not set, goto.
     LDA [TMP_02],Y ; Load from stream.
     JSR MULTIUPDATE_BUF_RTN ; Do sub other bank.
-    JMP RESTORE_SAVED_INC_PLAYER_VAR
+    JMP RESTORE_SLOT_INDEX_INC_PTR
 BIT_NOT_SET: ; 1F:10A9, 0x03F0A9
     LDA [TMP_02],Y ; Load val from stream.
-    JSR UPDATE_BUF_MAKER
-RESTORE_SAVED_INC_PLAYER_VAR: ; 1F:10AE, 0x03F0AE
+    JSR UPDATE_BUF_MAKER ; Use in routine.
+RESTORE_SLOT_INDEX_INC_PTR: ; 1F:10AE, 0x03F0AE
     PLA ; Pull saved val.
     TAX ; To X.
-    INC 698_PLAYER_UNK[4],X ; ++ val.
-NEXT_OBJ: ; 1F:10B3, 0x03F0B3
+    INC 698_SLOTS_DATA_INDEX[4],X ; ++ val.
+NEXT_SLOT: ; 1F:10B3, 0x03F0B3
     INX ; Obj++
-    CPX #$04 ; If Obj _ #$04
+    CPX #$04 ; If slot _ #$04
     BCS RTS ; >=, goto.
-    JMP LOOP_PLAYER_OBJS ; Loop all.
+    JMP LOOP_ALL_SLOTS ; Loop all.
 RTS: ; 1F:10BB, 0x03F0BB
-    RTS
-OBJECT_CLEAR_UNK_AND_NEXT_OBJ: ; 1F:10BC, 0x03F0BC
+    RTS ; Leave, done.
+EXIT_SLOT_COMPLETED: ; 1F:10BC, 0x03F0BC
     LDA #$00
-    STA 694_PLAYER_UNK[4],X ; Clear
-OBJECT_LIMITED_CLEAR_AND_NEXT_OBJ: ; 1F:10C1, 0x03F0C1
+    STA 694_SLOTS_FILE[4],X ; Clear
+EXIT_SLOT_CLEAR_ATTRS: ; 1F:10C1, 0x03F0C1
     LDA #$00
-    STA 698_PLAYER_UNK[4],X ; Clear
-    STA 69C_PLAYER_UNK[4],X
-    BEQ NEXT_OBJ ; Next object, always taken.
+    STA 698_SLOTS_DATA_INDEX[4],X ; Clear
+    STA 69C_SLOTS_TIMER[4],X
+    BEQ NEXT_SLOT ; Next slot, always taken.
 OBJ[0x4-0x11]_RUN_STATE_HANDLERS: ; 1F:10CB, 0x03F0CB
     LDX #$04 ; Obj start.
 LOOP_ALL_OBJS: ; 1F:10CD, 0x03F0CD
@@ -5344,9 +5344,9 @@ IRQ_RTN_I: ; 1F:1CBA, 0x03FCBA
     LDA 57_IRQ_LATCH_VAL_COPY ; Set latch.
     STA MMC3_IRQ_LATCH
     LDA PPU_STATUS ; Reset PPU latch.
-    LDX SCRIPT_SCROLL_X?[2] ; Load X scroll.
+    LDX SCRIPT_SCREEN_X_SCROLL[2] ; Load X scroll.
     LDY PPU_SCROLL_Y_COPY_IRQ ; Load Y scroll.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load nametable focus.
+    LDA SCRIPT_LEVEL_SCREEN[2] ; Load nametable focus.
     AND #$01 ; Keep focus bit.
     ORA PPU_CTRL_RAM_COPY ; Set PPU otherwise.
     STX PPU_SCROLL ; Store scroll.
@@ -5542,9 +5542,9 @@ WRITE_ENABLED_MASK: ; 1F:1E39, 0x03FE39
 LOOP_MOVE_3DATA: ; 1F:1E49, 0x03FE49
     LDA SCRIPT_VAL_UNK[2],X ; Move unk...
     STA COMMITTED_UNK_VAL[2],X
-    LDA SCRIPT_SCROLL_X?[2],X
+    LDA SCRIPT_SCREEN_X_SCROLL[2],X
     STA COMMITTED_SCROLL_X?,X
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2],X
+    LDA SCRIPT_LEVEL_SCREEN[2],X
     STA COMMITTED_NAMETABLE_FOCUS_VAL?,X
     INX ; X++
     CPX #$02 ; If X _ #$02

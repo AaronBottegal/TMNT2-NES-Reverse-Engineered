@@ -209,9 +209,9 @@ FILE_PLAYER_OBJ_USE_A:                        .rs 2 ; 0x00AA to 0x00AB
 R_**:$00AD:                                   .rs 1 ; 0x00AD
 SCRIPT_VAL_UNK:                               .rs 2 ; 0x00AE to 0x00AF
 B0_UNK:                                       .rs 1 ; 0x00B0
-SCRIPT_SCROLL_X?:                             .rs 2 ; 0x00B1 to 0x00B2
+SCRIPT_SCREEN_X_SCROLL:                       .rs 2 ; 0x00B1 to 0x00B2
 B3_SCROLL_X_IRQ_J:                            .rs 1 ; 0x00B3
-SCRIPT_NAMETABLE_FOCUS_VAL?:                  .rs 2 ; 0x00B4 to 0x00B5
+SCRIPT_LEVEL_SCREEN:                          .rs 2 ; 0x00B4 to 0x00B5
 B6_NAMETABLE_FOCUS_UNK:                       .rs 1 ; 0x00B6
 OBJ_POS_X_SUBPIXEL_DELTA?:                    .rs 1 ; 0x00B7
 B8_UNK:                                       .rs 1 ; 0x00B8
@@ -673,9 +673,9 @@ IRQ_CONFIG_CHANGE:                            .rs 1 ; 0x065F
 
 
           .rsset 0x0694
-694_PLAYER_UNK:                               .rs 4 ; 0x0694 to 0x0697
-698_PLAYER_UNK:                               .rs 4 ; 0x0698 to 0x069B
-69C_PLAYER_UNK:                               .rs 4 ; 0x069C to 0x069F
+694_SLOTS_FILE:                               .rs 4 ; 0x0694 to 0x0697
+698_SLOTS_DATA_INDEX:                         .rs 4 ; 0x0698 to 0x069B
+69C_SLOTS_TIMER:                              .rs 4 ; 0x069C to 0x069F
 
 
           .rsset 0x06A8

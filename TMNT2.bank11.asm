@@ -1476,10 +1476,10 @@ ADD_NO_OVERFLOW_LT_0xC0: ; 0B:0ABE, 0x016ABE
     STA TMP_01 ; To TMP.
     CLC ; Prep add.
     LDA TMP_00 ; Load  OBJ Xpos.
-    ADC SCRIPT_SCROLL_X?[2] ; Add with scroll.
+    ADC SCRIPT_SCREEN_X_SCROLL[2] ; Add with scroll.
     PHA ; Save
     ROL A ; << 1, *2.
-    EOR SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Invert focus.
+    EOR SCRIPT_LEVEL_SCREEN[2] ; Invert focus.
     STA TMP_00 ; Store to TMP.
     PLA ; Pull added positions.
     LSR A ; >> 5, /16

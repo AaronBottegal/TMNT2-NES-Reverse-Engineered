@@ -14,10 +14,10 @@ RTN_LEVEL_GROUP_6_UNK_A: ; 06:0001, 0x00C001
 VAL_EQ_FIVE: ; 06:0019, 0x00C019
     LDA 8B_BOSS?_UNK ; Load
     BNE CLEAR_UNK ; If != 0, goto.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; LOad
+    LDA SCRIPT_LEVEL_SCREEN[2] ; LOad
     CMP 9E_UNK ; If _ var
     BCC ALT_RTN ; <, goto.
-    LDA SCRIPT_SCROLL_X?[2] ; Load
+    LDA SCRIPT_SCREEN_X_SCROLL[2] ; Load
     CMP 9F_UNK ; If _ #$9F
     BCC ALT_RTN ; <, goto.
     LDA LEVEL/SCREEN_ON ; Load level.
@@ -57,24 +57,24 @@ ALT_RTN: ; 06:0062, 0x00C062
     ASL A ; << 2, *4.
     ASL A
     TAY ; To Y index.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load
+    LDA SCRIPT_LEVEL_SCREEN[2] ; Load
     CMP DATA_UNK,Y ; If _ Val
     BCC JMP_ELSEWHERE ; <, goto.
     LDA 60C_UNK_INDEX ; Load
     CMP #$04 ; If _ #$04
     BCS SKIP_UNK ; >=, goto.
     LDA DATA_FOCUS,Y ; Load from Y index.
-    STA SCRIPT_NAMETABLE_FOCUS_VAL?+1 ; Store to.
+    STA SCRIPT_LEVEL_SCREEN+1 ; Store to.
     LDA #$00
-    STA SCRIPT_SCROLL_X?+1 ; Clear.
+    STA SCRIPT_SCREEN_X_SCROLL+1 ; Clear.
     LDA 7C_UNK ; Load
     AND #$80 ; Keep the top bit.
     STA 7C_UNK ; Store back.
 SKIP_UNK: ; 06:008E, 0x00C08E
     LDA DATA_UNK,Y ; Load data.
-    STA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Store to focus.
+    STA SCRIPT_LEVEL_SCREEN[2] ; Store to focus.
     LDA #$00
-    STA SCRIPT_SCROLL_X?[2] ; Clear.
+    STA SCRIPT_SCREEN_X_SCROLL[2] ; Clear.
     LDA 7B_UNK ; Load
     AND #$80 ; Keep top bit.
     STA 7B_UNK ; Store back.
@@ -136,10 +136,10 @@ SKIP_UNK: ; 06:00EA, 0x00C0EA
     LDA [TMP_00],Y ; Load from pointer setup.
     CMP #$FF ; If loaded _ #$FF
     BEQ RTN_UNK ; ==, goto.
-    CMP SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; If _ var
+    CMP SCRIPT_LEVEL_SCREEN[2] ; If _ var
     BNE RTN_UNK ; !=, goto.
     INY ; Stream++
-    LDA SCRIPT_SCROLL_X?[2] ; Load
+    LDA SCRIPT_SCREEN_X_SCROLL[2] ; Load
     CMP [TMP_00],Y ; If fp_data _ var
     BCC RTN_UNK ; <, goto.
     INY ; Stream++
@@ -377,12 +377,12 @@ LOOP_RTN_UNK: ; 06:0271, 0x00C271
     BCC NO_OVERFLOW ; No overflow, goto.
     INC 7B_UNK,X ; Inc high byte.
 NO_OVERFLOW: ; 06:0280, 0x00C280
-    LDA SCRIPT_SCROLL_X?[2],X ; Load
+    LDA SCRIPT_SCREEN_X_SCROLL[2],X ; Load
     ADC OBJ_POS_X_DELTA?,X ; Add with.
-    STA SCRIPT_SCROLL_X?[2],X ; Store back.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2],X ; Load
+    STA SCRIPT_SCREEN_X_SCROLL[2],X ; Store back.
+    LDA SCRIPT_LEVEL_SCREEN[2],X ; Load
     ADC C3_UNK,X ; Add with.
-    STA SCRIPT_NAMETABLE_FOCUS_VAL?[2],X ; Store back.
+    STA SCRIPT_LEVEL_SCREEN[2],X ; Store back.
     LDA 7B_UNK,X ; Load
     CLC ; Prep add.
     ADC OBJ_POS_X_DELTA?,X ; Add with.
@@ -693,7 +693,7 @@ JMP_98_LOOP_OR_RTS: ; 06:0415, 0x00C415
     JMP 98_LOOP_OR_RTS ; Next.
 ALT_RTN: ; 06:0418, 0x00C418
     LDX #$01 ; Val?
-    LDA SCRIPT_SCROLL_X?[2],Y ; Load
+    LDA SCRIPT_SCREEN_X_SCROLL[2],Y ; Load
     LSR A ; >> 5, /32
     LSR A
     LSR A
@@ -749,7 +749,7 @@ LOOP_ADD: ; 06:0464, 0x00C464
     DEX ; X--
     BNE LOOP_ADD ; != 0, keep adding.
 RESULT_EQ_ZERO: ; 06:046E, 0x00C46E
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load.
+    LDA SCRIPT_LEVEL_SCREEN[2] ; Load.
     CLC ; Prep add.
     ADC 97_COPY_607 ; += var.
     PHA ; Save to stack.
@@ -765,7 +765,7 @@ RESULT_EQ_ZERO: ; 06:046E, 0x00C46E
 VAL_POSITIVE: ; 06:0484, 0x00C484
     LDA BD_PLAYER?_UNK[2],Y ; Load
     STA 9D_UNK ; Store to.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2],Y ; Load
+    LDA SCRIPT_LEVEL_SCREEN[2],Y ; Load
     CLC ; Prep add.
     ADC 97_COPY_607 ; += var
     PHA ; Save val.
@@ -822,11 +822,11 @@ VAL_COUNTDOWN_VALID: ; 06:04E4, 0x00C4E4
     STA 609_UNK ; Set.
     LDA #$00
     STA 635_UNK_INDEX? ; Set.
-    LDA SCRIPT_SCROLL_X?[2] ; Load
+    LDA SCRIPT_SCREEN_X_SCROLL[2] ; Load
     CLC ; Prep add.
     ADC #$08 ; += 8, goto.
     STA TMP_00 ; Store to.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load
+    LDA SCRIPT_LEVEL_SCREEN[2] ; Load
     ADC #$00 ; Roll overflow.
     STA TMP_01 ; Store to.
     LDA TMP_00 ; Load

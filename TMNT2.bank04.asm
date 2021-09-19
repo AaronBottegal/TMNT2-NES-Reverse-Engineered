@@ -16,13 +16,13 @@ RTN_MAP_MOVABILITY_UPDATES?: ; 04:0001, 0x008001
     LDA [TMP_00],Y ; Load from stream.
     CMP #$FF ; If _ #$FF
     BEQ RTS ; ==, leave.
-    LDA SCRIPT_NAMETABLE_FOCUS_VAL?[2] ; Load focus.
+    LDA SCRIPT_LEVEL_SCREEN[2] ; Load focus.
     CMP [TMP_00],Y ; Compare to stream.
     BEQ SKIP_OTHER_CHECKS ; ==, goto.
     BCS INDEX_RTN_UNK ; >=, goto.
     BCC RTS ; <, leave.
 SKIP_OTHER_CHECKS: ; 04:002C, 0x00802C
-    LDA SCRIPT_SCROLL_X?[2] ; Load
+    LDA SCRIPT_SCREEN_X_SCROLL[2] ; Load
     INY ; Stream++
     CMP [TMP_00],Y ; If scroll _ stream
     BCC RTS ; <, leave.
@@ -1405,10 +1405,10 @@ WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS: ; 04:062D, 0x00862D
     STA TMP_00 ; Passed to TMP.
     LDX #$00 ; X reset.
 LOOP_FIND_OBJ_SLOT: ; 04:0631, 0x008631
-    LDA 694_PLAYER_UNK[4],X ; Load val.
+    LDA 694_SLOTS_FILE[4],X ; Load val.
     BNE NEXT_OBJ ; If set, goto.
     LDA TMP_00 ; Load val passed.
-    STA 694_PLAYER_UNK[4],X ; Store passed to slot.
+    STA 694_SLOTS_FILE[4],X ; Store passed to slot.
     CLC ; Set CC, object made.
     RTS
 NEXT_OBJ: ; 04:063D, 0x00863D
@@ -1421,7 +1421,7 @@ CLEAR_SLOT_EQ_A: ; 04:0644, 0x008644
     STA TMP_00 ; Val to. TODO once player stuff better known.
     LDX #$00 ; Index reset.
 FIND_LOOP: ; 04:0648, 0x008648
-    LDA 694_PLAYER_UNK[4],X ; Load
+    LDA 694_SLOTS_FILE[4],X ; Load
     CMP TMP_00 ; If _ Val
     BEQ VAL_EQ ; ==, goto.
     INX ; Slot++
@@ -1430,13 +1430,13 @@ FIND_LOOP: ; 04:0648, 0x008648
     RTS ; Leave, none found.
 VAL_EQ: ; 04:0655, 0x008655
     LDA #$00
-    STA 694_PLAYER_UNK[4],X ; Clear these attrs for slot.
-    STA 698_PLAYER_UNK[4],X
-    STA 69C_PLAYER_UNK[4],X
+    STA 694_SLOTS_FILE[4],X ; Clear these attrs for slot.
+    STA 698_SLOTS_DATA_INDEX[4],X
+    STA 69C_SLOTS_TIMER[4],X
     RTS ; Leave.
-DATA_PLAYER_PTR_UNK_L: ; 04:0661, 0x008661
+SLOT_DATA_PTRS_A_L: ; 04:0661, 0x008661
     LOW(FILE_A)
-DATA_PLAYER_PTR_UNK_H: ; 04:0662, 0x008662
+SLOT_DATA_PTRS_A_H: ; 04:0662, 0x008662
     HIGH(FILE_A)
     LOW(FILE_B)
     HIGH(FILE_B)
