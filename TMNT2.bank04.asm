@@ -2108,14 +2108,14 @@ RTS_CC: ; 04:0950, 0x008950
 CB_A: ; 04:0952, 0x008952
     LDA #$EF ; Val?
     JSR RTN_EVENTUALLY_MAKE_PPU_UPDATE_BUF ; Do.
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     BNE RTS ; != 0, leave.
     LDA #$01 ; Val to store in slot.
     JMP WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS
 CB_B: ; 04:0960, 0x008960
     LDA #$F6 ; Val?
     JSR RTN_EVENTUALLY_MAKE_PPU_UPDATE_BUF
-    LDA 87_CB_INDEX? ; Load.
+    LDA BG_UPDATING_FLAG_UNK ; Load.
     BNE RTS ; != 0, leave.
     LDA #$02 ; Val to store in slot.
     JMP WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS
@@ -2126,12 +2126,12 @@ RTN_EVENTUALLY_MAKE_PPU_UPDATE_BUF: ; 04:096E, 0x00896E
     DEC 88_UNK_SWITCH? ; Timer--
     RTS ; Leave.
 VAL_EQ_ZERO: ; 04:0977, 0x008977
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CLC ; Prep add.
     ADC TMP_00 ; Add with.
     JSR UPDATE_BUF_MAKER ; Do.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$07 ; If _ #$07
     BEQ BG_UPDATER_TERMINATE ; ==, goto.
     LDA #$01
@@ -2139,7 +2139,7 @@ VAL_EQ_ZERO: ; 04:0977, 0x008977
     RTS ; Leave.
 BG_UPDATER_TERMINATE: ; 04:098C, 0x00898C
     LDA #$00
-    STA 87_CB_INDEX? ; Clear vals.
+    STA BG_UPDATING_FLAG_UNK ; Clear vals.
     STA 88_UNK_SWITCH?
     STA 60A_CB_SWITCH_WHICH?
 RTS: ; 04:0995, 0x008995
@@ -2179,15 +2179,15 @@ CB_G: ; 04:09C0, 0x0089C0
     JSR UPDATE_BUF_MAKER ; Do.
     JMP BG_UPDATER_TERMINATE ; Goto.
 CB_H: ; 04:09CD, 0x0089CD
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     BNE NONZERO ; != 0, goto.
     LDA #$1D
-    STA 87_CB_INDEX? ; Set if zero.
+    STA BG_UPDATING_FLAG_UNK ; Set if zero.
 NONZERO: ; 04:09D5, 0x0089D5
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     JSR UPDATE_BUF_MAKER ; Update with val.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$20 ; If _ #$20
     BNE RTS ; !=, leave.
     JMP BG_UPDATER_TERMINATE ; ==, clear these.
@@ -2210,20 +2210,20 @@ CB_K: ; 04:09FF, 0x0089FF
     JSR UPDATE_BUF_MAKER ; Make update.
     JMP BG_UPDATER_TERMINATE ; Goto.
 CB_L: ; 04:0A0B, 0x008A0B
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     BNE VAL_NONZERO ; != 0, goto.
     LDA #$29
-    STA 87_CB_INDEX? ; If zero, reset.
+    STA BG_UPDATING_FLAG_UNK ; If zero, reset.
 VAL_NONZERO: ; 04:0A13, 0x008A13
     LDA 88_UNK_SWITCH? ; Load.
     BEQ VAL_EQ_ZERO ; == 0, goto.
     DEC 88_UNK_SWITCH? ; --
     RTS ; Leave.
 VAL_EQ_ZERO: ; 04:0A1A, 0x008A1A
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     JSR UPDATE_BUF_MAKER ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$2F ; If _ #$2F
     BEQ VAL_EQ_2F ; ==, goto.
     LDA #$20
@@ -2247,10 +2247,10 @@ VAL_SEEDED: ; 04:0A3A, 0x008A3A
     SBC TMP_00 ; Sub with.
     CLC ; Prep add.
     ADC TMP_01 ; Add with.
-    ADC 87_CB_INDEX? ; Also add with.
+    ADC BG_UPDATING_FLAG_UNK ; Also add with.
     JSR UPDATE_BUF_MAKER ; Do update.
-    INC 87_CB_INDEX? ; Move index.
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; Move index.
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$02 ; If _ #$02
     BNE RTS ; !=, leave.
 EXIT_TERMINATE: ; 04:0A54, 0x008A54
@@ -2266,10 +2266,10 @@ TIMER_EXPIRED: ; 04:0A5E, 0x008A5E
     LDA 60A_CB_SWITCH_WHICH? ; Load
     CLC ; Prep add.
     ADC #$21 ; Add with.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR UPDATE_BUF_MAKER ; Update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$03 ; If _ #$03
     BNE RTS ; !=, leave.
     LDA 60A_CB_SWITCH_WHICH? ; Load
@@ -2291,12 +2291,12 @@ VAL_EQ_ZERO: ; 04:0A8A, 0x008A8A
     CLC ; Prep add.
     ADC TMP_00 ; Add to val.
     ADC #$3D ; Add val.
-    ADC 87_CB_INDEX? ; Add val.
+    ADC BG_UPDATING_FLAG_UNK ; Add val.
     JSR UPDATE_BUF_MAKER ; Update using.
     LDA #$18
     STA 88_UNK_SWITCH? ; Re-seed.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$03 ; If _ #$03
     BEQ EXIT_TERMINATE ; == 0, goto.
     LDA #$32
@@ -2315,17 +2315,17 @@ CB_R: ; 04:0ABD, 0x008ABD
     DEC 88_UNK_SWITCH? ; --
     RTS ; Leave.
 VAL_EQ_ZERO: ; 04:0AC4, 0x008AC4
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     BNE VAL_NONZERO ; != 0, goto.
     LDA #$42
     JSR SND_BANKED_DISPATCH ; Play sound.
 VAL_NONZERO: ; 04:0ACD, 0x008ACD
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CLC ; Prep add.
     ADC #$D8 ; Add with.
     JSR UPDATE_BUF_MAKER ; Buf update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$16 ; If _ #$16
     BEQ VAL_EQ_ZERO ; == 0, goto.
     CMP #$08 ; If _ #$08
@@ -2383,10 +2383,10 @@ VAL_SEEDED: ; 04:0B36, 0x008B36
     RTS ; Leave. Waiting.
 VAL_EQ_ZERO: ; 04:0B3D, 0x008B3D
     CLC ; Prep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR UPDATE_BUF_MAKER ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load.
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load.
     CMP #$08 ; If _ #$08
     BEQ EXIT_TERMINATE ; ==, exit. Done.
     AND #$01 ; Even/odd?
@@ -2403,10 +2403,10 @@ CB_W: ; 04:0B54, 0x008B54
 VAL_EQ_ZERO: ; 04:0B5B, 0x008B5B
     LDA #$78 ; Load
     CLC ; Prep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR UPDATE_BUF_MAKER ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$06 ; If _ #$06
     BEQ VAL_EQ ; ==, goto.
     AND #$01 ; Even/odd.
@@ -2426,9 +2426,9 @@ CB_X: ; 04:0B7C, 0x008B7C
     JSR UPDATE_BUF_MAKER ; Do update.
     JMP BG_UPDATER_TERMINATE ; Terminate.
 CB_Y: ; 04:0B89, 0x008B89
-    LDA 87_CB_INDEX? ; Load.
+    LDA BG_UPDATING_FLAG_UNK ; Load.
     BNE VAL_NE_ZERO ; != 0, goto.
-    INC 87_CB_INDEX? ; ++
+    INC BG_UPDATING_FLAG_UNK ; ++
     LDA #$03
     STA DA_FLAG?_UNK ; Set flag.
     LDA #$90
@@ -2498,10 +2498,10 @@ VAL_SEEDED: ; 04:0C04, 0x008C04
     RTS ; Leave.
 VAL_EQ_ZERO: ; 04:0C0B, 0x008C0B
     CLC ; Prep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR UPDATE_BUF_MAKER ; Update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$04 ; If _ #$04
     BEQ JMP_EXIT_TERMINATE ; ==, exit.
     LDA #$07
@@ -2532,15 +2532,15 @@ CB_AD: ; 04:0C2E, 0x008C2E
     JSR UPDATE_BUF_MAKER ; Do pair update.
     JMP BG_UPDATER_TERMINATE ; Terminate.
 CB_AE: ; 04:0C4E, 0x008C4E
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     BNE VAL_NONZERO ; != 0, goto.
     LDA #$95
-    STA 87_CB_INDEX? ; Set if zero.
+    STA BG_UPDATING_FLAG_UNK ; Set if zero.
 VAL_NONZERO: ; 04:0C56, 0x008C56
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     JSR UPDATE_BUF_MAKER ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$98 ; If _ #$98
     BEQ JMP_EXIT_TERMINATE ; ==, goto.
     RTS ; Leave.
@@ -2563,7 +2563,7 @@ CB_AH: ; 04:0C80, 0x008C80
     JSR WRITE_VAL_TO_EMPTY_SLOT_RET_CS_FAIL_CC_PASS ; Set up.
     JMP BG_UPDATER_TERMINATE ; Exit.
 CB_AI: ; 04:0C88, 0x008C88
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     BNE VAL_NE_ZERO ; != 0, goto.
     LDA #$10
     JSR CLEAR_SLOT_EQ_A ; Write to slot.
@@ -2573,8 +2573,8 @@ VAL_NE_ZERO: ; 04:0C95, 0x008C95
     LDA #$EE ; Update val seed.
 VAL_SEEDED: ; 04:0C97, 0x008C97
     JSR UPDATE_BUF_MAKER ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$02 ; If _ #$02
     BNE RTS ; !=, goto.
     JMP BG_UPDATER_TERMINATE ; Done, abuse RTS.
@@ -2598,10 +2598,10 @@ RTS: ; 04:0CBC, 0x008CBC
 VAL_EQ_ZERO: ; 04:0CBD, 0x008CBD
     LDA #$D2 ; Load
     CLC ; Prep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR UPDATE_BUF_MAKER ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$04 ; If _ #$04
     BEQ EXIT_JMP_TERMINATE ; ==, done. Terminate.
     LDA #$04
@@ -2611,10 +2611,10 @@ RTS: ; 04:0CD1, 0x008CD1
 CB_AM: ; 04:0CD2, 0x008CD2
     LDA #$D6 ; Load
     CLC ; Prep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR UPDATE_BUF_MAKER ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$02 ; If _ #$02
     BNE RTS ; != 0, leave.
     LDA 60A_CB_SWITCH_WHICH? ; Load
@@ -2689,9 +2689,9 @@ FILE_F: ; 04:0D38, 0x008D38
     .db 33
     .db FF
 CB_AQ: ; 04:0D3B, 0x008D3B
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     BNE VAL_NE_ZERO ; != 0, goto.
-    INC 87_CB_INDEX? ; ++
+    INC BG_UPDATING_FLAG_UNK ; ++
     LDA #$98
     STA IRQ_R0/R1_BANK_VALS[2] ; Set bank.
     LDA #$9A
@@ -2781,10 +2781,10 @@ CB_AT: ; 04:0DE9, 0x008DE9
     LDA #$2A ; Seed.
 VAL_SEEDED: ; 04:0DEB, 0x008DEB
     CLC ; Prep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR MULTIUPDATE_BUF_RTN ; Do.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$02 ; If _ #$02
     BNE EXIT_CONTINUING ; !=, goto.
 EXIT_JMP_TERMINATE: ; 04:0DF9, 0x008DF9
@@ -2797,10 +2797,10 @@ CB_AU: ; 04:0DFC, 0x008DFC
 VAL_EQ_ZERO: ; 04:0E03, 0x008E03
     LDA #$2C ; Load
     CLC ; Prep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR MULTIUPDATE_BUF_RTN ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$06 ; If _ #$06
     BEQ EXIT_JMP_TERMINATE ; ==, goto.
     LDA #$04
@@ -2818,22 +2818,22 @@ VAL_SEEDED: ; 04:0E1E, 0x008E1E
     RTS ; Leave.
 VAL_EQ_ZERO: ; 04:0E25, 0x008E25
     CLC ; Prfep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR MULTIUPDATE_BUF_RTN ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load.
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load.
     CMP #$07 ; If _ #$07
     BEQ EXIT_JMP_TERMINATE ; == 0, goto.
     LDA #$03
     STA 88_UNK_SWITCH? ; Set var.
     RTS ; Leave.
 CB_AX: ; 04:0E38, 0x008E38
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CLC ; Prep add.
     ADC #$40 ; Add with.
     JSR MULTIUPDATE_BUF_RTN ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$02 ; If _ #$02
     BEQ EXIT_JMP_TERMINATE ; ==, done.
     RTS ; Leave.
@@ -2849,10 +2849,10 @@ VAL_SEEDED: ; 04:0E4F, 0x008E4F
     RTS ; Leave.
 VAL_EQ_ZERO: ; 04:0E56, 0x008E56
     CLC ; Prep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR MULTIUPDATE_BUF_RTN ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$08 ; If _ #$08
     BEQ EXIT_JMP_TERMINATE ; ==, done.
     CMP #$05 ; If _ #$05. TODO: Mistake/bad code here?
@@ -2877,10 +2877,10 @@ VAL_EQ_ZERO: ; 04:0E74, 0x008E74
     CLC ; Prep add.
     ADC #$52 ; Add with.
     CLC ; Prep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR MULTIUPDATE_BUF_RTN ; Do updates.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$03 ; If _ #$03
     BEQ VAL_EQ_0x3 ; ==, goto.
     LDA #$03
@@ -2904,10 +2904,10 @@ VAL_EQ_ZERO: ; 04:0EA6, 0x008EA6
     CLC ; Prep add.
     ADC #$5E ; Add with.
     CLC ; Prep add.
-    ADC 87_CB_INDEX? ; Add with.
+    ADC BG_UPDATING_FLAG_UNK ; Add with.
     JSR MULTIUPDATE_BUF_RTN ; Do update.
-    INC 87_CB_INDEX? ; ++
-    LDA 87_CB_INDEX? ; Load
+    INC BG_UPDATING_FLAG_UNK ; ++
+    LDA BG_UPDATING_FLAG_UNK ; Load
     CMP #$04 ; If _ #$04
     BNE VAL_NE_0x4 ; !=, goto.
 EXIT_JMP_TERMINATE: ; 04:0EBF, 0x008EBF
@@ -2922,12 +2922,12 @@ CB_BC: ; 04:0EC7, 0x008EC7
     DEC 88_UNK_SWITCH? ; --
     RTS ; Leave.
 VAL_EQ_ZERO: ; 04:0ECE, 0x008ECE
-    LDY 87_CB_INDEX? ; Load
+    LDY BG_UPDATING_FLAG_UNK ; Load
     LDA UPDATE_DATA_A,Y ; Load.
     CMP #$FF ; If _ #$FF
     BEQ EXIT_JMP_TERMINATE ; ==, goto.
     JSR MULTIUPDATE_BUF_RTN ; Do update.
-    INC 87_CB_INDEX? ; ++
+    INC BG_UPDATING_FLAG_UNK ; ++
     LDA #$0C
     STA 88_UNK_SWITCH? ; Set var.
     RTS ; Leave.

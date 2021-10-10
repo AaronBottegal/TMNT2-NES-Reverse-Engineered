@@ -161,20 +161,20 @@ PLAYER?_UNK:                                  .rs 2 ; 0x0078 to 0x0079
 7C_UNK:                                       .rs 1 ; 0x007C
 FLAG_IRQ_I_SECONDARY_KEEP_IF_POSITIVE:        .rs 1 ; 0x007D
 7E_STREAM_UNK:                                .rs 1 ; 0x007E
-7F_OBJ_SPECIAL_INDEX?:                        .rs 1 ; 0x007F
+BG_UPDATING_INDEX:                            .rs 1 ; 0x007F
 80_UNK:                                       .rs 1 ; 0x0080
 81_UNK:                                       .rs 1 ; 0x0081
 82_UNK:                                       .rs 1 ; 0x0082
 83_UNK:                                       .rs 1 ; 0x0083
 84_UNK:                                       .rs 1 ; 0x0084
 85_PLAYER_UNK?:                               .rs 2 ; 0x0085 to 0x0086
-87_CB_INDEX?:                                 .rs 1 ; 0x0087
+BG_UPDATING_FLAG_UNK:                         .rs 1 ; 0x0087
 88_UNK_SWITCH?:                               .rs 1 ; 0x0088
 
 
           .rsset 0x008A
 FLAG_8A_UNK_ROCKSTEADY?:                      .rs 1 ; 0x008A
-8B_BOSS?_UNK:                                 .rs 1 ; 0x008B
+BG_UPDATE_FLAG_UNK:                           .rs 1 ; 0x008B
 8C_UNK:                                       .rs 1 ; 0x008C
 8D_UNK:                                       .rs 1 ; 0x008D
 8E_UNK:                                       .rs 1 ; 0x008E
@@ -241,7 +241,7 @@ C9_UNK:                                       .rs 1 ; 0x00C9
 D8_IRQ_CONFIG_B:                              .rs 1 ; 0x00D8
 D9_IRQ_CONFIG_A:                              .rs 1 ; 0x00D9
 DA_FLAG?_UNK:                                 .rs 1 ; 0x00DA
-R_**:$00DB:                                   .rs 1 ; 0x00DB
+DB_BG_INDEX_UNK:                              .rs 1 ; 0x00DB
 LEVEL_8_CUTSCENE_IN_PROGRESS_FLAG:            .rs 1 ; 0x00DC
 DD_UNK:                                       .rs 1 ; 0x00DD
 DE_FLAG_PALETTE_UNK:                          .rs 1 ; 0x00DE
@@ -707,7 +707,7 @@ ARR_SPRITE_OBJ_TIMER?:                        .rs 2 ; 0x0702 to 0x0703
 70C_END_OF_LEVEL_HOLDER?:                     .rs 1 ; 0x070C
 70D_UNK:                                      .rs 1 ; 0x070D
 70E_OBJ_UNK:                                  .rs 1 ; 0x070E
-R_**:$070F:                                   .rs 1 ; 0x070F
+70F_UNKNOWN:                                  .rs 1 ; 0x070F
 710_BOSS_WHICH_HIT?:                          .rs 1 ; 0x0710
 711_UNK:                                      .rs 1 ; 0x0711
 712_FLAG_PALETTE_UNK:                         .rs 1 ; 0x0712

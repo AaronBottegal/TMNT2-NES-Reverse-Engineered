@@ -270,7 +270,7 @@ RTN_D: ; 16:01D2, 0x02C1D2
     BEQ OTHER_PART ; == 0, goto.
     LDA #$C1 ; Only > 0x80 one?
     JSR BACKGROUND_UPDATING_INTERFACE ; Cross bank.
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     BNE OTHER_PART ; != 0, goto.
     LDA #$00
     STA 708_UNK ; Clear.
@@ -887,7 +887,7 @@ RTN_B: ; 16:06B6, 0x02C6B6
     LDY 709_UNK_CB_INDEX ; Index from.
     LDA CROSS_BANK_ARRAY,Y ; Load val from array.
     JSR BACKGROUND_UPDATING_INTERFACE ; Do.
-    LDA 87_CB_INDEX? ; Load
+    LDA BG_UPDATING_FLAG_UNK ; Load
     BNE RTS ; != 0, goto.
     LDA 59E_OBJ_UNK/EXTRA_TIMER[18],X ; Load
     AND #$DF ; Keep 1101.1111

@@ -64,7 +64,7 @@ TERTIARY_RTN_B: ; 0A:004E, 0x01404E
     LDA 5FA_UNK ; Load
     BNE OBJ_DATA_B_ZERO ; If set, don't clear 8B.
     LDA #$00
-    STA 8B_BOSS?_UNK ; Clear.
+    STA BG_UPDATE_FLAG_UNK ; Clear.
 OBJ_DATA_B_ZERO: ; 0A:0073, 0x014073
     INC 714_UNK ; ++ unk.
     JMP INIT_OBJECT[X]_DATA_FULL ; Abuse RTS. Clear object?
